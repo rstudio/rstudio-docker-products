@@ -14,7 +14,7 @@ RUN apt-get update -y && \
     wget
 
 RUN wget https://s3.amazonaws.com/rstudio-connect/rstudio-connect_${RSC_VERSION}_amd64.deb && \
-    gdebi rstudio-connect_${RSC_VERSION}_amd64.deb
+    gdebi --n rstudio-connect_${RSC_VERSION}_amd64.deb
 
 EXPOSE 3939/tcp
 
@@ -46,4 +46,4 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-ENTRYPOINT ["/opt/rstudio-connect/bin/connect", "--config", "/etc/rstudio-connect/rstudio-connect.gcfg"]
+CMD ["/opt/rstudio-connect/bin/connect", "--config", "/etc/rstudio-connect/rstudio-connect.gcfg"]

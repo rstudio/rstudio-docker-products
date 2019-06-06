@@ -14,7 +14,7 @@ RUN apt-get update -y && \
     wget
 
 RUN wget https://s3.amazonaws.com/rstudio-package-manager/ubuntu/amd64/rstudio-pm_${RSPM_VERSION}_amd64.deb && \
-    gdebi rstudio-connect_${RSPM_VERSION}_amd64.deb
+    gdebi --n rstudio-connect_${RSPM_VERSION}_amd64.deb
 
 EXPOSE 4242/tcp
 
