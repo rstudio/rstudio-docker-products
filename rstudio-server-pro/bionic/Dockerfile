@@ -6,7 +6,7 @@ LABEL maintainer="sol-eng@rstudio.com"
 ARG RSP_VERSION=1.2.1335-1
 ARG R_VERSION=3.6.0
 
-# Install RStudio Connect -----------------------------------------------------#
+# Install RStudio Server Pro --------------------------------------------------#
 
 RUN apt-get update -y && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \

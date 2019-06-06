@@ -6,7 +6,7 @@ LABEL maintainer="sol-eng@rstudio.com"
 ARG RSPM_VERSION=1.0.8-5
 ARG R_VERSION=3.6.0
 
-# Install RStudio Connect -----------------------------------------------------#
+# Install RStudio Package Manager ---------------------------------------------#
 
 RUN yum update -y && \
     yum install -y \
