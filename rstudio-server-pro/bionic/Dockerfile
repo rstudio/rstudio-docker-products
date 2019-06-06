@@ -16,7 +16,7 @@ RUN apt-get update -y && \
 RUN wget https://download2.rstudio.org/server/trusty/amd64/rstudio-server-pro-${RSP_VERSION}-amd64.deb && \
     gdebi rstudio-connect_${RSPM_VERSION}_amd64.deb
 
-EXPOSE 3939/tcp
+EXPOSE 8787/tcp
 
 # Install R -------------------------------------------------------------------#
 

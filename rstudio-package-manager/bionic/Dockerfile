@@ -16,7 +16,7 @@ RUN apt-get update -y && \
 RUN wget https://s3.amazonaws.com/rstudio-package-manager/ubuntu/amd64/rstudio-pm_${RSPM_VERSION}_amd64.deb && \
     gdebi rstudio-connect_${RSPM_VERSION}_amd64.deb
 
-EXPOSE 3939/tcp
+EXPOSE 4242/tcp
 
 # Install R -------------------------------------------------------------------#
 
