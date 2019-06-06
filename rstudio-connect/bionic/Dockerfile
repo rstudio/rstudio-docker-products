@@ -2,6 +2,11 @@ FROM ubuntu:bionic
 
 LABEL maintainer="sol-eng@rstudio.com"
 
+RUN apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    gdebi-core \
+    wget
+
 # Install R -------------------------------------------------------------------#
 
 ARG R_VERSION=3.6.0
@@ -26,11 +31,6 @@ ENV PATH="/opt/R/${R_VERSION}/bin:${PATH}"
 # Install RStudio Connect -----------------------------------------------------#
 
 ARG RSC_VERSION=1.7.4.1-7
-
-RUN apt-get update -y && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    gdebi-core \
-    wget
 
 RUN wget https://s3.amazonaws.com/rstudio-connect/rstudio-connect_${RSC_VERSION}_amd64.deb && \
     gdebi --n rstudio-connect_${RSC_VERSION}_amd64.deb

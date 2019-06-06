@@ -2,6 +2,12 @@ FROM centos:7
 
 LABEL maintainer="sol-eng@rstudio.com"
 
+RUN yum update -y && \
+    yum install -y \
+    wget \
+    which && \
+    yum clean all
+
 # Install R -------------------------------------------------------------------#
 
 ARG R_VERSION=3.6.0
@@ -28,12 +34,6 @@ ENV PATH="/opt/R/${R_VERSION}/bin:${PATH}"
 # Install RStudio Connect -----------------------------------------------------#
 
 ARG RSC_VERSION=1.7.4.1-7
-
-RUN yum update -y && \
-    yum install -y \
-    wget \
-    which && \
-    yum clean all
 
 RUN wget https://s3.amazonaws.com/rstudio-connect/rstudio-connect-${RSC_VERSION}.el.x86_64.rpm && \
     yum install -y --nogpgcheck rstudio-connect-${RSC_VERSION}.el.x86_64.rpm

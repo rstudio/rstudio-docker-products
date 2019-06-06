@@ -2,6 +2,11 @@ FROM ubuntu:bionic
 
 LABEL maintainer="sol-eng@rstudio.com"
 
+RUN apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    gdebi-core \
+    wget
+
 # Install R -------------------------------------------------------------------#
 
 ARG R_VERSION=3.6.0
@@ -26,11 +31,6 @@ ENV PATH="/opt/R/${R_VERSION}/bin:${PATH}"
 # Install RStudio Server Pro --------------------------------------------------#
 
 ARG RSP_VERSION=1.2.1335-1
-
-RUN apt-get update -y && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    gdebi-core \
-    wget
 
 RUN wget https://download2.rstudio.org/server/trusty/amd64/rstudio-server-pro-${RSP_VERSION}-amd64.deb && \
     gdebi --n rstudio-connect_${RSPM_VERSION}_amd64.deb
