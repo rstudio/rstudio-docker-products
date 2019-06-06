@@ -2,23 +2,9 @@ FROM centos:7
 
 LABEL maintainer="sol-eng@rstudio.com"
 
-# Set versions
-ARG RSP_VERSION=1.2.1335-1
-ARG R_VERSION=3.6.0
-
-# Install RStudio Server Pro --------------------------------------------------#
-
-RUN yum update -y && \
-    yum install -y \
-    wget && \
-    yum clean all
-
-RUN wget https://download2.rstudio.org/server/centos6/x86_64/rstudio-server-rhel-${RSP_VERSION}-x86_64.rpm && \
-    yum install -y --nogpgcheck rstudio-connect-${RSC_VERSION}.el.x86_64.rpm
-
-EXPOSE 8787/tcp
-
 # Install R -------------------------------------------------------------------#
+
+ARG R_VERSION=3.6.0
 
 RUN yum update -y && \
     yum install -y epel-release make gcc gcc-c++ && \
@@ -39,6 +25,20 @@ RUN mkdir -p /opt/R && \
 
 ENV PATH="/opt/R/${R_VERSION}/bin:${PATH}"
 
+# Install RStudio Server Pro --------------------------------------------------#
+
+ARG RSP_VERSION=1.2.1335-1
+
+RUN yum update -y && \
+    yum install -y \
+    wget && \
+    yum clean all
+
+RUN wget https://download2.rstudio.org/server/centos6/x86_64/rstudio-server-rhel-${RSP_VERSION}-x86_64.rpm && \
+    yum install -y --nogpgcheck rstudio-connect-${RSC_VERSION}.el.x86_64.rpm
+
+EXPOSE 8787/tcp
+
 # Locale configuration --------------------------------------------------------#
 
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
@@ -46,4 +46,4 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-ENTRYPOINT ["/usr/lib/rstudio-server/bin/rserver"]
+CMD ["/usr/lib/rstudio-server/bin/rserver"]

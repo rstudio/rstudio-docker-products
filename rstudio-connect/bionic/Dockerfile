@@ -2,23 +2,9 @@ FROM ubuntu:bionic
 
 LABEL maintainer="sol-eng@rstudio.com"
 
-# Set versions
-ARG RSC_VERSION=1.7.4.1-7
-ARG R_VERSION=3.6.0
-
-# Install RStudio Connect -----------------------------------------------------#
-
-RUN apt-get update -y && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    gdebi-core \
-    wget
-
-RUN wget https://s3.amazonaws.com/rstudio-connect/rstudio-connect_${RSC_VERSION}_amd64.deb && \
-    gdebi --n rstudio-connect_${RSC_VERSION}_amd64.deb
-
-EXPOSE 3939/tcp
-
 # Install R -------------------------------------------------------------------#
+
+ARG R_VERSION=3.6.0
 
 RUN sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list && \
     apt-get update -y && \
@@ -36,6 +22,20 @@ RUN mkdir -p /opt/R && \
     rm -rf /opt/R/R-${R_VERSION}
 
 ENV PATH="/opt/R/${R_VERSION}/bin:${PATH}"
+
+# Install RStudio Connect -----------------------------------------------------#
+
+ARG RSC_VERSION=1.7.4.1-7
+
+RUN apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    gdebi-core \
+    wget
+
+RUN wget https://s3.amazonaws.com/rstudio-connect/rstudio-connect_${RSC_VERSION}_amd64.deb && \
+    gdebi --n rstudio-connect_${RSC_VERSION}_amd64.deb
+
+EXPOSE 3939/tcp
 
 # Locale configuration --------------------------------------------------------#
 

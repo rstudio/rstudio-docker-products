@@ -2,23 +2,9 @@ FROM ubuntu:bionic
 
 LABEL maintainer="sol-eng@rstudio.com"
 
-# Set versions
-ARG RSP_VERSION=1.2.1335-1
-ARG R_VERSION=3.6.0
-
-# Install RStudio Server Pro --------------------------------------------------#
-
-RUN apt-get update -y && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    gdebi-core \
-    wget
-
-RUN wget https://download2.rstudio.org/server/trusty/amd64/rstudio-server-pro-${RSP_VERSION}-amd64.deb && \
-    gdebi --n rstudio-connect_${RSPM_VERSION}_amd64.deb
-
-EXPOSE 8787/tcp
-
 # Install R -------------------------------------------------------------------#
+
+ARG R_VERSION=3.6.0
 
 RUN sed -Ei 's/^# deb-src /deb-src /' /etc/apt/sources.list && \
     apt-get update -y && \
@@ -37,6 +23,20 @@ RUN mkdir -p /opt/R && \
 
 ENV PATH="/opt/R/${R_VERSION}/bin:${PATH}"
 
+# Install RStudio Server Pro --------------------------------------------------#
+
+ARG RSP_VERSION=1.2.1335-1
+
+RUN apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    gdebi-core \
+    wget
+
+RUN wget https://download2.rstudio.org/server/trusty/amd64/rstudio-server-pro-${RSP_VERSION}-amd64.deb && \
+    gdebi --n rstudio-connect_${RSPM_VERSION}_amd64.deb
+
+EXPOSE 8787/tcp
+
 # Locale configuration --------------------------------------------------------#
 
 RUN apt-get update -y && \
@@ -46,4 +46,4 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-ENTRYPOINT ["/opt/rstudio-connect/bin/connect", "--config", "/etc/rstudio-connect/rstudio-connect.gcfg"]
+CMD ["/opt/rstudio-connect/bin/connect", "--config", "/etc/rstudio-connect/rstudio-connect.gcfg"]
