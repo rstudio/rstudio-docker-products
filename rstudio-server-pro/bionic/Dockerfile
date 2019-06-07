@@ -37,7 +37,7 @@ RUN wget https://download2.rstudio.org/server/trusty/amd64/rstudio-server-pro-${
 
 EXPOSE 8787/tcp
 
-# Locale configuration --------------------------------------------------------#
+# Other configuration ---------------------------------------------------------#
 
 RUN apt-get update -y && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y locales
@@ -45,5 +45,10 @@ RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
+
+ENV TINI_VERSION v0.18.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
+ENTRYPOINT ["/tini", "--"]
 
 CMD ["/opt/rstudio-connect/bin/connect", "--config", "/etc/rstudio-connect/rstudio-connect.gcfg"]

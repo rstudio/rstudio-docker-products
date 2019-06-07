@@ -40,11 +40,16 @@ RUN wget https://s3.amazonaws.com/rstudio-connect/rstudio-connect-${RSC_VERSION}
 
 EXPOSE 3939/tcp
 
-# Locale configuration --------------------------------------------------------#
+# Other configuration ---------------------------------------------------------#
 
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
+
+ENV TINI_VERSION v0.18.0
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
+ENTRYPOINT ["/tini", "--"]
 
 CMD ["/opt/rstudio-connect/bin/connect", "--config", "/etc/rstudio-connect/rstudio-connect.gcfg"]
