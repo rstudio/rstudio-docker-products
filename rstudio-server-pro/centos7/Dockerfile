@@ -40,12 +40,18 @@ RUN wget https://download2.rstudio.org/server/centos6/x86_64/rstudio-server-rhel
 
 EXPOSE 8787/tcp
 
-# Other configuration ---------------------------------------------------------#
+# Create volume mount points --------------------------------------------------#
+
+VOLUME ["/var/log/rstudio-server", "/var/log/rstudio-launcher"]
+
+# Locale configuration --------------------------------------------------------#
 
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
+
+# Runtime settings ------------------------------------------------------------#
 
 ENV TINI_VERSION v0.18.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini

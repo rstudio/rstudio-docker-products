@@ -37,7 +37,11 @@ RUN wget https://s3.amazonaws.com/rstudio-package-manager/ubuntu/amd64/rstudio-p
 
 EXPOSE 4242/tcp
 
-# Other configuration ---------------------------------------------------------#
+# Create volume mount points --------------------------------------------------#
+
+VOLUME ["/var/lib/rstudio-pm", "/var/log"]
+
+# Locale configuration --------------------------------------------------------#
 
 RUN apt-get update -y && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y locales
@@ -45,6 +49,8 @@ RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
+
+# Runtime settings ------------------------------------------------------------#
 
 ENV TINI_VERSION v0.18.0
 ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
