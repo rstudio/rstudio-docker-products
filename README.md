@@ -1,4 +1,4 @@
-# RStudio products docker
+# RStudio products docker stacks
 
 Docker images for RStudio Professional Products
 
