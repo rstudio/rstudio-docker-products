@@ -1,0 +1,33 @@
+version: "3.5"
+
+services:
+  rstudio-server-pro:
+    build:
+      context: ./server-pro
+      args:
+        RSP_VERSION: 1.2.5001-3
+    image: rstudio/server-pro:1.2.5001-3
+    privileged: true
+    environment:
+      RSP_LICENSE: ${RSP_LICENSE}
+    ports:
+      - 8787:8787
+      - 5559:5559
+    volumes:
+      - ./server-pro/conf/:/etc/rstudio
+      - ./data/rsp:/home
+
+  rstudio-connect:
+    build:
+      context: ./connect
+      args:
+        RSC_VERSION: 1.7.8-7
+    image: rstudio/connect:1.7.8-7
+    privileged: true
+    environment:
+      RSC_LICENSE: ${RSC_LICENSE}
+    ports:
+      - 3939:3939
+    volumes:
+      - ./connect/rstudio-connect.gcfg:/etc/rstudio-connect/rstudio-connect.gcfg
+      - ./data/rsc:/data

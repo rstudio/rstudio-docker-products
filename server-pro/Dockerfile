@@ -14,21 +14,23 @@ RUN yum install -y \
     ca-certificates && \
     yum clean all
 
+ARG PYTHON_VERSION=3.6.5
 RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5.4-Linux-x86_64.sh && \
-    /bin/bash /tmp/miniconda.sh -b -p /opt/python/3.6.5 && \
+    /bin/bash /tmp/miniconda.sh -b -p /opt/python/${PYTHON_VERSION} && \
     rm /tmp/miniconda.sh && \
-    /opt/python/3.6.5/bin/conda clean -tipsy && \
-    ln -s /opt/python/3.6.5/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
-    /opt/python/3.6.5/bin/conda clean -a && \
-    /opt/python/3.6.5/bin/pip install virtualenv
+    /opt/python/${PYTHON_VERSION}/bin/conda clean -tipsy && \
+    ln -s /opt/python/${PYTHON_VERSION}/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
+    echo "PATH=/opt/python/${PYTHON_VERSION}/bin:$PATH" > /etc/profile.d/python.sh && \
+    /opt/python/${PYTHON_VERSION}/bin/conda clean -a && \
+    /opt/python/${PYTHON_VERSION}/bin/pip install virtualenv
 
 # Install other Python deps
-RUN /opt/python/3.6.5/bin/pip install jupyter jupyterlab rsp_jupyter rsconnect_jupyter && \
-    /opt/python/3.6.5/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter && \
-    /opt/python/3.6.5/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter && \
-    /opt/python/3.6.5/bin/jupyter-nbextension install --sys-prefix --py rsconnect_jupyter && \
-    /opt/python/3.6.5/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter && \
-    /opt/python/3.6.5/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
+RUN /opt/python/${PYTHON_VERSION}/bin/pip install jupyter jupyterlab rsp_jupyter rsconnect_jupyter && \
+    /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter && \
+    /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter && \
+    /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix --py rsconnect_jupyter && \
+    /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter && \
+    /opt/python/${PYTHON_VERSION}/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
 
 # Install RStudio Server Pro --------------------------------------------------#
 ARG RSP_VERSION=1.2.5001-3
