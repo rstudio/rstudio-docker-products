@@ -179,12 +179,12 @@ Using the RStudio Package Manager docker image requires to have a valid License.
 # Replace with valid license
 export RSPM_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 
-docker run -it --privileged
+docker run -it --privileged \
     -p 4242:4242 \
     -v $PWD/data/rspm:/data \
     -v $PWD/package-manager/rstudio-pm.gcfg:/etc/rstudio-pm/rstudio-pm.gcfg \
     -e RSPM_LICENSE=$RSPM_LICENSE \
-    rstudio/package-manager:1.7.4.1-7
+    rstudio/package-manager:1.0.14-7
 ```
 
 Open [http://localhost:4242](http://localhost:4242) to access RStudio Package Manager.

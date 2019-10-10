@@ -1,5 +1,5 @@
 [HTTP]
-Listen = 4242
+Listen = :4242
 
 [Server]
-DataDir = /mnt/rstudio-pm
+DataDir = /data

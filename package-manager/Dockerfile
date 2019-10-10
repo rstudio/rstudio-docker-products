@@ -13,6 +13,7 @@ ARG RSPM_VERSION=1.0.14-7
 RUN curl -O https://s3.amazonaws.com/rstudio-package-manager/centos/x86_64/rstudio-pm-${RSPM_VERSION}.x86_64.rpm && \
     yum install -y --nogpgcheck rstudio-pm-${RSPM_VERSION}.x86_64.rpm && \
     rm rstudio-pm-${RSPM_VERSION}.x86_64.rpm
+RUN mkdir -p /var/run/rstudio-pm
 
 # Runtime settings ------------------------------------------------------------#
 ARG TINI_VERSION=0.18.0

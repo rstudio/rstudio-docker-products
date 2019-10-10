@@ -18,4 +18,4 @@ elif test -f "/etc/rstudio-pm/license.lic"; then
 fi
 
 # Start RStudio Package Manager
-/usr/lib/rstudio-pm/bin/
+/opt/rstudio-pm/bin/rstudio-pm --config /etc/rstudio-pm/rstudio-pm.gcfg
