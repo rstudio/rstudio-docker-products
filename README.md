@@ -3,6 +3,8 @@
 Docker images for RStudio Professional Products
 
 Running any RStudio profesional products inside docker requires you to have a valid license for the product.
+Also remember to deactivate the license before stopping the container or it will count as an active license,
+look at the `startup.sh` scripts for an example on how to do this automatically.
 
 ## RStudio Server Pro
 
@@ -187,7 +189,27 @@ docker run -it --privileged \
     rstudio/package-manager:1.0.14-7
 ```
 
-Open [http://localhost:4242](http://localhost:4242) to access RStudio Package Manager.
+Open [http://localhost:4242](http://localhost:4242) to access RStudio Package Manager UI.
+
+To create repositories you need to access the container directly and execute some commands.
+To do this find the container ID for RSPM (using `docker ps`) and run:
+
+```
+docker exec -it <container-id> /bin/bash
+```
+
+Then please refer to the [RSPM guide](https://docs.rstudio.com/rspm/admin/) on how to [create and manage](https://docs.rstudio.com/rspm/admin/quickstarts.html) your repositories. For example to serve CRAN:
+
+```
+# Initiate a sync:
+rspm sync --wait
+
+# Create a repository:
+rspm create repo --name=prod-cran --description='Access CRAN packages'
+
+# Subscribe the repository to the cran source:
+rspm subscribe --repo=prod-cran --source=cran
+```
 
 ## Docker Compose
 
