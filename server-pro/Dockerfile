@@ -52,7 +52,13 @@ ENV RSP_LICENSE ""
 ENV RSP_TESTUSER rstudio
 ENV RSP_TESTUSER_PASSWD rstudio
 ENV RSP_TESTUSER_UID 10000
-VOLUME ["/etc/rstudio/", "/etc/rstudio-server/license.lic"]
+
+COPY conf/rserver.conf /etc/rstudio/rserver.conf
+COPY conf/launcher.conf /etc/rstudio/launcher.conf
+COPY conf/jupyter.conf /etc/rstudio/jupyter.conf
+COPY conf/repos.conf /etc/rstudio/repos.conf
+COPY conf/launcher-env /etc/rstudio/launcher-env
+VOLUME ["/etc/rstudio-server/license.lic"]
 
 COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh

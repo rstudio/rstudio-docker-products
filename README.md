@@ -10,6 +10,12 @@ look at the `startup.sh` scripts for an example on how to do this automatically.
 
 Note that running the RStudio Server Pro Docker image requires the container to run using the `--priviliged` flag and a valid RStudio Server Pro license.
 
+This container includes:
+
+1. R 3.6.1
+2. Python 3.6.5
+3. RStudio Server Pro 1.2.5001-3
+
 #### Configuration
 
 The configuration of RStudio Serve Pro is made on a set of file in the `/etc/rstudio` directory, mount this directory as volume with the host machine to change the configuration and restart the container for changes to take effect.
@@ -62,6 +68,13 @@ See the [RStudio Server Pro guide](https://docs.rstudio.com/ide/server-pro/authe
 # Replace with valid license
 export RSP_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 
+# Run without persistent data and default configuration
+docker run --privileged -it \
+    -p 8787:8787 -p 5559:5559 \
+    -e RSP_LICENSE=$RSP_LICENSE \
+    rstudio/server-pro:1.2.5001-3
+
+# Run persistening data and external configuration
 docker run --privileged -it \
     -p 8787:8787 -p 5559:5559 \
     -v $PWD/data/rsp:/home \
@@ -127,18 +140,32 @@ Using the RStudio Connect docker image requires to have a valid License. You can
 # Replace with valid license
 export RSC_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 
+# Run without persistent data and default configuration
+docker run -it --privileged \
+    -p 3939:3939 \
+    -e RSC_LICENSE=$RSC_LICENSE \
+    rstudio/connect:1.7.8-7
+
+# Run persistening data and external configuration
 docker run -it --privileged \
     -p 3939:3939 \
     -v $PWD/data/rsc:/data \
     -v $PWD/connect/rstudio-connect.gcfg:/etc/rstudio-connect/rstudio-connect.gcfg \
     -e RSC_LICENSE=$RSC_LICENSE \
-    rstudio/connect:1.7.4.1-7
+    rstudio/connect:1.7.8-7
 ```
 
 Open [http://localhost:3939](http://localhost:3939) to access RStudio Connect.
 
 
-## RStudio Connect
+## RStudio Package Manager
+
+Note that running the RStudio Package Manager Docker image requires the container to run using the `--priviliged` flag and a valid RStudio Package Manager license.
+
+This container includes:
+
+1. R 3.6.1
+3. RStudio Package Manager 1.0.14-7
 
 #### Configuration
 
@@ -181,6 +208,13 @@ Using the RStudio Package Manager docker image requires to have a valid License.
 # Replace with valid license
 export RSPM_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 
+# Run without persistent data and default configuration
+docker run -it --privileged \
+    -p 4242:4242 \
+    -e RSPM_LICENSE=$RSPM_LICENSE \
+    rstudio/package-manager:1.0.14-7
+
+# Run persistening data and external configuration
 docker run -it --privileged \
     -p 4242:4242 \
     -v $PWD/data/rspm:/data \

@@ -40,8 +40,8 @@ RUN chmod +x /usr/local/bin/startup.sh
 
 EXPOSE 3939/tcp
 ENV RSC_LICENSE ""
-RUN rm /etc/rstudio-connect/rstudio-connect.gcfg
-VOLUME ["/etc/rstudio-connect/rstudio-connect.gcfg", "/data", "/etc/rstudio-connect/license.lic"]
+COPY rstudio-connect.gcfg /etc/rstudio-connect/rstudio-connect.gcfg
+VOLUME ["/data", "/etc/rstudio-connect/license.lic"]
 
 ENTRYPOINT ["tini", "--"]
 CMD ["/usr/local/bin/startup.sh"]
