@@ -10,7 +10,7 @@ imageStart=$(expr index "$IMAGE_NAME" /)
 repoName=${IMAGE_NAME:0:tagStart-1}
 imageName=${IMAGE_NAME:imageStart:${#IMAGE_NAME}-tagStart-1}
 
-tag=$(cat ../RSP_VERSION)
+tag=$(cat RSP_VERSION)
 #if [ "$imageName" == "rstudio-server-pro" ]; then
 #  tag=$(cat RSP_VERSION)
 #elif [ "$imageName" == "rstudio-connect" ]; then
