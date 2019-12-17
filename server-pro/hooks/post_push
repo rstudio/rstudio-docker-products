@@ -11,13 +11,6 @@ repoName=${IMAGE_NAME:0:tagStart-1}
 imageName=${IMAGE_NAME:imageStart:${#IMAGE_NAME}-tagStart-1}
 
 tag=$(cat RSP_VERSION)
-#if [ "$imageName" == "rstudio-server-pro" ]; then
-#  tag=$(cat RSP_VERSION)
-#elif [ "$imageName" == "rstudio-connect" ]; then
-#  tag=$(cat RSC_VERSION)
-#elif [ "$imageName" == "rstudio-package-manager" ]; then
-#  tag=$(cat RSPM_VERSION)
-#fi
 
 if [ -n "$tag" ]; then
   docker tag $IMAGE_NAME ${repoName}:${tag}
