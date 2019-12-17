@@ -17,6 +17,9 @@ elif test -f "/etc/rstudio-server/license.lic"; then
     rstudio-server license-manager activate-file /etc/rstudio-server/license.lic
 fi
 
+# lest this be inherited by child processes
+unset RSP_LICENSE
+
 # Create one user
 if [ $(getent passwd $RSP_TESTUSER_UID) ] ; then
     echo "UID $RSP_TESTUSER_UID already exists, not creating $RSP_TESTUSER test user";
