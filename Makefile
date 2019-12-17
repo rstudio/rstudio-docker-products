@@ -21,7 +21,12 @@ MAKEFLAGS += --no-builtin-rules
 all: help
 
 images: server-pro connect package-manager  ## Build all images
-	# docker-compose build
+	docker-compose build
+
+update-versions:  ## Update the version files for all products
+	@echo ${RSP_VERSION} > server-pro/RSP_VERSION
+	@echo ${RSC_VERSION} > connect/RSC_VERSION
+	@echo ${RSPM_VERSION} > package-manager/RSPM_VERSION
 
 rsp: server-pro
 server-pro:  ## Build RSP image
