@@ -1,19 +1,18 @@
-ARG R_VERSION=3.6
-FROM rstudio/r-base:${R_VERSION}-centos7
-LABEL maintainer="sol-eng@rstudio.com"
+ARG R_VERSION=3.6.2
+FROM rstudio/r-base:${R_VERSION}-bionic
+LABEL maintainer="RStudio Docker <docker@rstudio.com>m"
 
 # Locale configuration --------------------------------------------------------#
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update --fix-missing && apt-get install -y wget bzip2 ca-certificates \
+    libglib2.0-0 libxext6 libsm6 libxrender1 gdebi-core libssl1.0.0 libssl-dev
 
 # Install Python  -------------------------------------------------------------#
-RUN yum install -y \
-    bzip2 \
-    ca-certificates && \
-    yum clean all
-
 ARG PYTHON_VERSION=3.6.5
 RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5.4-Linux-x86_64.sh && \
     /bin/bash /tmp/miniconda.sh -b -p /opt/python/${PYTHON_VERSION} && \
@@ -23,12 +22,13 @@ RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5
     echo "PATH=/opt/python/${PYTHON_VERSION}/bin:$PATH" > /etc/profile.d/python.sh && \
     /opt/python/${PYTHON_VERSION}/bin/conda clean -a && \
     /opt/python/${PYTHON_VERSION}/bin/pip install virtualenv
+ENV PATH /opt/python/${PYTHON_VERSION}/bin:$PATH
 
 # Install RStudio Connect -----------------------------------------------------#
 ARG RSC_VERSION=1.7.8-7
-RUN curl -O https://s3.amazonaws.com/rstudio-connect/rstudio-connect-${RSC_VERSION}.el.x86_64.rpm && \
-    yum install -y --nogpgcheck rstudio-connect-${RSC_VERSION}.el.x86_64.rpm && \
-    rm rstudio-connect-${RSC_VERSION}.el.x86_64.rpm
+RUN curl -O https://s3.amazonaws.com/rstudio-connect/rstudio-connect_${RSC_VERSION}_amd64.deb && \
+    gdebi -n rstudio-connect_${RSC_VERSION}_amd64.deb && \
+    rm rstudio-connect_${RSC_VERSION}_amd64.deb
 
 # Runtime settings ------------------------------------------------------------#
 ARG TINI_VERSION=0.18.0

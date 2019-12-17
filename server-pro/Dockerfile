@@ -1,19 +1,18 @@
 ARG R_VERSION=3.6
-FROM rstudio/r-base:${R_VERSION}-centos7
-LABEL maintainer="sol-eng@rstudio.com"
+FROM rstudio/r-base:${R_VERSION}-bionic
+LABEL maintainer="RStudio Docker <docker@rstudio.com>m"
 
 # Locale configuration --------------------------------------------------------#
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update --fix-missing && apt-get install -y wget bzip2 ca-certificates \
+    libglib2.0-0 libxext6 libsm6 libxrender1 gdebi-core libssl1.0.0 libssl-dev
 
 # Install Python  -------------------------------------------------------------#
-RUN yum install -y \
-    bzip2 \
-    ca-certificates && \
-    yum clean all
-
 ARG PYTHON_VERSION=3.6.5
 RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5.4-Linux-x86_64.sh && \
     /bin/bash /tmp/miniconda.sh -b -p /opt/python/${PYTHON_VERSION} && \
@@ -23,6 +22,7 @@ RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5
     echo "PATH=/opt/python/${PYTHON_VERSION}/bin:$PATH" > /etc/profile.d/python.sh && \
     /opt/python/${PYTHON_VERSION}/bin/conda clean -a && \
     /opt/python/${PYTHON_VERSION}/bin/pip install virtualenv
+ENV PATH /opt/python/${PYTHON_VERSION}/bin:$PATH
 
 # Install other Python deps
 RUN /opt/python/${PYTHON_VERSION}/bin/pip install jupyter jupyterlab rsp_jupyter rsconnect_jupyter && \
@@ -33,10 +33,10 @@ RUN /opt/python/${PYTHON_VERSION}/bin/pip install jupyter jupyterlab rsp_jupyter
     /opt/python/${PYTHON_VERSION}/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
 
 # Install RStudio Server Pro --------------------------------------------------#
-ARG RSP_VERSION=1.2.5001-3
-RUN wget https://s3.amazonaws.com/rstudio-ide-build/server/centos6/x86_64/rstudio-server-rhel-pro-${RSP_VERSION}-x86_64.rpm && \
-    yum install -y --nogpgcheck sysvinit-tools rstudio-server-rhel-pro-${RSP_VERSION}-x86_64.rpm && \
-    rm rstudio-server-rhel-pro-${RSP_VERSION}-x86_64.rpm
+ARG RSP_VERSION=1.2.5019-6
+RUN curl -O https://download2.rstudio.org/server/trusty/amd64/rstudio-server-pro-${RSP_VERSION}-amd64.deb && \
+    gdebi --non-interactive rstudio-server-pro-${RSP_VERSION}-amd64.deb && \
+    rm rstudio-server-pro-${RSP_VERSION}-amd64.deb
 
 # Runtime settings ------------------------------------------------------------#
 ARG TINI_VERSION=0.18.0

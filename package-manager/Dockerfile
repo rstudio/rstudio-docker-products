@@ -1,18 +1,21 @@
-ARG R_VERSION=3.6
-FROM rstudio/r-base:${R_VERSION}-centos7
-LABEL maintainer="sol-eng@rstudio.com"
+ARG R_VERSION=3.6.2
+FROM rstudio/r-base:${R_VERSION}-bionic
+LABEL maintainer="RStudio Docker <docker@rstudio.com>m"
 
 # Locale configuration --------------------------------------------------------#
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update --fix-missing && apt-get install -y gdebi-core libssl1.0.0 libssl-dev
 
 # Install RStudio Package Manager ---------------------------------------------#
-ARG RSPM_VERSION=1.0.14-7
-RUN curl -O https://s3.amazonaws.com/rstudio-package-manager/centos/x86_64/rstudio-pm-${RSPM_VERSION}.x86_64.rpm && \
-    yum install -y --nogpgcheck rstudio-pm-${RSPM_VERSION}.x86_64.rpm && \
-    rm rstudio-pm-${RSPM_VERSION}.x86_64.rpm
+ARG RSPM_VERSION=1.1.0.1-17
+RUN curl -O curl -O https://s3.amazonaws.com/rstudio-package-manager/ubuntu/amd64/rstudio-pm_${RSPM_VERSION}_amd64.deb && \
+    gdebi -n rstudio-pm_${RSPM_VERSION}_amd64.deb && \
+    rm rstudio-pm_${RSPM_VERSION}_amd64.deb
 RUN mkdir -p /var/run/rstudio-pm
 ENV PATH /opt/rstudio-pm/bin:$PATH
 

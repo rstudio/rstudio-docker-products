@@ -28,7 +28,7 @@ else
         echo "Empty 'RSP_TESTUSER' variables, not creating test user";
     else
         useradd -m -s /bin/bash -N -u $RSP_TESTUSER_UID $RSP_TESTUSER
-        echo $RSP_TESTUSER_PASSWD | passwd $RSP_TESTUSER --stdin
+        echo "$RSP_TESTUSER:$RSP_TESTUSER_PASSWD" | sudo chpasswd
     fi
 fi
 
