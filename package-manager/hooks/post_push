@@ -1,0 +1,18 @@
+#!/bin/bash
+# adapted from: https://windsock.io/automated-docker-image-builds-with-multiple-tags/
+
+set -e
+
+# Parse image name for repo name
+tagStart=$(expr index "$IMAGE_NAME" :)
+imageStart=$(expr index "$IMAGE_NAME" /)
+
+repoName=${IMAGE_NAME:0:tagStart-1}
+imageName=${IMAGE_NAME:imageStart:${#IMAGE_NAME}-tagStart-1}
+
+tag=$(cat RSPM_VERSION)
+
+if [ -n "$tag" ]; then
+  docker tag $IMAGE_NAME ${repoName}:${tag}
+  docker push ${repoName}:${tag}
+fi
