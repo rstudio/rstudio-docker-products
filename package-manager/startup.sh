@@ -17,5 +17,8 @@ elif test -f "/etc/rstudio-pm/license.lic"; then
     /opt/rstudio-pm/bin/license-manager activate-file /etc/rstudio-pm/license.lic
 fi
 
+# lest this be inherited by child processes
+unset RSPM_LICENSE
+
 # Start RStudio Package Manager
 /opt/rstudio-pm/bin/rstudio-pm --config /etc/rstudio-pm/rstudio-pm.gcfg
