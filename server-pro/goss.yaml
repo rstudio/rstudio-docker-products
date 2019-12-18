@@ -16,6 +16,6 @@ command:
     title: server-pro_version_matches
     exit-status: 0
     stdout: [
-      "/{{ .Env.RSC_VERSION }}/",
+      "/{{ .Env.RSP_VERSION }}/",
       "/Pro/"
     ]
