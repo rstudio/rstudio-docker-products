@@ -5,8 +5,8 @@ services:
     build:
       context: ./server-pro
       args:
-        RSP_VERSION: 1.2.5001-3
-    image: rstudio/server-pro:1.2.5001-3
+        RSP_VERSION: 1.2.5019-6
+    image: rstudio/rstudio-server-pro:1.2.5019-6
     privileged: true
     environment:
       RSP_LICENSE: ${RSP_LICENSE}
@@ -22,7 +22,7 @@ services:
       context: ./connect
       args:
         RSC_VERSION: 1.7.8-7
-    image: rstudio/connect:1.7.8-7
+    image: rstudio/rstudio-connect:1.7.8-7
     privileged: true
     environment:
       RSC_LICENSE: ${RSC_LICENSE}
@@ -32,12 +32,12 @@ services:
       - ./connect/rstudio-connect.gcfg:/etc/rstudio-connect/rstudio-connect.gcfg
       - ./data/rsc:/data
 
-  rstudio-pm:
+  rstudio-package-manager:
     build:
       context: ./package-manager
       args:
-        RSPM_VERSION: 1.0.14-7
-    image: rstudio/package-manager:1.0.14-7
+        RSPM_VERSION: 1.1.0.1-17
+    image: rstudio/rstudio-package-manager:1.1.0.1-17
     privileged: true
     environment:
       RSPM_LICENSE: ${RSPM_LICENSE}
