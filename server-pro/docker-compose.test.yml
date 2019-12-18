@@ -1,0 +1,13 @@
+version: '2.3'
+services:
+
+  sut:
+    build: .
+    command: /run_tests.sh
+    entrypoint: []
+    environment:
+      # uses .env by default
+      - RSP_VERSION
+    volumes:
+      - "./run_tests.sh:/run_tests.sh"
+      - "./goss.yaml:/tmp/goss.yaml"
