@@ -14,7 +14,7 @@ This container includes:
 
 1. R 3.6.1
 2. Python 3.6.5
-3. RStudio Server Pro 1.2.5019-6
+3. RStudio Server Pro
 
 #### Configuration
 
@@ -72,7 +72,7 @@ export RSP_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 docker run --privileged -it \
     -p 8787:8787 -p 5559:5559 \
     -e RSP_LICENSE=$RSP_LICENSE \
-    rstudio/rstudio-server-pro:1.2.5019-6
+    rstudio/rstudio-server-pro:latest
 
 # Run persistening data and external configuration
 docker run --privileged -it \
@@ -80,7 +80,7 @@ docker run --privileged -it \
     -v $PWD/data/rsp:/home \
     -v $PWD/server-pro/conf/:/etc/rstudio \
     -e RSP_LICENSE=$RSP_LICENSE \
-    rstudio/rstudio-server-pro:1.2.5019-6
+    rstudio/rstudio-server-pro:latest
 ```
 
 Open [http://localhost:3939](http://localhost:3939) to access RStudio Connect.
@@ -94,7 +94,7 @@ This container includes:
 
 1. R 3.6.1
 2. Python 3.6.5
-3. RStudio Connect 1.7.4.1-7
+3. RStudio Connect
 
 Note that running the RStudio Connect Docker image requires the container to run using the `--priviliged` flag and a valid RStudio Connect license.
 
@@ -144,7 +144,7 @@ export RSC_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 docker run -it --privileged \
     -p 3939:3939 \
     -e RSC_LICENSE=$RSC_LICENSE \
-    rstudio/rstudio-connect:1.7.8-7
+    rstudio/rstudio-connect:latest
 
 # Run persistening data and external configuration
 docker run -it --privileged \
@@ -152,7 +152,7 @@ docker run -it --privileged \
     -v $PWD/data/rsc:/data \
     -v $PWD/connect/rstudio-connect.gcfg:/etc/rstudio-connect/rstudio-connect.gcfg \
     -e RSC_LICENSE=$RSC_LICENSE \
-    rstudio/rstudio-connect:1.7.8-7
+    rstudio/rstudio-connect:latest
 ```
 
 Open [http://localhost:3939](http://localhost:3939) to access RStudio Connect.
@@ -165,7 +165,7 @@ Note that running the RStudio Package Manager Docker image requires the containe
 This container includes:
 
 1. R 3.6.1
-3. RStudio Package Manager 1.1.0.1-17
+3. RStudio Package Manager
 
 #### Configuration
 
@@ -212,7 +212,7 @@ export RSPM_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 docker run -it --privileged \
     -p 4242:4242 \
     -e RSPM_LICENSE=$RSPM_LICENSE \
-    rstudio/rstudio-package-manager:1.1.0.1-17
+    rstudio/rstudio-package-manager:latest
 
 # Run persistening data and external configuration
 docker run -it --privileged \
@@ -220,7 +220,7 @@ docker run -it --privileged \
     -v $PWD/data/rspm:/data \
     -v $PWD/package-manager/rstudio-pm.gcfg:/etc/rstudio-pm/rstudio-pm.gcfg \
     -e RSPM_LICENSE=$RSPM_LICENSE \
-    rstudio/rstudio-package-manager:1.1.0.1-17
+    rstudio/rstudio-package-manager:latest
 ```
 
 Open [http://localhost:4242](http://localhost:4242) to access RStudio Package Manager UI.
