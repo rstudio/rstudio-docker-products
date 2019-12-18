@@ -1,0 +1,21 @@
+package:
+  rstudio-server:
+    installed: true
+
+file:
+  /usr/lib/rstudio-server:
+    exists: true
+  /usr/lib/rstudio-server/bin/rstudio-server:
+    exists: true
+  /usr/lib/rstudio-server/bin/rstudio-launcher:
+    exists: true
+
+# check product version
+command:
+  "/usr/lib/rstudio-server/bin/rstudio-server version":
+    title: server-pro_version_matches
+    exit-status: 0
+    stdout: [
+      "/{{ .Env.RSC_VERSION }}/",
+      "/Pro/"
+    ]

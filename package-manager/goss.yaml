@@ -1,0 +1,20 @@
+package:
+  rstudio-pm:
+    installed: true
+
+file:
+  /opt/rstudio-pm/:
+    exists: true
+  /opt/rstudio-pm/bin/rstudio-pm:
+    exists: true
+  /opt/rstudio-pm/bin/rspm:
+    exists: true
+
+# check product version
+command:
+  "/opt/rstudio-pm/bin/rstudio-pm --version":
+    title: package-manager_version_matches
+    exit-status: 0
+    stdout: [
+      "/{{ .Env.RSPM_VERSION }}/"
+    ]
