@@ -1,0 +1,18 @@
+package:
+  rstudio-connect:
+    installed: true
+
+file:
+  /opt/rstudio-connect/:
+    exists: true
+  /opt/rstudio-connect/bin/connect:
+    exists: true
+
+# check product version
+command:
+  "/opt/rstudio-connect/bin/connect --version":
+    title: connect_version_matches
+    exit-status: 0
+    stdout: [
+      "/{{ .Env.RSC_VERSION }}/"
+    ]
