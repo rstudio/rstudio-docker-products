@@ -9,5 +9,5 @@ services:
       # uses .env by default
       - RSC_VERSION
     volumes:
-      - "./run_tests.sh:/run_tests.sh"
-      - "./goss.yaml:/tmp/goss.yaml"
+      - "./test/run_tests.sh:/run_tests.sh"
+      - "./test/goss.yaml:/tmp/goss.yaml"
