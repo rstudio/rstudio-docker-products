@@ -24,9 +24,12 @@ images: server-pro connect package-manager  ## Build all images
 	docker-compose build
 
 update-versions:  ## Update the version files for all products
-	@sed -i -n "s/^RSP_VERSION=.*/RSP_VERSION=${RSP_VERSION}/g" server-pro/.env
-	@sed -i -n "s/^RSC_VERSION=.*/RSC_VERSION=${RSC_VERSION}/g" connect/.env
-	@sed -i -n "s/^RSPM_VERSION=.*/RSPM_VERSION=${RSPM_VERSION}/g" package-manager/.env
+	@sed -i '' "s/^RSP_VERSION=.*/RSP_VERSION=${RSP_VERSION}/g" server-pro/.env
+	@sed -i '' "s/^RSC_VERSION=.*/RSC_VERSION=${RSC_VERSION}/g" connect/.env
+	@sed -i '' "s/^RSPM_VERSION=.*/RSPM_VERSION=${RSPM_VERSION}/g" package-manager/.env
+	@sed -i '' "s/^ARG RSP_VERSION=.*/ARG RSP_VERSION=${RSP_VERSION}/g" server-pro/Dockerfile
+	@sed -i '' "s/^ARG RSC_VERSION=.*/ARG RSC_VERSION=${RSC_VERSION}/g" connect/Dockerfile
+	@sed -i '' "s/^ARG RSPM_VERSION=.*/ARG RSPM_VERSION=${RSPM_VERSION}/g" package-manager/Dockerfile
 
 rsp: server-pro
 server-pro:  ## Build RSP image
