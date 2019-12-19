@@ -54,9 +54,41 @@ All PRs go through the `Autotest` setup [on Docker
 Hub](https://docs.docker.com/docker-hub/builds/automated-testing/).
 
 - Each folder has a `docker-compose.test.yml` file that orchestrates the test
-- The `run_tests.sh` script is mounted into the container and run
+- The `test/run_tests.sh` script is mounted into the container and run
     - This script downloads and installs `goss`
-- `goss.yaml` is mounted into the container to actually run the tests
+- `test/goss.yaml` is mounted into the container to actually run the tests
 
 Read more about [goss](https://goss.rocks) [in the
 manual](https://github.com/aelsabbahy/goss/blob/master/docs/manual.md).
+
+## Testing Locally
+
+It is possible to test locally from a product directory by using:
+
+```
+# from ./server-pro
+docker-compose -f docker-compose.test.yml up
+```
+
+If you want to write goss tests,
+[`dgoss`](https://github.com/aelsabbahy/goss/tree/master/extras/dgoss)
+simplifies the process.
+
+- install
+  [`dgoss`](https://github.com/aelsabbahy/goss/tree/master/extras/dgoss)
+locally
+- run the following to create tests interactively:
+```
+# from ./server-pro
+GOSS_PATH=/path/to/local/goss GOSS_FILES_PATH=./test dgoss edit -it -e RSP_VERSION=1.2.5001-3 rstudio/sol-eng-rstudio:1.2.5001-3
+
+# once in the container
+/bin/bash		# shell of preference?
+goss validate
+goss add --help
+```
+- to run the test suite as-is
+```
+# from ./server-pro
+GOSS_PATH=/path/to/local/goss GOSS_FILES_PATH=./test dgoss run -it -e RSP_VERSION=1.2.5001-3 rstudio/sol-eng-rstudio:1.2.5001-3
+```
