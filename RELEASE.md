@@ -48,6 +48,23 @@ We also want to thank [this
 article](https://windsock.io/automated-docker-image-builds-with-multiple-tags/)
 for the inspiration behind our tagging process.
 
+### Test the Docker Hub hooks
+
+The `hooks` are just bash scripts, so they _can_ be tested locally. Let's take
+`server-pro` for example.  The following commands will test these scripts
+locally. You just have to set the appropriate environment variables yourself.
+Details are in the section above on what env vars dockerhub sets.
+
+```bash
+cd ./server-pro
+DOCKER_TAG=daily ./hooks/pre_build
+DOCKERFILE_PATH=Dockerfile IMAGE_NAME=test ./hooks/build
+# post_build will fail interactively because you cannot push tags to the repository
+```
+
+**NOTE:** There is a difference between GNU bash operations and those on Mac
+(i.e. `sed`). You have been warned!
+
 ## Testing PRs on Docker Hub
 
 All PRs go through the `Autotest` setup [on Docker
