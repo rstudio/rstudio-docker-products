@@ -34,7 +34,8 @@ RUN /opt/python/${PYTHON_VERSION}/bin/pip install jupyter jupyterlab rsp_jupyter
 
 # Install RStudio Server Pro --------------------------------------------------#
 ARG RSP_VERSION=1.2.5019-6
-RUN curl -O https://download2.rstudio.org/server/trusty/amd64/rstudio-server-pro-${RSP_VERSION}-amd64.deb && \
+ARG RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/trusty/amd64
+RUN curl -O ${RSP_DOWNLOAD_URL}/rstudio-server-pro-${RSP_VERSION}-amd64.deb && \
     gdebi --non-interactive rstudio-server-pro-${RSP_VERSION}-amd64.deb && \
     rm rstudio-server-pro-${RSP_VERSION}-amd64.deb
 
