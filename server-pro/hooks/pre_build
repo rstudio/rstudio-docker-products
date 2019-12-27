@@ -10,5 +10,9 @@ if [ "${DOCKER_TAG}" == "daily" ]; then
     echo "Latest version found: $match"
     sed -i '' "s/^RSP_VERSION=.*/RSP_VERSION=${match}/g" ./.env
     sed -i '' "s|^RSP_DOWNLOAD_URL=.*|RSP_DOWNLOAD_URL=https://dailies.rstudio.com/rstudioserver/pro/bionic/x86_64|g" ./.env
+  else
+    # fail the build
+    echo "ERROR parsing latest daily version"
+    exit 1
   fi
 fi
