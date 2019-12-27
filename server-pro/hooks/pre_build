@@ -11,7 +11,7 @@ if [ "${DOCKER_TAG}" == "daily" ]; then
     match="${BASH_REMATCH[1]}"
     echo "Latest version found: $match"
     sed -i.bak "s/^RSP_VERSION=.*/RSP_VERSION=${match}/g" ./.env
-    sed -i.bak "s|^RSP_DOWNLOAD_URL=.*|RSP_DOWNLOAD_URL=https://dailies.rstudio.com/rstudioserver/pro/bionic/x86_64|g" ./.env
+    sed -i.bak "s|^RSP_DOWNLOAD_URL=.*|RSP_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64|g" ./.env
   else
     # fail the build
     echo "ERROR parsing latest daily version"
