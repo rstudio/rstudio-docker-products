@@ -2,6 +2,8 @@
 
 set -e
 
+echo "Building DOCKER_TAG=${DOCKER_TAG}"
+
 # if daily build
 # replace version number and download url
 if [ "${DOCKER_TAG}" == "daily" ]; then
@@ -19,6 +21,8 @@ if [ "${DOCKER_TAG}" == "daily" ]; then
     echo "ERROR parsing latest daily version"
     exit 1
   fi
+else
+  echo "No version customization necessary"
 fi
 
 echo '--> Showing .env file'
