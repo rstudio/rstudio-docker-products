@@ -5,4 +5,4 @@ Listen = :4242
 DataDir = /data
 
 [Server]
-RVersion = 3.6.2
+RVersion = /opt/R/3.6.2/
