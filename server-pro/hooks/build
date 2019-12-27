@@ -1,7 +1,17 @@
 #!/bin/bash
 
+set -e
+
+echo '--> Showing .env file'
+cat .env
+
 # use xargs -0 (BSD) or xargs -d '\n' (GNU) to read env vars with spaces
 # https://stackoverflow.com/questions/19331497/set-environment-variables-from-file-of-key-value-pairs
 export $(grep -v '^#' .env | xargs)
+
+echo "RSP_VERSION=${RSP_VERSION}"
+echo "RSP_DOWNLOAD_URL=${RSP_DOWNLOAD_URL}"
+echo "IMAGE_NAME=${IMAGE_NAME}"
+echo "DOCKERFILE_PATH=${DOCKERFILE_PATH}"
 
 docker build --build-arg RSP_VERSION=${RSP_VERSION} --build-arg RSP_DOWNLOAD_URL=${RSP_DOWNLOAD_URL} -f $DOCKERFILE_PATH -t $IMAGE_NAME .
