@@ -37,6 +37,10 @@ update-versions:  ## Update the version files for all products
 	@sed -i '' "s/rstudio\/rstudio-connect:.*/rstudio\/rstudio-connect:${RSC_VERSION}/g" docker-compose.yml
 	@sed -i '' "s/RSP_VERSION:.*/RSP_VERSION: ${RSP_VERSION}/g" docker-compose.yml
 	@sed -i '' "s/rstudio\/rstudio-server-pro:.*/rstudio\/rstudio-server-pro:${RSP_VERSION}/g" docker-compose.yml
+	@sed -i '' "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" server-pro/Dockerfile
+	@sed -i '' "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" connect/Dockerfile
+	@sed -i '' "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" package-manager/Dockerfile
+	@sed -i '' "s|^RVersion.*=.*|RVersion = /opt/R/${R_VERSION}/|g" package-manager/rstudio-pm.gcfg
 
 rsp: server-pro
 server-pro:  ## Build RSP image
