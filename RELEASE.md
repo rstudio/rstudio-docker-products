@@ -62,6 +62,9 @@ DOCKERFILE_PATH=Dockerfile IMAGE_NAME=test ./hooks/build
 # post_build will fail interactively because you cannot push tags to the repository
 ```
 
+**NOTE:** There is a difference between GNU bash operations and those on Mac
+(i.e. `sed`). You have been warned!
+
 ## Testing PRs on Docker Hub
 
 All PRs go through the `Autotest` setup [on Docker
