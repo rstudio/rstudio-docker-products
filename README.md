@@ -74,7 +74,7 @@ docker run --privileged -it \
     -e RSP_LICENSE=$RSP_LICENSE \
     rstudio/rstudio-server-pro:latest
 
-# Run persistening data and external configuration
+# Run persisting data and external configuration
 docker run --privileged -it \
     -p 8787:8787 -p 5559:5559 \
     -v $PWD/data/rsp:/home \
@@ -146,7 +146,7 @@ docker run -it --privileged \
     -e RSC_LICENSE=$RSC_LICENSE \
     rstudio/rstudio-connect:latest
 
-# Run persistening data and external configuration
+# Run persisting data and external configuration
 docker run -it --privileged \
     -p 3939:3939 \
     -v $PWD/data/rsc:/data \
@@ -214,7 +214,7 @@ docker run -it --privileged \
     -e RSPM_LICENSE=$RSPM_LICENSE \
     rstudio/rstudio-package-manager:latest
 
-# Run persistening data and external configuration
+# Run persisting data and external configuration
 docker run -it --privileged \
     -p 4242:4242 \
     -v $PWD/data/rspm:/data \
