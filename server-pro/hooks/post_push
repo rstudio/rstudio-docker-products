@@ -20,6 +20,8 @@ fi
 export $(grep -v '^#' .env | xargs)
 tag=${RSP_VERSION}
 
+echo "Pushing tag: ${repoName}:${tag}"
+
 if [ -n "$tag" ]; then
   docker tag $IMAGE_NAME ${repoName}:${tag}
   docker push ${repoName}:${tag}
