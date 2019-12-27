@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # if daily build
 # replace version number and download url
 if [ "${DOCKER_TAG}" == "daily" ]; then
@@ -18,3 +20,6 @@ if [ "${DOCKER_TAG}" == "daily" ]; then
     exit 1
   fi
 fi
+
+echo '--> Showing .env file'
+cat .env
