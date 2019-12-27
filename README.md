@@ -245,9 +245,9 @@ rspm create repo --name=prod-cran --description='Access CRAN packages'
 rspm subscribe --repo=prod-cran --source=cran
 ```
 
-## Docker Compose
+## RStudio Team
 
-We provide a `docker-compose.yml` that could help to spin up default configurations for RStudio products.
+We provide a `docker-compose.yml` that could help to spin up default configurations for RStudio Team (all RStudio products together).
 
 If you are using this locally you need to setup some hostnames to point to `localhost` in order for some integrations to work fine in your browser.
 In your `/etc/hosts` add one line:
@@ -264,3 +264,15 @@ export RSPM_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 
 docker-compose up
 ```
+
+## Privileged Containers
+
+Notice that each example above uses the `--privileged` flag. Each RStudio
+Professional product uses the `--privileged` flag for user and code isolation
+and security. Each product differs in the exact reasons why, but we would love
+to hear from you if this is concerning in your infrastructure.
+
+If you have feedback on any of our professional products, please always feel
+free to reach out [on RStudio
+Community](https://community.rstudio.com/c/r-admin), to your Customer Success
+representative, or to sales@rstudio.com.
