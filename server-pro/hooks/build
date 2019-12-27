@@ -9,6 +9,7 @@ cat .env
 # https://stackoverflow.com/questions/19331497/set-environment-variables-from-file-of-key-value-pairs
 export $(grep -v '^#' .env | xargs)
 
+echo '--> Showing Environment Variables'
 echo "RSP_VERSION=${RSP_VERSION}"
 echo "RSP_DOWNLOAD_URL=${RSP_DOWNLOAD_URL}"
 echo "IMAGE_NAME=${IMAGE_NAME}"
