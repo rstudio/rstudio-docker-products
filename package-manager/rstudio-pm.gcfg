@@ -6,3 +6,6 @@ DataDir = /data
 
 [Server]
 RVersion = /opt/R/3.6.2/
+
+[Git]
+BuilderDir = "/tmp/git"
