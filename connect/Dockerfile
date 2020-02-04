@@ -10,7 +10,7 @@ ENV LC_ALL en_US.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update --fix-missing && apt-get install -y wget bzip2 ca-certificates \
-    libglib2.0-0 libxext6 libsm6 libxrender1 gdebi-core libssl1.0.0 libssl-dev
+    libglib2.0-0 libxext6 libsm6 libxrender1 gdebi-core libssl1.0.0 libssl-dev git
 
 # Install Python  -------------------------------------------------------------#
 ARG PYTHON_VERSION=3.6.5
