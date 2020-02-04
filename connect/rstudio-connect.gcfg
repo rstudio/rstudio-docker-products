@@ -32,3 +32,9 @@ Provider = password
 [Python]
 Enabled = true
 Executable = /opt/python/3.6.5/bin/python
+
+[RPackageRepository "CRAN"]
+URL = https://demo.rstudiopm.com/all/__linux__/bionic/latest
+
+[RPackageRepository "RSPM"]
+URL = https://demo.rstudiopm.com/all/__linux__/bionic/latest
