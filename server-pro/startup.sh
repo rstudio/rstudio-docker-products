@@ -13,6 +13,8 @@ trap deactivate EXIT
 # Activate License
 if ! [ -z "$RSP_LICENSE" ]; then
     rstudio-server license-manager activate $RSP_LICENSE
+elif ! [ -z "$LICENSE_SERVER" ]; then
+    rstudio-server license-manager license-server $LICENSE_SERVER
 elif test -f "/etc/rstudio-server/license.lic"; then
     rstudio-server license-manager activate-file /etc/rstudio-server/license.lic
 fi
@@ -33,9 +35,12 @@ else
 fi
 
 
+# Start Launcher
+if [ "$USE_LAUNCHER" == "true" ]; then
+  /usr/lib/rstudio-server/bin/rstudio-launcher > /dev/null 2>&1 &
+  wait-for-it.sh localhost:5559 -t 0
+fi
 # Start Server Pro
-/usr/lib/rstudio-server/bin/rstudio-launcher > /dev/null 2>&1 &
-wait-for-it.sh localhost:5559 -t 0
 /usr/lib/rstudio-server/bin/rserver
 wait-for-it.sh localhost:8787 -t 0
 tail -f /var/lib/rstudio-server/monitor/log/*.log /var/lib/rstudio-launcher/*.log /var/lib/rstudio-launcher/Local/*.log
