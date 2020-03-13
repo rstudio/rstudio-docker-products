@@ -50,9 +50,11 @@ RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/v
 EXPOSE 8787/tcp
 EXPOSE 5559/tcp
 ENV RSP_LICENSE ""
+ENV LICENSE_SERVER ""
 ENV RSP_TESTUSER rstudio
 ENV RSP_TESTUSER_PASSWD rstudio
 ENV RSP_TESTUSER_UID 10000
+ENV USE_LAUNCHER true
 
 COPY conf/rserver.conf /etc/rstudio/rserver.conf
 COPY conf/launcher.conf /etc/rstudio/launcher.conf
