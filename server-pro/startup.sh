@@ -34,8 +34,14 @@ fi
 
 
 # Start Server Pro
-/usr/lib/rstudio-server/bin/rstudio-launcher > /dev/null 2>&1 &
-wait-for-it.sh localhost:5559 -t 0
-/usr/lib/rstudio-server/bin/rserver
-wait-for-it.sh localhost:8787 -t 0
-tail -f /var/lib/rstudio-server/monitor/log/*.log /var/lib/rstudio-launcher/*.log /var/lib/rstudio-launcher/Local/*.log
+/usr/lib/rstudio-server/bin/rstudio-launcher &
+wait-for-it.sh localhost:5559 -t $LAUNCHER_TIMEOUT
+
+# touch log files to initialize them
+su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'
+
+tail -f /var/lib/rstudio-server/monitor/log/*.log /var/lib/rstudio-launcher/*.log /var/lib/rstudio-launcher/Local/*.log &
+
+# the main container process
+# cannot use "exec" or the "trap" will be lost
+/usr/lib/rstudio-server/bin/rserver --server-daemonize 0
