@@ -54,6 +54,7 @@ See the [RStudio Server Pro guide](https://docs.rstudio.com/ide/server-pro/authe
 | `RSP_TESTUSER_PASSWD` | Test user password | `rstudio` |
 | `RSP_TESTUSER_UID` | Test user UID | `10000` |
 | `RSP_LICENSE` | License key for RStudio Server Pro, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None |
+| `LAUNCHER_TIMEOUT` | The timeout, in seconds, to wait for launcher to startup before proceeding | 10 |
 
 #### Ports
 
