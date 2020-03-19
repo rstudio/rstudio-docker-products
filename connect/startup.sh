@@ -13,6 +13,8 @@ trap deactivate EXIT
 # Activate License
 if ! [ -z "$RSC_LICENSE" ]; then
     /opt/rstudio-connect/bin/license-manager activate $RSC_LICENSE
+elif ! [ -z "$LICENSE_SERVER" ]; then
+    /opt/rstudio-connect/bin/license-manager license-server $LICENSE_SERVER
 elif test -f "/etc/rstudio-connect/license.lic"; then
     /opt/rstudio-connect/bin/license-manager activate-file /etc/rstudio-connect/license.lic
 fi
