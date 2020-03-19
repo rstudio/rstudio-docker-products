@@ -54,6 +54,7 @@ ENV RSP_LICENSE ""
 ENV RSP_TESTUSER rstudio
 ENV RSP_TESTUSER_PASSWD rstudio
 ENV RSP_TESTUSER_UID 10000
+ENV LAUNCHER_TIMEOUT 10
 
 COPY conf/rserver.conf /etc/rstudio/rserver.conf
 COPY conf/launcher.conf /etc/rstudio/launcher.conf
