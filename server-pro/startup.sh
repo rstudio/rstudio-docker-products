@@ -21,6 +21,7 @@ fi
 
 # lest this be inherited by child processes
 unset RSP_LICENSE
+unset LICENSE_SERVER
 
 # Create one user
 if [ $(getent passwd $RSP_TESTUSER_UID) ] ; then

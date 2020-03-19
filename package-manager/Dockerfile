@@ -29,6 +29,7 @@ RUN chmod +x /usr/local/bin/startup.sh
 
 EXPOSE 4242/tcp
 ENV RSPM_LICENSE ""
+ENV LICENSE_SERVER ""
 COPY rstudio-pm.gcfg /etc/rstudio-pm/rstudio-pm.gcfg
 VOLUME ["/data", "/etc/rstudio-pm/license.lic"]
 

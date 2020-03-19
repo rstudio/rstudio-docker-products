@@ -21,6 +21,7 @@ fi
 
 # lest this be inherited by child processes
 unset RSC_LICENSE
+unset LICENSE_SERVER
 
 # Start RStudio Connect
 /opt/rstudio-connect/bin/connect --config /etc/rstudio-connect/rstudio-connect.gcfg
