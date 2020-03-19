@@ -37,7 +37,8 @@ In order to persist RSP user files between container restarts please mount `/hom
 Using the RStudio Server Pro Docker image requires to have a valid License. You can set the RSP license to use this in two ways:
 
 1. Setting the `RSP_LICENSE` environment variable to a valid license key
-2. Mounting a `/etc/rstudio-server/license.lic` single file that contains a valid license for RStudio Server Pro
+2. Setting the `LICENSE_SERVER` environment variable to a valid license server / port
+3. Mounting a `/etc/rstudio-server/license.lic` single file that contains a valid license for RStudio Server Pro
 
 #### Users
 
@@ -54,6 +55,7 @@ See the [RStudio Server Pro guide](https://docs.rstudio.com/ide/server-pro/authe
 | `RSP_TESTUSER_PASSWD` | Test user password | `rstudio` |
 | `RSP_TESTUSER_UID` | Test user UID | `10000` |
 | `RSP_LICENSE` | License key for RStudio Server Pro, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None |
+| `LICENSE_SERVER` | Floating license server, format should be: `my.url.com:port` | None |
 
 #### Ports
 
@@ -120,13 +122,15 @@ with a persistent volume in the host machine or your docker orchestration system
 Using the RStudio Connect docker image requires to have a valid License. You can set the RSC license in two ways:
 
 1. Setting the `RSC_LICENSE` environment variable to a valid license key
-2. Mounting a `/etc/rstudio-connect/license.lic` single file that contains a valid license for RStudio Connect
+2. Setting the `LICENSE_SERVER` environment variable to a valid license server / port
+3. Mounting a `/etc/rstudio-connect/license.lic` single file that contains a valid license for RStudio Connect
 
 #### Environment variables
 
 | Variable | Description | Default |
 |-----|---|---|
 | `RSC_LICENSE` | License key for RStudio Connect, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None |
+| `LICENSE_SERVER` | Floating license server, format should be: `my.url.com:port` | None |
 
 #### Ports
 
@@ -188,13 +192,15 @@ with a persistent volume in the host machine or your docker orchestration system
 Using the RStudio Package Manager docker image requires to have a valid License. You can set the RSC license in two ways:
 
 1. Setting the `RSPM_LICENSE` environment variable to a valid license key
-2. Mounting a `/etc/rstudio-pm/license.lic` single file that contains a valid license for RStudio Package Manager
+2. Setting the `LICENSE_SERVER` environment variable to a valid license server / port
+3. Mounting a `/etc/rstudio-pm/license.lic` single file that contains a valid license for RStudio Package Manager
 
 #### Environment variables
 
 | Variable | Description | Default |
 |-----|---|---|
 | `RSPM_LICENSE` | License key for RStudio Package Manager, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None |
+| `LICENSE_SERVER` | Floating license server, format should be: `my.url.com:port` | None |
 
 #### Ports
 
