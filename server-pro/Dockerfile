@@ -36,6 +36,7 @@ RUN /opt/python/${PYTHON_VERSION}/bin/pip install jupyter jupyterlab rsp_jupyter
 ARG RSP_VERSION=1.2.5033-1
 ARG RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/trusty/amd64
 RUN curl -O ${RSP_DOWNLOAD_URL}/rstudio-server-pro-${RSP_VERSION}-amd64.deb && \
+    apt-get update --fix-missing && \
     gdebi --non-interactive rstudio-server-pro-${RSP_VERSION}-amd64.deb && \
     rm rstudio-server-pro-${RSP_VERSION}-amd64.deb
 
@@ -53,12 +54,14 @@ ENV RSP_LICENSE ""
 ENV RSP_TESTUSER rstudio
 ENV RSP_TESTUSER_PASSWD rstudio
 ENV RSP_TESTUSER_UID 10000
+ENV LAUNCHER_TIMEOUT 10
 
 COPY conf/rserver.conf /etc/rstudio/rserver.conf
 COPY conf/launcher.conf /etc/rstudio/launcher.conf
 COPY conf/jupyter.conf /etc/rstudio/jupyter.conf
 COPY conf/repos.conf /etc/rstudio/repos.conf
 COPY conf/launcher-env /etc/rstudio/launcher-env
+COPY conf/logging.conf /etc/rstudio/logging.conf
 VOLUME ["/etc/rstudio-server/license.lic"]
 
 COPY startup.sh /usr/local/bin/startup.sh
