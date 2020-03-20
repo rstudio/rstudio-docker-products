@@ -84,7 +84,7 @@ docker run --privileged -it \
     rstudio/rstudio-server-pro:latest
 ```
 
-Open [http://localhost:3939](http://localhost:3939) to access RStudio Connect.
+Open [http://localhost:8787](http://localhost:8787) to access RStudio Server Pro.
 The default username and password are `rstudio`.
 
 ## RStudio Connect
