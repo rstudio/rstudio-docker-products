@@ -62,7 +62,6 @@ COPY conf/jupyter.conf /etc/rstudio/jupyter.conf
 COPY conf/repos.conf /etc/rstudio/repos.conf
 COPY conf/launcher-env /etc/rstudio/launcher-env
 COPY conf/logging.conf /etc/rstudio/logging.conf
-VOLUME ["/etc/rstudio-server/license.lic"]
 
 COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
