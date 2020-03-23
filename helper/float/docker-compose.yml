@@ -1,0 +1,63 @@
+version: '3.5'
+services:
+
+  float-rsp:
+    hostname: float-rsp
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        - "PRODUCT=rsp"
+        - "PORT=8989"
+    ports:
+      - "8989:8989"
+    environment:
+      - "LICENSE=$RSP_FLOAT_LICENSE"
+      - "PRODUCT=rsp"
+
+  float-rsc:
+    hostname: float-rsc
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        - "PRODUCT=connect"
+        - "PORT=8999"
+    ports:
+      - "8999:8999"
+    environment:
+      - "LICENSE=$RSC_FLOAT_LICENSE"
+      - "PRODUCT=connect"
+
+  float-rspm:
+    hostname: float-rspm
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        - "PRODUCT=rspm"
+        - "PORT=8969"
+    ports:
+      - "8969:8969"
+    environment:
+      - "LICENSE=$RSPM_FLOAT_LICENSE"
+      - "PRODUCT=rspm"
+
+  float-ssp:
+    hostname: float-ssp
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        - "PRODUCT=ssp"
+        - "PORT=8979"
+    ports:
+      - "8979:8979"
+    environment:
+      - "LICENSE=$SSP_FLOAT_LICENSE"
+      - "PRODUCT=ssp"
+
+networks:
+  default:
+    external:
+      name: docker-rstudio-products_default
