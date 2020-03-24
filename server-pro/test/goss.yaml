@@ -3,16 +3,32 @@ package:
     installed: true
 
 file:
+  /etc/rstudio-server/license.lic:
+    # currently does not exist
+    # be sure it is NOT a directory
+    exists: false
   /usr/lib/rstudio-server:
+    exists: true
+  /usr/lib/rstudio-server/bin/rserver:
     exists: true
   /usr/lib/rstudio-server/bin/rstudio-server:
     exists: true
   /usr/lib/rstudio-server/bin/rstudio-launcher:
     exists: true
+  /var/lib/rstudio-server/monitor/log:
+    exists: true
+    owner: rstudio-server
+    group: rstudio-server
 
-# check product version
 command:
-  "/usr/lib/rstudio-server/bin/rstudio-server version":
+  "su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'":
+    title: server-pro_monitor_log_file_creates
+    exit-status: 0
+  "touch /var/log/rstudio-server.log":
+    title: server-pro_server_log_creates
+    exit-status: 0
+  # check product version
+  "rstudio-server version":
     title: server-pro_version_matches
     exit-status: 0
     stdout: [
