@@ -42,7 +42,7 @@ EXPOSE 3939/tcp
 ENV RSC_LICENSE ""
 ENV LICENSE_SERVER ""
 COPY rstudio-connect.gcfg /etc/rstudio-connect/rstudio-connect.gcfg
-VOLUME ["/data", "/etc/rstudio-connect/license.lic"]
+VOLUME ["/data"]
 
 ENTRYPOINT ["tini", "--"]
 CMD ["/usr/local/bin/startup.sh"]

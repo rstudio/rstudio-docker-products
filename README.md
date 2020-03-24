@@ -56,6 +56,8 @@ See the [RStudio Server Pro guide](https://docs.rstudio.com/ide/server-pro/authe
 | `RSP_TESTUSER_UID` | Test user UID | `10000` |
 | `RSP_LICENSE` | License key for RStudio Server Pro, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None |
 | `LICENSE_SERVER` | Floating license server, format should be: `my.url.com:port` | None |
+| `LAUNCHER_TIMEOUT` | The timeout, in seconds, to wait for launcher to startup before proceeding | 10 |
+| `USE_LAUNCHER` | Whether or not to use launcher locally / start the launcher process | true |
 
 #### Ports
 
@@ -85,7 +87,7 @@ docker run --privileged -it \
     rstudio/rstudio-server-pro:latest
 ```
 
-Open [http://localhost:3939](http://localhost:3939) to access RStudio Connect.
+Open [http://localhost:8787](http://localhost:8787) to access RStudio Server Pro.
 The default username and password are `rstudio`.
 
 ## RStudio Connect
