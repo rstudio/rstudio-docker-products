@@ -38,6 +38,9 @@ ARG RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/trusty/amd64
 RUN curl -O ${RSP_DOWNLOAD_URL}/rstudio-server-pro-${RSP_VERSION}-amd64.deb && \
     apt-get update --fix-missing && \
     gdebi --non-interactive rstudio-server-pro-${RSP_VERSION}-amd64.deb && \
+    mkdir -p /usr/lib/rstudio-server/monitor/log && \
+    chown rstudio-server:rstudio-server /usr/lib/rstudio-server/monitor && \
+    chown rstudio-server:rstudio-server /usr/lib/rstudio-server/monitor/log && \
     rm rstudio-server-pro-${RSP_VERSION}-amd64.deb
 
 # Runtime settings ------------------------------------------------------------#
