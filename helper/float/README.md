@@ -16,7 +16,7 @@ The paradigm used here has:
      - Further, this file is only read on service up, so we can honestly just
        map it in as a mount (no reason to embed in the image)
 
-Check out the [compose file](float.yml) that builds / starts
+Check out the [compose file](docker-compose.yml) that builds / starts
 these images, using an environment variable to provide the LICENSE variable.
 
 ## Options
