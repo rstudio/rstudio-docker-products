@@ -3,6 +3,10 @@ package:
     installed: true
 
 file:
+  /etc/rstudio-pm/license.lic:
+    # currently does not exist
+    # be sure it is NOT a directory
+    exists: false
   /opt/rstudio-pm/:
     exists: true
   /opt/rstudio-pm/bin/rstudio-pm:

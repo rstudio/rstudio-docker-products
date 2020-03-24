@@ -3,6 +3,10 @@ package:
     installed: true
 
 file:
+  /etc/rstudio-connect/license.lic:
+    # currently does not exist
+    # be sure it is NOT a directory
+    exists: false
   /opt/rstudio-connect/:
     exists: true
   /opt/rstudio-connect/bin/connect:
