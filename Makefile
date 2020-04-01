@@ -83,4 +83,7 @@ run-package-manager:  ## Run RSPM container
 help:  ## Show this help menu
 	@grep -E '^[0-9a-zA-Z_-]+:.*?##.*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?##"; OFS="\t\t"}; {printf "\033[36m%-30s\033[0m %s\n", $$1, ($$2==""?"":$$2)}'
 
-.PHONY: server-pro rsp run-server-pro connect rsc run-connect package-manager rspm run-package-manager
+float:
+	docker-compose -f helper/float/docker-compose.yml up -d
+
+.PHONY: server-pro rsp run-server-pro connect rsc run-connect package-manager rspm run-package-manager float
