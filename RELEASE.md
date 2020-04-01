@@ -109,3 +109,26 @@ goss add --help
 # from ./server-pro
 GOSS_PATH=/path/to/local/goss GOSS_FILES_PATH=./test dgoss run -it -e RSP_VERSION=1.2.5001-3 rstudio/sol-eng-rstudio:1.2.5001-3
 ```
+
+### Floating Licenses
+
+> NOTE: Floating Licenses should not be used within docker containers in a
+> production context, since the docker container failing could require manual
+> intervention to fix (see the app below). These images should only be used in
+> development and testing
+
+If you want to test floating licenses locally. You will need to do the following:
+
+- Request a floating license key (these are different from normal license keys)
+- Ensure that the floating license key works within a hypervisor (by default, they do not)
+- Export the floating license key as the [appropriate environment variable](./helper/float/)
+
+```
+make float
+
+# or (for connect, for example)
+docker-compose -f helper/float/docker-compose.yml up -d float-rsc
+```
+
+- If you run into trouble with your license, this app may be helpful:
+  http://apps.rstudio.com/deactivate-license/
