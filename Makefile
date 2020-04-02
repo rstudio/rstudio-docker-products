@@ -1,8 +1,8 @@
 R_VERSION ?= 3.6.2
 
 RSP_VERSION ?= 1.2.5033-1
-RSC_VERSION ?= 1.8.0.3-19
-RSPM_VERSION ?= 1.1.0.1-17
+RSC_VERSION ?= 1.8.2-10
+RSPM_VERSION ?= 1.1.2-10
 
 RSP_LICENSE ?= ""
 RSC_LICENSE ?= ""
@@ -59,6 +59,11 @@ server-pro:  ## Build RSP image
 	docker build -t rstudio/rstudio-server-pro:$(RSP_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSP_VERSION=$(RSP_VERSION) server-pro
 
 
+test-rsp: test-server-pro
+test-server-pro:
+	cd ./server-pro && IMAGE_NAME=rstudio/rstudio-server-pro:$(RSP_VERSION) docker-compose -f docker-compose.test.yml run sut
+
+
 run-rsp: run-server-pro
 run-server-pro:  ## Run RSP container
 	docker run -it --privileged \
@@ -72,6 +77,11 @@ run-server-pro:  ## Run RSP container
 rsc: connect
 connect:  ## Build RSC image
 	docker build -t rstudio/rstudio-connect:$(RSC_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSC_VERSION=$(RSC_VERSION) connect
+
+
+test-rsc: test-connect
+test-connect:
+	cd ./connect && IMAGE_NAME=rstudio/rstudio-connect:$(RSC_VERSION) docker-compose -f docker-compose.test.yml run sut
 
 
 run-rsc: run-connect
@@ -89,6 +99,11 @@ package-manager:  ## Build RSPM image
 	docker build -t rstudio/rstudio-package-manager:$(RSPM_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSPM_VERSION=$(RSPM_VERSION) package-manager
 
 
+test-rspm: test-package-manager
+test-package-manager:
+	cd ./package-manager && IMAGE_NAME=rstudio/rstudio-package-manager:$(RSPM_VERSION) docker-compose -f docker-compose.test.yml run sut
+
+
 run-rspm: run-package-manager
 run-package-manager:  ## Run RSPM container
 	docker run -it --privileged \
@@ -99,6 +114,7 @@ run-package-manager:  ## Run RSPM container
 		rstudio/rstudio-package-manager:$(RSPM_VERSION) $(CMD)
 
 
+run-float:
 run-floating-lic-server:  ## Run the floating license server for RSP products
 	RSP_FLOAT_LICENSE=$(RSP_FLOAT_LICENSE) RSC_FLOAT_LICENSE=$(RSC_FLOAT_LICENSE) RSPM_FLOAT_LICENSE=$(RSPM_FLOAT_LICENSE) SSP_FLOAT_LICENSE=$(SSP_FLOAT_LICENSE) \
 	docker-compose -f helper/float/docker-compose.yml up
