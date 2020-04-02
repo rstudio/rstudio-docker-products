@@ -113,7 +113,7 @@ run-package-manager:  ## Run RSPM container
 		rstudio/rstudio-package-manager:$(RSPM_VERSION) $(CMD)
 
 
-run-float:
+run-float: run-floating-lic-server
 run-floating-lic-server:  ## Run the floating license server for RSP products
 	RSP_FLOAT_LICENSE=$(RSP_FLOAT_LICENSE) RSC_FLOAT_LICENSE=$(RSC_FLOAT_LICENSE) RSPM_FLOAT_LICENSE=$(RSPM_FLOAT_LICENSE) SSP_FLOAT_LICENSE=$(SSP_FLOAT_LICENSE) \
 	docker-compose -f helper/float/docker-compose.yml up
