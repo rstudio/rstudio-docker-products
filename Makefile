@@ -70,7 +70,6 @@ run-server-pro:  ## Run RSP container
 		-p 8787:8787 \
 		-v /run \
 		-e LICENSE=$(RSP_LICENSE) \
-		-e LICENSE_SERVER=$(RSP_LICENSE_SERVER) \
 		rstudio/rstudio-server-pro:$(RSP_VERSION) $(CMD)
 
 
