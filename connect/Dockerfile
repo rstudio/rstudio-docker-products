@@ -25,7 +25,7 @@ RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5
 ENV PATH /opt/python/${PYTHON_VERSION}/bin:$PATH
 
 # Install RStudio Connect -----------------------------------------------------#
-ARG RSC_VERSION=1.8.0.4-21
+ARG RSC_VERSION=1.8.2-10
 RUN curl -O https://s3.amazonaws.com/rstudio-connect/rstudio-connect_${RSC_VERSION}_amd64.deb && \
     gdebi -n rstudio-connect_${RSC_VERSION}_amd64.deb && \
     rm rstudio-connect_${RSC_VERSION}_amd64.deb
