@@ -11,8 +11,8 @@ deactivate() {
 trap deactivate EXIT
 
 # Activate License
-if ! [ -z "$RSP_LICENSE" ]; then
-    rstudio-server license-manager activate $RSP_LICENSE
+if ! [ -z "$LICENSE" ]; then
+    rstudio-server license-manager activate $LICENSE
 elif ! [ -z "$LICENSE_SERVER" ]; then
     rstudio-server license-manager license-server $LICENSE_SERVER
 elif test -f "/etc/rstudio-server/license.lic"; then
@@ -20,7 +20,7 @@ elif test -f "/etc/rstudio-server/license.lic"; then
 fi
 
 # lest this be inherited by child processes
-unset RSP_LICENSE
+unset LICENSE
 unset LICENSE_SERVER
 
 # Create one user

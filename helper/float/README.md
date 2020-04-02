@@ -3,7 +3,7 @@
 **WARNING**: DO NOT USE IN PRODUCTION
 
 > Floating license servers should be stable and reliable. They often require
-> manual intervention to restart, so you should avoid using them in a contianer
+> manual intervention to restart, so you should avoid using them in a container
 
 The paradigm used here has:
  - a single Dockerfile to build many images
@@ -21,13 +21,13 @@ these images, using an environment variable to provide the LICENSE variable.
 
 ## Options
 
-| PRODUCT | PORT | LICENSE               |
-|---------|------|-----------------------|
-| rsp     | 8989 | RSP\_FLOAT\_LICENSE     |
-| connect | 8999 | RSC\_FLOAT\_LICENSE |
-| rspm    | 8969 | RSPM\_FLOAT\_LICENSE    |
-| ssp     | 8979 | SSP\_FLOAT\_LICENSE     |
-| rstudio | 9019 | RSTUDIO\_FLOAT\_LICENSE |
+| PRODUCT | PORT | LICENSE                 |
+|---------|------|-------------------------|
+| rsp     | 8989 | `RSP_FLOAT_LICENSE`     |
+| connect | 8999 | `RSC_FLOAT_LICENSE`     |
+| rspm    | 8969 | `RSPM_FLOAT_LICENSE`    |
+| ssp     | 8979 | `SSP_FLOAT_LICENSE`     |
+| rstudio | 9019 | `RSTUDIO_FLOAT_LICENSE` |
 
 ## More Resources
 

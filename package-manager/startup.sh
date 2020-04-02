@@ -11,8 +11,8 @@ deactivate() {
 trap deactivate EXIT
 
 # Activate License
-if ! [ -z "$RSPM_LICENSE" ]; then
-    /opt/rstudio-pm/bin/license-manager activate $RSPM_LICENSE
+if ! [ -z "$LICENSE" ]; then
+    /opt/rstudio-pm/bin/license-manager activate $LICENSE
 elif ! [ -z "$LICENSE_SERVER" ]; then
     /opt/rstudio-pm/bin/license-manager license-server $LICENSE_SERVER
 elif test -f "/etc/rstudio-pm/license.lic"; then
@@ -20,7 +20,7 @@ elif test -f "/etc/rstudio-pm/license.lic"; then
 fi
 
 # lest this be inherited by child processes
-unset RSPM_LICENSE
+unset LICENSE
 unset LICENSE_SERVER
 
 # Start RStudio Package Manager
