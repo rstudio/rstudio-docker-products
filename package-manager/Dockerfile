@@ -12,7 +12,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update --fix-missing && apt-get install -y gdebi-core libssl1.0.0 libssl-dev
 
 # Install RStudio Package Manager ---------------------------------------------#
-ARG RSPM_VERSION=1.1.0.1-17
+ARG RSPM_VERSION=1.1.2-10
 RUN curl -O curl -O https://s3.amazonaws.com/rstudio-package-manager/ubuntu/amd64/rstudio-pm_${RSPM_VERSION}_amd64.deb && \
     gdebi -n rstudio-pm_${RSPM_VERSION}_amd64.deb && \
     rm rstudio-pm_${RSPM_VERSION}_amd64.deb
