@@ -36,8 +36,8 @@ In order to persist RSP user files between container restarts please mount `/hom
 
 Using the RStudio Server Pro Docker image requires to have a valid License. You can set the RSP license to use this in two ways:
 
-1. Setting the `LICENSE` environment variable to a valid license key
-2. Setting the `LICENSE_SERVER` environment variable to a valid license server / port
+1. Setting the `RSP_LICENSE` environment variable to a valid license key
+2. Setting the `RSP_LICENSE_SERVER` environment variable to a valid license server / port
 3. Mounting a `/etc/rstudio-server/license.lic` single file that contains a valid license for RStudio Server Pro
 
 #### Users
@@ -54,10 +54,10 @@ See the [RStudio Server Pro guide](https://docs.rstudio.com/ide/server-pro/authe
 | `RSP_TESTUSER` | Test user to be created in the container, turn off with an empty value | `rstudio` |
 | `RSP_TESTUSER_PASSWD` | Test user password | `rstudio` |
 | `RSP_TESTUSER_UID` | Test user UID | `10000` |
-| `LICENSE` | License key for RStudio Server Pro, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None |
-| `LICENSE_SERVER` | Floating license server, format should be: `my.url.com:port` | None |
-| `LAUNCHER_TIMEOUT` | The timeout, in seconds, to wait for launcher to startup before proceeding | 10 |
-| `USE_LAUNCHER` | Whether or not to use launcher locally / start the launcher process | true |
+| `RSP_LICENSE` | License key for RStudio Server Pro, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None |
+| `RSP_LICENSE_SERVER` | Floating license server, format should be: `my.url.com:port` | None |
+| `RSP_LAUNCHER` | Whether or not to use launcher locally / start the launcher process | true |
+| `RSP_LAUNCHER_TIMEOUT` | The timeout, in seconds, to wait for launcher to startup before proceeding | 10 |
 
 #### Ports
 
@@ -75,7 +75,7 @@ export RSP_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 # Run without persistent data and default configuration
 docker run --privileged -it \
     -p 8787:8787 -p 5559:5559 \
-    -e LICENSE=$RSP_LICENSE \
+    -e RSP_LICENSE=$RSP_LICENSE \
     rstudio/rstudio-server-pro:latest
 
 # Run with persisting data and external configuration
@@ -83,7 +83,7 @@ docker run --privileged -it \
     -p 8787:8787 -p 5559:5559 \
     -v $PWD/data/rsp:/home \
     -v $PWD/server-pro/conf/:/etc/rstudio \
-    -e LICENSE=$RSP_LICENSE \
+    -e RSP_LICENSE=$RSP_LICENSE \
     rstudio/rstudio-server-pro:latest
 ```
 
@@ -123,16 +123,16 @@ with a persistent volume in the host machine or your docker orchestration system
 
 Using the RStudio Connect docker image requires to have a valid License. You can set the RSC license in two ways:
 
-1. Setting the `LICENSE` environment variable to a valid license key
-2. Setting the `LICENSE_SERVER` environment variable to a valid license server / port
+1. Setting the `RSC_LICENSE` environment variable to a valid license key
+2. Setting the `RSC_LICENSE_SERVER` environment variable to a valid license server / port
 3. Mounting a `/etc/rstudio-connect/license.lic` single file that contains a valid license for RStudio Connect
 
 #### Environment variables
 
 | Variable | Description | Default |
 |-----|---|---|
-| `LICENSE` | License key for RStudio Connect, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None |
-| `LICENSE_SERVER` | Floating license server, format should be: `my.url.com:port` | None |
+| `RSC_LICENSE` | License key for RStudio Connect, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None |
+| `RSC_LICENSE_SERVER` | Floating license server, format should be: `my.url.com:port` | None |
 
 #### Ports
 
@@ -149,7 +149,7 @@ export RSC_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 # Run without persistent data and default configuration
 docker run -it --privileged \
     -p 3939:3939 \
-    -e LICENSE=$RSC_LICENSE \
+    -e RSC_LICENSE=$RSC_LICENSE \
     rstudio/rstudio-connect:latest
 
 # Run with persisting data and external configuration
@@ -157,7 +157,7 @@ docker run -it --privileged \
     -p 3939:3939 \
     -v $PWD/data/rsc:/data \
     -v $PWD/connect/rstudio-connect.gcfg:/etc/rstudio-connect/rstudio-connect.gcfg \
-    -e LICENSE=$RSC_LICENSE \
+    -e RSC_LICENSE=$RSC_LICENSE \
     rstudio/rstudio-connect:latest
 ```
 
@@ -193,8 +193,8 @@ with a persistent volume in the host machine or your docker orchestration system
 
 Using the RStudio Package Manager docker image requires to have a valid License. You can set the RSC license in two ways:
 
-1. Setting the `LICENSE` environment variable to a valid license key
-2. Setting the `LICENSE_SERVER` environment variable to a valid license server / port
+1. Setting the `RSPM_LICENSE` environment variable to a valid license key
+2. Setting the `RSPM_LICENSE_SERVER` environment variable to a valid license server / port
 3. Mounting a `/etc/rstudio-pm/license.lic` single file that contains a valid license for RStudio Package Manager
 
 #### Environment variables
@@ -219,7 +219,7 @@ export RSPM_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 # Run without persistent data and default configuration
 docker run -it --privileged \
     -p 4242:4242 \
-    -e LICENSE=$RSPM_LICENSE \
+    -e RSPM_LICENSE=$RSPM_LICENSE \
     rstudio/rstudio-package-manager:latest
 
 # Run with persisting data and external configuration
@@ -227,7 +227,7 @@ docker run -it --privileged \
     -p 4242:4242 \
     -v $PWD/data/rspm:/data \
     -v $PWD/package-manager/rstudio-pm.gcfg:/etc/rstudio-pm/rstudio-pm.gcfg \
-    -e LICENSE=$RSPM_LICENSE \
+    -e RSPM_LICENSE=$RSPM_LICENSE \
     rstudio/rstudio-package-manager:latest
 ```
 
@@ -326,7 +326,7 @@ docker run --privileged -it \
     -p 8787:8787 -p 5559:5559 \
     -v $PWD/data/rsp:/home \
     -v $PWD/server-pro/conf/:/etc/rstudio \
-    -e LICENSE_SERVER=$RSP_LICENSE_SERVER \
+    -e RSP_LICENSE_SERVER=$RSP_LICENSE_SERVER \
     --network rstudio-docker-products \
     rstudio/rstudio-server-pro:1.2.5033-1
 
@@ -335,7 +335,7 @@ docker run -it --privileged \
     -p 3939:3939 \
     -v $PWD/data/rsc:/data \
     -v $PWD/connect/rstudio-connect.gcfg:/etc/rstudio-connect/rstudio-connect.gcfg \
-    -e LICENSE_SERVER=$RSC_LICENSE_SERVER \
+    -e RSC_LICENSE_SERVER=$RSC_LICENSE_SERVER \
     --network rstudio-docker-products \
     rstudio/rstudio-connect:1.8.0.3-19
 
@@ -344,7 +344,7 @@ docker run -it --privileged \
     -p 4242:4242 \
     -v $PWD/data/rspm:/data \
     -v $PWD/package-manager/rstudio-pm-float.gcfg:/etc/rstudio-pm/rstudio-pm.gcfg \
-    -e LICENSE_SERVER=$RSPM_LICENSE_SERVER \
+    -e RSPM_LICENSE_SERVER=$RSPM_LICENSE_SERVER \
     --network rstudio-docker-products \
     rstudio/rstudio-package-manager:latest
 ```
