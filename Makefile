@@ -49,6 +49,9 @@ server-pro:  ## Build RSP image
 test-rsp: test-server-pro
 test-server-pro:
 	cd ./server-pro && IMAGE_NAME=rstudio/rstudio-server-pro:$(RSP_VERSION) docker-compose -f docker-compose.test.yml run sut
+test-rsp-i: test-server-pro-i
+test-server-pro-i:
+	cd ./server-pro && IMAGE_NAME=rstudio/rstudio-server-pro:$(RSP_VERSION) docker-compose -f docker-compose.test.yml run sut bash
 
 run-rsp: run-server-pro
 run-server-pro:  ## Run RSP container
@@ -65,6 +68,9 @@ connect:  ## Build RSC image
 test-rsc: test-connect
 test-connect:
 	cd ./connect && IMAGE_NAME=rstudio/rstudio-connect:$(RSC_VERSION) docker-compose -f docker-compose.test.yml run sut
+test-rsc-i: test-connect-i
+test-connect-i:
+	cd ./connect && IMAGE_NAME=rstudio/rstudio-connect:$(RSC_VERSION) docker-compose -f docker-compose.test.yml run sut bash
 
 run-rsc: run-connect
 run-connect:  ## Run RSC container
@@ -82,6 +88,9 @@ package-manager:  ## Build RSPM image
 test-rspm: test-package-manager
 test-package-manager:
 	cd ./package-manager && IMAGE_NAME=rstudio/rstudio-package-manager:$(RSPM_VERSION) docker-compose -f docker-compose.test.yml run sut
+test-rspm-i: test-package-manager-i
+test-package-manager-i:
+	cd ./package-manager && IMAGE_NAME=rstudio/rstudio-package-manager:$(RSPM_VERSION) docker-compose -f docker-compose.test.yml run sut bash
 
 run-rspm: run-package-manager
 run-package-manager:  ## Run RSPM container
