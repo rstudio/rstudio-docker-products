@@ -26,6 +26,6 @@ command:
     # the timeout should stop connect, not a failure
     exit-status: 124
     # maybe optimistic that Connect finishes starting...
-    stderr: [
-      "Starting HTTP listener on :3939"
-    ]
+    #stderr: [
+    #  "Starting HTTP listener on :3939"
+    #]
