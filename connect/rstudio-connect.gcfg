@@ -1,8 +1,5 @@
 ; RStudio Connect configuration file
 
-[Licensing]
-LicenseType = remote
-
 [Server]
 ; SenderEmail is an email address used by RStudio Connect to send outbound
 ; email. The system will not be able to send administrative email until this

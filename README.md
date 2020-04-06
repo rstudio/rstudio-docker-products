@@ -201,8 +201,8 @@ Using the RStudio Package Manager docker image requires to have a valid License.
 
 | Variable | Description | Default |
 |-----|---|---|
-| `LICENSE` | License key for RStudio Package Manager, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None |
-| `LICENSE_SERVER` | Floating license server, format should be: `my.url.com:port` | None |
+| `RSPM_LICENSE` | License key for RStudio Package Manager, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None |
+| `RSPM_LICENSE_SERVER` | Floating license server, format should be: `my.url.com:port` | None |
 
 #### Ports
 

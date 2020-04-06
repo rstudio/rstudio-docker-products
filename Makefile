@@ -69,7 +69,7 @@ run-server-pro:  ## Run RSP container
 	docker run -it --privileged \
 		-p 8787:8787 \
 		-v /run \
-		-e LICENSE=$(RSP_LICENSE) \
+		-e RSP_LICENSE=$(RSP_LICENSE) \
 		rstudio/rstudio-server-pro:$(RSP_VERSION) $(CMD)
 
 
@@ -89,7 +89,7 @@ run-connect:  ## Run RSC container
 		-p 3939:3939 \
 		-v $(CURDIR)/data/rsc:/var/lib/rstudio-connect \
 		-v $(CURDIR)/connect/rstudio-connect.gcfg:/etc/rstudio-connect/rstudio-connect.gcfg \
-		-e LICENSE=$(RSC_LICENSE) \
+		-e RSC_LICENSE=$(RSC_LICENSE) \
 		rstudio/rstudio-connect:$(RSC_VERSION) $(CMD)
 
 
@@ -109,7 +109,7 @@ run-package-manager:  ## Run RSPM container
 		-p 4242:4242 \
 		-v $(CURDIR)/data/rspm:/data \
 		-v $(CURDIR)/package-manager/rstudio-pm.gcfg:/etc/rstudio-pm/rstudio-pm.gcfg \
-		-e LICENSE=$(RSPM_LICENSE)  \
+		-e RSPM_LICENSE=$(RSPM_LICENSE)  \
 		rstudio/rstudio-package-manager:$(RSPM_VERSION) $(CMD)
 
 
