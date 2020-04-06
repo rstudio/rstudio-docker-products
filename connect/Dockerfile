@@ -21,7 +21,8 @@ RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5
     ln -s /opt/python/${PYTHON_VERSION}/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
     echo "PATH=/opt/python/${PYTHON_VERSION}/bin:$PATH" > /etc/profile.d/python.sh && \
     /opt/python/${PYTHON_VERSION}/bin/conda clean -a && \
-    /opt/python/${PYTHON_VERSION}/bin/pip install virtualenv
+    /opt/python/${PYTHON_VERSION}/bin/pip install 'virtualenv<20' && \
+    /opt/python/${PYTHON_VERSION}/bin/pip install --upgrade setuptools
 ENV PATH /opt/python/${PYTHON_VERSION}/bin:$PATH
 
 # Install RStudio Connect -----------------------------------------------------#
