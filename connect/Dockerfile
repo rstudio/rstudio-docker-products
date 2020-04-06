@@ -41,6 +41,7 @@ RUN chmod +x /usr/local/bin/startup.sh
 
 EXPOSE 3939/tcp
 ENV RSC_LICENSE ""
+ENV RSC_LICENSE_SERVER ""
 COPY rstudio-connect.gcfg /etc/rstudio-connect/rstudio-connect.gcfg
 VOLUME ["/data"]
 

@@ -13,12 +13,15 @@ trap deactivate EXIT
 # Activate License
 if ! [ -z "$RSP_LICENSE" ]; then
     rstudio-server license-manager activate $RSP_LICENSE
+elif ! [ -z "$RSP_LICENSE_SERVER" ]; then
+    rstudio-server license-manager license-server $RSP_LICENSE_SERVER
 elif test -f "/etc/rstudio-server/license.lic"; then
     rstudio-server license-manager activate-file /etc/rstudio-server/license.lic
 fi
 
 # lest this be inherited by child processes
 unset RSP_LICENSE
+unset RSP_LICENSE_SERVER
 
 # Create one user
 if [ $(getent passwd $RSP_TESTUSER_UID) ] ; then
@@ -33,9 +36,11 @@ else
 fi
 
 
-# Start Server Pro
-/usr/lib/rstudio-server/bin/rstudio-launcher > /var/log/rstudio-launcher.log 2>&1 &
-wait-for-it.sh localhost:5559 -t $LAUNCHER_TIMEOUT
+# Start Launcher
+if [ "$RSP_LAUNCHER" == "true" ]; then
+  /usr/lib/rstudio-server/bin/rstudio-launcher > /var/log/rstudio-launcher.log 2>&1 &
+  wait-for-it.sh localhost:5559 -t $RSP_LAUNCHER_TIMEOUT
+fi
 
 # touch log files to initialize them
 su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'

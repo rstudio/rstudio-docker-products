@@ -8,6 +8,15 @@ RSP_LICENSE ?= ""
 RSC_LICENSE ?= ""
 RSPM_LICENSE ?= ""
 
+RSP_FLOAT_LICENSE ?= ""
+RSC_FLOAT_LICENSE ?= ""
+RSPM_FLOAT_LICENSE ?= ""
+SSP_FLOAT_LICENSE ?= ""
+
+RSP_LICENSE_SERVER ?= ""
+RSC_LICENSE_SERVER ?= ""
+RSPM_LICENSE_SERVER ?= ""
+
 # Optional Command for docker run
 CMD ?=
 
@@ -20,8 +29,10 @@ MAKEFLAGS += --no-builtin-rules
 
 all: help
 
+
 images: server-pro connect package-manager  ## Build all images
 	docker-compose build
+
 
 update-versions:  ## Update the version files for all products
 	@sed -i '' "s/^RSP_VERSION=.*/RSP_VERSION=${RSP_VERSION}/g" server-pro/.env
@@ -42,9 +53,11 @@ update-versions:  ## Update the version files for all products
 	@sed -i '' "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" package-manager/Dockerfile
 	@sed -i '' "s|^RVersion.*=.*|RVersion = /opt/R/${R_VERSION}/|g" package-manager/rstudio-pm.gcfg
 
+
 rsp: server-pro
 server-pro:  ## Build RSP image
 	docker build -t rstudio/rstudio-server-pro:$(RSP_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSP_VERSION=$(RSP_VERSION) server-pro
+
 
 test-rsp: test-server-pro
 test-server-pro:
@@ -52,6 +65,7 @@ test-server-pro:
 test-rsp-i: test-server-pro-i
 test-server-pro-i:
 	cd ./server-pro && IMAGE_NAME=rstudio/rstudio-server-pro:$(RSP_VERSION) docker-compose -f docker-compose.test.yml run sut bash
+
 
 run-rsp: run-server-pro
 run-server-pro:  ## Run RSP container
@@ -61,9 +75,11 @@ run-server-pro:  ## Run RSP container
 		-e RSP_LICENSE=$(RSP_LICENSE) \
 		rstudio/rstudio-server-pro:$(RSP_VERSION) $(CMD)
 
+
 rsc: connect
 connect:  ## Build RSC image
 	docker build -t rstudio/rstudio-connect:$(RSC_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSC_VERSION=$(RSC_VERSION) connect
+
 
 test-rsc: test-connect
 test-connect:
@@ -71,6 +87,7 @@ test-connect:
 test-rsc-i: test-connect-i
 test-connect-i:
 	cd ./connect && IMAGE_NAME=rstudio/rstudio-connect:$(RSC_VERSION) docker-compose -f docker-compose.test.yml run sut bash
+
 
 run-rsc: run-connect
 run-connect:  ## Run RSC container
@@ -81,9 +98,11 @@ run-connect:  ## Run RSC container
 		-e RSC_LICENSE=$(RSC_LICENSE) \
 		rstudio/rstudio-connect:$(RSC_VERSION) $(CMD)
 
+
 rspm: package-manager
 package-manager:  ## Build RSPM image
 	docker build -t rstudio/rstudio-package-manager:$(RSPM_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSPM_VERSION=$(RSPM_VERSION) package-manager
+
 
 test-rspm: test-package-manager
 test-package-manager:
@@ -91,6 +110,7 @@ test-package-manager:
 test-rspm-i: test-package-manager-i
 test-package-manager-i:
 	cd ./package-manager && IMAGE_NAME=rstudio/rstudio-package-manager:$(RSPM_VERSION) docker-compose -f docker-compose.test.yml run sut bash
+
 
 run-rspm: run-package-manager
 run-package-manager:  ## Run RSPM container
@@ -101,7 +121,15 @@ run-package-manager:  ## Run RSPM container
 		-e RSPM_LICENSE=$(RSPM_LICENSE)  \
 		rstudio/rstudio-package-manager:$(RSPM_VERSION) $(CMD)
 
+
+run-float: run-floating-lic-server
+run-floating-lic-server:  ## Run the floating license server for RSP products
+	RSP_FLOAT_LICENSE=$(RSP_FLOAT_LICENSE) RSC_FLOAT_LICENSE=$(RSC_FLOAT_LICENSE) RSPM_FLOAT_LICENSE=$(RSPM_FLOAT_LICENSE) SSP_FLOAT_LICENSE=$(SSP_FLOAT_LICENSE) \
+	docker-compose -f helper/float/docker-compose.yml up
+
+
 help:  ## Show this help menu
 	@grep -E '^[0-9a-zA-Z_-]+:.*?##.*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?##"; OFS="\t\t"}; {printf "\033[36m%-30s\033[0m %s\n", $$1, ($$2==""?"":$$2)}'
 
-.PHONY: server-pro rsp run-server-pro connect rsc run-connect package-manager rspm run-package-manager
+
+.PHONY: server-pro rsp run-server-pro connect rsc run-connect package-manager rspm run-package-manager run-floatating-lic-server

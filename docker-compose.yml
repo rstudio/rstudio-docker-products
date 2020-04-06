@@ -10,6 +10,7 @@ services:
     privileged: true
     environment:
       RSP_LICENSE: ${RSP_LICENSE}
+      LICENSE_SERVER: ${RSP_LICENSE_SERVER}
     ports:
       - 8787:8787
       - 5559:5559
@@ -26,6 +27,7 @@ services:
     privileged: true
     environment:
       RSC_LICENSE: ${RSC_LICENSE}
+      LICENSE_SERVER: ${RSC_LICENSE_SERVER}
     ports:
       - 3939:3939
     volumes:
@@ -41,6 +43,7 @@ services:
     privileged: true
     environment:
       RSPM_LICENSE: ${RSPM_LICENSE}
+      LICENSE_SERVER: ${RSPM_LICENSE_SERVER}
     ports:
       - 4242:4242
     volumes:
