@@ -5,8 +5,8 @@ services:
     build:
       context: ./server-pro
       args:
-        RSP_VERSION: 1.2.5033-1
-    image: rstudio/rstudio-server-pro:1.2.5033-1
+        RSP_VERSION: 1.2.5042-1
+    image: rstudio/rstudio-server-pro:1.2.5042-1
     privileged: true
     environment:
       RSP_LICENSE: ${RSP_LICENSE}
