@@ -26,6 +26,7 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
         libxrender1 \
         libssl1.0.0 \
         libssl-dev \
+        openssh-client \
         wget \
         && gdebi --non-interactive rstudio-server-pro-${RSP_VERSION}-amd64.deb \
         && rm rstudio-server-pro-${RSP_VERSION}-amd64.deb \
