@@ -9,11 +9,7 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Download RStudio Connect -----------------------------------------------------#
-ARG RSC_VERSION=1.8.2-10
-RUN curl -O https://s3.amazonaws.com/rstudio-connect/rstudio-connect_${RSC_VERSION}_amd64.deb
-
-# hadolint ignore=DL3008
+# hadolint ignore=DL3008,DL3009
 RUN apt-get update --fix-missing \
     && apt-get install -y --no-install-recommends \
         wget \
@@ -25,10 +21,7 @@ RUN apt-get update --fix-missing \
         libxrender1 \
         gdebi-core \
         libssl1.0.0 \
-        libssl-dev git \
-        && gdebi -n rstudio-connect_${RSC_VERSION}_amd64.deb \
-        && rm rstudio-connect_${RSC_VERSION}_amd64.deb \
-        && rm -rf /var/lib/apt/lists/*
+        libssl-dev git
 
 # Install Python  -------------------------------------------------------------#
 ARG PYTHON_VERSION=3.6.5
@@ -50,6 +43,14 @@ RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/down
 
 COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
+
+# Download RStudio Connect -----------------------------------------------------#
+ARG RSC_VERSION=1.8.2-10
+RUN curl -O https://s3.amazonaws.com/rstudio-connect/rstudio-connect_${RSC_VERSION}_amd64.deb \
+    && gdebi -n rstudio-connect_${RSC_VERSION}_amd64.deb \
+    && rm rstudio-connect_${RSC_VERSION}_amd64.deb \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 3939/tcp
 ENV RSC_LICENSE ""

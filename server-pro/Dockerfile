@@ -9,12 +9,7 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install RStudio Server Pro --------------------------------------------------#
-ARG RSP_VERSION=1.2.5042-1
-ARG RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/trusty/amd64
-RUN curl -O ${RSP_DOWNLOAD_URL}/rstudio-server-pro-${RSP_VERSION}-amd64.deb
-
-# hadolint ignore=DL3008
+# hadolint ignore=DL3008,DL3009
 RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
         bzip2 \
         ca-certificates \
@@ -27,11 +22,7 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
         libssl1.0.0 \
         libssl-dev \
         openssh-client \
-        wget \
-        && gdebi --non-interactive rstudio-server-pro-${RSP_VERSION}-amd64.deb \
-        && rm rstudio-server-pro-${RSP_VERSION}-amd64.deb \
-        && apt-get clean \
-        && rm -rf /var/lib/apt/lists/*
+        wget
 
 # Install Python  -------------------------------------------------------------#
 ARG PYTHON_VERSION=3.6.5
@@ -68,10 +59,6 @@ RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/down
 RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh && \
     chmod +x /usr/local/bin/wait-for-it.sh
 
-# Create log dir
-RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
-    chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor
-
 # Set default env values
 ENV RSP_LICENSE ""
 ENV RSP_LICENSE_SERVER ""
@@ -85,6 +72,19 @@ ENV RSP_LAUNCHER_TIMEOUT 10
 COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
 COPY conf/* /etc/rstudio/
+
+# Install RStudio Server Pro --------------------------------------------------#
+ARG RSP_VERSION=1.2.5042-1
+ARG RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/trusty/amd64
+RUN curl -O ${RSP_DOWNLOAD_URL}/rstudio-server-pro-${RSP_VERSION}-amd64.deb \
+    && gdebi --non-interactive rstudio-server-pro-${RSP_VERSION}-amd64.deb \
+    && rm rstudio-server-pro-${RSP_VERSION}-amd64.deb \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create log dir
+RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
+    chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor
 
 EXPOSE 8787/tcp
 EXPOSE 5559/tcp
