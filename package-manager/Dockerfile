@@ -9,19 +9,20 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Download RStudio Package Manager ---------------------------------------------#
+ARG RSPM_VERSION=1.1.4-3
+RUN curl -O curl -O https://s3.amazonaws.com/rstudio-package-manager/ubuntu/amd64/rstudio-pm_${RSPM_VERSION}_amd64.deb
+
 # hadolint ignore=DL3008
 RUN apt-get update --fix-missing \
     && apt-get install -y --no-install-recommends \
         gdebi-core \
         libssl1.0.0 \
         libssl-dev \
+        && gdebi -n rstudio-pm_${RSPM_VERSION}_amd64.deb \
+        && rm rstudio-pm_${RSPM_VERSION}_amd64.deb \
         && rm -rf /var/lib/apt/lists/*
 
-# Install RStudio Package Manager ---------------------------------------------#
-ARG RSPM_VERSION=1.1.4-3
-RUN curl -O curl -O https://s3.amazonaws.com/rstudio-package-manager/ubuntu/amd64/rstudio-pm_${RSPM_VERSION}_amd64.deb && \
-    gdebi -n rstudio-pm_${RSPM_VERSION}_amd64.deb && \
-    rm rstudio-pm_${RSPM_VERSION}_amd64.deb
 RUN mkdir -p /var/run/rstudio-pm
 ENV PATH /opt/rstudio-pm/bin:$PATH
 

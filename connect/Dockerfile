@@ -9,6 +9,10 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
+# Download RStudio Connect -----------------------------------------------------#
+ARG RSC_VERSION=1.8.2-10
+RUN curl -O https://s3.amazonaws.com/rstudio-connect/rstudio-connect_${RSC_VERSION}_amd64.deb
+
 # hadolint ignore=DL3008
 RUN apt-get update --fix-missing \
     && apt-get install -y --no-install-recommends \
@@ -22,6 +26,8 @@ RUN apt-get update --fix-missing \
         gdebi-core \
         libssl1.0.0 \
         libssl-dev git \
+        && gdebi -n rstudio-connect_${RSC_VERSION}_amd64.deb \
+        && rm rstudio-connect_${RSC_VERSION}_amd64.deb \
         && rm -rf /var/lib/apt/lists/*
 
 # Install Python  -------------------------------------------------------------#
@@ -36,12 +42,6 @@ RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5
     /opt/python/${PYTHON_VERSION}/bin/pip install 'virtualenv<20' && \
     /opt/python/${PYTHON_VERSION}/bin/pip install --upgrade setuptools
 ENV PATH /opt/python/${PYTHON_VERSION}/bin:$PATH
-
-# Install RStudio Connect -----------------------------------------------------#
-ARG RSC_VERSION=1.8.2-10
-RUN curl -O https://s3.amazonaws.com/rstudio-connect/rstudio-connect_${RSC_VERSION}_amd64.deb && \
-    gdebi -n rstudio-connect_${RSC_VERSION}_amd64.deb && \
-    rm rstudio-connect_${RSC_VERSION}_amd64.deb
 
 # Runtime settings ------------------------------------------------------------#
 ARG TINI_VERSION=0.18.0
