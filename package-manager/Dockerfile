@@ -9,7 +9,13 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update --fix-missing && apt-get install -y gdebi-core libssl1.0.0 libssl-dev
+# hadolint ignore=DL3008
+RUN apt-get update --fix-missing \
+    && apt-get install -y --no-install-recommends \
+        gdebi-core \
+        libssl1.0.0 \
+        libssl-dev \
+        && rm -rf /var/lib/apt/lists/*
 
 # Install RStudio Package Manager ---------------------------------------------#
 ARG RSPM_VERSION=1.1.4-3
@@ -29,6 +35,7 @@ RUN chmod +x /usr/local/bin/startup.sh
 
 EXPOSE 4242/tcp
 EXPOSE 2112/tcp
+
 ENV RSPM_LICENSE ""
 ENV RSPM_LICENSE_SERVER ""
 COPY rstudio-pm.gcfg /etc/rstudio-pm/rstudio-pm.gcfg

@@ -9,8 +9,20 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update --fix-missing && apt-get install -y wget bzip2 ca-certificates \
-    libglib2.0-0 libxext6 libsm6 libxrender1 gdebi-core libssl1.0.0 libssl-dev git
+# hadolint ignore=DL3008
+RUN apt-get update --fix-missing \
+    && apt-get install -y --no-install-recommends \
+        wget \
+        bzip2 \
+        ca-certificates \
+        libglib2.0-0 \
+        libxext6 \
+        libsm6 \
+        libxrender1 \
+        gdebi-core \
+        libssl1.0.0 \
+        libssl-dev git \
+        && rm -rf /var/lib/apt/lists/*
 
 # Install Python  -------------------------------------------------------------#
 ARG PYTHON_VERSION=3.6.5
