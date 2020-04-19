@@ -25,8 +25,17 @@ activate() {
 }
 
 deactivate() {
+    echo "Stopping server"
+    PID=$(cat /var/run/${PRODUCT}-license-server.pid)
+    # TODO: kill -9 ?
+    kill $PID
+    wait $PID
     echo "Deactivating license ..."
-    /usr/lib/${PRODUCT}-license-server/bin/license-server -deact >/dev/null 2>&1
+    /usr/lib/${PRODUCT}-license-server/bin/license-server \
+	-pdets=/usr/lib/${PRODUCT}-license-server/bin/license-server.dat \
+	-config=/etc/${PRODUCT}-license-server.conf \
+	-deact
+    echo "Done"
 }
 
 activate
@@ -39,7 +48,11 @@ echo "Starting server ..."
 	-pdets=/usr/lib/${PRODUCT}-license-server/bin/license-server.dat \
 	-config=/etc/${PRODUCT}-license-server.conf \
 	-pidfile=/var/run/${PRODUCT}-license-server.pid \
-	-x
+	-x &
+
+SERVER_PID=$!
+echo "Waiting for PID: $SERVER_PID"
+wait $SERVER_PID
 
 #"$@"
 #STATUS="$?"
