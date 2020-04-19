@@ -42,6 +42,7 @@ activate
 trap deactivate EXIT
 
 echo "Starting server ..."
+# background so that stdout / stderr continue going to the parent shell
 /usr/lib/${PRODUCT}-license-server/bin/license-server \
 	-pdets=/usr/lib/${PRODUCT}-license-server/bin/license-server.dat \
 	-config=/etc/${PRODUCT}-license-server.conf \
