@@ -4,11 +4,9 @@ if [ -z "$LICENSE" ]; then
     "$@"
     exit 1
 fi
-if [ -z "$PRODUCT" ]; then
-    echo >&2 'error: The PRODUCT variable is not set. Should be one of rsp, connect, rspm, ssp, rstudio'
-    "$@"
-    exit 1
-fi
+
+# NOTE: the PRODUCT is replaced / substituted at build time by sed
+# (i.e. verbatim text replacement)
 
 activate() {
     echo "Activating LICENSE ..."
