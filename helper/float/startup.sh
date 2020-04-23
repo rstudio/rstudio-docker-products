@@ -25,8 +25,7 @@ activate() {
 deactivate() {
     echo "Stopping server"
     PID=$(cat /var/run/${PRODUCT}-license-server.pid)
-    # TODO: kill -9 ?
-    kill $PID
+    kill -9 $PID
     wait $PID
     echo "Deactivating license ..."
     /usr/lib/${PRODUCT}-license-server/bin/license-server \
