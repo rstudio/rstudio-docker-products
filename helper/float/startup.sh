@@ -4,11 +4,9 @@ if [ -z "$LICENSE" ]; then
     "$@"
     exit 1
 fi
-if [ -z "$PRODUCT" ]; then
-    echo >&2 'error: The PRODUCT variable is not set. Should be one of rsp, connect, rspm, ssp, rstudio'
-    "$@"
-    exit 1
-fi
+
+# NOTE: the PRODUCT is replaced / substituted at build time by sed
+# (i.e. verbatim text replacement)
 
 activate() {
     echo "Activating LICENSE ..."
@@ -25,8 +23,16 @@ activate() {
 }
 
 deactivate() {
+    echo "Stopping server"
+    PID=$(cat /var/run/${PRODUCT}-license-server.pid)
+    kill -9 $PID
+    wait $PID
     echo "Deactivating license ..."
-    /usr/lib/${PRODUCT}-license-server/bin/license-server -deact >/dev/null 2>&1
+    /usr/lib/${PRODUCT}-license-server/bin/license-server \
+	-pdets=/usr/lib/${PRODUCT}-license-server/bin/license-server.dat \
+	-config=/etc/${PRODUCT}-license-server.conf \
+	-deact
+    echo "Done"
 }
 
 activate
@@ -35,11 +41,16 @@ activate
 trap deactivate EXIT
 
 echo "Starting server ..."
+# background so that stdout / stderr continue going to the parent shell
 /usr/lib/${PRODUCT}-license-server/bin/license-server \
 	-pdets=/usr/lib/${PRODUCT}-license-server/bin/license-server.dat \
 	-config=/etc/${PRODUCT}-license-server.conf \
 	-pidfile=/var/run/${PRODUCT}-license-server.pid \
-	-x
+	-x &
+
+SERVER_PID=$!
+echo "Waiting for PID: $SERVER_PID"
+wait $SERVER_PID
 
 #"$@"
 #STATUS="$?"

@@ -45,7 +45,8 @@ RUN echo '\n\
     <!-- <proxy url="http://user:pass@127.0.0.1:8080/"/> -->\n\
 </config>\n\
 \n'\
-| sed -s "s/{{PORT}}/${PORT}/" > /etc/${PRODUCT}-license-server.conf 
+| sed -s "s/{{PORT}}/${PORT}/" > /etc/${PRODUCT}-license-server.conf && \
+sed -i "s/\${PRODUCT}/${PRODUCT}/" /usr/local/bin/startup.sh
 
 ENTRYPOINT [ "tini", "--" ]
 CMD [ "/usr/local/bin/startup.sh" ]
