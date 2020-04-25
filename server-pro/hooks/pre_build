@@ -4,6 +4,8 @@ set -e
 
 echo "Building DOCKER_TAG=${DOCKER_TAG}"
 
+apt-get update -qq && apt-get install -y jq
+
 replace_version() {
   sed -i.bak "s/^RSP_VERSION=.*/RSP_VERSION=$1/g" ./.env
 }
@@ -34,9 +36,9 @@ elif [ "${DOCKER_TAG}" == "preview" ]; then
   # get raw downloads.json
   rawjson=`curl -s https://rstudio.com/wp-content/downloads.json`
 
-  # use a docker container jq to parse
-  full_url=`echo -n $rawjson | docker run -i jetbrainsinfra/jq:latest jq -r '.rstudio.pro.preview.server.installer.bionic.url'`
-  version=`echo -n $rawjson | docker run -i jetbrainsinfra/jq:latest jq -r '.rstudio.pro.preview.version'`
+  # use jq to parse
+  full_url=`echo -n $rawjson | jq -r '.rstudio.pro.preview.server.installer.bionic.url'`
+  version=`echo -n $rawjson | jq -r '.rstudio.pro.preview.version'`
 
   echo "full_url: $full_url"
 
