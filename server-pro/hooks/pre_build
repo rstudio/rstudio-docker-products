@@ -4,6 +4,12 @@ set -e
 
 echo "Building DOCKER_TAG=${DOCKER_TAG}"
 
+echo jq_path=`which jq`
+echo PATH=$PATH
+echo id=`id`
+echo env=`env`
+cat /etc/os-release
+
 # if daily build
 # replace version number and download url
 if [ "${DOCKER_TAG}" == "daily" ]; then
