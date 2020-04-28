@@ -92,7 +92,7 @@ The default username and password are `rstudio`.
 
 ## RStudio Connect
 
-This Docker container is built following the [RStudio Connect admin guide](https://docs.rstudio.com/connect/admin/index.html), please see [Server Guide/Docker](https://docs.rstudio.com/connect/admin/server-management.html#server-docker) for more details on the requirements and how to extend this image.
+This Docker container is built following the [RStudio Connect admin guide](https://docs.rstudio.com/connect/admin/index.html), please see [Server Guide/Docker](https://docs.rstudio.com/connect/admin/server-management/#docker) for more details on the requirements and how to extend this image.
 
 This container includes:
 
@@ -240,7 +240,7 @@ To do this find the container ID for RSPM (using `docker ps`) and run:
 docker exec -it {container-id} /bin/bash
 ```
 
-Then please refer to the [RSPM guide](https://docs.rstudio.com/rspm/admin/) on how to [create and manage](https://docs.rstudio.com/rspm/admin/quickstarts.html) your repositories. For example to serve CRAN:
+Then please refer to the [RSPM guide](https://docs.rstudio.com/rspm/admin/) on how to [create and manage](https://docs.rstudio.com/rspm/admin/getting-started/configuration/) your repositories. For example to serve CRAN:
 
 ```
 # Initiate a sync:
@@ -352,8 +352,8 @@ docker run -it --privileged \
 **Note:** You need to configure the products (config files) to use remote license, please look at the corresponding admin guides.
 
 - [RStudio Server Pro](https://docs.rstudio.com/ide/server-pro/license-management.html#floating-licensing)
-- [RStudio Connect](https://docs.rstudio.com/connect/admin/license-management.html#floating-licenses)
-- [RStudio Package Manager](https://docs.rstudio.com/rspm/admin/licensing.html#licensing-floating)
+- [RStudio Connect](https://docs.rstudio.com/connect/admin/licensing/#floating-licenses)
+- [RStudio Package Manager](https://docs.rstudio.com/rspm/admin/licensing/#licensing-floating)
 
 If you run into trouble with your license, this app may be helpful to deactivate all instances of the license:
 http://apps.rstudio.com/deactivate-license/
