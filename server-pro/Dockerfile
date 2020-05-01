@@ -32,7 +32,6 @@ RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5
     /opt/python/${PYTHON_VERSION}/bin/conda clean -tipsy && \
     /opt/python/${PYTHON_VERSION}/bin/conda clean -a && \
     /opt/python/${PYTHON_VERSION}/bin/pip install virtualenv
-ENV PATH /opt/python/${PYTHON_VERSION}/bin:$PATH
 
 # Install other Python PyPi packages
 RUN pip install --no-cache-dir \
@@ -44,7 +43,6 @@ RUN pip install --no-cache-dir \
 
 # Add binaries to the PATH
 RUN \
-    ln -s /opt/python/${PYTHON_VERSION}/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
     ln -s /opt/python/${PYTHON_VERSION}/bin/python /usr/local/bin/python && \
     ln -s /opt/python/${PYTHON_VERSION}/bin/python3 /usr/local/bin/python3 && \
     ln -s /opt/python/${PYTHON_VERSION}/bin/rsconnect /usr/local/bin/rsconnect && \
