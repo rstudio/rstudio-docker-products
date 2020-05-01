@@ -30,8 +30,6 @@ RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5
     /bin/bash /tmp/miniconda.sh -b -p /opt/python/${PYTHON_VERSION} && \
     rm /tmp/miniconda.sh && \
     /opt/python/${PYTHON_VERSION}/bin/conda clean -tipsy && \
-    ln -s /opt/python/${PYTHON_VERSION}/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
-    echo "PATH=/opt/python/${PYTHON_VERSION}/bin:$PATH" > /etc/profile.d/python.sh && \
     /opt/python/${PYTHON_VERSION}/bin/conda clean -a && \
     /opt/python/${PYTHON_VERSION}/bin/pip install virtualenv
 ENV PATH /opt/python/${PYTHON_VERSION}/bin:$PATH
@@ -43,6 +41,15 @@ RUN pip install --no-cache-dir \
                 jupyterlab==2.1.0 \
                 rsp_jupyter==1.2.5003 \
                 rsconnect_jupyter==1.3.3.1
+
+# Add binaries to the PATH
+RUN \
+    ln -s /opt/python/${PYTHON_VERSION}/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
+    ln -s /opt/python/${PYTHON_VERSION}/bin/python /usr/local/bin/python && \
+    ln -s /opt/python/${PYTHON_VERSION}/bin/python3 /usr/local/bin/python3 && \
+    ln -s /opt/python/${PYTHON_VERSION}/bin/rsconnect /usr/local/bin/rsconnect && \
+    ln -s /opt/python/${PYTHON_VERSION}/bin/virtualenv /usr/local/bin/virtualenv && \
+    ln -s /opt/python/${PYTHON_VERSION}/bin/conda /usr/local/bin/conda
 
 # Install Jupyter extensions
 RUN jupyter-nbextension install --sys-prefix --py rsp_jupyter && \
