@@ -10,8 +10,8 @@ imageStart=$(expr index "$IMAGE_NAME" /)
 repoName=${IMAGE_NAME:0:tagStart-1}
 imageName=${IMAGE_NAME:imageStart:${#IMAGE_NAME}-tagStart-1}
 
-if [ "${DOCKER_TAG}" == "daily" ]; then
-  echo "Daily build - exiting and not tagging version number"
+if [ "${DOCKER_TAG}" != "latest" ]; then
+  echo "Non-latest build - exiting and not tagging version number"
   exit 0
 fi
 

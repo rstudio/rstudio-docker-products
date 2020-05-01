@@ -4,9 +4,19 @@ set -e
 
 echo "Building DOCKER_TAG=${DOCKER_TAG}"
 
+apt-get update -qq && apt-get install -y jq
+
+replace_version() {
+  sed -i.bak "s/^RSP_VERSION=.*/RSP_VERSION=$1/g" ./.env
+}
+replace_base_url_s3() {
+  sed -i.bak "s|^RSP_DOWNLOAD_URL=.*|RSP_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64|g" ./.env
+}
+
 # if daily build
 # replace version number and download url
 if [ "${DOCKER_TAG}" == "daily" ]; then
+  echo "--> Running daily"
   # get daily version
   rawpage=`curl -s https://dailies.rstudio.com/rstudioserver/pro/bionic/x86_64/`
 
@@ -14,13 +24,28 @@ if [ "${DOCKER_TAG}" == "daily" ]; then
   if [[ "$rawpage" =~ rstudio-server-pro-([0-9\.\-]*)-amd64.deb ]]; then
     match="${BASH_REMATCH[1]}"
     echo "Latest version found: $match"
-    sed -i.bak "s/^RSP_VERSION=.*/RSP_VERSION=${match}/g" ./.env
-    sed -i.bak "s|^RSP_DOWNLOAD_URL=.*|RSP_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64|g" ./.env
+    replace_version $match
+    replace_base_url_s3
   else
     # fail the build
     echo "ERROR parsing latest daily version"
     exit 1
   fi
+elif [ "${DOCKER_TAG}" == "preview" ]; then
+  echo "--> Running preview"
+  # get raw downloads.json
+  rawjson=`curl -s https://rstudio.com/wp-content/downloads.json`
+
+  # use jq to parse
+  full_url=`echo -n $rawjson | jq -r '.rstudio.pro.preview.server.installer.bionic.url'`
+  version=`echo -n $rawjson | jq -r '.rstudio.pro.preview.version'`
+
+  echo "full_url: $full_url"
+
+  # update .env
+  replace_version $version
+  replace_base_url_s3
+
 else
   echo "No version customization necessary"
 fi

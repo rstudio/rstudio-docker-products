@@ -34,7 +34,7 @@ In order to persist RSP user files between container restarts please mount `/hom
 
 #### Licensing
 
-Using the RStudio Server Pro Docker image requires to have a valid License. You can set the RSP license to use this in two ways:
+Using the RStudio Server Pro Docker image requires to have a valid License. You can set the RSP license to use this in three ways:
 
 1. Setting the `RSP_LICENSE` environment variable to a valid license key
 2. Setting the `RSP_LICENSE_SERVER` environment variable to a valid license server / port
@@ -121,7 +121,7 @@ with a persistent volume in the host machine or your docker orchestration system
 
 #### Licensing
 
-Using the RStudio Connect docker image requires to have a valid License. You can set the RSC license in two ways:
+Using the RStudio Connect docker image requires to have a valid License. You can set the RSC license in three ways:
 
 1. Setting the `RSC_LICENSE` environment variable to a valid license key
 2. Setting the `RSC_LICENSE_SERVER` environment variable to a valid license server / port
@@ -191,7 +191,7 @@ with a persistent volume in the host machine or your docker orchestration system
 
 #### Licensing
 
-Using the RStudio Package Manager docker image requires to have a valid License. You can set the RSC license in two ways:
+Using the RStudio Package Manager docker image requires to have a valid License. You can set the RSC license in three ways:
 
 1. Setting the `RSPM_LICENSE` environment variable to a valid license key
 2. Setting the `RSPM_LICENSE_SERVER` environment variable to a valid license server / port
