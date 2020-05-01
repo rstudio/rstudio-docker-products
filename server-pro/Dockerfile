@@ -34,27 +34,19 @@ RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5
     /opt/python/${PYTHON_VERSION}/bin/pip install virtualenv
 
 # Install other Python PyPi packages
-RUN pip install --no-cache-dir \
+RUN /opt/python/${PYTHON_VERSION}/bin/pip install --no-cache-dir \
                 pip==20.0.2 \
                 jupyter==1.0.0 \
                 jupyterlab==2.1.0 \
                 rsp_jupyter==1.2.5003 \
                 rsconnect_jupyter==1.3.3.1
 
-# Add binaries to the PATH
-RUN \
-    ln -s /opt/python/${PYTHON_VERSION}/bin/python /usr/local/bin/python && \
-    ln -s /opt/python/${PYTHON_VERSION}/bin/python3 /usr/local/bin/python3 && \
-    ln -s /opt/python/${PYTHON_VERSION}/bin/rsconnect /usr/local/bin/rsconnect && \
-    ln -s /opt/python/${PYTHON_VERSION}/bin/virtualenv /usr/local/bin/virtualenv && \
-    ln -s /opt/python/${PYTHON_VERSION}/bin/conda /usr/local/bin/conda
-
 # Install Jupyter extensions
-RUN jupyter-nbextension install --sys-prefix --py rsp_jupyter && \
-    jupyter-nbextension enable --sys-prefix --py rsp_jupyter && \
-    jupyter-nbextension install --sys-prefix --py rsconnect_jupyter && \
-    jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter && \
-    jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
+RUN /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter && \
+    /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter && \
+    /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix --py rsconnect_jupyter && \
+    /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter && \
+    /opt/python/${PYTHON_VERSION}/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
 
 # Runtime settings ------------------------------------------------------------#
 ARG TINI_VERSION=0.18.0
