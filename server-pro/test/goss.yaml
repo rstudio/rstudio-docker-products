@@ -35,6 +35,12 @@ command:
       "/{{ .Env.RSP_VERSION }}/",
       "/Pro/"
     ]
-  "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | jupyter nbconvert --to notebook --stdin --stdout":
+  "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/3.6.5/bin/jupyter nbconvert --to notebook --stdin --stdout":
     title: jupyter_works
     exit-status: 0
+  "which openssl":
+    title: uses_system_openssl
+    exit-status: 0
+    stdout: [
+      "/usr/bin/openssl"
+    ]
