@@ -1,3 +1,14 @@
+user:
+  rstudio-pm:
+    exists: true
+    uid: 999
+    gid: 999
+
+group:
+  rstudio-pm:
+    exists: true
+    gid: 999
+
 package:
   rstudio-pm:
     installed: true
