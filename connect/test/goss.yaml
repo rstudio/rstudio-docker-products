@@ -1,3 +1,14 @@
+user:
+  rstudio-connect:
+    exists: true
+    uid: 999
+    gid: 999
+
+group:
+  rstudio-connect:
+    exists: true
+    gid: 999
+
 package:
   rstudio-connect:
     installed: true
