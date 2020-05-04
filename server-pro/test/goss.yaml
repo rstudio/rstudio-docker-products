@@ -1,3 +1,14 @@
+user:
+  rstudio-server:
+    exists: true
+    uid: 999
+    gid: 999
+
+group:
+  rstudio-server:
+    exists: true
+    gid: 999
+
 package:
   rstudio-server:
     installed: true
