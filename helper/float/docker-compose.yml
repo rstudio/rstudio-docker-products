@@ -16,7 +16,6 @@ services:
       - "8989:8989"
     environment:
       - "LICENSE=$RSP_FLOAT_LICENSE"
-      - "PRODUCT=rsp"
 
   rsc-float-lic:
     hostname: rsc-float-lic
@@ -33,7 +32,6 @@ services:
       - "8999:8999"
     environment:
       - "LICENSE=$RSC_FLOAT_LICENSE"
-      - "PRODUCT=connect"
 
   rspm-float-lic:
     hostname: rspm-float-lic
@@ -50,7 +48,6 @@ services:
       - "8969:8969"
     environment:
       - "LICENSE=$RSPM_FLOAT_LICENSE"
-      - "PRODUCT=rspm"
 
   # Commenting this one since we don't have a public docker image available
   # ssp-float-lic:
@@ -66,7 +63,6 @@ services:
   #     - "8979:8979"
   #   environment:
   #     - "LICENSE=$SSP_FLOAT_LICENSE"
-  #     - "PRODUCT=ssp"
   #   networks:
   #     - default
 
