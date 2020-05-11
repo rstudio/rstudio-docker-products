@@ -6,9 +6,11 @@ set -x
 # Deactivate license when it exists
 deactivate() {
     echo "== Exiting =="
-    echo "Reading logs ..."
+    echo " --> TAIL 100 rstudio-server.log"
     tail -100 /var/log/rstudio-server.log
+    echo " --> TAIL 100 rstudio-launcher.log"
     tail -100 /var/lib/rstudio-launcher/rstudio-launcher.log
+    echo " --> TAIL 100 monitor/log/rstudio-server.log"
     tail -100 /var/lib/rstudio-server/monitor/log/rstudio-server.log
 
     echo "Deactivating license ..."
