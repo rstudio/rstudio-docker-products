@@ -20,6 +20,30 @@ deactivate() {
 }
 trap deactivate EXIT
 
+# usage: use_init_files [file [file [...]]]
+#    ie: use_init_files /mydir/*
+# execute or source initialization files (file extensions and permissions)
+use_init_files() {
+    echo
+    local file
+    for file; do
+        case "$file" in
+            *.sh)
+                if [ -x "$file" ]; then
+                    echo "$0: executing file $file"
+                    "$file"
+                else
+                    echo "$0: sourcing file $file"
+                    echo "$0: no execute bit set"
+                    . "$file"
+                fi
+                ;;
+            *)  echo "$0: ignoring $file" ;;
+        esac 
+        echo
+    done
+}
+
 # touch log files to initialize them
 su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'
 mkdir -p /var/lib/rstudio-launcher
