@@ -76,6 +76,9 @@ else
     fi
 fi
 
+# Execute or source *.sh files from /entrypoint.d/
+use_init_files /entrypoint.d/*
+
 # Start Launcher
 if [ "$RSP_LAUNCHER" == "true" ]; then
   /usr/lib/rstudio-server/bin/rstudio-launcher > /var/log/rstudio-launcher.log 2>&1 &
