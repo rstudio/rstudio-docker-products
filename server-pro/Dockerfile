@@ -67,7 +67,8 @@ ENV RSP_LAUNCHER_TIMEOUT 10
 
 # Copy config and startup
 COPY startup.sh /usr/local/bin/startup.sh
-RUN chmod +x /usr/local/bin/startup.sh
+RUN chmod +x /usr/local/bin/startup.sh \
+    && mkdir -p /entrypoint.d/
 COPY conf/* /etc/rstudio/
 
 # Install RStudio Server Pro --------------------------------------------------#
