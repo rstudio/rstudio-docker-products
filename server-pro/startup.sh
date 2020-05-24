@@ -22,6 +22,8 @@ trap deactivate EXIT
 
 # touch log files to initialize them
 su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'
+mkdir -p /var/lib/rstudio-launcher
+chown rstudio-server:rstudio-server /var/lib/rstudio-launcher
 su rstudio-server -c 'touch /var/lib/rstudio-launcher/rstudio-launcher.log'
 touch /var/log/rstudio-server.log
 
