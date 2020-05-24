@@ -1,6 +1,6 @@
 R_VERSION ?= 3.6.2
 
-RSP_VERSION ?= 1.2.5042-1
+RSP_VERSION ?= 1.3.959-1
 RSC_VERSION ?= 1.8.2-10
 RSPM_VERSION ?= 1.1.4-3
 
@@ -57,6 +57,12 @@ update-versions:  ## Update the version files for all products
 rsp: server-pro
 server-pro:  ## Build RSP image
 	docker build -t rstudio/rstudio-server-pro:$(RSP_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSP_VERSION=$(RSP_VERSION) server-pro
+
+rsp-hook:
+	cd ./server-pro && \
+	DOCKERFILE_PATH=Dockerfile \
+	IMAGE_NAME=rstudio/rstudio-server-pro:$(RSP_VERSION) \
+	./hooks/build
 
 
 test-rsp: test-server-pro
