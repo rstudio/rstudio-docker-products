@@ -5,10 +5,27 @@ set -x
 
 # Deactivate license when it exists
 deactivate() {
+    echo "== Exiting =="
+    echo " --> TAIL 100 rstudio-server.log"
+    tail -100 /var/log/rstudio-server.log
+    echo " --> TAIL 100 rstudio-launcher.log"
+    tail -100 /var/lib/rstudio-launcher/rstudio-launcher.log
+    echo " --> TAIL 100 monitor/log/rstudio-server.log"
+    tail -100 /var/lib/rstudio-server/monitor/log/rstudio-server.log
+
     echo "Deactivating license ..."
     rstudio-server license-manager deactivate >/dev/null 2>&1
+
+    echo "== Done =="
 }
 trap deactivate EXIT
+
+# touch log files to initialize them
+su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'
+mkdir -p /var/lib/rstudio-launcher
+chown rstudio-server:rstudio-server /var/lib/rstudio-launcher
+su rstudio-server -c 'touch /var/lib/rstudio-launcher/rstudio-launcher.log'
+touch /var/log/rstudio-server.log
 
 # Activate License
 if ! [ -z "$RSP_LICENSE" ]; then
@@ -35,16 +52,11 @@ else
     fi
 fi
 
-
 # Start Launcher
 if [ "$RSP_LAUNCHER" == "true" ]; then
   /usr/lib/rstudio-server/bin/rstudio-launcher > /var/log/rstudio-launcher.log 2>&1 &
   wait-for-it.sh localhost:5559 -t $RSP_LAUNCHER_TIMEOUT
 fi
-
-# touch log files to initialize them
-su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'
-touch /var/log/rstudio-server.log
 
 tail -n 100 -f /var/lib/rstudio-server/monitor/log/*.log /var/lib/rstudio-launcher/*.log /var/lib/rstudio-launcher/Local/*.log /var/log/rstudio-launcher.log /var/log/rstudio-server.log &
 
