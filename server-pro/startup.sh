@@ -80,6 +80,7 @@ if [ "$RSP_CREATE_USER" == "true" ]; then
 fi
 
 # Execute or source *.sh files from /entrypoint.d/
+# - note that order should be deterministic thanks to * magic
 use_init_files /entrypoint.d/*
 
 # Start Launcher
