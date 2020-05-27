@@ -65,14 +65,17 @@ unset RSP_LICENSE
 unset RSP_LICENSE_SERVER
 
 # Create one user
-if [ $(getent passwd $RSP_TESTUSER_UID) ] ; then
-    echo "UID $RSP_TESTUSER_UID already exists, not creating $RSP_TESTUSER test user";
-else
-    if [ -z "$RSP_TESTUSER" ]; then
-        echo "Empty 'RSP_TESTUSER' variables, not creating test user";
+if [ "$RSP_CREATE_USER" == "true" ]; then
+    if [ $(getent passwd $RSP_TESTUSER_UID) ] ; then
+        echo "UID $RSP_TESTUSER_UID already exists, not creating $RSP_TESTUSER test user";
     else
-        useradd -m -s /bin/bash -N -u $RSP_TESTUSER_UID $RSP_TESTUSER
-        echo "$RSP_TESTUSER:$RSP_TESTUSER_PASSWD" | sudo chpasswd
+        if [ -z "$RSP_TESTUSER" ]; then
+            echo "Empty 'RSP_TESTUSER' variables, not creating test user";
+        else
+            echo "Creating user $RSP_TESTUSER with UID $RSP_TESTUSER_UID"
+            useradd -m -s /bin/bash -N -u $RSP_TESTUSER_UID $RSP_TESTUSER
+            echo "$RSP_TESTUSER:$RSP_TESTUSER_PASSWD" | sudo chpasswd
+        fi
     fi
 fi
 
