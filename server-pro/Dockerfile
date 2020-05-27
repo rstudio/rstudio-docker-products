@@ -59,6 +59,7 @@ RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/v
 # Set default env values
 ENV RSP_LICENSE ""
 ENV RSP_LICENSE_SERVER ""
+ENV RSP_CREATE_USER true
 ENV RSP_TESTUSER rstudio
 ENV RSP_TESTUSER_PASSWD rstudio
 ENV RSP_TESTUSER_UID 10000
