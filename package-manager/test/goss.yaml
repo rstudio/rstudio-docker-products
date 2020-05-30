@@ -24,6 +24,8 @@ file:
     exists: true
   /opt/rstudio-pm/bin/rspm:
     exists: true
+  /usr/local/bin/rspm:
+    exists: true
 
 # check product version
 command:
