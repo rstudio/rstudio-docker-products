@@ -76,7 +76,7 @@ COPY conf/* /etc/rstudio/
 ARG RSP_VERSION=1.3.959-1
 ARG RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 RUN apt-get update --fix-missing \
-    && curl -i -O ${RSP_DOWNLOAD_URL}/rstudio-server-pro-${RSP_VERSION}-amd64.deb \
+    && curl -O ${RSP_DOWNLOAD_URL}/rstudio-server-pro-${RSP_VERSION}-amd64.deb \
     && gdebi --non-interactive rstudio-server-pro-${RSP_VERSION}-amd64.deb \
     && rm rstudio-server-pro-${RSP_VERSION}-amd64.deb \
     && apt-get clean \
