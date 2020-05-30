@@ -35,7 +35,8 @@ ARG RSPM_VERSION=1.1.4-3
 RUN curl -O curl -O https://s3.amazonaws.com/rstudio-package-manager/ubuntu/amd64/rstudio-pm_${RSPM_VERSION}_amd64.deb \
     && gdebi -n rstudio-pm_${RSPM_VERSION}_amd64.deb \
     && rm rstudio-pm_${RSPM_VERSION}_amd64.deb \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && ln -s /opt/rstudio-pm/bin/rspm /usr/local/bin/rspm
 
 ENV RSPM_LICENSE ""
 ENV RSPM_LICENSE_SERVER ""
