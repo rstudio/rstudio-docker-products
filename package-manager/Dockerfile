@@ -32,9 +32,11 @@ EXPOSE 2112/tcp
 
 # Download RStudio Package Manager ---------------------------------------------#
 ARG RSPM_VERSION=1.1.4-3
-RUN curl -O curl -O https://s3.amazonaws.com/rstudio-package-manager/ubuntu/amd64/rstudio-pm_${RSPM_VERSION}_amd64.deb \
+RUN apt-get update --fix-missing \
+    && curl -O curl -O https://s3.amazonaws.com/rstudio-package-manager/ubuntu/amd64/rstudio-pm_${RSPM_VERSION}_amd64.deb \
     && gdebi -n rstudio-pm_${RSPM_VERSION}_amd64.deb \
     && rm rstudio-pm_${RSPM_VERSION}_amd64.deb \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 ENV RSPM_LICENSE ""
