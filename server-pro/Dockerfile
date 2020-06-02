@@ -22,7 +22,9 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
         libssl1.0.0 \
         libssl-dev \
         openssh-client \
-        wget
+        wget \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Python  -------------------------------------------------------------#
 ARG PYTHON_VERSION=3.6.5
@@ -71,9 +73,10 @@ RUN chmod +x /usr/local/bin/startup.sh
 COPY conf/* /etc/rstudio/
 
 # Install RStudio Server Pro --------------------------------------------------#
-ARG RSP_VERSION=1.2.5042-1
-ARG RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/trusty/amd64
-RUN curl -O ${RSP_DOWNLOAD_URL}/rstudio-server-pro-${RSP_VERSION}-amd64.deb \
+ARG RSP_VERSION=1.3.959-1
+ARG RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
+RUN apt-get update --fix-missing \
+    && curl -O ${RSP_DOWNLOAD_URL}/rstudio-server-pro-${RSP_VERSION}-amd64.deb \
     && gdebi --non-interactive rstudio-server-pro-${RSP_VERSION}-amd64.deb \
     && rm rstudio-server-pro-${RSP_VERSION}-amd64.deb \
     && apt-get clean \
