@@ -21,7 +21,9 @@ RUN apt-get update --fix-missing \
         libxrender1 \
         gdebi-core \
         libssl1.0.0 \
-        libssl-dev git
+        libssl-dev git \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Python  -------------------------------------------------------------#
 ARG PYTHON_VERSION=3.6.5
@@ -46,7 +48,8 @@ RUN chmod +x /usr/local/bin/startup.sh
 
 # Download RStudio Connect -----------------------------------------------------#
 ARG RSC_VERSION=1.8.2-10
-RUN curl -O https://s3.amazonaws.com/rstudio-connect/rstudio-connect_${RSC_VERSION}_amd64.deb \
+RUN apt-get update --fix-missing \
+    && curl -O https://s3.amazonaws.com/rstudio-connect/rstudio-connect_${RSC_VERSION}_amd64.deb \
     && gdebi -n rstudio-connect_${RSC_VERSION}_amd64.deb \
     && rm rstudio-connect_${RSC_VERSION}_amd64.deb \
     && apt-get clean \
