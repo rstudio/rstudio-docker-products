@@ -22,8 +22,8 @@ services:
     build:
       context: ./connect
       args:
-        RSC_VERSION: 1.8.2-10
-    image: rstudio/rstudio-connect:1.8.2-10
+        RSC_VERSION: 1.8.2.1-12
+    image: rstudio/rstudio-connect:1.8.2.1-12
     privileged: true
     environment:
       RSC_LICENSE: ${RSC_LICENSE}
@@ -38,8 +38,8 @@ services:
     build:
       context: ./package-manager
       args:
-        RSPM_VERSION: 1.1.4-3
-    image: rstudio/rstudio-package-manager:1.1.4-3
+        RSPM_VERSION: 1.1.4.1-5
+    image: rstudio/rstudio-package-manager:1.1.4.1-5
     privileged: true
     environment:
       RSPM_LICENSE: ${RSPM_LICENSE}
