@@ -49,9 +49,8 @@ RUN chmod +x /usr/local/bin/startup.sh
 # Download RStudio Connect -----------------------------------------------------#
 ARG RSC_VERSION=1.8.4-11
 RUN apt-get update --fix-missing \
-    && curl -O https://s3.amazonaws.com/rstudio-connect/rstudio-connect_${RSC_VERSION}_amd64.deb \
-    && gdebi -n rstudio-connect_${RSC_VERSION}_amd64.deb \
-    && rm rstudio-connect_${RSC_VERSION}_amd64.deb \
+    && curl -LO https://cdn.rstudio.com/connect/installer/installer-ci.sh \
+    && UNATTENDED=1 bash installer-ci.sh ${RSC_VERSION} \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
