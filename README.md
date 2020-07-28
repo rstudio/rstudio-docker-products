@@ -160,7 +160,7 @@ docker run -it --privileged \
     -e RSC_LICENSE=$RSC_LICENSE \
     rstudio/rstudio-connect:latest
 
-# Run with persisting data and using an external configuration
+# Run with persistent data and using an external configuration
 docker run -it --privileged \
     -p 3939:3939 \
     -v $PWD/data/rsc:/data \
@@ -231,7 +231,7 @@ docker run -it --privileged \
     -e RSPM_LICENSE=$RSPM_LICENSE \
     rstudio/rstudio-package-manager:latest
 
-# Run with persisting data and using an external configuration
+# Run with persistent data and using an external configuration
 docker run -it --privileged \
     -p 4242:4242 \
     -v $PWD/data/rspm:/data \
