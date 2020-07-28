@@ -72,13 +72,14 @@ See the [RStudio Server Pro guide](https://docs.rstudio.com/ide/server-pro/authe
 # Replace with valid license
 export RSP_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 
-# Run without persistent data and default configuration
+# Run without persistent data and using an external configuration
 docker run --privileged -it \
     -p 8787:8787 -p 5559:5559 \
+    -v $PWD/server-pro/conf/:/etc/rstudio \
     -e RSP_LICENSE=$RSP_LICENSE \
     rstudio/rstudio-server-pro:latest
 
-# Run with persisting data and external configuration
+# Run with persistent data and using an external configuration
 docker run --privileged -it \
     -p 8787:8787 -p 5559:5559 \
     -v $PWD/data/rsp:/home \
@@ -102,12 +103,18 @@ This container includes:
 
 Note that running the RStudio Connect Docker image requires the container to run using the `--priviliged` flag and a valid RStudio Connect license.
 
+> NOTE: to use RStudio Connect with more than one user, you will need to define
+> `Server.Address` in the `rstudio-connect.gcfg` file. To do so, update your
+> configuration file with the URL that users will use to visit Connect. Then
+> start or restart the container.
+
 #### Configuration
 
 The configuration of RStudio Connect is made on the `/etc/rstudio-connect/rstudio-connect.gcfg` file, mount this file as volume with an external file on the host machine to change the configuration and restart the container for changes to take effect.
 
 Be sure the config file has this fields:
 
+- `Server.Address` set to the exact URL that users will use to visit Connect
 - `Server.DataDir` set to `/data/`
 - `HTTP.Listen`
 - `Python.Enabled` and `Python.Executable`
@@ -146,13 +153,14 @@ Using the RStudio Connect docker image requires to have a valid License. You can
 # Replace with valid license
 export RSC_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 
-# Run without persistent data and default configuration
+# Run without persistent data and using an external configuration
 docker run -it --privileged \
     -p 3939:3939 \
+    -v $PWD/connect/rstudio-connect.gcfg:/etc/rstudio-connect/rstudio-connect.gcfg \
     -e RSC_LICENSE=$RSC_LICENSE \
     rstudio/rstudio-connect:latest
 
-# Run with persisting data and external configuration
+# Run with persisting data and using an external configuration
 docker run -it --privileged \
     -p 3939:3939 \
     -v $PWD/data/rsc:/data \
@@ -216,13 +224,14 @@ Using the RStudio Package Manager docker image requires to have a valid License.
 # Replace with valid license
 export RSPM_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 
-# Run without persistent data and default configuration
+# Run without persistent data and using an external configuration
 docker run -it --privileged \
     -p 4242:4242 \
+    -v $PWD/package-manager/rstudio-pm.gcfg:/etc/rstudio-pm/rstudio-pm.gcfg \
     -e RSPM_LICENSE=$RSPM_LICENSE \
     rstudio/rstudio-package-manager:latest
 
-# Run with persisting data and external configuration
+# Run with persisting data and using an external configuration
 docker run -it --privileged \
     -p 4242:4242 \
     -v $PWD/data/rspm:/data \
