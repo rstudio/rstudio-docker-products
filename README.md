@@ -103,10 +103,10 @@ This container includes:
 
 Note that running the RStudio Connect Docker image requires the container to run using the `--priviliged` flag and a valid RStudio Connect license.
 
-> NOTE: to use RStudio Connect with more than one user, you will need to define
-> `Server.Address` in the `rstudio-connect.gcfg` file. To do so, update your
-> configuration file with the URL that users will use to visit Connect. Then
-> start or restart the container.
+> IMPORTANT: to use RStudio Connect with more than one user, you will need to
+> define `Server.Address` in the `rstudio-connect.gcfg` file. To do so, update
+> your configuration file with the URL that users will use to visit Connect.
+> Then start or restart the container.
 
 #### Configuration
 
