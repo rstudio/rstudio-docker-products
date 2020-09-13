@@ -8,7 +8,7 @@ look at the `startup.sh` scripts for an example on how to do this automatically.
 
 ## RStudio Server Pro
 
-Note that running the RStudio Server Pro Docker image requires the container to run using the `--priviliged` flag and a valid RStudio Server Pro license.
+Note that running the RStudio Server Pro Docker image requires the container to run using the `--privileged` flag and a valid RStudio Server Pro license.
 
 This container includes:
 
@@ -101,7 +101,7 @@ This container includes:
 2. Python 3.6.5
 3. RStudio Connect
 
-Note that running the RStudio Connect Docker image requires the container to run using the `--priviliged` flag and a valid RStudio Connect license.
+Note that running the RStudio Connect Docker image requires the container to run using the `--privileged` flag and a valid RStudio Connect license.
 
 > IMPORTANT: to use RStudio Connect with more than one user, you will need to
 > define `Server.Address` in the `rstudio-connect.gcfg` file. To do so, update
@@ -174,7 +174,7 @@ Open [http://localhost:3939](http://localhost:3939) to access RStudio Connect.
 
 ## RStudio Package Manager
 
-Note that running the RStudio Package Manager Docker image requires the container to run using the `--priviliged` flag and a valid RStudio Package Manager license.
+Note that running the RStudio Package Manager Docker image requires the container to run using the `--privileged` flag and a valid RStudio Package Manager license.
 
 This container includes:
 
