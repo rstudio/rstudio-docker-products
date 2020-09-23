@@ -15,12 +15,14 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
         ca-certificates \
         gdebi-core \
         git \
+        libcap2 \
         libglib2.0-0 \
-        libxext6 \
+        libpq5 \
         libsm6 \
-        libxrender1 \
         libssl1.0.0 \
         libssl-dev \
+        libxext6 \
+        libxrender1 \
         openssh-client \
         wget \
     && apt-get clean \
