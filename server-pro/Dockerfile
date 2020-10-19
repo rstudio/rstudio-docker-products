@@ -21,7 +21,10 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
         libxrender1 \
         libssl1.0.0 \
         libssl-dev \
+        libuser \
+        libuser1-dev \
         openssh-client \
+        rrdtool \
         wget \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
