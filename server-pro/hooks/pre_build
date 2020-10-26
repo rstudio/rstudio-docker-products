@@ -15,7 +15,7 @@ replace_base_url_s3() {
 
 # if daily build
 # replace version number and download url
-if [ "${DOCKER_TAG}" == "daily" ]; then
+if [[ "${DOCKER_TAG}" == *"daily"* ]]; then
   echo "--> Running daily"
   # get daily version
   rawpage=`curl -s https://dailies.rstudio.com/rstudioserver/pro/bionic/x86_64/`
@@ -31,7 +31,7 @@ if [ "${DOCKER_TAG}" == "daily" ]; then
     echo "ERROR parsing latest daily version"
     exit 1
   fi
-elif [ "${DOCKER_TAG}" == "preview" ]; then
+elif [[ "${DOCKER_TAG}" == *"preview"* ]]; then
   echo "--> Running preview"
   # get raw downloads.json
   rawjson=`curl -s https://rstudio.com/wp-content/downloads.json`
