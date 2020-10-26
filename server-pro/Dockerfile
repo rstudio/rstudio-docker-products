@@ -15,13 +15,18 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
         ca-certificates \
         gdebi-core \
         git \
+        libcap2 \
         libglib2.0-0 \
-        libxext6 \
+        libpq5 \
         libsm6 \
-        libxrender1 \
         libssl1.0.0 \
         libssl-dev \
+        libuser \
+        libuser1-dev \
+        libxext6 \
+        libxrender1 \
         openssh-client \
+        rrdtool \
         wget \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -75,7 +80,7 @@ RUN chmod +x /usr/local/bin/startup.sh \
 COPY conf/* /etc/rstudio/
 
 # Install RStudio Server Pro --------------------------------------------------#
-ARG RSP_VERSION=1.3.959-1
+ARG RSP_VERSION=1.3.1073-1
 ARG RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 RUN apt-get update --fix-missing \
     && curl -O ${RSP_DOWNLOAD_URL}/rstudio-server-pro-${RSP_VERSION}-amd64.deb \

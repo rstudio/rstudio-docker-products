@@ -40,3 +40,10 @@ command:
     #stderr: [
     #  "Starting HTTP listener on :3939"
     #]
+  "/opt/R/3.6.2/bin/R --version":
+    title: r_version_match
+    exit-status: 0
+    stdout: [
+      "/3.6.2/"
+    ]
+
