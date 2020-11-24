@@ -86,6 +86,12 @@ rsc: connect
 connect:  ## Build RSC image
 	docker build -t rstudio/rstudio-connect:$(RSC_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSC_VERSION=$(RSC_VERSION) connect
 
+connect-hook:
+	cd ./connect && \
+	DOCKERFILE_PATH=Dockerfile \
+	IMAGE_NAME=rstudio/rstudio-connect:test \
+	./hooks/build
+
 
 test-rsc: test-connect
 test-connect:
