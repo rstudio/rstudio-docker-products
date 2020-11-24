@@ -86,6 +86,8 @@ rsc: connect
 connect:  ## Build RSC image
 	docker build -t rstudio/rstudio-connect:$(RSC_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSC_VERSION=$(RSC_VERSION) connect
 
+# TODO: a way to run this more like DockerHub does...
+#   ideally it would run pre_build and clean up after itself by removing changes to the .env file
 connect-hook:
 	cd ./connect && \
 	DOCKERFILE_PATH=Dockerfile \
