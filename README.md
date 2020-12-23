@@ -6,9 +6,31 @@ Docker images for RStudio Professional Products
 Also remember to deactivate the license before stopping the container or it will count as an active license,
 look at the `startup.sh` scripts for an example on how to do this automatically.
 
-## RStudio Server Pro
+# RStudio Server Pro
 
-Note that running the RStudio Server Pro Docker image requires the container to run using the `--privileged` flag and a valid RStudio Server Pro license.
+#### Simple Example
+
+To verify basic functionality as a first step:
+
+```
+# Replace with valid license
+export RSP_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
+
+# Run without persistent data using default configuration
+docker run --privileged -it \
+    -p 8787:8787 \
+    -e RSP_LICENSE=$RSP_LICENSE \
+    rstudio/rstudio-server-pro:latest
+```
+
+Open http://localhost:8787 to access RStudio Server Pro. The default username and password are rstudio.
+
+For a more "real" deployment, continue reading!
+
+#### Overview
+
+Note that running the RStudio Server Pro Docker image requires the container to run using the `--privileged` flag and a
+valid RStudio Server Pro license.
 
 This container includes:
 
@@ -18,7 +40,8 @@ This container includes:
 
 #### Configuration
 
-The configuration of RStudio Serve Pro is made on a set of file in the `/etc/rstudio` directory, mount this directory as volume with the host machine to change the configuration and restart the container for changes to take effect.
+The configuration of RStudio Serve Pro is made on a set of file in the `/etc/rstudio` directory, mount this directory as
+volume with the host machine to change the configuration and restart the container for changes to take effect.
 
 Be sure the config files have:
 
@@ -30,22 +53,29 @@ See a complete example of that file at `server-pro/conf`.
 
 #### Persistent Data
 
-In order to persist RSP user files between container restarts please mount `/home` with a persistent volume in the host machine or your docker orchestration system.
+In order to persist RSP user files between container restarts please mount `/home` with a persistent volume in the host
+machine or your docker orchestration system.
 
 #### Licensing
 
-Using the RStudio Server Pro Docker image requires to have a valid License. You can set the RSP license to use this in three ways:
+Using the RStudio Server Pro Docker image requires to have a valid License. You can set the RSP license to use this in
+one three ways:
 
 1. Setting the `RSP_LICENSE` environment variable to a valid license key
 2. Setting the `RSP_LICENSE_SERVER` environment variable to a valid license server / port
 3. Mounting a `/etc/rstudio-server/license.lic` single file that contains a valid license for RStudio Server Pro
 
+**NOTE:** the "offline activation process" is not supported by this image today. Offline installations will need
+to explore using a license server, license file, or custom image with manual intervention.
+
 #### Users
 
-By default the container will create a test user, that user can be controlled by the environment variables: `RSP_TESTUSER`, `RSP_TESTUSER_PASSWD`, `RSP_TESTUSER_UID`.
+By default the container will create a test user, that user can be controlled by the environment
+variables: `RSP_TESTUSER`, `RSP_TESTUSER_PASSWD`, `RSP_TESTUSER_UID`.
 
-In order to use this container with a different user structure such as LDAP you need to extend the container to use a valid PAM configuration.
-See the [RStudio Server Pro guide](https://docs.rstudio.com/ide/server-pro/authenticating-users.html) for more information.
+In order to use this container with a different user structure such as LDAP you need to extend the container to use a
+valid PAM configuration. See
+the [RStudio Server Pro guide](https://docs.rstudio.com/ide/server-pro/authenticating-users.html) for more information.
 
 #### Environment variables
 
@@ -91,9 +121,33 @@ docker run --privileged -it \
 Open [http://localhost:8787](http://localhost:8787) to access RStudio Server Pro.
 The default username and password are `rstudio`.
 
-## RStudio Connect
+# RStudio Connect
 
-This Docker container is built following the [RStudio Connect admin guide](https://docs.rstudio.com/connect/admin/index.html), please see [Server Guide/Docker](https://docs.rstudio.com/connect/admin/server-management/#docker) for more details on the requirements and how to extend this image.
+#### Simple Example
+
+To verify basic functionality as a first step:
+
+```
+# Replace with valid license
+export RSC_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
+
+# Run without persistent data and using default configuration
+docker run -it --privileged \
+    -p 3939:3939 \
+    -e RSC_LICENSE=$RSC_LICENSE \
+    rstudio/rstudio-connect:latest
+```
+
+Open [http://localhost:3939](http://localhost:3939) to access RStudio Connect.
+
+For a more "real" deployment, continue reading!
+
+#### Overview
+
+This Docker container is built following
+the [RStudio Connect admin guide](https://docs.rstudio.com/connect/admin/index.html), please
+see [Server Guide/Docker](https://docs.rstudio.com/connect/admin/server-management/#docker) for more details on the
+requirements and how to extend this image.
 
 This container includes:
 
@@ -101,7 +155,8 @@ This container includes:
 2. Python 3.6.5
 3. RStudio Connect
 
-Note that running the RStudio Connect Docker image requires the container to run using the `--privileged` flag and a valid RStudio Connect license.
+Note that running the RStudio Connect Docker image requires the container to run using the `--privileged` flag and a
+valid RStudio Connect license.
 
 > IMPORTANT: to use RStudio Connect with more than one user, you will need to
 > define `Server.Address` in the `rstudio-connect.gcfg` file. To do so, update
@@ -110,7 +165,9 @@ Note that running the RStudio Connect Docker image requires the container to run
 
 #### Configuration
 
-The configuration of RStudio Connect is made on the `/etc/rstudio-connect/rstudio-connect.gcfg` file, mount this file as volume with an external file on the host machine to change the configuration and restart the container for changes to take effect.
+The configuration of RStudio Connect is made on the `/etc/rstudio-connect/rstudio-connect.gcfg` file, mount this file as
+volume with an external file on the host machine to change the configuration and restart the container for changes to
+take effect.
 
 Be sure the config file has this fields:
 
@@ -123,8 +180,9 @@ See a complete example of that file at `connect/rstudio-connect.gcfg`.
 
 #### Persistent Data
 
-In order to persist RSC metadata and app data between container restarts configure RSC `Server.DataDir` option to `/data` and share the `/data` directory
-with a persistent volume in the host machine or your docker orchestration system.
+In order to persist RSC metadata and app data between container restarts configure RSC `Server.DataDir` option
+to `/data` and share the `/data` directory with a persistent volume in the host machine or your docker orchestration
+system.
 
 #### Licensing
 
@@ -133,6 +191,9 @@ Using the RStudio Connect docker image requires to have a valid License. You can
 1. Setting the `RSC_LICENSE` environment variable to a valid license key
 2. Setting the `RSC_LICENSE_SERVER` environment variable to a valid license server / port
 3. Mounting a `/etc/rstudio-connect/license.lic` single file that contains a valid license for RStudio Connect
+   
+**NOTE:** the "offline activation process" is not supported by this image today. Offline installations will need
+to explore using a license server, license file, or custom image with manual intervention.
 
 #### Environment variables
 
@@ -172,9 +233,31 @@ docker run -it --privileged \
 Open [http://localhost:3939](http://localhost:3939) to access RStudio Connect.
 
 
-## RStudio Package Manager
+# RStudio Package Manager
 
-Note that running the RStudio Package Manager Docker image requires the container to run using the `--privileged` flag and a valid RStudio Package Manager license.
+#### Simple Example
+
+To verify basic functionality as a first step:
+
+```bash
+# Replace with valid license
+export RSPM_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
+
+# Run without persistent data and using default configuration
+docker run -it --privileged \
+    -p 4242:4242 \
+    -e RSPM_LICENSE=$RSPM_LICENSE \
+    rstudio/rstudio-package-manager:latest
+```
+
+Open [http://localhost:4242](http://localhost:4242) to access RStudio Package Manager UI.
+
+For a more "real" deployment, continue reading!
+
+#### Overview
+
+Note that running the RStudio Package Manager Docker image requires the container to run using the `--privileged` flag
+and a valid RStudio Package Manager license.
 
 This container includes:
 
@@ -183,7 +266,9 @@ This container includes:
 
 #### Configuration
 
-The configuration of RStudio Package Manager is made on the `/etc/rstudio-pm/rstudio-pm.gcfg` file, mount this file as volume with an external file on the host machine to change the configuration and restart the container for changes to take effect.
+The configuration of RStudio Package Manager is made on the `/etc/rstudio-pm/rstudio-pm.gcfg` file, mount this file as
+volume with an external file on the host machine to change the configuration and restart the container for changes to
+take effect.
 
 Be sure the config file has this fields:
 
@@ -194,7 +279,8 @@ See a complete example of that file at `pacakge-manager/rstudio-connect.gcfg`.
 
 #### Persistent Data
 
-In order to persist RSPM package data data between container restarts configure RSPM `Server.DataDir` option to `/data` and share the `/data` directory
+In order to persist RSPM package data data between container restarts configure RSPM `Server.DataDir` option to `/data`
+and share the `/data` directory
 with a persistent volume in the host machine or your docker orchestration system.
 
 #### Licensing
@@ -204,6 +290,9 @@ Using the RStudio Package Manager docker image requires to have a valid License.
 1. Setting the `RSPM_LICENSE` environment variable to a valid license key
 2. Setting the `RSPM_LICENSE_SERVER` environment variable to a valid license server / port
 3. Mounting a `/etc/rstudio-pm/license.lic` single file that contains a valid license for RStudio Package Manager
+
+**NOTE:** the "offline activation process" is not supported by this image today. Offline installations will need
+to explore using a license server, license file, or custom image with manual intervention.
 
 #### Environment variables
 
@@ -249,7 +338,9 @@ To do this find the container ID for RSPM (using `docker ps`) and run:
 docker exec -it {container-id} /bin/bash
 ```
 
-Then please refer to the [RSPM guide](https://docs.rstudio.com/rspm/admin/) on how to [create and manage](https://docs.rstudio.com/rspm/admin/getting-started/configuration/) your repositories. For example to serve CRAN:
+Then please refer to the [RSPM guide](https://docs.rstudio.com/rspm/admin/) on how
+to [create and manage](https://docs.rstudio.com/rspm/admin/getting-started/configuration/) your repositories. For
+example to serve CRAN:
 
 ```
 # Initiate a sync:
@@ -262,12 +353,13 @@ rspm create repo --name=prod-cran --description='Access CRAN packages'
 rspm subscribe --repo=prod-cran --source=cran
 ```
 
-## RStudio Team
+# RStudio Team
 
-We provide a `docker-compose.yml` that could help to spin up default configurations for RStudio Team (all RStudio products together).
+We provide a `docker-compose.yml` that could help to spin up default configurations for RStudio Team (all RStudio
+products together).
 
-If you are using this locally you need to setup some hostnames to point to `localhost` in order for some integrations to work fine in your browser.
-In your `/etc/hosts` add one line:
+If you are using this locally you need to setup some hostnames to point to `localhost` in order for some integrations to
+work fine in your browser. In your `/etc/hosts` add one line:
 
 ```
 127.0.0.1 rstudio-server-pro rstudio-connect rstudio-pm
@@ -294,7 +386,7 @@ free to reach out [on RStudio
 Community](https://community.rstudio.com/c/r-admin), to your Customer Success
 representative, or to sales@rstudio.com.
 
-## Floating license server
+# Floating license server
 
 **WARNING**: Floating Licenses should not be used within docker containers in a
 production context, since the docker container failing could require manual
