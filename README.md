@@ -10,7 +10,7 @@ look at the `startup.sh` scripts for an example on how to do this automatically.
 
 #### Simple Example
 
-To get started:
+To verify the basic functionality as a first step:
 
 ```
 # Replace with valid license
@@ -125,7 +125,7 @@ The default username and password are `rstudio`.
 
 #### Simple Example
 
-To get started:
+To verify the basic functionality as a first step:
 
 ```
 # Replace with valid license
@@ -237,7 +237,7 @@ Open [http://localhost:3939](http://localhost:3939) to access RStudio Connect.
 
 #### Simple Example
 
-To get started:
+To verify the basic functionality as a first step:
 
 ```bash
 # Replace with valid license
