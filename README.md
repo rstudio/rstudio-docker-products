@@ -6,7 +6,7 @@ Docker images for RStudio Professional Products
 Also remember to deactivate the license before stopping the container or it will count as an active license,
 look at the `startup.sh` scripts for an example on how to do this automatically.
 
-## RStudio Server Pro
+# RStudio Server Pro
 
 #### Simple Example
 
@@ -121,7 +121,7 @@ docker run --privileged -it \
 Open [http://localhost:8787](http://localhost:8787) to access RStudio Server Pro.
 The default username and password are `rstudio`.
 
-## RStudio Connect
+# RStudio Connect
 
 #### Simple Example
 
@@ -233,7 +233,7 @@ docker run -it --privileged \
 Open [http://localhost:3939](http://localhost:3939) to access RStudio Connect.
 
 
-## RStudio Package Manager
+# RStudio Package Manager
 
 #### Simple Example
 
@@ -353,7 +353,7 @@ rspm create repo --name=prod-cran --description='Access CRAN packages'
 rspm subscribe --repo=prod-cran --source=cran
 ```
 
-## RStudio Team
+# RStudio Team
 
 We provide a `docker-compose.yml` that could help to spin up default configurations for RStudio Team (all RStudio
 products together).
@@ -386,7 +386,7 @@ free to reach out [on RStudio
 Community](https://community.rstudio.com/c/r-admin), to your Customer Success
 representative, or to sales@rstudio.com.
 
-## Floating license server
+# Floating license server
 
 **WARNING**: Floating Licenses should not be used within docker containers in a
 production context, since the docker container failing could require manual
