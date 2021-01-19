@@ -79,7 +79,7 @@ COPY conf/* /etc/rstudio/
 
 # Install RStudio Server Pro --------------------------------------------------#
 ARG RSP_VERSION=1.4.1103-3
-ARG RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/xenial/amd64
+ARG RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 RUN apt-get update --fix-missing \
     && curl -O ${RSP_DOWNLOAD_URL}/rstudio-server-pro-${RSP_VERSION}-amd64.deb \
     && gdebi --non-interactive rstudio-server-pro-${RSP_VERSION}-amd64.deb \
