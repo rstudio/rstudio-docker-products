@@ -46,6 +46,10 @@ elif [[ "${DOCKER_TAG}" == *"preview"* ]]; then
   replace_version $version
   replace_base_url_s3
 
+elif [[ "${DOCKER_TAG}" =~ [0-9\.\-]+ ]]; then
+  echo "DOCKER_TAG looks like a version number: ${DOCKER_TAG}"
+  echo "Building DOCKER_TAG defined version"
+  replace_version ${DOCKER_TAG}
 else
   echo "No version customization necessary"
 fi
