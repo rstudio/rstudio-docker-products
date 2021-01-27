@@ -14,7 +14,8 @@ RUN apt-get update --fix-missing \
     && apt-get install -y --no-install-recommends \
         gdebi-core \
         libssl1.0.0 \
-        libssl-dev
+        libssl-dev \
+	sudo
 
 RUN mkdir -p /var/run/rstudio-pm
 ENV PATH /opt/rstudio-pm/bin:$PATH

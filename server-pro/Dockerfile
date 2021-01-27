@@ -27,6 +27,7 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
         libxrender1 \
         openssh-client \
         rrdtool \
+	sudo \
         wget \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
