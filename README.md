@@ -6,6 +6,9 @@ Docker images for RStudio Professional Products
 Also remember to deactivate the license before stopping the container or it will count as an active license,
 look at the `startup.sh` scripts for an example on how to do this automatically.
 
+**IMPORTANT:** [All images and product versions are subject to our support policy, and outdated images will be
+removed. Please make plans to update accordingly](https://rstudio.com/about/platform-support/#supported-pro-product-versions)
+
 # RStudio Server Pro
 
 #### Simple Example
