@@ -22,6 +22,7 @@ RUN apt-get update --fix-missing \
         gdebi-core \
         libssl1.0.0 \
         libssl-dev git \
+	sudo \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -47,7 +48,7 @@ COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
 
 # Download RStudio Connect -----------------------------------------------------#
-ARG RSC_VERSION=1.8.4.2-2
+ARG RSC_VERSION=1.8.6.1
 RUN apt-get update --fix-missing \
     && curl -L -o rstudio-connect.deb https://cdn.rstudio.com/connect/$(echo $RSC_VERSION | sed -r 's/([0-9]\.[0-9]\.[0-9])(-dev)?[-\.0-9]*/\1/')/rstudio-connect_${RSC_VERSION}~ubuntu18_amd64.deb \
     && gdebi -n rstudio-connect.deb \
