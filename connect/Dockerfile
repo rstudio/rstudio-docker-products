@@ -22,6 +22,7 @@ RUN apt-get update --fix-missing \
         gdebi-core \
         libssl1.0.0 \
         libssl-dev git \
+	sudo \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
