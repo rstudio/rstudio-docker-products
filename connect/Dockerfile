@@ -32,8 +32,8 @@ RUN mkdir /opt/Python && \
     curl -fsSL -o /opt/Python/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh  && \
     chmod 755 /opt/Python/miniconda.sh && \
     /opt/Python/miniconda.sh -b -p /opt/Python/miniconda && \
-    sudo /opt/Python/miniconda/bin/conda create --quiet --yes --prefix /opt/Python/"${PYTHON_VERSION}" --channel conda-forge python="${PYTHON_VERSION}"  "pip<20.1" && \
-    /opt/python/${PYTHON_VERSION}/bin/pip install 'virtualenv<20' && \
+    /opt/Python/miniconda/bin/conda create --quiet --yes --prefix /opt/Python/"${PYTHON_VERSION}" --channel conda-forge python="${PYTHON_VERSION}"
+RUN /opt/python/${PYTHON_VERSION}/bin/pip install 'virtualenv<20' && \
     /opt/python/${PYTHON_VERSION}/bin/pip install --upgrade setuptools
 ENV PATH /opt/python/${PYTHON_VERSION}/bin:$PATH
 
