@@ -1,4 +1,4 @@
-ARG R_VERSION=3.6.2
+ARG R_VERSION=4.0.2
 FROM rstudio/r-base:${R_VERSION}-bionic
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
@@ -27,14 +27,12 @@ RUN apt-get update --fix-missing \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python  -------------------------------------------------------------#
-ARG PYTHON_VERSION=3.6.5
-RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5.4-Linux-x86_64.sh && \
-    /bin/bash /tmp/miniconda.sh -b -p /opt/python/${PYTHON_VERSION} && \
-    rm /tmp/miniconda.sh && \
-    /opt/python/${PYTHON_VERSION}/bin/conda clean -tipsy && \
-    ln -s /opt/python/${PYTHON_VERSION}/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
-    echo "PATH=/opt/python/${PYTHON_VERSION}/bin:$PATH" > /etc/profile.d/python.sh && \
-    /opt/python/${PYTHON_VERSION}/bin/conda clean -a && \
+ARG PYTHON_VERSION=3.7.7
+RUN mkdir /opt/Python && \
+    curl -fsSL -o /opt/Python/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh  && \
+    chmod 755 /opt/Python/miniconda.sh && \
+    /opt/Python/miniconda.sh -b -p /opt/Python/miniconda && \
+    sudo /opt/Python/miniconda/bin/conda create --quiet --yes --prefix /opt/Python/"${PYTHON_VERSION}" --channel conda-forge python="${PYTHON_VERSION}"  "pip<20.1" && \
     /opt/python/${PYTHON_VERSION}/bin/pip install 'virtualenv<20' && \
     /opt/python/${PYTHON_VERSION}/bin/pip install --upgrade setuptools
 ENV PATH /opt/python/${PYTHON_VERSION}/bin:$PATH
@@ -55,6 +53,18 @@ RUN apt-get update --fix-missing \
     && rm -rf rstudio-connect.deb \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+# Download and add drivers 
+ARG DRIVERS_VERSION=1.6.1
+RUN apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y unixodbc unixodbc-dev gdebi && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN curl -O https://drivers.rstudio.org/7C152C12/installer/rstudio-drivers_${DRIVERS_VERSION}_amd64.deb && \
+    apt-get update && \
+    DEBIAN_FRONTEND=noninteractive gdebi --non-interactive rstudio-drivers_${DRIVERS_VERSION}_amd64.deb && \
+    rm -rf /var/lib/apt/lists/* && \
+    cp /opt/rstudio-drivers/odbcinst.ini.sample /etc/odbcinst.ini
 
 EXPOSE 3939/tcp
 ENV RSC_LICENSE ""
