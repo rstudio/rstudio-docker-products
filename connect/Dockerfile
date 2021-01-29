@@ -31,8 +31,8 @@ ARG PYTHON_VERSION=3.7.7
 RUN mkdir /opt/python && \
     curl -fsSL -o /opt/python/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh  && \
     chmod 755 /opt/python/miniconda.sh && \
-    /opt/python/miniconda.sh -b -p /opt/Python/miniconda && \
-    /opt/python/miniconda/bin/conda create --quiet --yes --prefix /opt/Python/"${PYTHON_VERSION}" --channel conda-forge python="${PYTHON_VERSION}"
+    /opt/python/miniconda.sh -b -p /opt/python/miniconda && \
+    /opt/python/miniconda/bin/conda create --quiet --yes --prefix /opt/python/"${PYTHON_VERSION}" --channel conda-forge python="${PYTHON_VERSION}"
 RUN /opt/python/${PYTHON_VERSION}/bin/pip install 'virtualenv<20' && \
     /opt/python/${PYTHON_VERSION}/bin/pip install --upgrade setuptools
 ENV PATH /opt/python/${PYTHON_VERSION}/bin:$PATH
