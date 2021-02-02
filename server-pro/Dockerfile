@@ -45,9 +45,9 @@ RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5
 RUN /opt/python/${PYTHON_VERSION}/bin/pip install --no-cache-dir \
                 pip==20.0.2 \
                 jupyter==1.0.0 \
-                jupyterlab==2.1.0 \
-                rsp_jupyter==1.2.5003 \
-                rsconnect_jupyter==1.3.3.1
+                jupyterlab==3.0.5 \
+                rsp_jupyter \
+                rsconnect_jupyter
 
 # Install Jupyter extensions
 RUN /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter && \
