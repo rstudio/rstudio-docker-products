@@ -45,7 +45,7 @@ RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5
 RUN /opt/python/${PYTHON_VERSION}/bin/pip install --no-cache-dir \
                 pip==20.0.2 \
                 jupyter==1.0.0 \
-                jupyterlab==3.0.5 \
+                'jupyterlab<3.0.0' \
                 rsp_jupyter \
                 rsconnect_jupyter
 
