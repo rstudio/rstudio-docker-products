@@ -4,8 +4,7 @@ set -e
 
 echo "Building DOCKER_TAG=${DOCKER_TAG}"
 
-# TODO: enable when running on ubuntu
-#apt-get update -qq && apt-get install -y jq
+apt-get update -qq && apt-get install -y jq
 
 replace_version() {
   sed -i.bak "s/^RSC_VERSION=.*/RSC_VERSION=$1/g" ./.env
