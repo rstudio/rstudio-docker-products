@@ -21,7 +21,7 @@ if [[ "${DOCKER_TAG}" == *"daily"* ]]; then
   rawpage=`curl -s https://dailies.rstudio.com/rstudioserver/pro/bionic/x86_64/`
 
   # thanks to https://stackoverflow.com/a/44490624/6570011
-  if [[ "$rawpage" =~ rstudio-server-pro-([0-9\.\-]*)-amd64.deb ]]; then
+  if [[ "$rawpage" =~ rstudio-workbench-([0-9\.\-]*)-amd64.deb ]]; then
     match="${BASH_REMATCH[1]}"
     echo "Latest version found: $match"
     replace_version $match
