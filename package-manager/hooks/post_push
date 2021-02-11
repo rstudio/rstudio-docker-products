@@ -10,6 +10,11 @@ imageStart=$(expr index "$IMAGE_NAME" /)
 repoName=${IMAGE_NAME:0:tagStart-1}
 imageName=${IMAGE_NAME:imageStart:${#IMAGE_NAME}-tagStart-1}
 
+if [ "${DOCKER_TAG}" != "latest" ] && [[ "${repoName}" != *"preview"* ]]; then
+  echo "Non-latest build - exiting and not tagging version number"
+  exit 0
+fi
+
 # use xargs -0 (BSD) or xargs -d '\n' (GNU) to read env vars with spaces
 # https://stackoverflow.com/questions/19331497/set-environment-variables-from-file-of-key-value-pairs
 export $(grep -v '^#' .env | xargs)

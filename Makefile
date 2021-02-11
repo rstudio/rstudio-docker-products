@@ -1,8 +1,8 @@
 R_VERSION ?= 3.6.2
 
-RSP_VERSION ?= 1.3.1073-1
-RSC_VERSION ?= 1.8.4.2-2
-RSPM_VERSION ?= 1.1.6.1-5
+RSP_VERSION ?= 1.4.1103-4
+RSC_VERSION ?= 1.8.6.1
+RSPM_VERSION ?= 1.2.0-27
 
 RSP_LICENSE ?= ""
 RSC_LICENSE ?= ""
@@ -85,6 +85,14 @@ run-server-pro:  ## Run RSP container
 rsc: connect
 connect:  ## Build RSC image
 	docker build -t rstudio/rstudio-connect:$(RSC_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSC_VERSION=$(RSC_VERSION) connect
+
+# TODO: a way to run this more like DockerHub does...
+#   ideally it would run pre_build and clean up after itself by removing changes to the .env file
+connect-hook:
+	cd ./connect && \
+	DOCKERFILE_PATH=Dockerfile \
+	IMAGE_NAME=rstudio/rstudio-connect:test \
+	./hooks/build
 
 
 test-rsc: test-connect

@@ -15,13 +15,13 @@ replace_base_url_s3() {
 
 # if daily build
 # replace version number and download url
-if [ "${DOCKER_TAG}" == "daily" ]; then
+if [[ "${DOCKER_TAG}" == *"daily"* ]]; then
   echo "--> Running daily"
   # get daily version
   rawpage=`curl -s https://dailies.rstudio.com/rstudioserver/pro/bionic/x86_64/`
 
   # thanks to https://stackoverflow.com/a/44490624/6570011
-  if [[ "$rawpage" =~ rstudio-server-pro-([0-9\.\-]*)-amd64.deb ]]; then
+  if [[ "$rawpage" =~ rstudio-workbench-([0-9\.\-]*)-amd64.deb ]]; then
     match="${BASH_REMATCH[1]}"
     echo "Latest version found: $match"
     replace_version $match
@@ -31,7 +31,7 @@ if [ "${DOCKER_TAG}" == "daily" ]; then
     echo "ERROR parsing latest daily version"
     exit 1
   fi
-elif [ "${DOCKER_TAG}" == "preview" ]; then
+elif [[ "${DOCKER_TAG}" == *"preview"* ]]; then
   echo "--> Running preview"
   # get raw downloads.json
   rawjson=`curl -s https://rstudio.com/wp-content/downloads.json`
@@ -46,6 +46,10 @@ elif [ "${DOCKER_TAG}" == "preview" ]; then
   replace_version $version
   replace_base_url_s3
 
+elif [[ "${DOCKER_TAG}" =~ [0-9\.\-]+ ]]; then
+  echo "DOCKER_TAG looks like a version number: ${DOCKER_TAG}"
+  echo "Building DOCKER_TAG defined version"
+  replace_version ${DOCKER_TAG}
 else
   echo "No version customization necessary"
 fi

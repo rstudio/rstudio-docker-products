@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -e
+
+echo "Building DOCKER_TAG=${DOCKER_TAG}"
+
+# TODO: enable when running on ubuntu
+#apt-get update -qq && apt-get install -y jq
+
+replace_version() {
+  sed -i.bak "s/^RSPM_VERSION=.*/RSPM_VERSION=$1/g" ./.env
+}
+
+# if daily build
+# replace version number and download url
+if [[ "${DOCKER_TAG}" == *"daily"* ]]; then
+  echo "--> Running daily"
+  echo "--> daily not enabled yet - skipping"
+
+elif [[ "${DOCKER_TAG}" =~ [0-9\.\-]+ ]]; then
+  echo "DOCKER_TAG looks like a version number: ${DOCKER_TAG}"
+  echo "Building DOCKER_TAG defined version"
+  replace_version ${DOCKER_TAG}
+else
+  echo "No version customization necessary"
+fi
+
+echo '--> Showing .env file'
+cat .env

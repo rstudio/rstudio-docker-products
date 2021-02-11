@@ -27,6 +27,7 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
         libxrender1 \
         openssh-client \
         rrdtool \
+	sudo \
         wget \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -44,9 +45,9 @@ RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5
 RUN /opt/python/${PYTHON_VERSION}/bin/pip install --no-cache-dir \
                 pip==20.0.2 \
                 jupyter==1.0.0 \
-                jupyterlab==2.1.0 \
-                rsp_jupyter==1.2.5003 \
-                rsconnect_jupyter==1.3.3.1
+                'jupyterlab<3.0.0' \
+                rsp_jupyter \
+                rsconnect_jupyter
 
 # Install Jupyter extensions
 RUN /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter && \
@@ -80,7 +81,7 @@ RUN chmod +x /usr/local/bin/startup.sh \
 COPY conf/* /etc/rstudio/
 
 # Install RStudio Server Pro --------------------------------------------------#
-ARG RSP_VERSION=1.3.1073-1
+ARG RSP_VERSION=1.4.1103-4
 ARG RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 RUN apt-get update --fix-missing \
     && curl -O ${RSP_DOWNLOAD_URL}/rstudio-server-pro-${RSP_VERSION}-amd64.deb \
