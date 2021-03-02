@@ -7,15 +7,15 @@ set -x
 deactivate() {
     echo "== Exiting =="
     echo " --> TAIL 100 rstudio-server.log"
-    tail -100 /var/log/rstudio-server.log
+    tail -n 100 /var/log/rstudio-server.log
     echo " --> TAIL 100 rstudio-kubernetes-launcher.log"
-    tail -100 /var/lib/rstudio-launcher/Kubernetes/rstudio-kubernetes-launcher.log
+    tail -n 100 /var/lib/rstudio-launcher/Kubernetes/rstudio-kubernetes-launcher.log
     echo " --> TAIL 100 rstudio-local-launcher*.log"
-    tail -100 /var/lib/rstudio-launcher/Local/rstudio-local-launcher*.log
+    tail -n 100 /var/lib/rstudio-launcher/Local/rstudio-local-launcher*.log
     echo " --> TAIL 100 rstudio-launcher.log"
-    tail -100 /var/lib/rstudio-launcher/rstudio-launcher.log
+    tail -n 100 /var/lib/rstudio-launcher/rstudio-launcher.log
     echo " --> TAIL 100 monitor/log/rstudio-server.log"
-    tail -100 /var/lib/rstudio-server/monitor/log/rstudio-server.log
+    tail -n 100 /var/lib/rstudio-server/monitor/log/rstudio-server.log
 
     echo "Deactivating license ..."
     rstudio-server license-manager deactivate >/dev/null 2>&1
