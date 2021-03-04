@@ -60,6 +60,13 @@ fi
 
 tail -n 100 -f /var/lib/rstudio-server/monitor/log/*.log /var/lib/rstudio-launcher/*.log /var/lib/rstudio-launcher/Local/*.log /var/log/rstudio-launcher.log /var/log/rstudio-server.log &
 
+if [[ -n "${POST_CONF_SCRIPT}" && -f "${POST_CONF_SCRIPT}" ]]; then
+    echo "POST_CONF_SCRIPT is set, run script: ${POST_CONF_SCRIPT}"
+    bash "${POST_CONF_SCRIPT}"
+else
+    echo "POST_CONF_SCRIPT is not set, skipped"
+fi
+
 # the main container process
 # cannot use "exec" or the "trap" will be lost
 /usr/lib/rstudio-server/bin/rserver --server-daemonize 0 > /var/log/rstudio-server.log 2>&1
