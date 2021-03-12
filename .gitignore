@@ -2,3 +2,4 @@
 data
 *.lic
 .idea/
+tmp/
