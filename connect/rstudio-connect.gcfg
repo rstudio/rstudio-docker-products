@@ -19,7 +19,7 @@ DataDir = /data
 ; in terms of that proxy.
 ;
 ; Address = https://rstudio-connect.company.com
-Address =
+Address = http://localhost:3939
 
 [HTTP]
 ; RStudio Connect will listen on this network address for HTTP connections.
