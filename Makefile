@@ -4,6 +4,8 @@ RSP_VERSION ?= 1.4.1106-5
 RSC_VERSION ?= 1.8.6.2
 RSPM_VERSION ?= 1.2.2-4
 
+CODE_SERVER_VERSION ?= 3.2.0
+
 RSP_LICENSE ?= ""
 RSC_LICENSE ?= ""
 RSPM_LICENSE ?= ""
@@ -52,6 +54,8 @@ update-versions:  ## Update the version files for all products
 	@sed -i '' "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" connect/Dockerfile
 	@sed -i '' "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" package-manager/Dockerfile
 	@sed -i '' "s|^RVersion.*=.*|RVersion = /opt/R/${R_VERSION}/|g" package-manager/rstudio-pm.gcfg
+	@sed -i '' "s/^CODE_SERVER_VERSION=.*/CODE_SERVER_VERSION=${CODE_SERVER_VERSION}/g" server-pro/.env
+	@sed -i '' "s/^CODE_SERVER_VERSION=.*/CODE_SERVER_VERSION=${CODE_SERVER_VERSION}/g" server-pro/Dockerfile
 
 
 rsp: server-pro

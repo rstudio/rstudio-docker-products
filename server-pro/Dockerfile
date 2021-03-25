@@ -56,6 +56,18 @@ RUN /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix -
     /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter && \
     /opt/python/${PYTHON_VERSION}/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
 
+# Install VSCode code-server --------------------------------------------------#
+
+# versions > 3.4.0 require a "v" prefix
+ARG CODE_SERVER_VERSION=3.2.0
+
+# TODO: remove the temporary regex to resolve different behavior for code-server
+RUN curl -o code-server.tar.gz -L https://github.com/cdr/code-server/releases/download/$( echo $CODE_SERVER_VERSION | sed -r 's/(3\.2\.0)/\1/; t; s/([0-9]\.[0-9]\.[0-9])/v\1/' )/code-server-${CODE_SERVER_VERSION}-linux-$( echo $CODE_SERVER_VERSION | sed -r 's/(3\.2\.0)/x86_64/; t; s/([0-9]\.[0-9]\.[0-9])/amd64/' ).tar.gz && \
+    mkdir -p /opt/code-server && \
+    tar -zxvf ./code-server.tar.gz -C /opt/code-server/ --strip-components 1 && \
+    rm -f ./code-server.tar.gz
+
+
 # Runtime settings ------------------------------------------------------------#
 ARG TINI_VERSION=0.18.0
 RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini && \
