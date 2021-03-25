@@ -55,3 +55,9 @@ command:
     stdout: [
       "/usr/bin/openssl"
     ]
+  "/opt/code-server/code-server --version":
+    title: code_server_version_matches
+    exit-status: 0
+    stdout: [
+      "/{{ .Env.CODE_SERVER_VERSION }}/",
+    ]
