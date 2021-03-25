@@ -8,6 +8,7 @@ services:
     environment:
       # uses .env by default
       - RSP_VERSION
+      - CODE_SERVER_VERSION
     volumes:
       - "./test/run_tests.sh:/run_tests.sh"
       - "./test/goss.yaml:/tmp/goss.yaml"
