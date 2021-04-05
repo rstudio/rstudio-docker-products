@@ -5,8 +5,8 @@ services:
     build:
       context: ./server-pro
       args:
-        RSP_VERSION: 1.4.1103-4
-    image: rstudio/rstudio-server-pro:1.4.1103-4
+        RSP_VERSION: 1.4.1106-5
+    image: rstudio/rstudio-server-pro:1.4.1106-5
     privileged: true
     environment:
       RSP_LICENSE: ${RSP_LICENSE}
@@ -38,8 +38,8 @@ services:
     build:
       context: ./package-manager
       args:
-        RSPM_VERSION: 1.2.0-27
-    image: rstudio/rstudio-package-manager:1.2.0-27
+        RSPM_VERSION: 1.2.2-4
+    image: rstudio/rstudio-package-manager:1.2.2-4
     privileged: true
     environment:
       RSPM_LICENSE: ${RSPM_LICENSE}
