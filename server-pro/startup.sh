@@ -97,6 +97,8 @@ use_init_files /entrypoint.d/*
 if [ "$RSP_LAUNCHER" == "true" ]; then
   /usr/lib/rstudio-server/bin/rstudio-launcher > /var/log/rstudio-launcher.log 2>&1 &
   wait-for-it.sh localhost:5559 -t $RSP_LAUNCHER_TIMEOUT
+else
+  touch /var/log/rstudio-launcher.log
 fi
 
 tail -n 100 -f \
