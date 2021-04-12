@@ -6,9 +6,6 @@
 ; setting is configured.
 ;
 ; SenderEmail = account@company.com
-; The public URL to this RStudio Connect container. This might the address for
-; a proxy or the host running the Docker container.
-; Address = https://rstudio-connect.company.com
 
 ; The persistent data directory mounted into our container.
 DataDir = /data
@@ -19,6 +16,8 @@ DataDir = /data
 ; in terms of that proxy.
 ;
 ; Address = https://rstudio-connect.company.com
+
+; Placeholder value. Please replace
 Address = http://localhost:3939
 
 [HTTP]
