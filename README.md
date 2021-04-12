@@ -174,7 +174,8 @@ take effect.
 
 Be sure the config file has this fields:
 
-- `Server.Address` set to the exact URL that users will use to visit Connect
+- `Server.Address` set to the exact URL that users will use to visit Connect. A
+  placeholder `http://localhost:3939` is in use by default
 - `Server.DataDir` set to `/data/`
 - `HTTP.Listen`
 - `Python.Enabled` and `Python.Executable`
