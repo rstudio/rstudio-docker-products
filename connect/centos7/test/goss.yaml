@@ -1,0 +1,49 @@
+user:
+  rstudio-connect:
+    exists: true
+    uid: 999
+    gid: 999
+
+group:
+  rstudio-connect:
+    exists: true
+    gid: 999
+
+package:
+  rstudio-connect:
+    installed: true
+
+file:
+  /etc/rstudio-connect/license.lic:
+    # currently does not exist
+    # be sure it is NOT a directory
+    exists: false
+  /opt/rstudio-connect/:
+    exists: true
+  /opt/rstudio-connect/bin/connect:
+    exists: true
+
+# check product version
+command:
+  "/opt/rstudio-connect/bin/connect --version":
+    title: connect_version_matches
+    exit-status: 0
+    stdout: [
+      "/{{ .Env.RSC_VERSION }}/"
+    ]
+  # goss times out after 10 seconds
+  "timeout --signal=SIGINT 7 /opt/rstudio-connect/bin/connect --config /etc/rstudio-connect/rstudio-connect.gcfg":
+    title: connect_starts
+    # the timeout should stop connect, not a failure
+    exit-status: 124
+    # maybe optimistic that Connect finishes starting...
+    #stderr: [
+    #  "Starting HTTP listener on :3939"
+    #]
+  "/opt/R/3.6.2/bin/R --version":
+    title: r_version_match
+    exit-status: 0
+    stdout: [
+      "/3.6.2/"
+    ]
+
