@@ -34,6 +34,23 @@ services:
       - ./connect/rstudio-connect.gcfg:/etc/rstudio-connect/rstudio-connect.gcfg
       - ./data/rsc:/data
 
+  rstudio-connect-centos7:
+    build:
+      context: ./connect/centos7
+      args:
+        RSC_VERSION: 1.8.8
+    image: rstudio/rstudio-connect:1.8.8
+    privileged: true
+    environment:
+      RSC_LICENSE: ${RSC_LICENSE}
+      LICENSE_SERVER: ${RSC_LICENSE_SERVER}
+    ports:
+      - 3939:3939
+    volumes:
+      - ./connect/rstudio-connect.gcfg:/etc/rstudio-connect/rstudio-connect.gcfg
+      - ./data/rsc:/data
+
+
   rstudio-package-manager:
     build:
       context: ./package-manager
