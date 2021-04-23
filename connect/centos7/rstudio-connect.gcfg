@@ -33,7 +33,7 @@ Enabled = true
 Executable = /opt/python/3.6.5/bin/python
 
 [RPackageRepository "CRAN"]
-URL = https://packagemanager.rstudio.com/cran/__linux__/bionic/latest
+URL = https://packagemanager.rstudio.com/cran/__linux__/centos7/latest
 
 [RPackageRepository "RSPM"]
-URL = https://packagemanager.rstudio.com/cran/__linux__/bionic/latest
+URL = https://packagemanager.rstudio.com/cran/__linux__/centos7/latest
