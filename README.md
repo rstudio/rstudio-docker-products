@@ -464,7 +464,7 @@ http://apps.rstudio.com/deactivate-license/
 
 # Instructions for building
 
-After you have cloned [rstudio-docker-products](https://github.com/rstudio/,rstudio-docker-products), you can create your own containers fairly simply with the provided Makefile.
+After you have cloned [rstudio-docker-products](https://github.com/rstudio/rstudio-docker-products), you can create your own containers fairly simply with the provided Makefile.
 
 To build RStudio Server Pro:
 ```
@@ -479,13 +479,13 @@ To build RStudio Package Manager:
 make package-manager
 ```
 
-You can alter what exactly is built by changing server-pro/Dockerfile, connect/Dockerfile, and package-manager/Dockerfile. 
+You can alter what exactly is built by changing `server-pro/Dockerfile`, `connect/Dockerfile`, and `package-manager/Dockerfile`.
 
-You can then run what you've built to test out with the run commands.  For instance to run the server-pro container you've built:
+You can then run what you've built to test out with the `-run` commands.  For instance, to run the server-pro container you've built:
 ```
 make server-pro-run
 ```
 
 Note you must have a license in place, and all of the other instructions in separate sections above are still relevant.
 
-If you have created an image you want to use yourself, you can push to your own image repository system.  The images are named rstudio-server-pro, rstudio-connect, and rstudio-package-manager.
+If you have created an image you want to use yourself, you can push to your own image repository system.  The images are named `rstudio-server-pro`, `rstudio-connect`, and `rstudio-package-manager`.
