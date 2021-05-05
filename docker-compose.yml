@@ -2,6 +2,7 @@ version: "3.5"
 
 services:
   rstudio-server-pro:
+    container_name: rstudio-server-pro
     build:
       context: ./server-pro
       args:
@@ -19,6 +20,7 @@ services:
       - ./data/rsp:/home
 
   rstudio-connect:
+    container_name: rstudio-connect
     build:
       context: ./connect
       args:
@@ -35,6 +37,7 @@ services:
       - ./data/rsc:/data
 
   rstudio-package-manager:
+    container_name: rstudio-package-manager
     build:
       context: ./package-manager
       args:
