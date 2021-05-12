@@ -12,6 +12,7 @@ export $(grep -v '^#' .env | xargs)
 echo '--> Showing Environment Variables'
 echo "RSP_VERSION=${RSP_VERSION}"
 echo "RSP_DOWNLOAD_URL=${RSP_DOWNLOAD_URL}"
+echo "RSP_NAME=${RSP_NAME}"
 echo "IMAGE_NAME=${IMAGE_NAME}"
 echo "DOCKERFILE_PATH=${DOCKERFILE_PATH}"
 
@@ -22,4 +23,4 @@ echo "COMMIT_MSG=${COMMIT_MSG}"
 echo "DOCKER_REPO=${DOCKER_REPO}"
 echo "DOCKER_TAG=${DOCKER_TAG}"
 
-docker build --build-arg RSP_VERSION=${RSP_VERSION} --build-arg RSP_DOWNLOAD_URL=${RSP_DOWNLOAD_URL} -f $DOCKERFILE_PATH -t $IMAGE_NAME .
+docker build --build-arg RSP_NAME=${RSP_NAME} --build-arg RSP_VERSION=${RSP_VERSION} --build-arg RSP_DOWNLOAD_URL=${RSP_DOWNLOAD_URL} -f $DOCKERFILE_PATH -t $IMAGE_NAME .
