@@ -4,7 +4,7 @@ Docker images for RStudio Professional Products
 
 **IMPORTANT:** There are a few things you need to know before using these images:
 1. Running any RStudio professional products inside docker requires you to have a valid license for the product. Also remember to deactivate the license before stopping the container or it will count as an active license- the containers will try to do this automatically but you should ensure this works in your setup.
-1. These images are not currently supported by by the RStudio support team.
+1. The images themselves are not currently supported by the RStudio support team. You can ask questions of support if you are using these images, but the support team will not be able to help you with questions about the images.
 1. Outdated images will be
 removed when they leave the list of [supported Pro product versions](https://www.rstudio.com/support/). Please make plans to update accordingly.
 1. These containers may not meet your needs in terms of how fast dependencies are updated, base OS in use, or for other reasons. We provide [instructions for building](https://github.com/rstudio/rstudio-docker-products#instructions-for-building) for these cases.
@@ -482,7 +482,7 @@ make package-manager
 
 You can alter what exactly is built by changing `server-pro/Dockerfile`, `connect/Dockerfile`, and `package-manager/Dockerfile`.
 
-You can then run what you've built to test out with the `-run` commands.  For instance, to run the server-pro container you've built:
+You can then run what you've built to test out with the `run-` commands.  For instance, to run the server-pro container you've built:
 ```
 make run-server-pro
 ```
