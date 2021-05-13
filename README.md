@@ -484,7 +484,7 @@ You can alter what exactly is built by changing `server-pro/Dockerfile`, `connec
 
 You can then run what you've built to test out with the `-run` commands.  For instance, to run the server-pro container you've built:
 ```
-make server-pro-run
+make run-server-pro
 ```
 
 Note you must have a license in place, and all of the other instructions in separate sections above are still relevant.
