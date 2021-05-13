@@ -7,7 +7,7 @@ Docker images for RStudio Professional Products
 1. These images are not currently supported by by the RStudio support team.
 1. Outdated images will be
 removed when they leave the list of [supported Pro product versions](https://www.rstudio.com/support/). Please make plans to update accordingly.
-1. The docker stacks may not meet your needs in terms of how fast dependencies are updated, base OS in use, or for other reasons. We provide [instructions for building](https://github.com/rstudio/rstudio-docker-products#instructions-for-building) for these cases.
+1. These containers may not meet your needs in terms of how fast dependencies are updated, base OS in use, or for other reasons. We provide [instructions for building](https://github.com/rstudio/rstudio-docker-products#instructions-for-building) for these cases.
 
 # RStudio Server Pro
 
