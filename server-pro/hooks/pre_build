@@ -40,7 +40,7 @@ if [[ "${DOCKER_TAG}" == *"daily"* ]]; then
 elif [[ "${DOCKER_TAG}" == *"preview"* ]]; then
   echo "--> Running preview"
   # get raw downloads.json
-  rawjson=`curl -s https://rstudio.com/wp-content/downloads.json`
+  rawjson=`curl -sL https://rstudio.com/wp-content/downloads.json`
 
   # use jq to parse
   full_url=`echo -n $rawjson | jq -r '.rstudio.pro.preview.server.installer.bionic.url'`

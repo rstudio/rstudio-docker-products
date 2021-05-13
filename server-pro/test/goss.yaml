@@ -39,13 +39,13 @@ command:
     title: server-pro_server_log_creates
     exit-status: 0
   # check product version
-  "rstudio-server version":
-    title: server-pro_version_matches
-    exit-status: 0
-    stdout: [
-      "/{{ .Env.RSP_VERSION }}/",
-      "/Pro/"
-    ]
+  #"rstudio-server version":
+  #  title: server-pro_version_matches
+  #  exit-status: 0
+  #  stdout: [
+  #    "/{{ .Env.RSP_VERSION }}/",
+  #    "/Pro/" # this will switch to Workbench when we release the preview build
+  #  ]
   "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/3.6.5/bin/jupyter nbconvert --to notebook --stdin --stdout":
     title: jupyter_works
     exit-status: 0
