@@ -41,8 +41,8 @@ services:
     build:
       context: ./package-manager
       args:
-        RSPM_VERSION: 1.2.2-4
-    image: rstudio/rstudio-package-manager:1.2.2-4
+        RSPM_VERSION: 1.2.2.1-17
+    image: rstudio/rstudio-package-manager:1.2.2.1-17
     privileged: true
     environment:
       RSPM_LICENSE: ${RSPM_LICENSE}
