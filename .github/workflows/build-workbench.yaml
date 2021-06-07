@@ -9,8 +9,17 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    steps:
+    name: ${{ matrix.config.product}}
 
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {product: 'rstudio-workbench', dir: 'server-pro', prefix: RSP, version: 1.4.1717-3}
+          - {product: 'rstudio-connect', dir: 'connect', prefix: RSC, version: 1.8.8.2}
+          - {product: 'rstudio-package-manager', dir: 'package-manager', prefix: RSPM, version: 1.2.2.1-17}
+
+    steps:
       - name: Check Out Repo
         uses: actions/checkout@v2
 
@@ -36,23 +45,23 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          context: ./server-pro
-          file: ./server-pro/Dockerfile
+          context: ./${{ matrix.config.dir }}
+          file: ./${{ matrix.config.dir }}/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           tags: |
-            rstudio/rstudio-workbench:latest
-            rstudio/rstudio-workbench:1.4.1717-3
+            rstudio/${{ matrix.config.product }}:latest
+            rstudio/${{ matrix.config.product }}:${{ matrix.config.version }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           outputs: type=docker,dest=/tmp/image.tar
           build-args: |
-            RSP_VERSION=1.4.1717-3
+            RSP_VERSION=${{ matrix.config.version }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: image
-          path: /tmp/image.tar
+          name: ${{ matrix.config.product }}-image
+          path: /tmp/${{ matrix.config.product }}-image.tar
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
@@ -70,16 +79,19 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
-          name: image
+          name: ${{ matrix.config.product}}-image
           path: /tmp
 
       - name: Load image
         run: |
-          docker load --input /tmp/image.tar
+          docker load --input /tmp/${{ matrix.config.product }}-image.tar
           docker image ls -a
       - name: Test image
         env:
-          IMAGE_NAME: rstudio/rstudio-workbench:1.4.1717-3
-          RSP_VERSION: 1.4.1717-3
+          IMAGE_NAME: rstudio/${{ matrix.config.product }}:${{ matrix.config.version }}
+          # because we cannot dynamically set env var names...
+          RSP_VERSION: ${{ matrix.config.version }}
+          RSC_VERSION: ${{ matrix.config.version }}
+          RSPM_VERSION: ${{ matrix.config.version }}
         run: |
-          docker-compose -f ./server-pro/docker-compose.test.yml run sut
+          docker-compose -f ./${{ matrix.config.dir }}/docker-compose.test.yml run sut
