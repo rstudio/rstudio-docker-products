@@ -74,7 +74,7 @@ jobs:
           docker image ls -a
       - name: Test image
         env:
-          IMAGE_NAME: rstudio/rstudio-server-pro:1.4.1717-3
+          IMAGE_NAME: rstudio/rstudio-workbench:1.4.1717-3
           RSP_VERSION: 1.4.1717-3
         run: |
           docker-compose -f ./server-pro/docker-compose.test.yml run sut
