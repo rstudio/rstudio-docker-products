@@ -69,6 +69,15 @@ jobs:
   test:
     runs-on: ubuntu-latest
     needs: build
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {product: 'rstudio-workbench', dir: 'server-pro', prefix: RSP, version: 1.4.1717-3}
+          - {product: 'rstudio-connect', dir: 'connect', prefix: RSC, version: 1.8.8.2}
+          - {product: 'rstudio-package-manager', dir: 'package-manager', prefix: RSPM, version: 1.2.2.1-17}
+
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v2
