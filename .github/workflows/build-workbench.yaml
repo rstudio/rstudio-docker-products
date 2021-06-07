@@ -4,7 +4,7 @@ on:
       - main
       - add-actions
 
-name: Workbench CI to Docker Hub
+name: Build and Test (latest)
 jobs:
 
   build:
@@ -39,7 +39,9 @@ jobs:
           context: ./server-pro
           file: ./server-pro/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
-          tags:  rstudio/rstudio-workbench:latest
+          tags: |
+            rstudio/rstudio-workbench:latest
+            rstudio/rstudio-workbench:1.4.1717-3
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           outputs: type=docker,dest=/tmp/image.tar
@@ -70,3 +72,9 @@ jobs:
         run: |
           docker load --input /tmp/image.tar
           docker image ls -a
+      - name: Test image
+        env:
+          IMAGE_NAME: rstudio/rstudio-server-pro:1.4.1717-3
+          RSP_VERSION: 1.4.1717-3
+        run: |
+          docker-compose -f ./server-pro/docker-compose.test.yml run sut
