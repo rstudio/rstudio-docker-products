@@ -53,7 +53,7 @@ jobs:
             rstudio/${{ matrix.config.product }}:${{ matrix.config.version }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-          outputs: type=docker,dest=/tmp/image.tar
+          outputs: type=docker,dest=/tmp/${{ matrix.config.product }}-image.tar
           build-args: |
             RSP_VERSION=${{ matrix.config.version }}
 
