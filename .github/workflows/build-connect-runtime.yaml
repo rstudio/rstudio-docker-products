@@ -14,6 +14,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     name: r${{ matrix.config.r }} py${{ matrix.config.py }} ${{ matrix.config.os }}
+    environment: build-and-push
 
     strategy:
       fail-fast: false
