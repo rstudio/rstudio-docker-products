@@ -8,7 +8,7 @@ on:
       - master
       - main
 
-name: RStudio Connect Runtime
+name: RStudio Content Base
 jobs:
 
   build:
@@ -21,15 +21,15 @@ jobs:
       matrix:
         config:
           # at least one image containing the older versions
-          - {r: '3.1.3', py: '2.7.18', os: 'ubuntu18.04'}
-          - {r: '3.2.5', py: '2.7.18', os: 'ubuntu18.04'}
-          - {r: '3.4.4', py: '3.6.13', os: 'ubuntu18.04'}
-          - {r: '3.5.3', py: '3.7.10', os: 'ubuntu18.04'}
+          - {r: '3.1.3', py: '2.7.18', os: 'bionic'}
+          - {r: '3.2.5', py: '2.7.18', os: 'bionic'}
+          - {r: '3.4.4', py: '3.6.13', os: 'bionic'}
+          - {r: '3.5.3', py: '3.7.10', os: 'bionic'}
           # latest two R/Python are built with both sets of combinations
-          - {r: '3.6.3', py: '3.8.8', os: 'ubuntu18.04'}
-          - {r: '3.6.3', py: '3.9.2', os: 'ubuntu18.04'}
-          - {r: '4.0.4', py: '3.8.8', os: 'ubuntu18.04'}
-          - {r: '4.0.4', py: '3.9.2', os: 'ubuntu18.04'}
+          - {r: '3.6.3', py: '3.8.8', os: 'bionic'}
+          - {r: '3.6.3', py: '3.9.2', os: 'bionic'}
+          - {r: '4.0.4', py: '3.8.8', os: 'bionic'}
+          - {r: '4.0.4', py: '3.9.2', os: 'bionic'}
 
     steps:
       - name: Check Out Repo
@@ -70,8 +70,8 @@ jobs:
           file: ./connect-runtime/${{ matrix.config.os }}/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           tags: |
-            rstudio/rstudio-connect-runtime:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
-            ghcr.io/rstudio/rstudio-connect-runtime:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
+            rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
+            ghcr.io/rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           push: ${{ github.ref == 'refs/head/main' }}
