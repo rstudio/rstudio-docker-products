@@ -141,7 +141,16 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
+      - name: Login to ghcr.io
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.BUILD_PAT }}
+
       - name: Push image(s) to Docker Hub
         run: |
           docker push rstudio/${{ matrix.config.product }}:${{ matrix.config.version }}
           docker push rstudio/${{ matrix.config.product }}:latest
+          docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.version }}
+          docker push ghcr.io/rstudio/${{ matrix.config.product }}:latest
