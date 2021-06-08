@@ -9,7 +9,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    name: ${{ matrix.config.product}}
+    name: build-${{ matrix.config.product}}
 
     # beware - several copies of matrix below
     strategy:
@@ -64,7 +64,7 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-    name: ${{ matrix.config.product}}
+    name: test-${{ matrix.config.product}}
     needs: build
 
     strategy:
@@ -105,9 +105,9 @@ jobs:
 
   push:
     runs-on: ubuntu-latest
-    name: ${{ matrix.config.product}}
     needs: test
     if: ${{ github.ref == 'refs/head/main' }}
+    name: push-${{ matrix.config.product}}
 
     strategy:
       fail-fast: false
