@@ -10,7 +10,7 @@
 TAG_BASE?=rstudio/rstudio-connect-content-init-preview
 RSC_VERSION?=1.8.8.3-dev295
 
-all: push
+all: build
 .PHONY: all
 
 # Builds the image using a given RSC distribution for runtime artifacts.
