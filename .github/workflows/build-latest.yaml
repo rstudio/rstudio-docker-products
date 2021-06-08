@@ -2,7 +2,9 @@ on:
   push:
     branches:
       - main
-      - add-actions
+  pull_request:
+    branches:
+      - main
 
 name: Build and Test (latest)
 jobs:
@@ -106,7 +108,7 @@ jobs:
   push:
     runs-on: ubuntu-latest
     needs: test
-    if: ${{ github.ref == 'refs/head/main' }}
+    if: ${{ github.ref == 'refs/heads/main' }}
     name: push-${{ matrix.config.product}}
     environment: build-and-push
 
