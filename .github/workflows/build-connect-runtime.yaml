@@ -23,13 +23,15 @@ jobs:
           # at least one image containing the older versions
           - {r: '3.1.3', py: '2.7.18', os: 'bionic'}
           - {r: '3.2.5', py: '2.7.18', os: 'bionic'}
+          - {r: '3.3.3', py: '3.6.13', os: 'bionic'}
           - {r: '3.4.4', py: '3.6.13', os: 'bionic'}
           - {r: '3.5.3', py: '3.7.10', os: 'bionic'}
-          # latest two R/Python are built with both sets of combinations
           - {r: '3.6.3', py: '3.8.8', os: 'bionic'}
-          - {r: '3.6.3', py: '3.9.2', os: 'bionic'}
-          - {r: '4.0.4', py: '3.8.8', os: 'bionic'}
-          - {r: '4.0.4', py: '3.9.2', os: 'bionic'}
+          # latest two R/Python are built with both sets of combinations
+          - {r: '4.0.5', py: '3.8.8', os: 'bionic'}
+          - {r: '4.0.5', py: '3.9.2', os: 'bionic'}
+          - {r: '4.1.0', py: '3.8.8', os: 'bionic'}
+          - {r: '4.1.0', py: '3.9.2', os: 'bionic'}
 
     steps:
       - name: Check Out Repo
