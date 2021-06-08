@@ -108,6 +108,7 @@ jobs:
     needs: test
     if: ${{ github.ref == 'refs/head/main' }}
     name: push-${{ matrix.config.product}}
+    environment: build-and-push
 
     strategy:
       fail-fast: false
