@@ -14,8 +14,8 @@ RUN mkdir -p /rsc-staging && \
     cd /rsc-staging && \
     curl -fsSL -o rstudio-connect-runtime.tar.gz https://cdn.rstudio.com/connect/$(echo $RSC_VERSION | sed -r 's/([0-9]\.[0-9]\.[0-9]).*/\1/')/rstudio-connect-runtime-${RSC_VERSION}.tar.gz && \
     mkdir -p /opt/rstudio-connect-runtime && \
-    chmod 755 /opt/rstudio-connect-runtime && \
     tar -C /opt/rstudio-connect-runtime -xf rstudio-connect-runtime.tar.gz && \
+    chmod 755 /opt/rstudio-connect-runtime && \
     cd / && \
     rm -rf /rsc-staging
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
