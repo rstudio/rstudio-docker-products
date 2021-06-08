@@ -1,4 +1,8 @@
-# Connect Content Init Container
+> PRE-RELEASE. DO NOT USE
+
+# [RStudio Connect is located here](../connect)
+
+# RStudio Connect Content Init Container
 
 This directory contains a Dockerfile and script that will create a "copy
 container" to copy runtime components from a release package into a target
