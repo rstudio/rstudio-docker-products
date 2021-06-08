@@ -8,7 +8,7 @@ on:
       - master
       - main
 
-name: Build and Test (latest)
+name: RStudio Connect Runtime
 jobs:
 
   build:
