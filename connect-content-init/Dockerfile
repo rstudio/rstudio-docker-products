@@ -1,5 +1,5 @@
-# Versioned tag from https://hub.docker.com/_/ubuntu/
-FROM ubuntu:20.04
+# Tag from https://hub.docker.com/_/ubuntu/
+FROM ubuntu:focal
 MAINTAINER RStudio Connect <rsconnect@rstudio.com>
 # Install required tools:
 # - curl is used to download the runtime tar.gz
