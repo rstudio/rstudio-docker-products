@@ -13,7 +13,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    name: r${{ matrix.config.r }} py${{ matrix.config.py }} ${{ matrix.config.os }}
+    name: r${{ matrix.config.r }} py${{ matrix.config.py }} ${{ matrix.config.os }} ${{ github.ref }}
 
     # this is copied below
     strategy:
@@ -79,7 +79,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     if: ${{ github.ref == 'refs/head/main' }}
-    name: push-r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
+    name: push-r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }} ${{ github.ref }}
     environment: build-and-push
 
     # this is copied below
