@@ -2,11 +2,12 @@ version: "3.5"
 
 services:
   rstudio-server-pro:
+    container_name: rstudio-server-pro
     build:
       context: ./server-pro
       args:
-        RSP_VERSION: 1.4.1106-5
-    image: rstudio/rstudio-server-pro:1.4.1106-5
+        RSP_VERSION: 1.4.1717-3
+    image: rstudio/rstudio-server-pro:1.4.1717-3
     privileged: true
     environment:
       RSP_LICENSE: ${RSP_LICENSE}
@@ -19,11 +20,12 @@ services:
       - ./data/rsp:/home
 
   rstudio-connect:
+    container_name: rstudio-connect
     build:
       context: ./connect
       args:
-        RSC_VERSION: 1.8.6.2
-    image: rstudio/rstudio-connect:1.8.6.2
+        RSC_VERSION: 1.8.8.2
+    image: rstudio/rstudio-connect:1.8.8.2
     privileged: true
     environment:
       RSC_LICENSE: ${RSC_LICENSE}
@@ -35,11 +37,12 @@ services:
       - ./data/rsc:/data
 
   rstudio-package-manager:
+    container_name: rstudio-package-manager
     build:
       context: ./package-manager
       args:
-        RSPM_VERSION: 1.2.2-4
-    image: rstudio/rstudio-package-manager:1.2.2-4
+        RSPM_VERSION: 1.2.2.1-17
+    image: rstudio/rstudio-package-manager:1.2.2.1-17
     privileged: true
     environment:
       RSPM_LICENSE: ${RSPM_LICENSE}
