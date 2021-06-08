@@ -8,7 +8,7 @@
 #     make RSC_VERSION=<version string>
 
 TAG_BASE?=rstudio/rstudio-connect-content-init-preview
-RSC_VERSION?=1.8.8.3-dev236
+RSC_VERSION?=1.8.8.3-dev295
 
 all: push
 .PHONY: all
@@ -22,4 +22,3 @@ build:
 push: build
 	docker push $(TAG_BASE):$(RSC_VERSION)
 .PHONY: push
-
