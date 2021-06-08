@@ -11,8 +11,8 @@
 #     make tag
 #     make R_VERSION=4.0.4 PYTHON_VERSION=3.9.2 tag
 
-DISTRIBUTION=ubuntu18.04
-TAG_BASE=colearendt/rsc-runtime
+DISTRIBUTION=bionic
+TAG_BASE=rstudio/content-base
 R_VERSION=3.6.3
 PYTHON_VERSION=3.7.6
 
