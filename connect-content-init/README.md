@@ -37,6 +37,8 @@ docker run --rm -v $(pwd)/rstudio-connect-runtime:/mnt/rstudio-connect-runtime r
 
 You can see the different layers that make up the image:
 
-    docker history rstudio/rstudio-connect-content-init-preview:1.8.8.3-dev236
+```console
+docker history rstudio/rstudio-connect-content-init-preview:1.8.8.3-dev236
+```
 
 NOTE: almost all of the image size is pandoc.
