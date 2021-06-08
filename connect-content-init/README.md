@@ -27,7 +27,7 @@ You can observe what gets copied by the container:
 
 ```console
 mkdir rstudio-connect-runtime
-docker run -v $(pwd)/rstudio-connect-runtime:/mnt/rstudio-connect-runtime rstudio/rstudio-connect-content-init-preview:1.8.8.3-dev236
+docker run --rm -v $(pwd)/rstudio-connect-runtime:/mnt/rstudio-connect-runtime rstudio/rstudio-connect-content-init-preview:1.8.8.3-dev236
 # The rstudio-connect-runtime directory has been populated with the Connect
 # runtime components.
 ```
