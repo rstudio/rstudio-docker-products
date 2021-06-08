@@ -46,6 +46,19 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Login to ghcr.io
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.BUILD_PAT }}
+
       - name: Build and Push
         id: docker_build
         uses: docker/build-push-action@v2
@@ -55,6 +68,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           tags: |
             rstudio/rstudio-connect-runtime:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
+            ghcr.io/rstudio/rstudio-connect-runtime:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           push: ${{ github.ref == 'refs/head/main' }}
