@@ -1,5 +1,5 @@
 # Using dated tags from https://hub.docker.com/_/ubuntu/
-FROM ubuntu:bionic-20210118
+FROM ubuntu:bionic
 
 MAINTAINER RStudio Docker <docker@rstudio.com>
 
@@ -25,43 +25,43 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
         && \
         apt-get install -y \
         default-jdk \
-        #gdal-bin \
+        gdal-bin \
         git \
-        #imagemagick \
+        imagemagick \
         libcairo2-dev \
         libcurl4-openssl-dev \
-        #libfontconfig1-dev \
-        #libfreetype6-dev \
-        #libfribidi-dev \
-        #libgdal-dev \
-        #libgeos-dev \
-        #libgl1-mesa-dev \
+        libfontconfig1-dev \
+        libfreetype6-dev \
+        libfribidi-dev \
+        libgdal-dev \
+        libgeos-dev \
+        libgl1-mesa-dev \
         libglpk-dev \
-        #libglu1-mesa-dev \
-        #libgmp3-dev \
-        #libharfbuzz-dev \
-        #libicu-dev \
+        libglu1-mesa-dev \
+        libgmp3-dev \
+        libharfbuzz-dev \
+        libicu-dev \
         libjpeg-dev \
-        #libmagick++-dev \
-        #libmysqlclient-dev \
+        libmagick++-dev \
+        libmysqlclient-dev \
         libpng-dev \
         libpq-dev \
         libproj-dev \
         libsodium-dev \
-        #libssh2-1-dev \
+        libssh2-1-dev \
         libssl-dev \
-        #libtiff-dev \
-        #libudunits2-dev \
-        #libv8-dev \
+        libtiff-dev \
+        libudunits2-dev \
+        libv8-dev \
         libxml2-dev \
         make \
         perl \
-        #tcl \
-        #tk \
-        #tk-dev \
-        #tk-table \
-        #unixodbc-dev \
-        #zlib1g-dev \
+        tcl \
+        tk \
+        tk-dev \
+        tk-table \
+        unixodbc-dev \
+        zlib1g-dev \
         && \
         rm -rf /var/lib/apt/lists/*
 
@@ -69,14 +69,16 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 
 # From https://github.com/rstudio/r-docker/blob/master/base/bionic/Dockerfile
 
-RUN apt-get update && \
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
     apt-get install -y wget && \
     rm -rf /var/lib/apt/lists/* && \
     wget -qO- "https://yihui.org/tinytex/install-bin-unix.sh" | sh && \
     /root/.TinyTeX/bin/*/tlmgr path remove && \
     mv /root/.TinyTeX/ /opt/TinyTeX && \
     /opt/TinyTeX/bin/*/tlmgr option sys_bin /usr/local/bin && \
-    /opt/TinyTeX/bin/*/tlmgr path add
+    /opt/TinyTeX/bin/*/tlmgr path add && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install R -------------------------------------------------------------------#
 
@@ -117,4 +119,3 @@ RUN curl -fsSL -o miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-${
     && rm -f miniconda.sh \
     # remove miniconda too, for size
     && rm -rf /opt/miniconda
-
