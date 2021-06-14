@@ -50,8 +50,8 @@ jobs:
           tags: |
             rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}latest
             rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-            ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}latest
-            ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
+          #  ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}latest
+          #  ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           outputs: type=docker,dest=/tmp/${{ matrix.config.tag_prefix }}${{ matrix.config.product }}-image.tar
