@@ -1,5 +1,5 @@
 ARG RSP_VERSION
-FROM ghcr.io/rstudio/r-session-complete:bionic-${RSP_VERSION}
+FROM rstudio/r-session-complete:bionic-${RSP_VERSION}
 
 RUN apt-get update -qq \
     && apt-get install -y \
