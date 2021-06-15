@@ -12,4 +12,4 @@ RUN apt-get update -qq \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# TODO: update the entrypoint...
+COPY startup.sh /usr/local/bin/startup.sh
