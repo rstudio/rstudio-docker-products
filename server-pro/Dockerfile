@@ -32,6 +32,17 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Add another R version -------------------------------------------------------#
+
+ARG R_VERSION_ALT=4.1.0
+RUN apt-get update -qq && \
+    curl -O https://cdn.rstudio.com/r/ubuntu-1804/pkgs/r-${R_VERSION_ALT}_1_amd64.deb && \
+    DEBIAN_FRONTEND=noninteractive gdebi --non-interactive r-${R_VERSION_ALT}_1_amd64.deb && \
+    rm -f ./r-${R_VERSION_ALT}_1_amd64.deb \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+
 # Install Python  -------------------------------------------------------------#
 ARG PYTHON_VERSION=3.6.5
 RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5.4-Linux-x86_64.sh && \
