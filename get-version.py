@@ -6,6 +6,12 @@ import argparse
 import sys
 
 
+def clean_product_version(version):
+    if version == 'latest':
+        version = 'release'
+    return version
+
+
 def clean_product_selection(product):
     pref = re.compile('^rstudio-')
     product = pref.sub('', product)
@@ -105,6 +111,8 @@ if __name__ == "__main__":
     # clean off "rstudio-" prefix
     # TODO: allow aliases?
     selected_product = clean_product_selection(selected_product)
+
+    version_type = clean_product_version(version_type)
 
     if selected_product not in ['workbench', 'package-manager', 'connect']:
         print(
