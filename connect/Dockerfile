@@ -27,7 +27,7 @@ RUN apt-get update --fix-missing \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python  -------------------------------------------------------------#
-ARG PYTHON_VERSION=3.9.5
+ARG PYTHON_VERSION=3.6.5
 RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5.4-Linux-x86_64.sh && \
     /bin/bash /tmp/miniconda.sh -b -p /opt/python/${PYTHON_VERSION} && \
     rm /tmp/miniconda.sh && \
