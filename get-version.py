@@ -40,6 +40,26 @@ def rstudio_workbench_preview():
     return downloads_json['rstudio']['pro']['preview']['version']
 
 
+def get_local_version(product):
+    if product == 'workbench':
+        prefix = 'RSP'
+    elif product == 'connect':
+        prefix = 'RSC'
+    elif product == 'package-manager':
+        prefix = 'RSPM'
+    else:
+        raise ValueError(f'Invalid product {product}')
+
+    with open('Makefile', 'r') as f:
+        content = f.read()
+
+    vers = re.compile(f'{prefix}_VERSION \?= (.*)')
+    res = vers.search(content)
+    # from the first capture group
+    output_version = res[1]
+    return output_version
+
+
 def get_release_version(product):
     downloads_json = get_downloads_json()
     if product == 'workbench':
@@ -110,7 +130,7 @@ if __name__ == "__main__":
         elif version_type == 'preview':
             version = rstudio_workbench_preview()
         elif version_type == 'release':
-            version = get_release_version(selected_product)
+            version = get_local_version(selected_product)
         else:
             print(
                 f"ERROR: RStudio Workbench does not have the notion of a '{version_type}' version",
@@ -121,7 +141,7 @@ if __name__ == "__main__":
         if version_type == 'daily':
             version = rstudio_connect_daily()
         elif version_type == 'release':
-            version = get_release_version(selected_product)
+            version = get_local_version(selected_product)
         else:
             print(
                 f"ERROR: RStudio Connect does not have the notion of a '{version_type}' version",
@@ -130,7 +150,7 @@ if __name__ == "__main__":
             exit(1)
     elif selected_product == 'package-manager':
         if version_type == 'release':
-            version = get_release_version(selected_product)
+            version = get_local_version(selected_product)
         else:
             print(
                 f"ERROR: RStudio Connect does not have the notion of a '{version_type}' version",
