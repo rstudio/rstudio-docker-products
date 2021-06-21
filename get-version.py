@@ -6,7 +6,12 @@ import argparse
 import sys
 
 
-# rstudio-workbench daily
+def clean_product_selection(product):
+    pref = re.compile('^rstudio-')
+    product = pref.sub('', product)
+    return product
+
+
 def rstudio_workbench_daily():
     daily_url = "https://dailies.rstudio.com/rstudioserver/pro/bionic/x86_64/"
     raw_daily = requests.get(daily_url).content
@@ -72,17 +77,23 @@ if __name__ == "__main__":
     selected_product = args.product[0]
     version_type = args.type[0]
 
+    # clean off "rstudio-" prefix
+    # TODO: allow aliases?
+    selected_product = clean_product_selection(selected_product)
+
     if selected_product not in ['workbench', 'package-manager', 'connect']:
         print(
             f"ERROR: Please choose a product from 'connect', 'workbench' or 'package-manager'. "
-            f"You provided '{selected_product}'"
+            f"You provided '{selected_product}'",
+            file=sys.stderr
         )
         exit(1)
 
     if version_type not in ['daily', 'preview', 'release']:
         print(
             f"ERROR: Please choose a version type from 'daily', 'preview' or 'release'. "
-            f"You provided '{version_type}'"
+            f"You provided '{version_type}'",
+            file=sys.stderr
         )
         exit(1)
 
@@ -97,7 +108,8 @@ if __name__ == "__main__":
             version = get_release_version(selected_product)
         else:
             print(
-                f"ERROR: RStudio Workbench does not have the notion of a '{version_type}' version"
+                f"ERROR: RStudio Workbench does not have the notion of a '{version_type}' version",
+                file=sys.stderr
             )
             exit(1)
     elif selected_product == 'connect':
@@ -107,7 +119,8 @@ if __name__ == "__main__":
             version = get_release_version(selected_product)
         else:
             print(
-                f"ERROR: RStudio Connect does not have the notion of a '{version_type}' version"
+                f"ERROR: RStudio Connect does not have the notion of a '{version_type}' version",
+                file=sys.stderr
             )
             exit(1)
     elif selected_product == 'package-manager':
@@ -115,12 +128,14 @@ if __name__ == "__main__":
             version = get_release_version(selected_product)
         else:
             print(
-                f"ERROR: RStudio Connect does not have the notion of a '{version_type}' version"
+                f"ERROR: RStudio Connect does not have the notion of a '{version_type}' version",
+                file=sys.stderr
             )
             exit(1)
     else:
         print(
-            f"ERROR: product '{selected_product}' with '{version_type}' version is not defined"
+            f"ERROR: product '{selected_product}' with '{version_type}' version is not defined",
+            file=sys.stderr
         )
         exit(1)
 
