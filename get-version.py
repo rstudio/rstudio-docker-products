@@ -1,7 +1,9 @@
+#!/usr/bin/env python3
 import re
 import requests
 import json
 import argparse
+import sys
 
 
 # rstudio-workbench daily
@@ -16,13 +18,28 @@ def rstudio_workbench_daily():
     return version_match.group(1)
 
 
-def rstudio_workbench_preview():
+def get_downloads_json():
     downloads_json_url = "https://rstudio.com/wp-content/downloads.json"
     raw_downloads_json = requests.get(downloads_json_url).content
-
     downloads_json = json.loads(raw_downloads_json)
+    return downloads_json
 
+
+def rstudio_workbench_preview():
+    downloads_json = get_downloads_json()
     return downloads_json['rstudio']['pro']['preview']['version']
+
+
+def get_release_version(product):
+    downloads_json = get_downloads_json()
+    if product == 'workbench':
+        return downloads_json['rstudio']['pro']['stable']['version']
+    elif product == 'connect':
+        return downloads_json['connect']['installer']['focal']['version']
+    elif product == 'package-manager':
+        return downloads_json['rspm']['installer']['focal']['version']
+    else:
+        raise ValueError(f'Invalid product {product}')
 
 
 def rstudio_connect_daily():
@@ -48,7 +65,7 @@ if __name__ == "__main__":
         type=str,
         nargs=1,
         help="The type of version to retrieve. One of 'daily', 'preview' or 'release' (default: 'release')",
-        default='release'
+        default=["release"]
     )
     args = parser.parse_args()
 
@@ -69,4 +86,43 @@ if __name__ == "__main__":
         )
         exit(1)
 
-    print(f"Providing version for product: '{selected_product}' and version type: '{version_type}'")
+    print(f"Providing version for product: '{selected_product}' and version type: '{version_type}'", file=sys.stderr)
+
+    if selected_product == 'workbench':
+        if version_type == 'daily':
+            version = rstudio_workbench_daily()
+        elif version_type == 'preview':
+            version = rstudio_workbench_preview()
+        elif version_type == 'release':
+            version = get_release_version(selected_product)
+        else:
+            print(
+                f"ERROR: RStudio Workbench does not have the notion of a '{version_type}' version"
+            )
+            exit(1)
+    elif selected_product == 'connect':
+        if version_type == 'daily':
+            version = rstudio_connect_daily()
+        elif version_type == 'release':
+            version = get_release_version(selected_product)
+        else:
+            print(
+                f"ERROR: RStudio Connect does not have the notion of a '{version_type}' version"
+            )
+            exit(1)
+    elif selected_product == 'package-manager':
+        if version_type == 'release':
+            version = get_release_version(selected_product)
+        else:
+            print(
+                f"ERROR: RStudio Connect does not have the notion of a '{version_type}' version"
+            )
+            exit(1)
+    else:
+        print(
+            f"ERROR: product '{selected_product}' with '{version_type}' version is not defined"
+        )
+        exit(1)
+
+    print(f"Got {version_type} version: '{version}'", file=sys.stderr)
+    print(version)
