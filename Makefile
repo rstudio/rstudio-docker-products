@@ -93,7 +93,7 @@ connect:  ## Build RSC image
 connect-hook:
 	cd ./connect && \
 	DOCKERFILE_PATH=Dockerfile \
-	IMAGE_NAME=rstudio/rstudio-connect:test \
+	IMAGE_NAME=rstudio/rstudio-connect-preview:$(RSC_VERSION) \
 	./hooks/build
 
 
