@@ -27,7 +27,7 @@ RUN apt-get update --fix-missing \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python  -------------------------------------------------------------#
-ARG PYTHON_VERSION=3.6.5
+ARG PYTHON_VERSION=3.9.5
 RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5.4-Linux-x86_64.sh && \
     /bin/bash /tmp/miniconda.sh -b -p /opt/python/${PYTHON_VERSION} && \
     rm /tmp/miniconda.sh && \
@@ -50,6 +50,7 @@ RUN chmod +x /usr/local/bin/startup.sh
 # Download RStudio Connect -----------------------------------------------------#
 ARG RSC_VERSION=1.8.8.2
 RUN apt-get update --fix-missing \
+    set -o pipefail  \
     && curl -L -o rstudio-connect.deb https://cdn.rstudio.com/connect/$(echo $RSC_VERSION | sed -r 's/([0-9]\.[0-9]\.[0-9]).*/\1/')/rstudio-connect_${RSC_VERSION}~ubuntu18_amd64.deb \
     && gdebi -n rstudio-connect.deb \
     && rm -rf rstudio-connect.deb \
