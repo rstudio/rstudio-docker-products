@@ -18,9 +18,9 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {product: 'rstudio-workbench', dir: 'server-pro', prefix: RSP, version: 1.4.1717-3}
-          - {product: 'rstudio-connect', dir: 'connect', prefix: RSC, version: 1.8.8.2}
-          - {product: 'rstudio-package-manager', dir: 'package-manager', prefix: RSPM, version: 1.2.2.1-17}
+          - {product: 'rstudio-workbench', dir: 'server-pro', prefix: RSP, version: 'daily'}
+          - {product: 'rstudio-workbench', dir: 'server-pro', prefix: RSP, version: 'preview'}
+          - {product: 'rstudio-connect', dir: 'connect', prefix: RSC, version: 'daily'}
 
     steps:
       # TODO: a way to get the preview version...
@@ -30,6 +30,11 @@ jobs:
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v1
+
+      - name: Get version
+        id: version
+        run: |
+          echo "::set-output name=VERSION::$(./get-version.py {{ matrix.config.product }} --type={{ matrix.config.version }})"
 
       - name: Cache Docker layers
         uses: actions/cache@v2
@@ -47,16 +52,18 @@ jobs:
           file: ./${{ matrix.config.dir }}/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           tags: |
-            rstudio/${{ matrix.config.product }}:latest
             rstudio/${{ matrix.config.product }}:${{ matrix.config.version }}
-            ghcr.io/rstudio/${{ matrix.config.product }}:latest
+            rstudio/${{ matrix.config.product }}:${{ steps.version.outputs.VERSION }}
             ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.version }}
+            ghcr.io/rstudio/${{ matrix.config.product }}:${{ steps.version.outputs.VERSION }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           outputs: type=docker,dest=/tmp/${{ matrix.config.product }}-image.tar
           push: false
           build-args: |
-            RSP_VERSION=${{ matrix.config.version }}
+            RSP_VERSION=${{ steps.version.outputs.VERSION }}
+            RSC_VERSION=${{ steps.version.outputs.VERSION }}
+            RSPM_VERSION=${{ steps.version.outputs.VERSION }}
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
