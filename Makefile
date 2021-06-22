@@ -1,8 +1,8 @@
 R_VERSION ?= 3.6.2
 
-RSP_VERSION ?= 1.4.1106-5
-RSC_VERSION ?= 1.8.6.2
-RSPM_VERSION ?= 1.2.2-4
+RSP_VERSION ?= 1.4.1717-3
+RSC_VERSION ?= 1.8.8.2
+RSPM_VERSION ?= 1.2.2.1-17
 
 CODE_SERVER_VERSION ?= 3.2.0
 
@@ -79,7 +79,9 @@ test-server-pro-i:
 
 run-rsp: run-server-pro
 run-server-pro:  ## Run RSP container
+	docker rm rstudio-server-pro
 	docker run -it --privileged \
+		--name rstudio-server-pro \
 		-p 8787:8787 \
 		-v /run \
 		-e RSP_LICENSE=$(RSP_LICENSE) \
@@ -95,7 +97,7 @@ connect:  ## Build RSC image
 connect-hook:
 	cd ./connect && \
 	DOCKERFILE_PATH=Dockerfile \
-	IMAGE_NAME=rstudio/rstudio-connect:test \
+	IMAGE_NAME=rstudio/rstudio-connect-preview:$(RSC_VERSION) \
 	./hooks/build
 
 
@@ -109,7 +111,9 @@ test-connect-i:
 
 run-rsc: run-connect
 run-connect:  ## Run RSC container
+	docker rm rstudio-connect
 	docker run -it --privileged \
+		--name rstudio-connect \
 		-p 3939:3939 \
 		-v $(CURDIR)/data/rsc:/var/lib/rstudio-connect \
 		-v $(CURDIR)/connect/rstudio-connect.gcfg:/etc/rstudio-connect/rstudio-connect.gcfg \
@@ -132,12 +136,17 @@ test-package-manager-i:
 
 run-rspm: run-package-manager
 run-package-manager:  ## Run RSPM container
+	docker rm rstudio-package-manager
 	docker run -it --privileged \
+		--name rstudio-package-manager \
 		-p 4242:4242 \
 		-v $(CURDIR)/data/rspm:/data \
 		-v $(CURDIR)/package-manager/rstudio-pm.gcfg:/etc/rstudio-pm/rstudio-pm.gcfg \
 		-e RSPM_LICENSE=$(RSPM_LICENSE)  \
 		rstudio/rstudio-package-manager:$(RSPM_VERSION) $(CMD)
+
+
+test-all: rspm test-rspm rsc test-rsc rsp test-rsp
 
 
 float:

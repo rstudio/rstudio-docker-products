@@ -9,6 +9,11 @@ apt-get update -qq && apt-get install -y jq
 replace_version() {
   sed -i.bak "s/^RSP_VERSION=.*/RSP_VERSION=$1/g" ./.env
 }
+
+replace_name() {
+  sed -i.bak "s/^RSP_NAME=.*/RSP_NAME=$1/g" ./.env
+}
+
 replace_base_url_s3() {
   sed -i.bak "s|^RSP_DOWNLOAD_URL=.*|RSP_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64|g" ./.env
 }
@@ -29,8 +34,7 @@ if [[ "${DOCKER_TAG}" == *"daily"* ]]; then
     echo "Latest version found: $match"
     replace_version $match
     replace_base_url_s3
-    # TODO: Need a way to get daily code version dynamically
-    replace_code_version 3.8.1
+    replace_name rstudio-workbench
   else
     # fail the build
     echo "ERROR parsing latest daily version"
@@ -39,7 +43,7 @@ if [[ "${DOCKER_TAG}" == *"daily"* ]]; then
 elif [[ "${DOCKER_TAG}" == *"preview"* ]]; then
   echo "--> Running preview"
   # get raw downloads.json
-  rawjson=`curl -s https://rstudio.com/wp-content/downloads.json`
+  rawjson=`curl -sL https://rstudio.com/wp-content/downloads.json`
 
   # use jq to parse
   full_url=`echo -n $rawjson | jq -r '.rstudio.pro.preview.server.installer.bionic.url'`
@@ -50,8 +54,7 @@ elif [[ "${DOCKER_TAG}" == *"preview"* ]]; then
   # update .env
   replace_version $version
   replace_base_url_s3
-  # TODO: Need a way to get daily code version dynamically
-  replace_code_version 3.8.1
+  replace_name rstudio-workbench
 
 elif [[ "${DOCKER_TAG}" =~ [0-9\.\-]+ ]]; then
   echo "DOCKER_TAG looks like a version number: ${DOCKER_TAG}"
