@@ -5,7 +5,7 @@
 R is at `/opt/R/4.0.2/bin/R`
 python is at `/opt/python/3.7.7/bin/python`
 jupyter is at `/opt/python/3.7.7/bin/jupyter`
-code-server is at `/opt/code-server/code-server`
+code-server is at `/opt/code-server/bin/code-server`
 
 ## Changes
 
