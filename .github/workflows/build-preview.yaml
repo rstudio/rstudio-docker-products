@@ -19,9 +19,10 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {product: 'rstudio-workbench', dir: 'server-pro', prefix: RSP, version: 'daily'}
-          - {product: 'rstudio-workbench', dir: 'server-pro', prefix: RSP, version: 'preview'}
-          - {product: 'rstudio-connect', dir: 'connect', prefix: RSC, version: 'daily'}
+          - {product: 'rstudio-workbench-preview', dir: 'server-pro', prefix: RSP, version: 'daily'}
+          - {product: 'rstudio-workbench-preview', dir: 'server-pro', prefix: RSP, version: 'preview'}
+          - {product: 'rstudio-connect-preview', dir: 'connect', prefix: RSC, version: 'daily'}
+          - {product: 'rstudio-connect-content-init-preview', dir: 'connect-content-init', prefix: RSC, version: 'daily'}
 
     steps:
       # TODO: a way to get the preview version...
