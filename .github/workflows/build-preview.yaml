@@ -13,8 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     name: build-${{ matrix.config.product}}
 
-    environment: build-and-push
-
     strategy:
       fail-fast: false
       matrix:
