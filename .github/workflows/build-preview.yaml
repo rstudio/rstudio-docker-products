@@ -34,7 +34,7 @@ jobs:
       - name: Get version
         id: version
         run: |
-          VERSION=`./get-version.py ${{ matrix.config.product }} --type=${{ matrix.config.version }}`
+          VERSION=`./get-version.py ${{ matrix.config.product }} --type=${{ matrix.config.version }} --local`
           echo "::set-output name=VERSION::${VERSION}"
 
       - name: Cache Docker layers
