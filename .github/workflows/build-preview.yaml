@@ -35,7 +35,7 @@ jobs:
       - name: Get version
         id: version
         run: |
-          echo "::set-output name=VERSION::$(./get-version.py {{ matrix.config.product }} --type={{ matrix.config.version }})"
+          echo "::set-output name=VERSION::$(./get-version.py ${{ matrix.config.product }} --type=${{ matrix.config.version }})"
 
       - name: Cache Docker layers
         uses: actions/cache@v2
