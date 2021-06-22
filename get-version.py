@@ -93,7 +93,14 @@ def rstudio_workbench_preview():
     return downloads_json['rstudio']['pro']['preview']['version']
 
 
-def get_local_version(product):
+def get_release_version(product, local=False):
+    if local:
+        return get_local_release_version(product)
+    else:
+        return get_actual_release_version(product)
+
+
+def get_local_release_version(product):
     if product == 'workbench':
         prefix = 'RSP'
     elif product == 'connect':
@@ -113,8 +120,9 @@ def get_local_version(product):
     return output_version
 
 
-def get_release_version(product):
+def get_actual_release_version(product):
     downloads_json = get_downloads_json()
+    print(f"Getting release version for '{product}' from downloads.json", file=sys.stderr)
     if product == 'workbench':
         return downloads_json['rstudio']['pro']['stable']['version']
     elif product == 'connect':
@@ -154,10 +162,16 @@ if __name__ == "__main__":
         help="The type of version to retrieve. One of 'daily', 'preview' or 'release' (default: 'release')",
         default=["release"]
     )
+    parser.add_argument(
+        "--local","-l",
+        action="store_true",
+        help="Whether to use the 'local' version for 'release'. Parsed from the local Makefile",
+    )
     args = parser.parse_args()
 
     selected_product = args.product[0]
     version_type = args.type[0]
+    local = args.local
 
     # ------------------------------------------
     # Alias arguments
@@ -189,7 +203,7 @@ if __name__ == "__main__":
         elif version_type == 'preview':
             version = rstudio_workbench_preview()
         elif version_type == 'release':
-            version = get_local_version(selected_product)
+            version = get_release_version(selected_product, local)
         else:
             print(
                 f"ERROR: RStudio Workbench does not have the notion of a '{version_type}' version",
@@ -200,7 +214,7 @@ if __name__ == "__main__":
         if version_type == 'daily':
             version = rstudio_connect_daily()
         elif version_type == 'release':
-            version = get_local_version(selected_product)
+            version = get_release_version(selected_product, local)
         else:
             print(
                 f"ERROR: RStudio Connect does not have the notion of a '{version_type}' version",
@@ -209,7 +223,7 @@ if __name__ == "__main__":
             exit(1)
     elif selected_product == 'package-manager':
         if version_type == 'release':
-            version = get_local_version(selected_product)
+            version = get_release_version(selected_product, local)
         else:
             print(
                 f"ERROR: RStudio Connect does not have the notion of a '{version_type}' version",
