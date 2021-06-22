@@ -16,6 +16,9 @@ def clean_product_selection(product):
     pref = re.compile('^rstudio-')
     product = pref.sub('', product)
 
+    suffix = re.compile('-preview$')
+    product = suffix.sub('', product)
+
     session_pref = re.compile('^r-session')
     if session_pref.match(product):
         print(f"Swapping product '{product}' for 'workbench'", file=sys.stderr)
