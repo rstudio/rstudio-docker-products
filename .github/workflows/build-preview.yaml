@@ -65,6 +65,7 @@ jobs:
             RSP_VERSION=${{ steps.version.outputs.VERSION }}
             RSC_VERSION=${{ steps.version.outputs.VERSION }}
             RSPM_VERSION=${{ steps.version.outputs.VERSION }}
+            RSP_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
