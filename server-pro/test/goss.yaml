@@ -28,7 +28,7 @@ file:
     filetype: file
   /opt/python/3.6.5/bin/python:
     exists: true
-    filetype: file
+    filetype: symlink
   /var/lib/rstudio-server/r-versions:
     exists: false
   /usr/lib/rstudio-server/bin/rserver:
@@ -64,7 +64,7 @@ command:
     title: python_version_matches
     exit-status: 0
     stdout: [
-      "3.6.5"
+      ".*3.6.5.*"
     ]
   "which openssl":
     title: uses_system_openssl
