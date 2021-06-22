@@ -1,4 +1,23 @@
 #!/usr/bin/env python3
+
+# A CLI to retrieve product versions
+#
+# IMPORTANT:
+#   All logging should go to stderr
+#   ONLY the version number goes to stdout
+#
+# Example usage:
+# ./get-version.py workbench --type=daily
+# ./get-version.py connect --type=daily
+# ./get-version.py package-manager --type=release
+#
+# Some modifications are allowed (for simplicity in CI):
+#   - rstudio- prefix is removed
+#   - -preview suffix is removed
+#   - r-session prefixed products are replaced with workbench
+#   - connect- prefixed products are replaced with connect
+#   - version latest == release
+
 import re
 import requests
 import json
@@ -6,13 +25,32 @@ import argparse
 import sys
 
 
-def clean_product_version(version):
+def clean_product_version(version: str) -> str:
+    """
+    Replace / alias "latest" with "release"
+
+    :type version: str
+    :rtype: str
+    :param version: The current version being used
+    :return: The cleaned/replaced version
+    """
     if version == 'latest':
         version = 'release'
     return version
 
 
-def clean_product_selection(product):
+def clean_product_selection(product: str) -> str:
+    """
+    Clean up / alias products together for version determination
+    - Remove rstudio- prefix
+    - Remove -preview suffix
+    - Convert r-session prefixed products to workbench
+    - Convert connect- prefixed products to connect
+
+    :rtype: str
+    :param product: The current product being requested
+    :return: The cleaned/replaced product name
+    """
     pref = re.compile('^rstudio-')
     product = pref.sub('', product)
 
@@ -98,6 +136,10 @@ def rstudio_connect_daily():
 
 
 if __name__ == "__main__":
+
+    # ------------------------------------------
+    # Argument definition
+    # ------------------------------------------
     parser = argparse.ArgumentParser(description="Arguments to determine product version")
     parser.add_argument(
         "product",
@@ -117,12 +159,16 @@ if __name__ == "__main__":
     selected_product = args.product[0]
     version_type = args.type[0]
 
-    # clean off "rstudio-" prefix
-    # TODO: allow aliases?
+    # ------------------------------------------
+    # Alias arguments
+    # ------------------------------------------
     selected_product = clean_product_selection(selected_product)
-
     version_type = clean_product_version(version_type)
 
+    # ------------------------------------------
+    # Argument checking
+    # (version checking is per-product)
+    # ------------------------------------------
     if selected_product not in ['workbench', 'package-manager', 'connect']:
         print(
             f"ERROR: Please choose a product from 'connect', 'workbench' or 'package-manager'. "
@@ -131,15 +177,11 @@ if __name__ == "__main__":
         )
         exit(1)
 
-    if version_type not in ['daily', 'preview', 'release']:
-        print(
-            f"ERROR: Please choose a version type from 'daily', 'preview' or 'release'. "
-            f"You provided '{version_type}'",
-            file=sys.stderr
-        )
-        exit(1)
-
     print(f"Providing version for product: '{selected_product}' and version type: '{version_type}'", file=sys.stderr)
+
+    # ------------------------------------------
+    # Product "switch" statements
+    # ------------------------------------------
 
     if selected_product == 'workbench':
         if version_type == 'daily':
