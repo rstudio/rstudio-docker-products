@@ -24,7 +24,7 @@ def clean_product_selection(product):
         print(f"Swapping product '{product}' for 'workbench'", file=sys.stderr)
         product = 'workbench'
 
-    connect_pref = re.compile('^rstudio-connect')
+    connect_pref = re.compile('^connect-')
     if connect_pref.match(product):
         print(f"Swapping product '{product}' for 'connect'", file=sys.stderr)
         product = 'connect'
