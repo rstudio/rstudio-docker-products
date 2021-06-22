@@ -24,6 +24,8 @@ file:
     exists: true
   /opt/R/4.1.0/bin/R:
     exists: true
+  /var/lib/rstudio-server/r-versions:
+    exists: false
   /usr/lib/rstudio-server/bin/rserver:
     exists: true
   /usr/lib/rstudio-server/bin/rstudio-server:
