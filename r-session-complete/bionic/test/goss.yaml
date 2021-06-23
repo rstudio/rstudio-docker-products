@@ -1,0 +1,10 @@
+file:
+  /usr/lib/rstudio-server:
+    exists: true
+  /usr/lib/rstudio-server/bin/rsession:
+    exists: true
+
+command:
+  "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/3.7.7/bin/jupyter nbconvert --to notebook --stdin --stdout":
+    title: jupyter_works
+    exit-status: 0
