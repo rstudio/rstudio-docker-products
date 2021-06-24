@@ -18,11 +18,11 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {product: 'rstudio-workbench', dir: 'server-pro', prefix: RSP, version: 'latest'}
+          - {product: 'rstudio-workbench', dir: 'server-pro', os: 'bionic', prefix: RSP, version: 'latest'}
           - {product: 'rstudio-connect', dir: 'connect', prefix: RSC, version: 'latest'}
           - {product: 'rstudio-package-manager', dir: 'package-manager', prefix: RSPM, version: 'latest'}
-          - {product: 'r-session-complete', tag_prefix: 'bionic-', dir: 'r-session-complete/bionic', prefix: RSP, version: 'latest'}
-          - {product: 'r-session-complete', tag_prefix: 'centos7-', dir: 'r-session-complete/centos7', prefix: RSP, version: 'latest'}
+          - {product: 'r-session-complete', tag_prefix: 'bionic-', dir: 'r-session-complete/bionic', os: 'bionic', prefix: RSP, version: 'latest'}
+          - {product: 'r-session-complete', tag_prefix: 'centos7-', dir: 'r-session-complete/centos7', os: 'centos7', prefix: RSP, version: 'latest'}
 
     steps:
       - name: Check Out Repo
@@ -67,7 +67,8 @@ jobs:
             RSP_VERSION=${{ steps.version.outputs.VERSION }}
             RSC_VERSION=${{ steps.version.outputs.VERSION }}
             RSPM_VERSION=${{ steps.version.outputs.VERSION }}
-            RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
+            # TODO: need a better way to handle pivoting DOWNLOAD_URL for OS
+            RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/${{ matrix.config.os }}/amd64
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
