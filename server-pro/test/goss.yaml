@@ -68,13 +68,13 @@ command:
   "/opt/python/3.9.5/bin/python --version":
     title: python_version_matches
     exit-status: 0
-    stderr: [
+    stdout: [
       "/3.9.5/"
     ]
   "/opt/python/jupyter/bin/python --version":
     title: jupyter_python_version_matches
     exit-status: 0
-    stderr: [
+    stdout: [
         "/3.8.10/"
     ]
   "which openssl":
