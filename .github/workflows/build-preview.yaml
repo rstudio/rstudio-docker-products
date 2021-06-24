@@ -37,6 +37,7 @@ jobs:
       - name: Get version
         id: version
         run: |
+          # NOTE: --local ensures that "latest" builds use the version in our Makefile (instead of latest from the web)
           VERSION=`./get-version.py ${{ matrix.config.product }} --type=${{ matrix.config.version }} --local`
           echo "::set-output name=VERSION::${VERSION}"
 
