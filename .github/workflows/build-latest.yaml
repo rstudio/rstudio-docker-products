@@ -12,7 +12,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     name: build-${{ matrix.config.tag_prefix}}${{ matrix.config.product}}
-    environment: build-and-push
 
     # beware - several copies of matrix below
     strategy:
