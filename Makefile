@@ -52,6 +52,8 @@ update-versions:  ## Update the version files for all products
 	@sed -i '' "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" connect/Dockerfile
 	@sed -i '' "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" package-manager/Dockerfile
 	@sed -i '' "s|^RVersion.*=.*|RVersion = /opt/R/${R_VERSION}/|g" package-manager/rstudio-pm.gcfg
+	@sed -i '' "s/^ARG RSP_VERSION=.*/ARG RSP_VERSION=${RSP_VERSION}/g" r-session-complete/bionic/Dockerfile
+	@sed -i '' "s/^ARG RSP_VERSION=.*/ARG RSP_VERSION=${RSP_VERSION}/g" r-session-complete/centos7/Dockerfile
 
 
 rsp: server-pro
