@@ -14,16 +14,15 @@ jobs:
     name: build-${{ matrix.config.tag_prefix}}${{ matrix.config.product}}
     environment: build-and-push
 
-    # beware - several copies of matrix below
     strategy:
       fail-fast: false
       matrix:
         config:
-          - {product: 'rstudio-workbench', dir: 'server-pro', prefix: RSP, version: 1.4.1717-3}
-          - {product: 'rstudio-connect', dir: 'connect', prefix: RSC, version: 1.8.8.2}
-          - {product: 'rstudio-package-manager', dir: 'package-manager', prefix: RSPM, version: 1.2.2.1-17}
-          - {product: 'r-session-complete', tag_prefix: 'bionic-', dir: 'r-session-complete/bionic', prefix: RSP, version: 1.4.1717-3}
-          - {product: 'r-session-complete', tag_prefix: 'centos7-', dir: 'r-session-complete/centos7', prefix: RSP, version: 1.4.1717-3}
+          - {product: 'rstudio-workbench', dir: 'server-pro', prefix: RSP, version: 'latest'}
+          - {product: 'rstudio-connect', dir: 'connect', prefix: RSC, version: 'latest'}
+          - {product: 'rstudio-package-manager', dir: 'package-manager', prefix: RSPM, version: 'latest'}
+          - {product: 'r-session-complete', tag_prefix: 'bionic-', dir: 'r-session-complete/bionic', prefix: RSP, version: 'latest'}
+          - {product: 'r-session-complete', tag_prefix: 'centos7-', dir: 'r-session-complete/centos7', prefix: RSP, version: 'latest'}
 
     steps:
       - name: Check Out Repo
@@ -32,6 +31,12 @@ jobs:
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v1
+
+      - name: Get version
+        id: version
+        run: |
+          VERSION=`./get-version.py ${{ matrix.config.product }} --type=${{ matrix.config.version }} --local`
+          echo "::set-output name=VERSION::${VERSION}"
 
       - name: Cache Docker layers
         uses: actions/cache@v2
@@ -49,37 +54,42 @@ jobs:
           file: ./${{ matrix.config.dir }}/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           tags: |
-            rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}latest
             rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-            ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}latest
+            rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.VERSION }}
             ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
+            ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.VERSION }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           load: true
           push: false
           build-args: |
-            RSP_VERSION=${{ matrix.config.version }}
+            RSP_VERSION=${{ steps.version.outputs.VERSION }}
+            RSC_VERSION=${{ steps.version.outputs.VERSION }}
+            RSPM_VERSION=${{ steps.version.outputs.VERSION }}
+
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
 
       - name: Test image
         env:
           IMAGE_NAME: rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
           # because we cannot dynamically set env var names... set them all...
-          RSP_VERSION: ${{ matrix.config.version }}
-          RSC_VERSION: ${{ matrix.config.version }}
-          RSPM_VERSION: ${{ matrix.config.version }}
+          RSP_VERSION: ${{ steps.version.outputs.VERSION }}
+          RSC_VERSION: ${{ steps.version.outputs.VERSION }}
+          RSPM_VERSION: ${{ steps.version.outputs.VERSION }}
         run: |
           docker-compose -f ./${{ matrix.config.dir }}/docker-compose.test.yml run sut
 
       - name: Login to Docker Hub
-        uses: docker/login-action@v1
         if: ${{ github.ref == 'refs/heads/main' }}
+        uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Login to ghcr.io
-        uses: docker/login-action@v1
         if: ${{ github.ref == 'refs/heads/main' }}
+        uses: docker/login-action@v1
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -89,6 +99,6 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           docker push rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-          docker push rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}latest
+          docker push rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.VERSION }}
           docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-          docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}latest
+          docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.VERSION }}
