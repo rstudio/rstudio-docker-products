@@ -4,7 +4,7 @@
 - BREAKING: change image name to `rstudio/rstudio-workbench`  
 - BREAKING: change the location / version of python. Now includes:
   - version 3.8.10 at /opt/python/jupyter to run jupyter
-  - version 3.9.3 at /opt/python/3.9.3 as a kernel for jupyter
+  - version 3.9.5 at /opt/python/3.9.5 as a kernel for jupyter
 
 # 1.4.1106-5
 
