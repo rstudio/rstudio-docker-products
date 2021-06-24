@@ -21,6 +21,10 @@ jobs:
           - {product: 'rstudio-workbench-preview', dir: 'server-pro', prefix: RSP, version: 'preview'}
           - {product: 'rstudio-connect-preview', dir: 'connect', prefix: RSC, version: 'daily'}
           - {product: 'rstudio-connect-content-init-preview', dir: 'connect-content-init', prefix: RSC, version: 'daily'}
+          - {product: 'r-session-complete-preview', tag_prefix: 'bionic-', dir: 'r-session-complete/bionic', prefix: RSP, version: 'daily'}
+          - {product: 'r-session-complete-preview', tag_prefix: 'centos7-', dir: 'r-session-complete/centos7', prefix: RSP, version: 'daily'}
+          - {product: 'r-session-complete-preview', tag_prefix: 'bionic-', dir: 'r-session-complete/bionic', prefix: RSP, version: 'preview'}
+          - {product: 'r-session-complete-preview', tag_prefix: 'centos7-', dir: 'r-session-complete/centos7', prefix: RSP, version: 'preview'}
 
     steps:
       # TODO: a way to get the preview version...
