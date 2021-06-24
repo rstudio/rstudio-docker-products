@@ -26,9 +26,14 @@ file:
   /opt/R/4.1.0/bin/R:
     exists: true
     filetype: file
-  /opt/python/3.6.5/bin/python:
+  /opt/python/3.9.3/bin/python:
     exists: true
     filetype: symlink
+  /opt/python/jupyter/bin/python:
+    exists: true
+    filetype: symlink
+  /opt/python/jupyter/bin/jupyter:
+    exists: true
   /var/lib/rstudio-server/r-versions:
     exists: false
   /usr/lib/rstudio-server/bin/rserver:
@@ -60,11 +65,17 @@ command:
   "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/3.6.5/bin/jupyter nbconvert --to notebook --stdin --stdout":
     title: jupyter_works
     exit-status: 0
-  "/opt/python/3.6.5/bin/python --version":
+  "/opt/python/3.9.3/bin/python --version":
     title: python_version_matches
     exit-status: 0
     stderr: [
-      "/3.6.5/"
+      "/3.9.3/"
+    ]
+  "/opt/python/jupyter/bin/python --version":
+    title: jupyter_python_version_matches
+    exit-status: 0
+    stderr: [
+        "/3.8.10/"
     ]
   "which openssl":
     title: uses_system_openssl
