@@ -72,6 +72,10 @@ jobs:
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
+      - name: Show image size
+        run: |
+          docker image ls
+
       - name: Test image
         env:
           IMAGE_NAME: rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
@@ -81,10 +85,6 @@ jobs:
           RSPM_VERSION: ${{ steps.version.outputs.VERSION }}
         run: |
           docker-compose -f ./${{ matrix.config.dir }}/docker-compose.test.yml run sut
-
-      - name: Show image size
-        run: |
-          docker image ls
 
       - name: Login to Docker Hub
         if: ${{ github.ref == 'refs/heads/main' }}
