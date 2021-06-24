@@ -1,0 +1,13 @@
+package:
+  curl:
+    installed: true
+
+file:
+  /opt/rstudio-connect-runtime/:
+    exists: true
+    mode: "0755"
+    filetype: directory
+  /usr/local/bin/entrypoint.sh:
+    exists: true
+    filetype: file
+    mode: "0755"
