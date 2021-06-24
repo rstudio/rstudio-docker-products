@@ -63,8 +63,8 @@ command:
   "/opt/python/3.6.5/bin/python --version":
     title: python_version_matches
     exit-status: 0
-    stdout: [
-      ".*3.6.5.*"
+    stderr: [
+      "/3.6.5/"
     ]
   "which openssl":
     title: uses_system_openssl
