@@ -32,29 +32,65 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python  -------------------------------------------------------------#
-ARG PYTHON_VERSION=3.6.5
-RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5.4-Linux-x86_64.sh && \
-    /bin/bash /tmp/miniconda.sh -b -p /opt/python/${PYTHON_VERSION} && \
-    rm /tmp/miniconda.sh && \
-    /opt/python/${PYTHON_VERSION}/bin/conda clean -tipsy && \
-    /opt/python/${PYTHON_VERSION}/bin/conda clean -a && \
-    /opt/python/${PYTHON_VERSION}/bin/pip install virtualenv
+# Add another R version -------------------------------------------------------#
 
-# Install other Python PyPi packages
-RUN /opt/python/${PYTHON_VERSION}/bin/pip install --no-cache-dir \
-                pip==20.0.2 \
-                jupyter==1.0.0 \
-                'jupyterlab<3.0.0' \
-                rsp_jupyter \
-                rsconnect_jupyter
+ARG R_VERSION_ALT=4.1.0
+RUN apt-get update -qq && \
+    curl -O https://cdn.rstudio.com/r/ubuntu-1804/pkgs/r-${R_VERSION_ALT}_1_amd64.deb && \
+    DEBIAN_FRONTEND=noninteractive gdebi --non-interactive r-${R_VERSION_ALT}_1_amd64.deb && \
+    rm -f ./r-${R_VERSION_ALT}_1_amd64.deb \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install Jupyter extensions
-RUN /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter && \
-    /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter && \
-    /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix --py rsconnect_jupyter && \
-    /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter && \
-    /opt/python/${PYTHON_VERSION}/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
+
+# Install jupyter -------------------------------------------------------------#
+
+ARG JUPYTER_VERSION=3.8.10
+RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
+    bash Miniconda3-latest-Linux-x86_64.sh -bp /opt/python/jupyter && \
+    /opt/python/jupyter/bin/conda install -y python==${JUPYTER_VERSION} && \
+    rm -rf Miniconda3-latest-Linux-x86_64.sh && \
+    /opt/python/jupyter/bin/pip install \
+    jupyter==1.0.0 \
+    'jupyterlab<3.0.0' \
+    rsp_jupyter \
+    rsconnect_jupyter && \
+    /opt/python/jupyter/bin/jupyter kernelspec remove python3 -f && \
+    /opt/python/jupyter/bin/pip uninstall -y ipykernel
+
+# Install RSP/RSC Notebook Extensions --------------------#
+
+RUN /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter && \
+    /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter && \
+    /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsconnect_jupyter && \
+    /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter && \
+    /opt/python/jupyter/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
+
+# Install Python --------------------------------------------------------------#
+
+ARG PYTHON_VERSION=3.9.5
+RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
+    bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION} && \
+    /opt/python/${PYTHON_VERSION}/bin/conda install -y python==${PYTHON_VERSION} && \
+    /opt/python/${PYTHON_VERSION}/bin/pip install \
+        ipykernel \
+        virtualenv \
+        && \
+    rm -rf Miniconda3-*-Linux-x86_64.sh && \
+    /opt/python/${PYTHON_VERSION}/bin/python -m ipykernel install --name py${PYTHON_VERSION} --display-name "Python ${PYTHON_VERSION}"
+
+# Install another Python --------------------------------------------------------------#
+
+ARG ALT_PYTHON_VERSION=3.8.10
+RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
+    bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${ALT_PYTHON_VERSION} && \
+    /opt/python/${ALT_PYTHON_VERSION}/bin/conda install -y python==${ALT_PYTHON_VERSION} && \
+    /opt/python/${ALT_PYTHON_VERSION}/bin/pip install \
+        ipykernel \
+        virtualenv \
+        && \
+    rm -rf Miniconda3-*-Linux-x86_64.sh && \
+    /opt/python/${ALT_PYTHON_VERSION}/bin/python -m ipykernel install --name py${ALT_PYTHON_VERSION} --display-name "Python ${ALT_PYTHON_VERSION}"
 
 # Runtime settings ------------------------------------------------------------#
 ARG TINI_VERSION=0.18.0
