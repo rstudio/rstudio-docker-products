@@ -79,6 +79,19 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64
     rm -rf Miniconda3-*-Linux-x86_64.sh && \
     /opt/python/${PYTHON_VERSION}/bin/python -m ipykernel install --name py${PYTHON_VERSION} --display-name "Python ${PYTHON_VERSION}"
 
+# Install another Python --------------------------------------------------------------#
+
+ARG ALT_PYTHON_VERSION=3.8.10
+RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
+    bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${ALT_PYTHON_VERSION} && \
+    /opt/python/${ALT_PYTHON_VERSION}/bin/conda install -y python==${ALT_PYTHON_VERSION} && \
+    /opt/python/${ALT_PYTHON_VERSION}/bin/pip install \
+        ipykernel \
+        virtualenv \
+        && \
+    rm -rf Miniconda3-*-Linux-x86_64.sh && \
+    /opt/python/${ALT_PYTHON_VERSION}/bin/python -m ipykernel install --name py${ALT_PYTHON_VERSION} --display-name "Python ${ALT_PYTHON_VERSION}"
+
 # Runtime settings ------------------------------------------------------------#
 ARG TINI_VERSION=0.18.0
 RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini && \

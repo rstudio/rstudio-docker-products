@@ -29,6 +29,9 @@ file:
   /opt/python/3.9.5/bin/python:
     exists: true
     filetype: symlink
+  /opt/python/3.8.10/bin/python:
+    exists: true
+    filetype: symlink
   /opt/python/jupyter/bin/python:
     exists: true
     filetype: symlink
@@ -65,6 +68,12 @@ command:
   "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/jupyter/bin/jupyter nbconvert --to notebook --stdin --stdout":
     title: jupyter_works
     exit-status: 0
+  "/opt/python/3.8.10/bin/python --version":
+    title: python_version_matches
+    exit-status: 0
+    stdout: [
+        "/3.8.10/"
+    ]
   "/opt/python/3.9.5/bin/python --version":
     title: python_version_matches
     exit-status: 0
