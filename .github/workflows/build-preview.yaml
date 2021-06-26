@@ -6,7 +6,7 @@ on:
     branches:
       - main
 
-name: build/test/push (latest)
+name: build/test/push (preview)
 jobs:
 
   build:
@@ -17,11 +17,14 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {product: 'rstudio-workbench', dir: 'server-pro', os: 'bionic/amd64', prefix: RSP, version: 'latest'}
-          - {product: 'rstudio-connect', dir: 'connect', prefix: RSC, version: 'latest'}
-          - {product: 'rstudio-package-manager', dir: 'package-manager', prefix: RSPM, version: 'latest'}
-          - {product: 'r-session-complete', tag_prefix: 'bionic-', dir: 'r-session-complete/bionic', os: 'bionic/amd64', prefix: RSP, version: 'latest'}
-          - {product: 'r-session-complete', tag_prefix: 'centos7-', dir: 'r-session-complete/centos7', os: 'centos7/x86_64', prefix: RSP, version: 'latest'}
+          - {product: 'rstudio-workbench-preview', dir: 'server-pro', prefix: RSP, os: 'bionic/amd64', version: 'daily'}
+          - {product: 'rstudio-workbench-preview', dir: 'server-pro', prefix: RSP, os: 'bionic/amd64', version: 'preview'}
+          - {product: 'rstudio-connect-preview', dir: 'connect', prefix: RSC, version: 'daily'}
+          - {product: 'rstudio-connect-content-init-preview', dir: 'connect-content-init', prefix: RSC, version: 'daily'}
+          - {product: 'r-session-complete-preview', tag_prefix: 'bionic-', dir: 'r-session-complete/bionic', os: 'bionic/amd64', prefix: RSP, version: 'daily'}
+          - {product: 'r-session-complete-preview', tag_prefix: 'centos7-', dir: 'r-session-complete/centos7', os: 'centos7/x86_64', prefix: RSP, version: 'daily'}
+          - {product: 'r-session-complete-preview', tag_prefix: 'bionic-', dir: 'r-session-complete/bionic', os: 'bionic/amd64', prefix: RSP, version: 'preview'}
+          - {product: 'r-session-complete-preview', tag_prefix: 'centos7-', dir: 'r-session-complete/centos7', os: 'centos7/x86_64', prefix: RSP, version: 'preview'}
 
     steps:
       - name: Check Out Repo
@@ -67,7 +70,7 @@ jobs:
             RSC_VERSION=${{ steps.version.outputs.VERSION }}
             RSPM_VERSION=${{ steps.version.outputs.VERSION }}
             # TODO: need a better way to handle pivoting DOWNLOAD_URL for OS
-            RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/${{ matrix.config.os }}
+            RSP_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/${{ matrix.config.os }}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
