@@ -16,7 +16,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     name: build-${{ matrix.config.tag_prefix}}${{ matrix.config.product}}
-    if: ${{ github.events.inputs.which == 'all' || github.events.inputs.which == matrix.config.product }}
 
     strategy:
       fail-fast: false
