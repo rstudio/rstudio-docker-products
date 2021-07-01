@@ -2,7 +2,7 @@ on:
   workflow_dispatch:
     inputs:
       which:
-        description: "Which images to build. Default 'all'. Options: 'all','rstudio-workbench-preview','rstudio-connect-preview','rstudio-connect-content-init-preview','r-session-complete-preview'"
+        description: "Which images to build. Default 'all'. Options: 'all','rstudio-workbench-preview','rstudio-connect-preview','rstudio-connect-content-init-preview','r-session-complete-preview'. Can also use a prefix (i.e. 'rstudio-connect') to trigger multiple image builds."
         required: true
         default: "all"
 
@@ -12,7 +12,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     name: build-${{ matrix.config.tag_prefix}}${{ matrix.config.product}}
-    if: ${{ github.events.inputs.which == 'all' || github.events.inputs.which == matrix.config.product }}
+    if: ${{ github.events.inputs.which == 'all' || startsWith(matrix.config.product, github.events.inputs.which) }}
 
     strategy:
       fail-fast: false
