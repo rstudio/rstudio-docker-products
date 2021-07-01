@@ -9,6 +9,12 @@ on:
   pull_request:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      which:
+        description: "Which images to build. Default 'all'. Options: 'all','rstudio-workbench-preview','rstudio-connect-preview','rstudio-connect-content-init-preview','r-session-complete-preview'"
+        required: true
+        default: "all"
 
 name: build/test/push (preview)
 jobs:
@@ -16,6 +22,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     name: build-${{ matrix.config.tag_prefix}}${{ matrix.config.product}}
+    if: ${{ github.events.inputs.which == 'all' || github.events.inputs.which == matrix.config.product }}
 
     strategy:
       fail-fast: false
