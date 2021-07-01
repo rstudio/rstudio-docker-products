@@ -202,7 +202,7 @@ if __name__ == "__main__":
     print(f"Providing version for product: '{selected_product}' and version type: '{version_type}'", file=sys.stderr)
 
     # ------------------------------------------
-    # Using override?
+    # Use override, if defined
     # ------------------------------------------
     if override != 'auto':
         print("The --override arg was set with a value other than 'auto'", file=sys.stderr)
