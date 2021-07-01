@@ -9,12 +9,6 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:
-    inputs:
-      which:
-        description: "Which images to build. Default 'all'. Options: 'all','rstudio-workbench-preview','rstudio-connect-preview','rstudio-connect-content-init-preview','r-session-complete-preview'"
-        required: true
-        default: "all"
 
 name: build/test/push (preview)
 jobs:
