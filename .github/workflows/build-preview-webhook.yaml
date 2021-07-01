@@ -5,6 +5,10 @@ on:
         description: "Which images to build. Default 'all'. Options: 'all','rstudio-workbench-preview','rstudio-connect-preview','rstudio-connect-content-init-preview','r-session-complete-preview'. Can also use a prefix (i.e. 'rstudio-connect') to trigger multiple image builds."
         required: true
         default: "all"
+      version:
+        description: "The version to build. Default 'auto'. Can use any string, but must have which != 'all' if using something other than 'auto'"
+        required: false
+        default: "auto"
 
 name: build/test/push (preview)
 jobs:
@@ -12,7 +16,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     name: build-${{ matrix.config.tag_prefix}}${{ matrix.config.product}}
-    if: ${{ github.events.inputs.which == 'all' || startsWith(matrix.config.product, github.events.inputs.which) }}
+    if: ${{ (github.events.inputs.which == 'all' || startsWith(matrix.config.product, github.events.inputs.which) ) && (github.events.inputs.version == 'auto' || github.events.inputs.which != 'all') }}
 
     strategy:
       fail-fast: false
@@ -39,7 +43,7 @@ jobs:
         id: version
         run: |
           # NOTE: --local ensures that "latest" builds use the version in our Makefile (instead of latest from the web)
-          VERSION=`./get-version.py ${{ matrix.config.product }} --type=${{ matrix.config.version }} --local`
+          VERSION=`./get-version.py ${{ matrix.config.product }} --type=${{ matrix.config.version }} --local --override=${{ github.events.inputs.version }}`
           echo "::set-output name=VERSION::${VERSION}"
 
       - name: Cache Docker layers
