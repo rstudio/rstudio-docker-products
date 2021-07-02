@@ -9,6 +9,7 @@ if [ $# -eq 0 ] ; then
     echo "Common uses:"
     echo "    $0 tag"
     echo "    $0 build"
+    echo "    $0 build-pro"
     echo "    $0 push"
     exit 1
 fi
