@@ -15,35 +15,54 @@ package:
 
 file:
   /etc/rstudio-connect/license.lic:
-    # currently does not exist
-    # be sure it is NOT a directory
+    # Currently does not exist
+    # Be sure it is NOT a directory
     exists: false
   /opt/rstudio-connect/:
     exists: true
   /opt/rstudio-connect/bin/connect:
     exists: true
+  /usr/local/bin/tini:
+    exists: true
+# Ensure startup file exists
+  /usr/local/bin/startup.sh:
+    exists: true
+    owner: root
+    group: root
+    filetype: file
+# Ensure log files exist
+  /var/log/rstudio-connect.log:
+    exists: true
+  /opt/python/{{.Env.PYTHON_VERSION}}/bin/python:
+    exists: true 
 
-# check product version
+# Check product version
 command:
   "/opt/rstudio-connect/bin/connect --version":
-    title: connect_version_matches
-    exit-status: 0
-    stdout: [
+   title: connect_version_matches
+   exit-status: 0
+   stdout: [
       "/{{ .Env.RSC_VERSION }}/"
-    ]
-  # goss times out after 10 seconds
+   ]
+    
+# Goss times out after 10 seconds
   "timeout --signal=SIGINT 7 /opt/rstudio-connect/bin/connect --config /etc/rstudio-connect/rstudio-connect.gcfg":
     title: connect_starts
-    # the timeout should stop connect, not a failure
+    # The timeout should stop connect, not a failure
     exit-status: 124
-    # maybe optimistic that Connect finishes starting...
-    #stderr: [
-    #  "Starting HTTP listener on :3939"
-    #]
+   
+# Ensure correct R version 
   "/opt/R/3.6.2/bin/R --version":
     title: r_version_match
     exit-status: 0
     stdout: [
-      "/3.6.2/"
+      "/{{.Env.R_VERSION}}/"
     ]
 
+# Ensure correct python version
+  "/opt/python/3.6.5/bin/python --version":
+    title: python_version_matches
+    exit-status: 0
+    stderr: [
+      "/{{.Env.PYTHON_VERSION}}/"
+    ]

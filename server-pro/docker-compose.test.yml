@@ -8,6 +8,10 @@ services:
     environment:
       # uses .env by default
       - RSP_VERSION
+      - R_VERSION 
+      - PYTHON_VERSION
+      - ALT_PYTHON_VERSION
+      - JUPYTER_PYTHON_VERSION
     volumes:
       - "./test/run_tests.sh:/run_tests.sh"
       - "./test/goss.yaml:/tmp/goss.yaml"
