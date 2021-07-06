@@ -2,9 +2,8 @@ name: Goss Image Testing
 on: push
 jobs:
   job1:
-    runs-on: ubuntu-latest
-    steps:
-        env: 
-          RSC_LICENSE: ${{ secrets.RSC_LICENSE }}
-          RSP_LICENSE: ${{ secrets.RSP_LICENSE }}
-          RSPM_LICENSE: ${{ secrets.RSPM_LICENSE }}
+    runs-on: ubuntu-latest  
+      env: 
+        RSC_LICENSE: ${{ secrets.RSC_LICENSE }}
+        RSP_LICENSE: ${{ secrets.RSP_LICENSE }}
+        RSPM_LICENSE: ${{ secrets.RSPM_LICENSE }}
