@@ -39,4 +39,3 @@ command:
     stdout: [
       "/{{ .Env.PYTHON_VERSION }}/"
     ]
-  
