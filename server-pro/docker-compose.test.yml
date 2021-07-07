@@ -10,9 +10,9 @@ services:
       - RSP_VERSION
       - R_VERSION 
       - PYTHON_VERSION
-      - ALT_PYTHON_VERSION
+      - PYTHON_VERSION_ALT
       - JUPYTER_PYTHON_VERSION
-      - ALT_R_VERSION
+      - R_VERSION_ALT
     volumes:
       - "./test/run_tests.sh:/run_tests.sh"
       - "./test/goss.yaml:/tmp/goss.yaml"
