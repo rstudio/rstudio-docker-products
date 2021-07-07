@@ -167,10 +167,18 @@ if __name__ == "__main__":
         action="store_true",
         help="Whether to use the 'local' version for 'release'. Parsed from the local Makefile",
     )
+    parser.add_argument(
+        "--override", "-o",
+        type=str,
+        nargs=1,
+        help="Whether to override the version. If set to 'auto' then it has no effect. (default: 'auto')",
+        default=["auto"]
+    )
     args = parser.parse_args()
 
     selected_product = args.product[0]
     version_type = args.type[0]
+    override = args.override[0]
     local = args.local
 
     # ------------------------------------------
@@ -194,10 +202,18 @@ if __name__ == "__main__":
     print(f"Providing version for product: '{selected_product}' and version type: '{version_type}'", file=sys.stderr)
 
     # ------------------------------------------
+    # Use override, if defined
+    # ------------------------------------------
+    if override != 'auto':
+        print("The --override arg was set with a value other than 'auto'", file=sys.stderr)
+        print("Overriding version_type with: 'manual'", file=sys.stderr)
+        version_type = 'manual'
+        print(f"Overriding version with override: '{override}'", file=sys.stderr)
+        version = override
+    # ------------------------------------------
     # Product "switch" statements
     # ------------------------------------------
-
-    if selected_product == 'workbench':
+    elif selected_product == 'workbench':
         if version_type == 'daily':
             version = rstudio_workbench_daily()
         elif version_type == 'preview':
