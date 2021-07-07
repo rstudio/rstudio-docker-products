@@ -20,13 +20,13 @@ file:
     exists: false
   /usr/lib/rstudio-server:
     exists: true
-  /opt/R/{{.Env.ALT_R_VERSION}}/bin/R:
+  /opt/R/{{.Env.R_VERSION_ALT}}/bin/R:
     exists: true
     filetype: file
   /opt/python/{{.Env.PYTHON_VERSION}}/bin/python:
     exists: true
     filetype: symlink
-  /opt/python/{{.Env.ALT_PYTHON_VERSION}}/bin/python:
+  /opt/python/{{.Env.PYTHON_VERSION_ALT}}/bin/python:
     exists: true
     filetype: symlink
   /opt/python/jupyter/bin/python:
@@ -71,7 +71,7 @@ command:
     title: alternate_python_version_matches
     exit-status: 0
     stdout: [
-        "/{{.Env.ALT_PYTHON_VERSION}}/"
+        "/{{.Env.PYTHON_VERSION_ALT}}/"
     ]
 # Ensure correct python version    
   "/opt/python/3.9.5/bin/python --version":
