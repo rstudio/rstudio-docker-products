@@ -86,7 +86,7 @@ command:
     stdout: [
         "/{{.Env.JUPYTER_PYTHON_VERSION}}/"
     ]
-   "which openssl":
+  "which openssl":
     title: uses_system_openssl
     exit-status: 0
     stdout: [
