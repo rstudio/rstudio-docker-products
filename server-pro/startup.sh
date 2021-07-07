@@ -68,6 +68,15 @@ if [ "$RSP_LAUNCHER" == "true" ]; then
   wait-for-it.sh localhost:5559 -t $RSP_LAUNCHER_TIMEOUT
 fi
 
+#verify installation
+if [ ! -z "$DIAGNOSE_DIR" ]; then
+   echo "==VERIFY INSTALLATION==";
+   mkdir -p $DIAGNOSE_DIR/verify-installation
+   chown rstudio-server:rstudio-server $DIAGNOSE_DIR/verify-installation
+   su rstudio-server -c "touch ${DIAGNOSE_DIR}/verify-installation/verify.log"
+   rstudio-server verify-installation --verify-user=$RSP_TESTUSER | tee $DIAGNOSE_DIR/verify-installation/verify.log
+fi
+
 tail -n 100 -f \
   /var/lib/rstudio-server/monitor/log/*.log \
   /var/lib/rstudio-launcher/*.log \

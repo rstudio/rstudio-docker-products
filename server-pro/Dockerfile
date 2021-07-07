@@ -108,6 +108,7 @@ ENV RSP_TESTUSER_PASSWD rstudio
 ENV RSP_TESTUSER_UID 10000
 ENV RSP_LAUNCHER true
 ENV RSP_LAUNCHER_TIMEOUT 10
+ENV DIAGNOSE_DIR /var/log
 
 # Copy config and startup
 COPY startup.sh /usr/local/bin/startup.sh
