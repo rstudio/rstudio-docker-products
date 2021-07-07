@@ -55,7 +55,6 @@ command:
   "touch /var/log/rstudio-server.log":
     title: server-pro_server_log_creates
     exit-status: 0
-  
 # Check product version
   "rstudio-server version":
     title: server-pro_version_matches
@@ -64,11 +63,9 @@ command:
        "/{{ .Env.RSP_VERSION }}/",
        "/Workbench/"
      ]
- 
   "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/jupyter/bin/jupyter nbconvert --to notebook --stdin --stdout":
     title: jupyter_works
     exit-status: 0
- 
 # Ensure correct python version    
   "/opt/python/3.8.10/bin/python --version":
     title: alternate_python_version_matches
@@ -89,8 +86,7 @@ command:
     stdout: [
         "/{{.Env.JUPYTER_PYTHON_VERSION}}/"
     ]
-    
-  "which openssl":
+   "which openssl":
     title: uses_system_openssl
     exit-status: 0
     stdout: [

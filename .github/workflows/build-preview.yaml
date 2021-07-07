@@ -86,8 +86,11 @@ jobs:
           RSP_VERSION: ${{ steps.version.outputs.VERSION }}
           RSC_VERSION: ${{ steps.version.outputs.VERSION }}
           RSPM_VERSION: ${{ steps.version.outputs.VERSION }}
+          # RSP_LICENSE: ${{secrets.RSP_LICENSE}}
+          # RSC_LICENSE: ${{secrets.RSC_LICENSE}}
+          # RSPM_LICENSE: ${{secrets.RSPM_LICENSE}}
         run: |
-          docker-compose -f ./${{ matrix.config.dir }}/docker-compose.test.yml run sut
+          docker-compose -f ./${{ matrix.config.dir }}/docker- compose.test.yml run sut
 
       - name: Login to Docker Hub
         if: ${{ github.ref == 'refs/heads/main' }}
