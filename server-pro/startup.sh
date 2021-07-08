@@ -78,7 +78,6 @@ if [ "$RSP_LAUNCHER" == "true" ]; then
   wait-for-it.sh localhost:5559 -t $RSP_LAUNCHER_TIMEOUT
 fi
 
-
 # Check diagnostic configurations
 if [ "$DIAGNOSTIC_ENABLE" == "true" ] && [ "$DIAGNOSTIC_ONLY" == "true" ]; then
    verify_installation
