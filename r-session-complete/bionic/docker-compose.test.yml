@@ -2,7 +2,7 @@ version: '2.3'
 services:
 
   sut:
-    image: 6e2d311047c4
+    image: $IMAGE_NAME
     command: /run_tests.sh
     entrypoint: []
     environment:
