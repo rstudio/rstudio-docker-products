@@ -15,12 +15,27 @@ Docker images for RStudio Professional Products
    provide [instructions for building](https://github.com/rstudio/rstudio-docker-products#instructions-for-building) for
    these cases.
    
-
 # Images
+
+### Professional Products
 
 - [RStudio Workbench](./server-pro/)
 - [RStudio Connect](./connect/)
 - [RStudio Package Manager](./package-manager/)
+
+### Supporting Images
+
+- RStudio Workbench Session Images (requires the launcher)
+    - [R Session Complete](./r-session-complete/)
+- [Floating License Server](./helper/float/)
+
+### Preview Images
+
+*IMPORTANT:* Do not use these images. They are in preparation for a future release
+
+- RStudio Connect Session Images (requires the launcher)
+    - [Content Base Image](./content-base/)
+    - [Content Init Container](./connect-content-init/)
 
 # RStudio Team
 
