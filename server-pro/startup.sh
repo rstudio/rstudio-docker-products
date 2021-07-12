@@ -26,13 +26,12 @@ trap deactivate EXIT
 
 # Call verify installation command and write to log file
 verify_installation () {
-
    echo "==VERIFY INSTALLATION==";
    mkdir -p $DIAGNOSTIC_DIR
    chmod 777 $DIAGNOSTIC_DIR
    rstudio-server verify-installation --verify-user=$RSP_TESTUSER | tee $DIAGNOSTIC_DIR/verify.log
-
 }
+
 # touch log files to initialize them
 su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'
 mkdir -p /var/lib/rstudio-launcher
@@ -76,7 +75,6 @@ if [ "$RSP_LAUNCHER" == "true" ]; then
   /usr/lib/rstudio-server/bin/rstudio-launcher > /var/log/rstudio-launcher.log 2>&1 &
   wait-for-it.sh localhost:5559 -t $RSP_LAUNCHER_TIMEOUT
 fi
-
 
 # Check diagnostic configurations
 if [ "$DIAGNOSTIC_ENABLE" == "true" ]; then
