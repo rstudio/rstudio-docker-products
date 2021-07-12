@@ -29,8 +29,7 @@ verify_installation () {
 
    echo "==VERIFY INSTALLATION==";
    mkdir -p $DIAGNOSTIC_DIR
-   chmod -R 777 $DIAGNOSTIC_DIR
-   su rstudio-server -c "touch ${DIAGNOSTIC_DIR}/verify.log"
+   chmod 777 $DIAGNOSTIC_DIR
    rstudio-server verify-installation --verify-user=$RSP_TESTUSER | tee $DIAGNOSTIC_DIR/verify.log
 
 }
@@ -80,13 +79,14 @@ fi
 
 
 # Check diagnostic configurations
-if [ "$DIAGNOSTIC_ENABLE" == "true" ] && [ "$DIAGNOSTIC_ONLY" == "true" ]; then
-   verify_installation
-   exit 0
-elif [ "$DIAGNOSTIC_ENABLE" == "true" ]; then
-   verify_installation  
+if [ "$DIAGNOSTIC_ENABLE" == "true" ]; then
+  verify_installation
+  if [ "$DIAGNOSTIC_ONLY" == "true" ]; then
+    echo "Exiting script because DIAGNOSTIC_ONLY=${DIAGNOSTIC_ONLY}"
+    exit 0
+  fi;
 else
-   echo "startup does not verify installation and is not in diagnose mode";
+  echo "not running verify installation because DIAGNOSTIC_ENABLE=${DIAGNOSTIC_ENABLE}"
 fi
 
 tail -n 100 -f \
