@@ -1,5 +1,6 @@
 ARG R_VERSION=3.6
-FROM rstudio/r-base:${R_VERSION}-bionic
+#FROM rstudio/r-base:${R_VERSION}-bionic
+FROM ghcr.io/rstudio/rstudio-workbench-preview:1.5.186-4
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 # Locale configuration --------------------------------------------------------#
@@ -42,56 +43,6 @@ RUN apt-get update -qq && \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-
-# Install jupyter -------------------------------------------------------------#
-
-ARG JUPYTER_VERSION=3.8.10
-RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
-    bash Miniconda3-latest-Linux-x86_64.sh -bp /opt/python/jupyter && \
-    /opt/python/jupyter/bin/conda install -y python==${JUPYTER_VERSION} && \
-    rm -rf Miniconda3-latest-Linux-x86_64.sh && \
-    /opt/python/jupyter/bin/pip install \
-    jupyter==1.0.0 \
-    'jupyterlab<3.0.0' \
-    rsp_jupyter \
-    rsconnect_jupyter && \
-    /opt/python/jupyter/bin/jupyter kernelspec remove python3 -f && \
-    /opt/python/jupyter/bin/pip uninstall -y ipykernel
-
-# Install RSP/RSC Notebook Extensions --------------------#
-
-RUN /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter && \
-    /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter && \
-    /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsconnect_jupyter && \
-    /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter && \
-    /opt/python/jupyter/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
-
-# Install Python --------------------------------------------------------------#
-
-ARG PYTHON_VERSION=3.9.5
-RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
-    bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION} && \
-    /opt/python/${PYTHON_VERSION}/bin/conda install -y python==${PYTHON_VERSION} && \
-    /opt/python/${PYTHON_VERSION}/bin/pip install \
-        ipykernel \
-        virtualenv \
-        && \
-    rm -rf Miniconda3-*-Linux-x86_64.sh && \
-    /opt/python/${PYTHON_VERSION}/bin/python -m ipykernel install --name py${PYTHON_VERSION} --display-name "Python ${PYTHON_VERSION}"
-
-# Install another Python --------------------------------------------------------------#
-
-ARG ALT_PYTHON_VERSION=3.8.10
-RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
-    bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${ALT_PYTHON_VERSION} && \
-    /opt/python/${ALT_PYTHON_VERSION}/bin/conda install -y python==${ALT_PYTHON_VERSION} && \
-    /opt/python/${ALT_PYTHON_VERSION}/bin/pip install \
-        ipykernel \
-        virtualenv \
-        && \
-    rm -rf Miniconda3-*-Linux-x86_64.sh && \
-    /opt/python/${ALT_PYTHON_VERSION}/bin/python -m ipykernel install --name py${ALT_PYTHON_VERSION} --display-name "Python ${ALT_PYTHON_VERSION}"
-
 # Runtime settings ------------------------------------------------------------#
 ARG TINI_VERSION=0.18.0
 RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini && \
@@ -111,19 +62,9 @@ ENV RSP_LAUNCHER_TIMEOUT 10
 
 # Copy config and startup
 COPY startup.sh /usr/local/bin/startup.sh
+COPY /conf/logging.conf /usr/local/bin/logging.conf
 RUN chmod +x /usr/local/bin/startup.sh
 COPY conf/* /etc/rstudio/
-
-# Install RStudio Server Pro --------------------------------------------------#
-ARG RSP_VERSION=1.4.1717-3
-ARG RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
-ARG RSP_NAME=rstudio-workbench
-RUN apt-get update --fix-missing \
-    && curl -O ${RSP_DOWNLOAD_URL}/${RSP_NAME}-${RSP_VERSION}-amd64.deb \
-    && gdebi --non-interactive ${RSP_NAME}-${RSP_VERSION}-amd64.deb \
-    && rm ${RSP_NAME}-${RSP_VERSION}-amd64.deb \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
 
 # Create log dir
 RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
