@@ -1,6 +1,6 @@
 ARG R_VERSION=3.6
 #FROM rstudio/r-base:${R_VERSION}-bionic
-FROM ghcr.io/rstudio/rstudio-workbench-preview:1.5.186-4
+FROM ghcr.io/rstudio/rstudio-workbench-preview:1.5.192-1
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 # Locale configuration --------------------------------------------------------#
