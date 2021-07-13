@@ -112,14 +112,14 @@ ENV DIAGNOSTIC_DIR /var/log/rstudio
 ENV DIAGNOSTIC_ENABLE false
 ENV DIAGNOSTIC_ONLY false
 
+# add verify installation to $PATH
+COPY verify_installation.sh /usr/local/bin/verify_installation.sh
+RUN chmod +x /usr/local/bin/verify_installation.sh
+
 # Copy config and startup
 COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
 COPY conf/* /etc/rstudio/
-
-# add verify installation to $PATH
-COPY verify_installation.sh /usr/local/bin/verify_installation.sh
-RUN chmod +x /usr/local/bin/verify_installation.sh
 
 # Install RStudio Server Pro --------------------------------------------------#
 ARG RSP_VERSION=1.4.1717-3
