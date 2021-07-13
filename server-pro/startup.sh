@@ -24,8 +24,6 @@ deactivate() {
 }
 trap deactivate EXIT
 
-
-
 # touch log files to initialize them
 su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'
 mkdir -p /var/lib/rstudio-launcher
@@ -73,12 +71,14 @@ fi
 # Check diagnostic configurations
 if [ "$DIAGNOSTIC_ENABLE" == "true" ]; then
   /usr/local/bin/verify_installation.sh &
+  sleep 7
   if [ "$DIAGNOSTIC_ONLY" == "true" ]; then
-    echo "Exiting script because DIAGNOSTIC_ONLY=${DIAGNOSTIC_ONLY}"
+    echo "$(<$DIAGNOSTIC_DIR/verify.log)";
+    echo "Exiting script because DIAGNOSTIC_ONLY=${DIAGNOSTIC_ONLY}";
     exit 0
   fi;
 else
-  echo "not running verify installation because DIAGNOSTIC_ENABLE=${DIAGNOSTIC_ENABLE}"
+  echo "not running verify installation because DIAGNOSTIC_ENABLE=${DIAGNOSTIC_ENABLE}";
 fi
 
 tail -n 100 -f \
