@@ -66,7 +66,6 @@ rsp-hook:
 	IMAGE_NAME=rstudio/rstudio-server-pro:$(RSP_VERSION) \
 	./hooks/build
 
-
 test-rsp: test-server-pro
 test-server-pro:
 	cd ./server-pro && IMAGE_NAME=rstudio/rstudio-server-pro:$(RSP_VERSION) docker-compose -f docker-compose.test.yml run sut
