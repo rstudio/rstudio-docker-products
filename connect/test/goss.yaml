@@ -45,7 +45,7 @@ command:
       "/{{ .Env.RSC_VERSION }}/"
    ]
 
-# Goss times out after 10 seconds
+# Get PID for connect process
   "pgrep connect":
    title: connect_running
    exit-status: 0
