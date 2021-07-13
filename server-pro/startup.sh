@@ -5,37 +5,12 @@ set -x
 
 # Deactivate license when it exists
 deactivate() {
-    echo "== Exiting =="
-    echo " --> TAIL 100 rstudio-server.log"
-    tail -n 100 /var/log/rstudio-server.log
-    echo " --> TAIL 100 rstudio-kubernetes-launcher.log"
-    tail -n 100 /var/lib/rstudio-launcher/Kubernetes/rstudio-kubernetes-launcher.log
-    echo " --> TAIL 100 rstudio-local-launcher*.log"
-    tail -n 100 /var/lib/rstudio-launcher/Local/rstudio-local-launcher*.log
-    echo " --> TAIL 100 rstudio-launcher.log"
-    tail -n 100 /var/lib/rstudio-launcher/rstudio-launcher.log
-    echo " --> TAIL 100 monitor/log/rstudio-server.log"
-    tail -n 100 /var/lib/rstudio-server/monitor/log/rstudio-server.log
-
     echo "Deactivating license ..."
     /usr/lib/rstudio-server/bin/license-manager deactivate >/dev/null 2>&1
 
     echo "== Done =="
 }
 trap deactivate EXIT
-
-# touch log files to initialize them
-su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'
-mkdir -p /var/lib/rstudio-launcher
-chown rstudio-server:rstudio-server /var/lib/rstudio-launcher
-su rstudio-server -c 'touch /var/lib/rstudio-launcher/rstudio-launcher.log'
-touch /var/log/rstudio-server.log
-mkdir -p /var/lib/rstudio-launcher/Local
-chown rstudio-server:rstudio-server /var/lib/rstudio-launcher/Local
-su rstudio-server -c 'touch /var/lib/rstudio-launcher/Local/rstudio-local-launcher-placeholder.log'
-mkdir -p /var/lib/rstudio-launcher/Kubernetes
-chown rstudio-server:rstudio-server /var/lib/rstudio-launcher/Kubernetes
-su rstudio-server -c 'touch /var/lib/rstudio-launcher/Kubernetes/rstudio-kubernetes-launcher.log'
 
 # Activate License
 if ! [ -z "$RSP_LICENSE" ]; then
@@ -64,18 +39,10 @@ fi
 
 # Start Launcher
 if [ "$RSP_LAUNCHER" == "true" ]; then
-  /usr/lib/rstudio-server/bin/rstudio-launcher > /var/log/rstudio-launcher.log 2>&1 &
+  /usr/lib/rstudio-server/bin/rstudio-launcher 1>&2 &
   wait-for-it.sh localhost:5559 -t $RSP_LAUNCHER_TIMEOUT
 fi
 
-tail -n 100 -f \
-  /var/lib/rstudio-server/monitor/log/*.log \
-  /var/lib/rstudio-launcher/*.log \
-  /var/lib/rstudio-launcher/Local/*.log \
-  /var/lib/rstudio-launcher/Kubernetes/*.log \
-  /var/log/rstudio-launcher.log \
-  /var/log/rstudio-server.log &
-
 # the main container process
 # cannot use "exec" or the "trap" will be lost
-/usr/lib/rstudio-server/bin/rserver --server-daemonize 0 > /var/log/rstudio-server.log 2>&1
+/usr/lib/rstudio-server/bin/rserver --server-daemonize 0 > /dev/stderr
