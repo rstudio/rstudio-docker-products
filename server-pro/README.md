@@ -89,7 +89,7 @@ for more information.
 | `RSP_LICENSE` | License key for RStudio Server Pro, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None |
 | `RSP_LICENSE_SERVER` | Floating license server, format should be: `my.url.com:port` | None |
 | `RSP_LAUNCHER` | Whether or not to use launcher locally / start the launcher process | true |
-| `RSP_LAUNCHER_TIMEOUT` | The timeout, in seconds, to wait for launcher to start before failing startup | 10 |
+| `RSP_LAUNCHER_TIMEOUT` | The timeout, in seconds, to wait for launcher to start listening on the expected port before failing startup | 10 |
 
 #### Ports
 
