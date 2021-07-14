@@ -59,7 +59,7 @@ docker-compose up
 
 # Privileged Containers
 
-Notice that each of the images above use the `--privileged` flag. Each RStudio Professional product uses the `--privileged`
+Each of these images uses the `--privileged`
 flag for user and code isolation and security. Each product differs in the exact reasons why, but we would love to hear
 from you if this is concerning in your infrastructure.
 See [RStudio Professional Product Root & Privileged Requirements](https://support.rstudio.com/hc/en-us/articles/1500005369282)
