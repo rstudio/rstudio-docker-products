@@ -6,6 +6,8 @@ set -x
 # Deactivate license when it exists
 deactivate() {
     echo "== Exiting =="
+    rstudio-server stop
+
     echo " --> TAIL 100 rstudio-server.log"
     tail -n 100 /var/log/rstudio-server.log
     echo " --> TAIL 100 rstudio-kubernetes-launcher.log"
