@@ -50,13 +50,9 @@ This container includes:
 RStudio Workbench is configured via config files in the in the `/etc/rstudio` directory. Mount this directory as
 a volume from the host machine. Changes will take effect when the container is restarted.
 
-Be sure the config files have:
+You can review possible RStudio Workbench configuration [in the documentation](https://docs.rstudio.com/ide/server-pro/).
 
-- `launcher.conf` and enable Local Launcher
-- `rserver.conf` to connect to the Local Launcher
-- `jupyter.conf` with `jupyter-exe` pointing to the Jupyter executable in the Docker image
-
-See a complete example of that file at `server-pro/conf`.
+See a complete example of server configuration at `server-pro/conf`.
 
 #### Persistent Data
 
