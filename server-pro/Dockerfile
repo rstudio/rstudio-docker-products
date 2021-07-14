@@ -109,12 +109,8 @@ ENV RSP_TESTUSER_UID 10000
 ENV RSP_LAUNCHER true
 ENV RSP_LAUNCHER_TIMEOUT 10
 ENV DIAGNOSTIC_DIR /var/log/rstudio
-ENV DIAGNOSTIC_ENABLE true
+ENV DIAGNOSTIC_ENABLE false
 ENV DIAGNOSTIC_ONLY false
-
-# add verify installation to $PATH
-COPY verify_installation.sh /usr/local/bin/verify_installation.sh
-RUN chmod +x /usr/local/bin/verify_installation.sh
 
 # Copy config and startup
 COPY startup.sh /usr/local/bin/startup.sh
