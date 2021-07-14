@@ -1,0 +1,6 @@
+RPackages:
+  - "odbc"
+  - "devtools"
+  - "shiny"
+  - "rmarkdown"
+  - "plumber"
