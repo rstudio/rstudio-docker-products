@@ -7,7 +7,8 @@ development and testing.
 If you want to test floating licenses locally. You will need to do the following:
 
 - Request a floating license key from support@rstudio.com
-- Ensure that the floating license key works within a hypervisor (by default, they do not)
+- Ask your Support / Customer Success representative to be sure that the floating license key works within a
+  hypervisor (by default, they do not)
 
 Then run:
 
