@@ -74,9 +74,11 @@ See a complete example of that file at `connect/rstudio-connect.gcfg`.
 #### Persistent Data
 
 In order to persist RSC metadata and app data between container restarts configure RSC `Server.DataDir` option to go to
-a persistent volume. The included configuration file expects a persistent volume from the host machine or your docker
-orchestration system to be available at /data. Should you wish to move this to a different path, you can change the
-Server.DataDir option.
+a persistent volume. 
+
+The included configuration file expects a persistent volume from the host machine or your docker
+orchestration system to be available at `/data`. Should you wish to move this to a different path, you can change the
+`Server.DataDir` option.
 
 #### Licensing
 

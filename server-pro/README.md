@@ -30,20 +30,20 @@ docker run --privileged -it \
     rstudio/rstudio-workbench:latest
 ```
 
-Open http://localhost:8787 to access RStudio Server Pro. The default username and password are _rstudio_.
+Open http://localhost:8787 to access RStudio Workbench. The default username and password are _rstudio_.
 
 For a more "real" deployment, continue reading!
 
 #### Overview
 
-Note that running the RStudio Server Pro Docker image requires the container to run using the `--privileged` flag and a
-valid RStudio Server Pro license.
+Note that running the RStudio Workbench Docker image requires the container to run using the `--privileged` flag and a
+valid RStudio Workbench license.
 
 This container includes:
 
 1. R 3.6.1
 2. Python 3.6.5
-3. RStudio Server Pro
+3. RStudio Workbench
 
 #### Configuration
 

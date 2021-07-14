@@ -44,7 +44,7 @@ This container includes:
 1. R 3.6.1
 1. RStudio Package Manager
 
-> NOTE: Package Manager is currently not very particular about R version. So changing R version is rarely necessary
+> NOTE: Package Manager is currently not very particular about R version. Changing the R version is rarely necessary.
 
 #### Configuration
 
@@ -62,8 +62,8 @@ See a complete example of that file at `pacakge-manager/rstudio-connect.gcfg`.
 
 In order to persist Package Manager data between container restarts configure RSC `Server.DataDir` option to go to
 a persistent volume. The included configuration file expects a persistent volume from the host machine or your docker
-orchestration system to be available at /data. Should you wish to move this to a different path, you can change the
-Server.DataDir option.
+orchestration system to be available at `/data`. Should you wish to move this to a different path, you can change the
+`Server.DataDir` option.
 
 #### Licensing
 
