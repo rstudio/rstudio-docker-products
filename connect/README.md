@@ -81,8 +81,8 @@ system.
 
 Using the RStudio Connect docker image requires to have a valid License. You can set the RSC license in three ways:
 
-1. Setting the `RSC_LICENSE` environment variable to a valid license key
-2. Setting the `RSC_LICENSE_SERVER` environment variable to a valid license server / port
+1. Setting the `RSC_LICENSE` environment variable to a valid license key inside the container
+2. Setting the `RSC_LICENSE_SERVER` environment variable to a valid license server / port inside the container
 3. Mounting a `/etc/rstudio-connect/license.lic` single file that contains a valid license for RStudio Connect
 
 **NOTE:** the "offline activation process" is not supported by this image today. Offline installations will need

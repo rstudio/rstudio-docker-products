@@ -67,8 +67,8 @@ machine or your docker orchestration system.
 
 The RStudio Workbench Docker image requires a valid license, which can be set in three ways:
 
-1. Setting the `RSP_LICENSE` environment variable to a valid license key
-2. Setting the `RSP_LICENSE_SERVER` environment variable to a valid license server / port
+1. Setting the `RSP_LICENSE` environment variable to a valid license key inside the container
+2. Setting the `RSP_LICENSE_SERVER` environment variable to a valid license server / port inside the container
 3. Mounting a `/etc/rstudio-server/license.lic` single file that contains a valid license for RStudio Server Pro
 
 **NOTE:** the "offline activation process" is not supported by this image today. Offline installations will need
