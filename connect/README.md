@@ -66,16 +66,17 @@ Be sure the config file has these fields:
 - `Server.Address` set to the exact URL that users will use to visit Connect. A
   placeholder `http://localhost:3939` is in use by default
 - `Server.DataDir` set to `/data/`
-- `HTTP.Listen`
+- `HTTP.Listen` (or equivalent. This could change how you should configure the container)
 - `Python.Enabled` and `Python.Executable`
 
 See a complete example of that file at `connect/rstudio-connect.gcfg`.
 
 #### Persistent Data
 
-In order to persist RSC metadata and app data between container restarts configure RSC `Server.DataDir` option
-to `/data` and share the `/data` directory with a persistent volume in the host machine or your docker orchestration
-system.
+In order to persist RSC metadata and app data between container restarts configure RSC `Server.DataDir` option to go to
+a persistent volume. The included configuration file expects a persistent volume from the host machine or your docker
+orchestration system to be available at /data. Should you wish to move this to a different path, you can change the
+Server.DataDir option.
 
 #### Licensing
 

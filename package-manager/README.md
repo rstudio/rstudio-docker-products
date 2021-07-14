@@ -42,7 +42,9 @@ and a valid RStudio Package Manager license.
 This container includes:
 
 1. R 3.6.1
-3. RStudio Package Manager
+1. RStudio Package Manager
+
+> NOTE: Package Manager is currently not very particular about R version. So changing R version is rarely necessary
 
 #### Configuration
 
@@ -58,9 +60,10 @@ See a complete example of that file at `pacakge-manager/rstudio-connect.gcfg`.
 
 #### Persistent Data
 
-In order to persist RSPM package data data between container restarts configure RSPM `Server.DataDir` option to `/data`
-and share the `/data` directory
-with a persistent volume in the host machine or your docker orchestration system.
+In order to persist Package Manager data between container restarts configure RSC `Server.DataDir` option to go to
+a persistent volume. The included configuration file expects a persistent volume from the host machine or your docker
+orchestration system to be available at /data. Should you wish to move this to a different path, you can change the
+Server.DataDir option.
 
 #### Licensing
 
@@ -118,16 +121,4 @@ docker exec -it {container-id} /bin/bash
 ```
 
 Then please refer to the [RSPM guide](https://docs.rstudio.com/rspm/admin/) on how
-to [create and manage](https://docs.rstudio.com/rspm/admin/getting-started/configuration/) your repositories. For
-example to serve CRAN:
-
-```
-# Initiate a sync:
-rspm sync --wait
-
-# Create a repository:
-rspm create repo --name=prod-cran --description='Access CRAN packages'
-
-# Subscribe the repository to the cran source:
-rspm subscribe --repo=prod-cran --source=cran
-```
+to [create and manage](https://docs.rstudio.com/rspm/admin/getting-started/configuration/) your repositories.
