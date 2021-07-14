@@ -30,7 +30,7 @@ docker run --privileged -it \
     rstudio/rstudio-workbench:latest
 ```
 
-Open http://localhost:8787 to access RStudio Server Pro. The default username and password are rstudio.
+Open http://localhost:8787 to access RStudio Server Pro. The default username and password are _rstudio_.
 
 For a more "real" deployment, continue reading!
 
@@ -47,8 +47,8 @@ This container includes:
 
 #### Configuration
 
-The configuration of RStudio Server Pro is made on a set of file in the `/etc/rstudio` directory. Mount this directory as
-volume with the host machine to change the configuration and restart the container for changes to take effect.
+RStudio Workbench is configured via config files in the in the `/etc/rstudio` directory. Mount this directory as
+a volume from the host machine. Changes will take effect when the container is restarted.
 
 Be sure the config files have:
 
@@ -60,13 +60,12 @@ See a complete example of that file at `server-pro/conf`.
 
 #### Persistent Data
 
-In order to persist RSP user files between container restarts please mount `/home` with a persistent volume in the host
+In order to persist user files between container restarts please mount the `/home` directory from a persistent volume on the host
 machine or your docker orchestration system.
 
 #### Licensing
 
-Using the RStudio Server Pro Docker image requires to have a valid License. You can set the RSP license to use this in
-one three ways:
+The RStudio Workbench Docker image requires a valid license, which can be set in three ways:
 
 1. Setting the `RSP_LICENSE` environment variable to a valid license key
 2. Setting the `RSP_LICENSE_SERVER` environment variable to a valid license server / port
@@ -80,8 +79,8 @@ to explore using a license server, license file, or custom image with manual int
 By default the container will create a test user, that user can be controlled by the environment
 variables: `RSP_TESTUSER`, `RSP_TESTUSER_PASSWD`, `RSP_TESTUSER_UID`.
 
-In order to use this container with a different user structure such as LDAP you need to extend the container to use a
-valid PAM configuration. See
+This container needs to be extended with a valid PAM configuration if you want to use it with an external user directory such as LDAP/AD.
+See
 the [RStudio Server Pro guide](https://docs.rstudio.com/ide/server-pro/authenticating-users.html) for more information.
 
 #### Environment variables

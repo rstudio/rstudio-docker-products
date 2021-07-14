@@ -61,7 +61,7 @@ The configuration of RStudio Connect is made on the `/etc/rstudio-connect/rstudi
 volume with an external file on the host machine to change the configuration and restart the container for changes to
 take effect.
 
-Be sure the config file has this fields:
+Be sure the config file has these fields:
 
 - `Server.Address` set to the exact URL that users will use to visit Connect. A
   placeholder `http://localhost:3939` is in use by default

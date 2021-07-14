@@ -46,11 +46,10 @@ This container includes:
 
 #### Configuration
 
-The configuration of RStudio Package Manager is made on the `/etc/rstudio-pm/rstudio-pm.gcfg` file, mount this file as
-volume with an external file on the host machine to change the configuration and restart the container for changes to
-take effect.
+RStudio Package Manager is configured via the`/etc/rstudio-pm/rstudio-pm.gcfg` file. You should mount this file as
+a volume from the host machine. Changes will take effect when the container is restarted.
 
-Be sure the config file has this fields:
+Be sure the config file has these fields:
 
 - `Server.DataDir` set to `/data/`
 - `HTTP.Listen`
