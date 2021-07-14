@@ -27,7 +27,6 @@ Docker images for RStudio Professional Products
 
 - RStudio Workbench Session Images (requires the launcher)
     - [R Session Complete](./r-session-complete/)
-- [Floating License Server](./helper/float/)
 
 ### Preview Images
 
