@@ -66,7 +66,7 @@ Be sure the config file has these fields:
 - `Server.Address` set to the exact URL that users will use to visit Connect. A
   placeholder `http://localhost:3939` is in use by default
 - `Server.DataDir` set to `/data/`
-- `HTTP.Listen` (or equivalent. This could change how you should configure the container)
+- `HTTP.Listen` (or equivalent `HTTP`, `HTTPS`, or `HTTPRedirect` settings. This could change how you should configure the container ports)
 - `Python.Enabled` and `Python.Executable`
 
 See a complete example of that file at `connect/rstudio-connect.gcfg`.
