@@ -72,12 +72,12 @@ to explore using a license server, license file, or custom image with manual int
 
 #### Users
 
-By default the container will create a test user, that user can be controlled by the environment
+By default, the container will create a test user, which you can control or disable with the environment
 variables: `RSP_TESTUSER`, `RSP_TESTUSER_PASSWD`, `RSP_TESTUSER_UID`.
 
-This container needs to be extended with a valid PAM configuration if you want to use it with an external user directory such as LDAP/AD.
-See
-the [RStudio Server Pro guide](https://docs.rstudio.com/ide/server-pro/authenticating-users.html) for more information.
+This container needs to be extended with a valid PAM configuration if you want to use it with an external user directory
+such as LDAP/AD. See the [RStudio Workbench guide](https://docs.rstudio.com/ide/server-pro/authenticating-users.html)
+for more information.
 
 #### Environment variables
 
