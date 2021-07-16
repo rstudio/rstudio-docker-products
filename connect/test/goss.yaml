@@ -35,6 +35,8 @@ file:
     exists: true
   /opt/python/{{.Env.PYTHON_VERSION}}/bin/python:
     exists: true 
+  /usr/local/bin/connect_config.go:
+    exists: true
 
 # Check product version
 command:
@@ -45,7 +47,7 @@ command:
       "/{{ .Env.RSC_VERSION }}/"
    ]
 
-# Get PID for connect process
+# Checks if connect is running
   "pgrep connect":
    title: connect_running
    exit-status: 0
@@ -57,7 +59,10 @@ command:
     stdout: [
       "/{{ .Env.R_VERSION }}/"
     ]
-
+# Ensure rstudio-connect gcfg has the correct formatting
+  "/usr/local/go/bin/go run /usr/local/bin/connect_config.go ":
+    title: check_gcfg
+    exit-status: 1
 # Ensure correct python version
   "/opt/python/{{ .Env.PYTHON_VERSION }}/bin/python --version":
     title: python_version_matches

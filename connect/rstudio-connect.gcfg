@@ -37,3 +37,4 @@ URL = https://packagemanager.rstudio.com/cran/__linux__/bionic/latest
 
 [RPackageRepository "RSPM"]
 URL = https://packagemanager.rstudio.com/cran/__linux__/bionic/latest
+Animal=Chicken

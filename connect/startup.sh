@@ -19,7 +19,7 @@ elif test -f "/etc/rstudio-connect/license.lic"; then
     /opt/rstudio-connect/bin/license-manager activate-file /etc/rstudio-connect/license.lic
 fi
 
-# lest this be inherited by child processes
+# let this be inherited by child processes
 unset RSC_LICENSE
 unset RSC_LICENSE_SERVER
 

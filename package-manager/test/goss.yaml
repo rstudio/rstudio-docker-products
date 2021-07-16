@@ -41,9 +41,10 @@ command:
     stdout: [
       "/{{ .Env.RSPM_VERSION }}/"
     ]
+
 # Ensure package manager is running
-  "/opt/rstudio-pm/bin/rstudio-pm --config /etc/rstudio-pm/rstudio-pm.gcfg":
-    title: rspm_start
+  "pgrep rstudio-pm":
+    title: rspm_running
     exit-status: 0
   
 # Ensure correct R version 

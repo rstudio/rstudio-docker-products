@@ -19,8 +19,10 @@ curl -sL https://github.com/aelsabbahy/goss/releases/download/v$GOSS_VERSION/gos
 
 GOSS_FILE=$GOSS_FILE GOSS_VARS=$GOSS_VARS $GOSS v --format documentation --max-concurrent $GOSS_MAX_CONCURRENT
 
+
 # start connect
-/opt/rstudio-connect/bin/connect --config /etc/rstudio-connect/rstudio-connect.gcfg >/dev/null &
+/opt/rstudio-connect/bin/connect --config /etc/rstudio-connect/rstudio-connect.gcfg
+
 
 
 

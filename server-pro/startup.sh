@@ -78,4 +78,5 @@ tail -n 100 -f \
 
 # the main container process
 # cannot use "exec" or the "trap" will be lost
+
 /usr/lib/rstudio-server/bin/rserver --server-daemonize 0 > /var/log/rstudio-server.log 2>&1
