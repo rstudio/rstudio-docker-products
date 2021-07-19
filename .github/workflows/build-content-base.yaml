@@ -111,17 +111,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
-      - name: Download base image artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}-image
-          path: /tmp
-
-      - name: Load base image
-        run: |
-          docker load --input /tmp/r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}-image.tar
-          docker image ls -a
-
       - name: Build and Push
         id: docker_build
         uses: docker/build-push-action@v2
@@ -138,7 +127,7 @@ jobs:
           build-args: |
             R_VERSION=${{ matrix.config.r }}
             PYTHON_VERSION=${{ matrix.config.py }}
-            DRIVER_VERSION=${{ matrix.config.drivers }}
+            DRIVERS_VERSION=${{ matrix.config.drivers }}
             BASE_IMAGE=rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
 
       - name: Upload artifact
