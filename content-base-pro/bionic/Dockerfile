@@ -1,5 +1,4 @@
 ARG BASE_IMAGE
-
 FROM ${BASE_IMAGE}
 
 MAINTAINER RStudio Docker <docker@rstudio.com>
