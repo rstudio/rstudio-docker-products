@@ -15,7 +15,6 @@ DISTRIBUTION=bionic
 TAG_BASE=rstudio/content-base
 R_VERSION=3.6.3
 PYTHON_VERSION=3.7.6
-DRIVERS_VERSION=1.7.0
 
 all: push
 .PHONY: all
@@ -30,19 +29,9 @@ build:
 	docker build --build-arg R_VERSION=$(R_VERSION) --build-arg PYTHON_VERSION=$(PYTHON_VERSION) -t $(TAG_BASE):r$(R_VERSION)-py$(PYTHON_VERSION)-$(DISTRIBUTION) $(DISTRIBUTION)
 .PHONY: build
 
-# Builds the image for a single distribution with pro-drivers installed. Expects that the Dockerfile for
-# this image is in a $DISTRIBUTION/pro sub-directory. This image uses the standard content-base
-# image for the distribution as the FROM image in the dockerfile
-build-pro: build
-	docker build --build-arg R_VERSION=$(R_VERSION) --build-arg DRIVERS_VERSION=$(DRIVERS_VERSION) \
-		--build-arg BASE_IMAGE="$(TAG_BASE):r$(R_VERSION)-py$(PYTHON_VERSION)-$(DISTRIBUTION)" \
-		-t $(TAG_BASE)-pro:r$(R_VERSION)-py$(PYTHON_VERSION)-$(DISTRIBUTION) $(DISTRIBUTION)/pro
-.PHONY: build-pro
-
 # Do not run push if you are not Cole.
-push: build-pro
+push: build
 	docker push $(TAG_BASE):r$(R_VERSION)-py$(PYTHON_VERSION)-$(DISTRIBUTION)
-	docker push $(TAG_BASE)-pro:r$(R_VERSION)-py$(PYTHON_VERSION)-$(DISTRIBUTION)
 .PHONY: push
 
 # Enumeration of image tags for all supported distributions.
@@ -51,5 +40,4 @@ TAGS=$(DISTRIBUTIONS:%=$(TAG_BASE):r$(R_VERSION)-py$(PYTHON_VERSION)-%)
 # Prints the Docker tag associated with the configured image.
 tag:
 	@echo "$(TAG_BASE):r$(R_VERSION)-py$(PYTHON_VERSION)-$(DISTRIBUTION)"
-	@echo "$(TAG_BASE)-pro:r$(R_VERSION)-py$(PYTHON_VERSION)-$(DISTRIBUTION)"
 .PHONY: tag
