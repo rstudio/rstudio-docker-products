@@ -11,5 +11,5 @@ The make targets for building these pro images are the same as the the targets f
 
 ## Github Actions
 
-Because of the dependency on the content-base images, the github action that builds these images
-depends on completion of the [build-content-base](../.github/workflows/build-content-base.yaml) action
+Because of the dependency on the content-base images, the github actions that build these images
+depend on completion of the base image builds in [build-content-base](../.github/workflows/build-content-base.yaml)
