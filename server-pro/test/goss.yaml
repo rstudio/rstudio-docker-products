@@ -46,6 +46,11 @@ file:
     exists: true
     owner: rstudio-server
     group: rstudio-server
+  /tmp/startup.log:
+    exists: true
+    contains:
+    - "!ERROR Error reading /etc/rstudio/rserver.conf:
+    
 
 
 command:
@@ -92,3 +97,4 @@ command:
     stdout: [
       "/usr/bin/openssl"
     ]
+

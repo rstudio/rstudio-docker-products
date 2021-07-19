@@ -1,0 +1,53 @@
+2021/07/19 15:59:01 Resource limits: {"nofile":{"soft":1048576,"hard":1048576}}
+2021/07/19 15:59:01 Starting RStudio Package Manager v1.2.2.1-17
+2021/07/19 15:59:01 Using cache version 8
+2021/07/19 15:59:01 Using metrics cache version 1
+2021/07/19 15:59:01 Loading server configuration from /etc/rstudio-pm/rstudio-pm.gcfg
+2021/07/19 15:59:01 Warning: clearing log region activation reloaded. Any temporary log output activation/deactivation has been reset.
+2021/07/19 15:59:01 Using data directory: /data
+2021/07/19 15:59:01 Creating database directory: /data/db
+2021/07/19 15:59:01 Creating pypi directory: /data/pypi
+2021/07/19 15:59:01 Creating cache directory: /data/cache
+2021/07/19 15:59:01 Creating launcher directory: /data/launcher
+2021/07/19 15:59:01 Creating metrics directory: /data/metrics
+2021/07/19 15:59:01 Creating packages directory: /data/packages
+2021/07/19 15:59:01 Creating cran directory: /data/cran
+2021/07/19 15:59:01 Creating bioconductor directory: /data/bioconductor
+2021/07/19 15:59:01 Creating binaries directory: /data/binaries
+2021/07/19 15:59:01 Creating launcher directory: /data/launcher_internal/820eff299f7f
+2021/07/19 15:59:01 Using launcher directory: /data/launcher
+2021/07/19 15:59:01 Creating launcher_logs directory: /data/launcher_internal/820eff299f7f/custom_logs
+2021/07/19 15:59:01 Creating launcher_logs_user directory: /data/launcher_internal/820eff299f7f/custom_logs/root
+2021/07/19 15:59:02 Creating git directory: /tmp/git
+2021/07/19 15:59:02 Creating staging directory: /data/packages/staging
+2021/07/19 15:59:02 Automatically determining SystemRequirements.SystemReqsRulesURL.
+2021/07/19 15:59:02 Using SystemRequirements.SystemReqsRulesURL: https://rspm-sync.rstudio.com/sysreqs
+2021/07/19 15:59:02 Warning: SSL is not configured. Using Package Manager over insecure HTTP is not recommended.
+2021/07/19 15:59:02 A new RSPM encryption key was created at '/data/rstudio-pm.key'.
+2021/07/19 15:59:02 Using HTTP access log: /var/log/rstudio-pm.access.log
+2021/07/19 15:59:02 No Server.Address configured, so we won't be able to direct your users back to this server.
+2021/07/19 15:59:02 Fetched package retention is on for CRAN
+2021/07/19 15:59:02 Fetched package retention is on for Bioconductor
+2021/07/19 15:59:02 Fetched package retention is on for PyPI
+2021/07/19 15:59:02 Starting admin service using sock file /var/run/rstudio-pm/rstudio-pm.sock
+2021/07/19 15:59:02 Starting metrics services on :2112
+2021/07/19 15:59:02 Starting HTTP listener on :4242
+2021/07/19 15:59:02 Service ready to listen for requests
+2021/07/19 15:59:02 Service mode file not found
+2021/07/19 15:59:02 Starting RStudio Package Manager Services
+2021/07/19 15:59:02 Starting licensing...
+2021/07/19 15:59:02 Unable to obtain a valid license: Your RStudio Package Manager license has expired. Please contact your customer success representative or email sales@rstudio.com to obtain a current license.
+2021/07/19 15:59:02 Unable to obtain a valid license: Your RStudio Package Manager license has expired. Please contact your customer success representative or email sales@rstudio.com to obtain a current license.
+2021/07/19 15:59:02 Usage data enabled.
+2021/07/19 15:59:02 Stopping: metrics buffer...
+2021/07/19 15:59:02 Stopping: license manager...
+2021/07/19 15:59:02 Stopping: metrics janitor...
+2021/07/19 15:59:02 Done Stopping: metrics janitor
+2021/07/19 15:59:02 Done Stopping: metrics buffer
+2021/07/19 15:59:02 Done Stopping: license manager
+2021/07/19 15:59:02 Stopped RStudio Package Manager Online Services
+2021/07/19 15:59:02 Error running services: Error: Unable to run an executable program as 'root' within the Server.TempDir='/tmp'; this directory may be mounted 'noexec': Unable to run validator /tmp/tempdir-validator-730134776 as root: exit status 1; output: 19 Jul 2021 15:59:02 [rsandbox] ERROR system error 1 (Operation not permitted); OCCURRED AT int main(int, char* const*) src/cpp/server/sandbox/SandboxMain.cpp:158; LOGGED FROM: int main(int, char* const*) src/cpp/server/sandbox/SandboxMain.cpp:159
+2021/07/19 15:59:02 Gracefully shutting down, received signal to terminate
+2021/07/19 15:59:03 Stopping: signal dumper...
+2021/07/19 15:59:03 Done Stopping: signal dumper
+2021/07/19 15:59:03 Exited RStudio Package Manager

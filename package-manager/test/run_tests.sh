@@ -20,4 +20,5 @@ curl -sL https://github.com/aelsabbahy/goss/releases/download/v$GOSS_VERSION/gos
 GOSS_FILE=$GOSS_FILE GOSS_VARS=$GOSS_VARS $GOSS v --format documentation --max-concurrent $GOSS_MAX_CONCURRENT
 
 # start package manager
-/opt/rstudio-pm/bin/rstudio-pm --config /etc/rstudio-pm/rstudio-pm.gcfg >/dev/null &
+/opt/rstudio-pm/bin/rstudio-pm --config /etc/rstudio-pm/rstudio-pm.gcfg 2>/tmp/startup.log 
+sleep 7

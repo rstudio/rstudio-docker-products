@@ -18,3 +18,6 @@ curl -sL https://github.com/aelsabbahy/goss/releases/download/v$GOSS_VERSION/gos
   && GOSS=/tmp/goss
 
 GOSS_FILE=$GOSS_FILE GOSS_VARS=$GOSS_VARS $GOSS v --format documentation --max-concurrent $GOSS_MAX_CONCURRENT
+
+
+/usr/lib/rstudio-server/bin/rserver --server-daemonize 0 2> /tmp/startup.log

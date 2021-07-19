@@ -38,21 +38,14 @@ RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5
     /opt/python/${PYTHON_VERSION}/bin/pip install 'virtualenv<20' && \
     /opt/python/${PYTHON_VERSION}/bin/pip install --upgrade setuptools
 ENV PATH /opt/python/${PYTHON_VERSION}/bin:$PATH
+RUN pip install configparser
 
 # Runtime settings ------------------------------------------------------------#
 ARG TINI_VERSION=0.18.0
 RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini && \
     chmod +x /usr/local/bin/tini
 
-RUN  curl -O https://storage.googleapis.com/golang/go1.13.5.linux-amd64.tar.gz && \
-     tar -xvf go1.13.5.linux-amd64.tar.gz && \
-     sudo mv go /usr/local 
 
-RUN echo 'export GOPATH=$HOME/work' >> ~/.bashrc && \
-    echo 'export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin' >> ~/.bashrc
-
-RUN . ~/.bashrc && \
-    go get github.com/baobabus/gcfg 
 
 COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
@@ -71,8 +64,8 @@ EXPOSE 3939/tcp
 ENV RSC_LICENSE ""
 ENV RSC_LICENSE_SERVER ""
 COPY rstudio-connect.gcfg /etc/rstudio-connect/rstudio-connect.gcfg
-COPY /test/connect_config.go /usr/local/bin/connect_config.go
-RUN chmod +x /usr/local/bin/connect_config.go
+COPY /test/connect-config.py /usr/local/bin/connect-config.py
+RUN chmod +x /usr/local/bin/connect-config.py
 VOLUME ["/data"]
 
 ENTRYPOINT ["tini", "--"]
