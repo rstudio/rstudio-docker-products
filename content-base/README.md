@@ -59,3 +59,11 @@ images:
     rstudio/content-base:r4.1.0-py3.8.8-bionic \
     rstudio/content-base:r4.1.0-py3.9.2-bionic > runtime.yaml
 ```
+
+## Build matrix
+
+The json defined in `content-base/matrix.json` is loaded by the Github Action to
+determine which combinations of R and Python to use when building our
+`content-base` and `content-base-pro` images. To add a new R and Python
+version combination, simply update the matrix and the Github Action will publish
+the new image combinations to our registries upon the next push to `main`
