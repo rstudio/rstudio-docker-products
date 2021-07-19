@@ -81,16 +81,16 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64
 
 # Install another Python --------------------------------------------------------------#
 
-ARG ALT_PYTHON_VERSION=3.8.10
+ARG PYTHON_VERSION_ALT=3.8.10
 RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
-    bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${ALT_PYTHON_VERSION} && \
-    /opt/python/${ALT_PYTHON_VERSION}/bin/conda install -y python==${ALT_PYTHON_VERSION} && \
-    /opt/python/${ALT_PYTHON_VERSION}/bin/pip install \
+    bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION_ALT} && \
+    /opt/python/${PYTHON_VERSION_ALT}/bin/conda install -y python==${PYTHON_VERSION_ALT} && \
+    /opt/python/${PYTHON_VERSION_ALT}/bin/pip install \
         ipykernel \
         virtualenv \
         && \
     rm -rf Miniconda3-*-Linux-x86_64.sh && \
-    /opt/python/${ALT_PYTHON_VERSION}/bin/python -m ipykernel install --name py${ALT_PYTHON_VERSION} --display-name "Python ${ALT_PYTHON_VERSION}"
+    /opt/python/${PYTHON_VERSION_ALT}/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}"
 
 # Runtime settings ------------------------------------------------------------#
 ARG TINI_VERSION=0.18.0
@@ -123,7 +123,8 @@ RUN apt-get update --fix-missing \
     && gdebi --non-interactive ${RSP_NAME}-${RSP_VERSION}-amd64.deb \
     && rm ${RSP_NAME}-${RSP_VERSION}-amd64.deb \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/lib/rstudio-server/r-versions
 
 # Create log dir
 RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
