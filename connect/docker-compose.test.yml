@@ -12,6 +12,5 @@ services:
       - R_VERSION
       - PYTHON_VERSION
     volumes:
-      - "./test/startup.log:/tmp/startup.log"
       - "./test/run_tests.sh:/run_tests.sh"
       - "./test/goss.yaml:/tmp/goss.yaml"

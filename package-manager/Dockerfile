@@ -28,7 +28,8 @@ RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/down
     chmod +x /usr/local/bin/tini
 
 COPY startup.sh /usr/local/bin/startup.sh
-RUN chmod +x /usr/local/bin/startup.sh
+RUN chmod +x /usr/local/bin/startup.sh && \
+     touch /tmp/startup.log
 
 EXPOSE 4242/tcp
 EXPOSE 2112/tcp

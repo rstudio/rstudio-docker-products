@@ -1,6 +1,0 @@
-2021/07/19 14:47:44 Resource limits: {"nofile":{"soft":1048576,"hard":1048576}}
-2021/07/19 14:47:44 RStudio Connect running with PID 54
-2021/07/19 14:47:44 Starting RStudio Connect v1.8.8.2
-2021/07/19 14:47:44 Loaded server migration from '/etc/rstudio-connect/rstudio-connect-migration.gcfg'
-2021/07/19 14:47:44 Error: Couldn't read configuration file '/etc/rstudio-connect/rstudio-connect.gcfg': warning:
-can't store data at section "RPackageRepository", subsection "RSPM", variable "Animal"

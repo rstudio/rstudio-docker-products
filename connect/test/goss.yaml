@@ -35,8 +35,6 @@ file:
     exists: true
   /opt/python/{{.Env.PYTHON_VERSION}}/bin/python:
     exists: true 
-  /usr/local/bin/connect_config.go:
-    exists: true
   /tmp/startup.log:
     exists: true
     contains:

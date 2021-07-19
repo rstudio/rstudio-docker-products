@@ -38,7 +38,7 @@ RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5
     /opt/python/${PYTHON_VERSION}/bin/pip install 'virtualenv<20' && \
     /opt/python/${PYTHON_VERSION}/bin/pip install --upgrade setuptools
 ENV PATH /opt/python/${PYTHON_VERSION}/bin:$PATH
-RUN pip install configparser
+
 
 # Runtime settings ------------------------------------------------------------#
 ARG TINI_VERSION=0.18.0
@@ -48,7 +48,8 @@ RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/down
 
 
 COPY startup.sh /usr/local/bin/startup.sh
-RUN chmod +x /usr/local/bin/startup.sh
+RUN chmod +x /usr/local/bin/startup.sh && \
+     touch /tmp/startup.log
 
 # Download RStudio Connect -----------------------------------------------------#
 ARG RSC_VERSION=1.8.8.2
@@ -64,8 +65,7 @@ EXPOSE 3939/tcp
 ENV RSC_LICENSE ""
 ENV RSC_LICENSE_SERVER ""
 COPY rstudio-connect.gcfg /etc/rstudio-connect/rstudio-connect.gcfg
-COPY /test/connect-config.py /usr/local/bin/connect-config.py
-RUN chmod +x /usr/local/bin/connect-config.py
+
 VOLUME ["/data"]
 
 ENTRYPOINT ["tini", "--"]
