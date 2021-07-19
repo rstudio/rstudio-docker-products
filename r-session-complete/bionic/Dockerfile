@@ -34,7 +34,8 @@ RUN apt-get update --fix-missing \
     && rm ${RSP_NAME}-${RSP_VERSION}-amd64.deb \
     && apt-get autoremove -y \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/lib/rstudio-server/r-versions
 
 EXPOSE 8788/tcp
 

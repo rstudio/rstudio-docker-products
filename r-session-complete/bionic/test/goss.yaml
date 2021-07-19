@@ -4,11 +4,13 @@ file:
   /usr/lib/rstudio-server/bin/rsession:
     exists: true
   /opt/code-server/:
-    exists: true 
+    exists: true
     filetype: directory
   /opt/rstudio-drivers:
    exists: true
    filetype: directory
+  /var/lib/rstudio-server/r-versions:
+    exists: false
 
 command:
   "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/3.7.7/bin/jupyter nbconvert --to notebook --stdin --stdout":
@@ -24,7 +26,7 @@ command:
       - {{ $pkg }}
       {{end}}
 
-# Ensure correct R version 
+# Ensure correct R version
   "/opt/R/{{.Env.R_VERSION}}/bin/R --version":
     title: r_version_match
     exit-status: 0
