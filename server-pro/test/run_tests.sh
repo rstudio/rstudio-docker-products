@@ -4,7 +4,7 @@
 cat > /tmp/startup.log
 
 # start rstudio-server
-rstudio-server start 2>/tmp/startup.log
+tini -- /usr/local/bin/startup.sh 2>/tmp/startup.log &
 
 GOSS_FILE=${GOSS_FILE:-/tmp/goss.yaml}
 GOSS_VARS=${GOSS_VARS:-/tmp/goss_vars.yaml}
