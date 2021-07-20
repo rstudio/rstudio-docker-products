@@ -46,7 +46,7 @@ elif test -f "/etc/rstudio-server/license.lic"; then
     /usr/lib/rstudio-server/bin/license-manager activate-file /etc/rstudio-server/license.lic
 fi
 
-# lest this be inherited by child processes
+# ensure these cannot be inherited by child processes
 unset RSP_LICENSE
 unset RSP_LICENSE_SERVER
 
