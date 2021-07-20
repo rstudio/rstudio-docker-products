@@ -103,7 +103,8 @@ named `rstudio-server-pro`, `rstudio-connect`, and `rstudio-package-manager`.
 
 # Licensing
 
-The license associated with the RStudio Docker Products repository is located [in LICENSE.md](./LICENSE.md).
+The license associated with the RStudio Docker Products repository is
+located [in LICENSE.md](https://github.com/rstudio/rstudio-docker-products/blob/main/LICENSE.md).
 
 As is the case with all container images, the images themselves also contain other software which may be under other
 licenses (i.e. bash, linux, system libraries, etc., along with any other direct or indirect dependencies of the primary
