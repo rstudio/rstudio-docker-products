@@ -126,7 +126,8 @@ RUN apt-get update --fix-missing \
     && gdebi --non-interactive ${RSP_NAME}-${RSP_VERSION}-amd64.deb \
     && rm ${RSP_NAME}-${RSP_VERSION}-amd64.deb \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/lib/rstudio-server/r-versions
 
 # Create log dir
 RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
