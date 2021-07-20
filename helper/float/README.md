@@ -106,3 +106,14 @@ these images, using an environment variable to provide the LICENSE variable.
 
 - [Floating License Server Downloads](https://www.rstudio.com/floating-license-servers/)
 - [Documentation](https://support.rstudio.com/hc/en-us/articles/115011574507-Floating-Licenses)
+
+# Licensing
+
+The license associated with the RStudio Docker Products repository is located [in LICENSE.md](https://github.com/rstudio/rstudio-docker-products/blob/main/LICENSE.md).
+
+As is the case with all container images, the images themselves also contain other software which may be under other
+licenses (i.e. bash, linux, system libraries, etc., along with any other direct or indirect dependencies of the primary
+software being contained).
+
+It is an image user's responsibility to ensure that use of this image (and any of its dependent layers) complies with
+all relevant licenses for the software contained in the image.
