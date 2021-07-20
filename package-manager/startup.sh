@@ -19,7 +19,7 @@ elif test -f "/etc/rstudio-pm/license.lic"; then
     /opt/rstudio-pm/bin/license-manager activate-file /etc/rstudio-pm/license.lic
 fi
 
-# lest this be inherited by child processes
+# ensure these cannot be inherited by child processes
 unset RSPM_LICENSE
 unset RSPM_LICENSE_SERVER
 

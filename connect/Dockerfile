@@ -48,8 +48,7 @@ RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/down
 
 
 COPY startup.sh /usr/local/bin/startup.sh
-RUN chmod +x /usr/local/bin/startup.sh && \
-     touch /tmp/startup.log
+RUN chmod +x /usr/local/bin/startup.sh 
 
 # Download RStudio Connect -----------------------------------------------------#
 ARG RSC_VERSION=1.8.8.2

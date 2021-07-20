@@ -1,7 +1,10 @@
 #!/bin/bash
 
+# create temporary startup log file
+cat > /tmp/startup.log
+
 # start connect
-/opt/rstudio-connect/bin/connect --config /etc/rstudio-connect/rstudio-connect.gcfg 2>/tmp/startup.log
+tini -- /usr/local/bin/startup.sh 2>/tmp/startup.log &
 
 # install goss
 
@@ -21,9 +24,3 @@ curl -sL https://github.com/aelsabbahy/goss/releases/download/v$GOSS_VERSION/gos
   && GOSS=/tmp/goss
 
 GOSS_FILE=$GOSS_FILE GOSS_VARS=$GOSS_VARS $GOSS v --format documentation --max-concurrent $GOSS_MAX_CONCURRENT
-
-
-
-
-
-

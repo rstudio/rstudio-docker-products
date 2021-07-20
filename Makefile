@@ -108,7 +108,7 @@ test-connect-i:
 
 run-rsc: run-connect
 run-connect:  ## Run RSC container
-	
+	docker rm rstudio-connect
 	docker run -it --privileged \
 		--name rstudio-connect \
 		-p 3939:3939 \

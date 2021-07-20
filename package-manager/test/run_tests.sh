@@ -1,9 +1,10 @@
 #!/bin/bash
 
-# start package manager
-/opt/rstudio-pm/bin/rstudio-pm --config /etc/rstudio-pm/rstudio-pm.gcfg 2>/tmp/startup.log 
+# create termporary startup log file
+cat > /tmp/startup.log
 
-# install goss
+# start package manager
+tini -- /usr/local/bin/startup.sh 2>/tmp/startup.log &
 
 GOSS_FILE=${GOSS_FILE:-/tmp/goss.yaml}
 GOSS_VARS=${GOSS_VARS:-/tmp/goss_vars.yaml}

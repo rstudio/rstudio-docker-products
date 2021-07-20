@@ -10,6 +10,7 @@ services:
       # uses .env by default
       - RSPM_VERSION
       - R_VERSION
+      - RSPM_LICENSE
     volumes:
       - "./test/run_tests.sh:/run_tests.sh"
       - "./test/goss.yaml:/tmp/goss.yaml"

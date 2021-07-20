@@ -1,7 +1,9 @@
 #!/bin/bash
 
-# install goss
+# create temporary startup log file
+cat > /tmp/startup.log
 
+# start rstudio-server
 rstudio-server start 2>/tmp/startup.log
 
 GOSS_FILE=${GOSS_FILE:-/tmp/goss.yaml}

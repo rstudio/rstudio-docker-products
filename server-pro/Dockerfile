@@ -127,8 +127,7 @@ RUN apt-get update --fix-missing \
 
 # Create log dir
 RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
-    chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor && \
-    touch /tmp/startup.log
+    chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor 
 
 EXPOSE 8787/tcp
 EXPOSE 5559/tcp
