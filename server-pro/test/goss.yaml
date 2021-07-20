@@ -76,6 +76,10 @@ command:
     stdout: [
         "/{{.Env.PYTHON_VERSION_ALT}}/"
     ]
+# Ensure rstudio-server is running
+  "pgrep rserver":
+    title: rsp_running
+    exit-status: 0
 # Ensure correct python version    
   "/opt/python/3.9.5/bin/python --version":
     title: python_version_matches
