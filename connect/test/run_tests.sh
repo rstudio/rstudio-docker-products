@@ -6,8 +6,6 @@ cat > /tmp/startup.log
 # start connect
 tini -- /usr/local/bin/startup.sh 2>/tmp/startup.log &
 
-# install goss
-
 GOSS_FILE=${GOSS_FILE:-/tmp/goss.yaml}
 GOSS_VARS=${GOSS_VARS:-/tmp/goss_vars.yaml}
 GOSS_VERSION=${GOSS_VERSION:-0.3.8}
