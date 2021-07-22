@@ -1,10 +1,10 @@
 #
 # Makefile to build the "base-pro" Docker images.
 #
-# Build and push an image with the default configuration.
+# Build an image with the default configuration.
 #     make all
 #
-# Build and push an image with alternate R/Python versions.
+# Build an image with alternate R/Python versions.
 #     make R_VERSION=4.0.4 PYTHON_VERSION=3.9.2
 #
 # Print the Docker tag associated with the image:
@@ -13,12 +13,12 @@
 
 DISTRIBUTION=bionic
 TAG_BASE=rstudio/content-base
-TAG_BASE_PRO=$(TAG_BASE)-pro
+TAG_PRO=rstudio/content-pro
 R_VERSION=3.6.3
 PYTHON_VERSION=3.7.6
 DRIVERS_VERSION=1.7.0
 
-all: push
+all: build
 .PHONY: all
 
 # Builds the image for a single distribution. Expects that the Dockerfile for
@@ -32,15 +32,14 @@ build:
 	--build-arg PYTHON_VERSION=$(PYTHON_VERSION) \
 	--build-arg DRIVERS_VERSION=$(DRIVERS_VERSION) \
 	--build-arg BASE_IMAGE="$(TAG_BASE):r$(R_VERSION)-py$(PYTHON_VERSION)-$(DISTRIBUTION)" \
-	-t $(TAG_BASE_PRO):r$(R_VERSION)-py$(PYTHON_VERSION)-$(DISTRIBUTION) $(DISTRIBUTION)
+	-t $(TAG_PRO):r$(R_VERSION)-py$(PYTHON_VERSION)-$(DISTRIBUTION) $(DISTRIBUTION)
 .PHONY: build
 
-# Do not run push if you are not Cole.
 push: build
-	docker push $(TAG_BASE_PRO):r$(R_VERSION)-py$(PYTHON_VERSION)-$(DISTRIBUTION)
+	docker push $(TAG_PRO):r$(R_VERSION)-py$(PYTHON_VERSION)-$(DISTRIBUTION)
 .PHONY: push
 
 # Prints the Docker tag associated with the configured image.
 tag:
-	@echo "$(TAG_BASE_PRO):r$(R_VERSION)-py$(PYTHON_VERSION)-$(DISTRIBUTION)"
+	@echo "$(TAG_PRO):r$(R_VERSION)-py$(PYTHON_VERSION)-$(DISTRIBUTION)"
 .PHONY: tag
