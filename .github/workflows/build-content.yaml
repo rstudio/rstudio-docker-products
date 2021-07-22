@@ -6,7 +6,7 @@ on:
     branches:
       - main
 
-name: RStudio Content Base
+name: build/push RStudio Content Images
 jobs:
 
   matrix:
