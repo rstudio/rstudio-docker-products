@@ -1,10 +1,7 @@
 #!/bin/bash
 
-# create temporary startup log file
-cat > /tmp/startup.log
-
 # start rstudio-server
-rstudio-server start 2>/tmp/startup.log &
+rstudio-server start 2>/tmp/startup.log 2>&1 &
 
 GOSS_FILE=${GOSS_FILE:-/tmp/goss.yaml}
 GOSS_VARS=${GOSS_VARS:-/tmp/goss_vars.yaml}
@@ -22,3 +19,4 @@ curl -sL https://github.com/aelsabbahy/goss/releases/download/v$GOSS_VERSION/gos
   && GOSS=/tmp/goss
 
 GOSS_FILE=$GOSS_FILE GOSS_VARS=$GOSS_VARS $GOSS v --format documentation --max-concurrent $GOSS_MAX_CONCURRENT
+ 

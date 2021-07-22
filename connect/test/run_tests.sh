@@ -1,10 +1,7 @@
 #!/bin/bash
 
-# create temporary startup log file
-cat > /tmp/startup.log
-
 # start connect
-tini -- /usr/local/bin/startup.sh 2>/tmp/startup.log &
+tini -- /usr/local/bin/startup.sh 2>/tmp/startup.log 2>&1 &
 
 # install goss
 
