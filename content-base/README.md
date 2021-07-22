@@ -1,4 +1,4 @@
-## content/base
+# Base Image
 
 This is a basic image with:
 
@@ -6,17 +6,30 @@ This is a basic image with:
 - A single R version
 - A single Python version
 
-You must build the content-base image before you can build the content-pro image
+For now, we are only building `bionic`
 
+## To build
 
-## content/pro
+By default, the `all` target builds then pushes the image.
 
-This is a basic image with RStudio Pro drivers installed.  These images are built
-using the content-base images as the base docker image. Thus, the content-base image
-with the corresponding R and Python version must have been built prior to building
-these pro images. Attempting to build a pro image using a content-base image that
-does not exist will result in an error.
+```console
+# Creates and pushes rstudio/content-base:r3.6.3-py3.7.6-bionic
+make
 
+# Creates and pushes rstudio/content-base:r4.0.4-py3.9.2-bionic
+make R_VERSION=4.0.4 PYTHON_VERSION=3.9.2
+```
+
+You can `build` if you do not want to push (or do not have permissions to
+push).
+
+```console
+# Creates rstudio/content-base:r3.6.3-py3.7.6-bionic
+make build
+
+# Creates rstudio/content-base:r4.0.4-py3.9.2-bionic
+make R_VERSION=4.0.4 PYTHON_VERSION=3.9.2 build
+```
 
 ## Examine images
 
@@ -31,7 +44,7 @@ This command produces the YAML for a single image.
 ```
 
 This command generates a single YAML for the available `rstudio/content-base`
-and `rstudio/content-pro` images:
+images:
 
 ```console
 ./scripts/build-image-yaml.sh \
@@ -44,34 +57,8 @@ and `rstudio/content-pro` images:
     rstudio/content-base:r4.0.5-py3.8.8-bionic \
     rstudio/content-base:r4.0.5-py3.9.2-bionic \
     rstudio/content-base:r4.1.0-py3.8.8-bionic \
-    rstudio/content-base:r4.1.0-py3.9.2-bionic \
-    rstudio/content-pro:r3.1.3-py2.7.18-bionic \
-    rstudio/content-pro:r3.2.5-py2.7.18-bionic \
-    rstudio/content-pro:r3.3.3-py3.6.13-bionic \
-    rstudio/content-pro:r3.4.4-py3.6.13-bionic \
-    rstudio/content-pro:r3.5.3-py3.7.10-bionic \
-    rstudio/content-pro:r3.6.3-py3.8.8-bionic \
-    rstudio/content-pro:r4.0.5-py3.8.8-bionic \
-    rstudio/content-pro:r4.0.5-py3.9.2-bionic \
-    rstudio/content-pro:r4.1.0-py3.8.8-bionic \
-    rstudio/content-pro:r4.1.0-py3.9.2-bionic > runtime.yaml
+    rstudio/content-base:r4.1.0-py3.9.2-bionic > runtime.yaml
 ```
-
-
-## Build matrix
-
-The json defined in `matrix.json` is loaded by the Github Action to
-determine which combinations of R and Python to use when building
-our `content-base` and `content-pro` images. To add a new R and Python
-version combination, simply update the matrix and the Github Action will publish
-the new image combinations to our registries upon the next push to `main`
-
-
-## Github Actions
-
-Because of the dependency on the content-base images, the github actions that build the pro images
-depend on completion of the base image builds in [build-content](../.github/workflows/build-content.yaml)
-
 
 # Licensing
 
