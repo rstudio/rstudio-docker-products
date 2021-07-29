@@ -9,7 +9,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     curl \
     && \
     rm -rf /var/lib/apt/lists/*
-RSC_VERSION=1.9.0
+ARG RSC_VERSION=1.9.0
 RUN mkdir -p /rsc-staging && \
     cd /rsc-staging && \
     curl -fsSL -o rstudio-connect-runtime.tar.gz https://cdn.rstudio.com/connect/$(echo $RSC_VERSION | sed -r 's/([0-9]\.[0-9]\.[0-9]).*/\1/')/rstudio-connect-runtime-${RSC_VERSION}.tar.gz && \
