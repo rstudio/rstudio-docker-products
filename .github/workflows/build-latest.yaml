@@ -11,12 +11,12 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {product: 'rstudio-workbench', dir: 'server-pro', os: 'bionic/amd64', prefix: RSP, version: 'latest'}
+          - {product: 'rstudio-workbench', dir: 'workbench', os: 'bionic/amd64', prefix: RSW, version: 'latest'}
           - {product: 'rstudio-connect', dir: 'connect', prefix: RSC, version: 'latest'}
           - {product: 'rstudio-connect-content-init', dir: 'connect-content-init', prefix: RSC, version: 'latest'}
           - {product: 'rstudio-package-manager', dir: 'package-manager', prefix: RSPM, version: 'latest'}
-          - {product: 'r-session-complete', tag_prefix: 'bionic-', dir: 'r-session-complete/bionic', os: 'bionic/amd64', prefix: RSP, version: 'latest'}
-          - {product: 'r-session-complete', tag_prefix: 'centos7-', dir: 'r-session-complete/centos7', os: 'centos7/x86_64', prefix: RSP, version: 'latest'}
+          - {product: 'r-session-complete', tag_prefix: 'bionic-', dir: 'r-session-complete/bionic', os: 'bionic/amd64', prefix: RSW, version: 'latest'}
+          - {product: 'r-session-complete', tag_prefix: 'centos7-', dir: 'r-session-complete/centos7', os: 'centos7/x86_64', prefix: RSW, version: 'latest'}
 
     steps:
       - name: Check Out Repo
@@ -60,7 +60,7 @@ jobs:
           load: true
           push: false
           build-args: |
-            RSP_VERSION=${{ steps.version.outputs.VERSION }}
+            RSW_VERSION=${{ steps.version.outputs.VERSION }}
             RSC_VERSION=${{ steps.version.outputs.VERSION }}
             RSPM_VERSION=${{ steps.version.outputs.VERSION }}
             # TODO: need a better way to handle pivoting DOWNLOAD_URL for OS
@@ -77,8 +77,7 @@ jobs:
         env:
           IMAGE_NAME: rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
           # because we cannot dynamically set env var names... set them all...
-          # NOTE: these are used inside the image, so should stay as VERSION
-          RSP_VERSION: ${{ steps.version.outputs.VERSION }}
+          RSW_VERSION: ${{ steps.version.outputs.VERSION }}
           RSC_VERSION: ${{ steps.version.outputs.VERSION }}
           RSPM_VERSION: ${{ steps.version.outputs.VERSION }}
           RSC_LICENSE: ${{ secrets.RSC_LICENSE }}

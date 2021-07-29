@@ -63,7 +63,7 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.s
     /opt/python/jupyter/bin/jupyter kernelspec remove python3 -f && \
     /opt/python/jupyter/bin/pip uninstall -y ipykernel
 
-# Install RSP/RSC Notebook Extensions --------------------#
+# Install RSW/RSC Notebook Extensions --------------------#
 
 RUN /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter && \
     /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter && \
@@ -102,13 +102,13 @@ RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/v
     chmod +x /usr/local/bin/wait-for-it.sh
 
 # Set default env values
-ENV RSP_LICENSE ""
-ENV RSP_LICENSE_SERVER ""
-ENV RSP_TESTUSER rstudio
-ENV RSP_TESTUSER_PASSWD rstudio
-ENV RSP_TESTUSER_UID 10000
-ENV RSP_LAUNCHER true
-ENV RSP_LAUNCHER_TIMEOUT 10
+ENV RSW_LICENSE ""
+ENV RSW_LICENSE_SERVER ""
+ENV RSW_TESTUSER rstudio
+ENV RSW_TESTUSER_PASSWD rstudio
+ENV RSW_TESTUSER_UID 10000
+ENV RSW_LAUNCHER true
+ENV RSW_LAUNCHER_TIMEOUT 10
 ENV DIAGNOSTIC_DIR /var/log/rstudio
 ENV DIAGNOSTIC_ENABLE false
 ENV DIAGNOSTIC_ONLY false
@@ -122,12 +122,12 @@ COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
 
 # Install RStudio Server Pro --------------------------------------------------#
-ARG RSP_VERSION=1.4.1717-3
-ARG RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
-ARG RSP_NAME=rstudio-workbench
+ARG RSW_VERSION=1.4.1717-3
+ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
+ARG RSW_NAME=rstudio-workbench
 RUN apt-get update --fix-missing \
-    && RSP_VERSION_URL=`echo -n "${RSP_VERSION}" | sed 's/+/%2B/g'` \
-    && curl -o rstudio-workbench.deb ${RSP_DOWNLOAD_URL}/${RSP_NAME}-${RSP_VERSION_URL}-amd64.deb \
+    && RSW_VERSION_URL=`echo -n "${RSW_VERSION}" | sed 's/+/%2B/g'` \
+    && curl -o rstudio-workbench.deb ${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-amd64.deb \
     && gdebi --non-interactive rstudio-workbench.deb \
     && rm rstudio-workbench.deb \
     && apt-get clean \

@@ -82,7 +82,7 @@ jobs:
           load: true
           push: false
           build-args: |
-            RSP_VERSION=${{ steps.version.outputs.VERSION }}
+            RSW_VERSION=${{ steps.version.outputs.VERSION }}
             RSC_VERSION=${{ steps.version.outputs.VERSION }}
             RSPM_VERSION=${{ steps.version.outputs.VERSION }}
             # TODO: need a better way to handle pivoting DOWNLOAD_URL for OS
@@ -99,8 +99,7 @@ jobs:
         env:
           IMAGE_NAME: rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
           # because we cannot dynamically set env var names... set them all...
-          # NOTE: these are used inside the image, so should stay as VERSION
-          RSP_VERSION: ${{ steps.version.outputs.VERSION }}
+          RSW_VERSION: ${{ steps.version.outputs.VERSION }}
           RSC_VERSION: ${{ steps.version.outputs.VERSION }}
           RSPM_VERSION: ${{ steps.version.outputs.VERSION }}
           RSC_LICENSE: ${{ secrets.RSC_LICENSE }}

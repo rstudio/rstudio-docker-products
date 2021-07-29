@@ -7,7 +7,7 @@ services:
     entrypoint: []
     environment:
       # uses .env by default
-      - RSP_VERSION
+      - RSW_VERSION
       - R_VERSION 
       - PYTHON_VERSION
       - PYTHON_VERSION_ALT
