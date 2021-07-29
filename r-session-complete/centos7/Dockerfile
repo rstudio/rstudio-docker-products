@@ -22,8 +22,9 @@ RUN yum update -y && \
 ARG RSP_VERSION=1.4.1717-3
 ARG RSP_NAME=rstudio-workbench-rhel
 ARG RSP_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x86_64
-RUN curl -O ${RSP_DOWNLOAD_URL}/${RSP_NAME}-${RSP_VERSION}-x86_64.rpm \
-    && yum install -y ${RSP_NAME}-${RSP_VERSION}-x86_64.rpm \
+ARG RSP_CHANNEL=''
+RUN curl -O ${RSP_DOWNLOAD_URL}/${RSP_NAME}-${RSP_CHANNEL}-${RSP_VERSION}-x86_64.rpm \
+    && yum install -y ${RSP_NAME}-${RSP_CHANNEL}-${RSP_VERSION}-x86_64.rpm \
     && rm ${RSP_NAME}-${RSP_VERSION}-x86_64.rpm \
     && yum clean all \
     && rm -rf /var/lib/rstudio-server/r-versions

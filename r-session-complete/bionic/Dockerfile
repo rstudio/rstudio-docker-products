@@ -27,10 +27,11 @@ RUN apt-get update -y && \
 ARG RSP_VERSION=1.4.1717-3
 ARG RSP_NAME=rstudio-workbench
 ARG RSP_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64
+ARG RSP_CHANNEL=''
 RUN apt-get update --fix-missing \
     && apt-get install -y gdebi-core \
-    && curl -O ${RSP_DOWNLOAD_URL}/${RSP_NAME}-${RSP_VERSION}-amd64.deb \
-    && gdebi --non-interactive ${RSP_NAME}-${RSP_VERSION}-amd64.deb \
+    && curl -O ${RSP_DOWNLOAD_URL}/${RSP_NAME}-${RSP_CHANNEL}-${RSP_VERSION}-amd64.deb \
+    && gdebi --non-interactive ${RSP_NAME}-${RSP_CHANNEL}-${RSP_VERSION}-amd64.deb \
     && rm ${RSP_NAME}-${RSP_VERSION}-amd64.deb \
     && apt-get autoremove -y \
     && apt-get clean \
