@@ -101,13 +101,13 @@ RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/v
     chmod +x /usr/local/bin/wait-for-it.sh
 
 # Set default env values
-ENV RSP_LICENSE ""
-ENV RSP_LICENSE_SERVER ""
-ENV RSP_TESTUSER rstudio
-ENV RSP_TESTUSER_PASSWD rstudio
-ENV RSP_TESTUSER_UID 10000
-ENV RSP_LAUNCHER true
-ENV RSP_LAUNCHER_TIMEOUT 10
+ENV RSW_LICENSE ""
+ENV RSW_LICENSE_SERVER ""
+ENV RSW_TESTUSER rstudio
+ENV RSW_TESTUSER_PASSWD rstudio
+ENV RSW_TESTUSER_UID 10000
+ENV RSW_LAUNCHER true
+ENV RSW_LAUNCHER_TIMEOUT 10
 ENV DIAGNOSTIC_DIR /var/log/rstudio
 ENV DIAGNOSTIC_ENABLE false
 ENV DIAGNOSTIC_ONLY false
@@ -118,13 +118,13 @@ RUN chmod +x /usr/local/bin/startup.sh
 COPY conf/* /etc/rstudio/
 
 # Install RStudio Server Pro --------------------------------------------------#
-ARG RSP_VERSION=1.4.1717-3
-ARG RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
-ARG RSP_NAME=rstudio-workbench
+ARG RSW_VERSION=1.4.1717-3
+ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
+ARG RSW_NAME=rstudio-workbench
 RUN apt-get update --fix-missing \
-    && curl -O ${RSP_DOWNLOAD_URL}/${RSP_NAME}-${RSP_VERSION}-amd64.deb \
-    && gdebi --non-interactive ${RSP_NAME}-${RSP_VERSION}-amd64.deb \
-    && rm ${RSP_NAME}-${RSP_VERSION}-amd64.deb \
+    && curl -O ${RSP_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION}-amd64.deb \
+    && gdebi --non-interactive ${RSW_NAME}-${RSW_VERSION}-amd64.deb \
+    && rm ${RSW_NAME}-${RSW_VERSION}-amd64.deb \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/rstudio-server/r-versions

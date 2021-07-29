@@ -1,19 +1,19 @@
 R_VERSION ?= 3.6.2
 
-RSP_VERSION ?= 1.4.1717-3
+RSW_VERSION ?= 1.4.1717-3
 RSC_VERSION ?= 1.8.8.2
 RSPM_VERSION ?= 1.2.2.1-17
 
-RSP_LICENSE ?= ""
+RSW_LICENSE ?= ""
 RSC_LICENSE ?= ""
 RSPM_LICENSE ?= ""
 
-RSP_FLOAT_LICENSE ?= ""
+RSW_FLOAT_LICENSE ?= ""
 RSC_FLOAT_LICENSE ?= ""
 RSPM_FLOAT_LICENSE ?= ""
 SSP_FLOAT_LICENSE ?= ""
 
-RSP_LICENSE_SERVER ?= ""
+RSW_LICENSE_SERVER ?= ""
 RSC_LICENSE_SERVER ?= ""
 RSPM_LICENSE_SERVER ?= ""
 
@@ -35,10 +35,10 @@ images: server-pro connect package-manager  ## Build all images
 
 
 update-versions:  ## Update the version files for all products
-	@sed -i '' "s/^RSP_VERSION=.*/RSP_VERSION=${RSP_VERSION}/g" server-pro/.env
+	@sed -i '' "s/^RSW_VERSION=.*/RSW_VERSION=${RSW_VERSION}/g" workbench/.env
 	@sed -i '' "s/^RSC_VERSION=.*/RSC_VERSION=${RSC_VERSION}/g" connect/.env
 	@sed -i '' "s/^RSPM_VERSION=.*/RSPM_VERSION=${RSPM_VERSION}/g" package-manager/.env
-	@sed -i '' "s/^ARG RSP_VERSION=.*/ARG RSP_VERSION=${RSP_VERSION}/g" server-pro/Dockerfile
+	@sed -i '' "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" workbench/Dockerfile
 	@sed -i '' "s/^ARG RSC_VERSION=.*/ARG RSC_VERSION=${RSC_VERSION}/g" connect/Dockerfile
 	@sed -i '' "s/^ARG RSPM_VERSION=.*/ARG RSPM_VERSION=${RSPM_VERSION}/g" package-manager/Dockerfile
 	@sed -i '' "s/^RSPM_VERSION:.*/RSPM_VERSION: ${RSPM_VERSION}/g" docker-compose.yml
@@ -46,44 +46,44 @@ update-versions:  ## Update the version files for all products
 	@sed -i '' "s/rstudio\/rstudio-package-manager:.*/rstudio\/rstudio-package-manager:${RSPM_VERSION}/g" docker-compose.yml
 	@sed -i '' "s/RSC_VERSION:.*/RSC_VERSION: ${RSC_VERSION}/g" docker-compose.yml
 	@sed -i '' "s/rstudio\/rstudio-connect:.*/rstudio\/rstudio-connect:${RSC_VERSION}/g" docker-compose.yml
-	@sed -i '' "s/RSP_VERSION:.*/RSP_VERSION: ${RSP_VERSION}/g" docker-compose.yml
-	@sed -i '' "s/rstudio\/rstudio-server-pro:.*/rstudio\/rstudio-server-pro:${RSP_VERSION}/g" docker-compose.yml
+	@sed -i '' "s/RSW_VERSION:.*/RSW_VERSION: ${RSW_VERSION}/g" docker-compose.yml
+	@sed -i '' "s/rstudio\/rstudio-workbench:.*/rstudio\/rstudio-workbench:${RSW_VERSION}/g" docker-compose.yml
 	@sed -i '' "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" server-pro/Dockerfile
 	@sed -i '' "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" connect/Dockerfile
 	@sed -i '' "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" package-manager/Dockerfile
 	@sed -i '' "s|^RVersion.*=.*|RVersion = /opt/R/${R_VERSION}/|g" package-manager/rstudio-pm.gcfg
-	@sed -i '' "s/^ARG RSP_VERSION=.*/ARG RSP_VERSION=${RSP_VERSION}/g" r-session-complete/bionic/Dockerfile
-	@sed -i '' "s/^ARG RSP_VERSION=.*/ARG RSP_VERSION=${RSP_VERSION}/g" r-session-complete/centos7/Dockerfile
+	@sed -i '' "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" r-session-complete/bionic/Dockerfile
+	@sed -i '' "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" r-session-complete/centos7/Dockerfile
 
 
-rsp: server-pro
-server-pro:  ## Build RSP image
-	docker build -t rstudio/rstudio-server-pro:$(RSP_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSP_VERSION=$(RSP_VERSION) server-pro
+rsw: workbench
+workbench:  ## Build RSP image
+	docker build -t rstudio/rstudio-workbench:$(RSW_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSW_VERSION=$(RSW_VERSION) workbench
 
-rsp-hook:
-	cd ./server-pro && \
+rsw-hook:
+	cd ./workbench && \
 	DOCKERFILE_PATH=Dockerfile \
-	IMAGE_NAME=rstudio/rstudio-server-pro:$(RSP_VERSION) \
+	IMAGE_NAME=rstudio/rstudio-workbench$(RSW_VERSION) \
 	./hooks/build
 
 
-test-rsp: test-server-pro
-test-server-pro:
-	cd ./server-pro && IMAGE_NAME=rstudio/rstudio-server-pro:$(RSP_VERSION) docker-compose -f docker-compose.test.yml run sut
-test-rsp-i: test-server-pro-i
-test-server-pro-i:
-	cd ./server-pro && IMAGE_NAME=rstudio/rstudio-server-pro:$(RSP_VERSION) docker-compose -f docker-compose.test.yml run sut bash
+test-rsw: test-workbench
+test-workbench:
+	cd ./workbench && IMAGE_NAME=rstudio/rstudio-workbench$(RSW_VERSION) docker-compose -f docker-compose.test.yml run sut
+test-rsw-i: test-workbench-i
+test-workbench-i:
+	cd ./workbench && IMAGE_NAME=rstudio/rstudio-workbench:$(RSW_VERSION) docker-compose -f docker-compose.test.yml run sut bash
 
 
-run-rsp: run-server-pro
-run-server-pro:  ## Run RSP container
-	docker rm rstudio-server-pro
+run-rsw: run-workbench
+run-workbench:  ## Run RSP container
+	docker rm rstudio-workbench
 	docker run -it --privileged \
-		--name rstudio-server-pro \
+		--name rstudio-workbench \
 		-p 8787:8787 \
 		-v /run \
-		-e RSP_LICENSE=$(RSP_LICENSE) \
-		rstudio/rstudio-server-pro:$(RSP_VERSION) $(CMD)
+		-e RSW_LICENSE=$(RSW_LICENSE) \
+		rstudio/rstudio-workbench:$(RSW_VERSION) $(CMD)
 
 
 rsc: connect
