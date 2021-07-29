@@ -14,6 +14,8 @@ To update the version for the `rstudio/rstudio-connect` image, for instance:
 
 For RStudio Connect, edit `RSC_VERSION`
 
+For RStudio Workbench, edit `RSW_VERSION`
+
 For RStudio Package Manager, edit `RSPM_VERSION`
 
 **IMPORTANT NOTE:** The "default" ARG value in the respective `Dockerfile` has

@@ -102,7 +102,7 @@ def get_release_version(product, local=False):
 
 def get_local_release_version(product):
     if product == 'workbench':
-        prefix = 'RSP'
+        prefix = 'RSW'
     elif product == 'connect':
         prefix = 'RSC'
     elif product == 'package-manager':

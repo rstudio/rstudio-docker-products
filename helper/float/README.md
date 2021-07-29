@@ -34,14 +34,14 @@ export RSP_LICENSE_SERVER=rsp-float-lic:8989
 export RSC_LICENSE_SERVER=rsc-float-lic:8999
 export RSPM_LICENSE_SERVER=rspm-float-lic:8969
 
-# RStudio Server Pro
+# RStudio Workbench
 docker run --privileged -it \
     -p 8787:8787 -p 5559:5559 \
     -v $PWD/data/rsp:/home \
-    -v $PWD/server-pro/conf/:/etc/rstudio \
-    -e RSP_LICENSE_SERVER=$RSP_LICENSE_SERVER \
+    -v $PWD/workbench/conf/:/etc/rstudio \
+    -e RSP_LICENSE_SERVER=$RSW_LICENSE_SERVER \
     --network rstudio-docker-products \
-    rstudio/rstudio-server-pro:1.2.5033-1
+    rstudio/rstudio-workbench:1.2.5033-1
 
 # RStudio Connect
 docker run -it --privileged \
@@ -64,7 +64,7 @@ docker run -it --privileged \
 
 **Note:** You need to configure the products (config files) to use remote license, please look at the corresponding admin guides.
 
-- [RStudio Server Pro](https://docs.rstudio.com/ide/server-pro/license-management.html#floating-licensing)
+- [RStudio Server Pro](https://docs.rstudio.com/ide/workbench/license-management.html#floating-licensing)
 - [RStudio Connect](https://docs.rstudio.com/connect/admin/licensing/#floating-licenses)
 - [RStudio Package Manager](https://docs.rstudio.com/rspm/admin/licensing/#licensing-floating)
 
@@ -96,7 +96,7 @@ these images, using an environment variable to provide the LICENSE variable.
 
 | PRODUCT | PORT | LICENSE                 |
 |---------|------|-------------------------|
-| rsp     | 8989 | `RSP_FLOAT_LICENSE`     |
+| rsw     | 8989 | `RSW_FLOAT_LICENSE`     |
 | connect | 8999 | `RSC_FLOAT_LICENSE`     |
 | rspm    | 8969 | `RSPM_FLOAT_LICENSE`    |
 | ssp     | 8979 | `SSP_FLOAT_LICENSE`     |
