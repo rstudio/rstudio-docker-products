@@ -10,8 +10,8 @@ Each product has a
 folder. This file is used to specify the version number for building / tagging
 images.
 
-To update the version for the `rstudio/rstudio-server-pro` image, for instance:
-- update the `RSP_VERSION` number in the [`Makefile`](./Makefile)
+To update the version for the `rstudio/rstudio-workbench` image, for instance:
+- update the `RSW_VERSION` number in the [`Makefile`](./Makefile)
 - run `make update-versions`
 - submit a PR
 - the next build on `master` will tag the image with the appropriate version
@@ -33,10 +33,10 @@ These builds are [configured in the Docker Hub
 UI](https://docs.docker.com/docker-hub/builds/).
 
 On new commits to master:
-- Builds are initiated for `rstudio/rstudio-server-pro`,
+- Builds are initiated for `rstudio/rstudio-workbench`,
   `rstudio/rstudio-package-manager`, and `rstudio/rstudio-connect` images
 - These builds get the tag `latest`
-- `hooks/build` ensures that the appropriate `RSP_VERSION`, `RSPM_VERSION` or
+- `hooks/build` ensures that the appropriate `RSW_VERSION`, `RSPM_VERSION` or
   `RSC_VERSION` gets used by the build
 - `hooks/post_push` tags the `latest` build with the appropriate version as
   well
@@ -51,12 +51,12 @@ for the inspiration behind our tagging process.
 ### Test the Docker Hub hooks
 
 The `hooks` are just bash scripts, so they _can_ be tested locally. Let's take
-`server-pro` for example.  The following commands will test these scripts
+`workbench` for example.  The following commands will test these scripts
 locally. You just have to set the appropriate environment variables yourself.
 Details are in the section above on what env vars dockerhub sets.
 
 ```bash
-cd ./server-pro
+cd ./workbench
 DOCKER_TAG=daily ./hooks/pre_build
 DOCKERFILE_PATH=Dockerfile IMAGE_NAME=test ./hooks/build
 # post_build will fail interactively because you cannot push tags to the repository
@@ -83,7 +83,7 @@ manual](https://github.com/aelsabbahy/goss/blob/master/docs/manual.md).
 It is possible to test locally from a product directory by using:
 
 ```
-# from ./server-pro
+# from ./workbench
 docker-compose -f docker-compose.test.yml up
 ```
 
@@ -96,8 +96,8 @@ simplifies the process.
 locally
 - run the following to create tests interactively:
 ```
-# from ./server-pro
-GOSS_PATH=/path/to/local/goss GOSS_FILES_PATH=./test dgoss edit -it -e RSP_VERSION=1.2.5001-3 rstudio/sol-eng-rstudio:1.2.5001-3
+# from ./workbench
+GOSS_PATH=/path/to/local/goss GOSS_FILES_PATH=./test dgoss edit -it -e RSW_VERSION=1.2.5001-3 rstudio/sol-eng-rstudio:1.2.5001-3
 
 # once in the container
 /bin/bash		# shell of preference?
@@ -106,6 +106,6 @@ goss add --help
 ```
 - to run the test suite as-is
 ```
-# from ./server-pro
-GOSS_PATH=/path/to/local/goss GOSS_FILES_PATH=./test dgoss run -it -e RSP_VERSION=1.2.5001-3 rstudio/sol-eng-rstudio:1.2.5001-3
+# from ./workbench
+GOSS_PATH=/path/to/local/goss GOSS_FILES_PATH=./test dgoss run -it -e RSW_VERSION=1.2.5001-3 rstudio/sol-eng-rstudio:1.2.5001-3
 ```

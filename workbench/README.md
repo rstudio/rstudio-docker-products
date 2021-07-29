@@ -50,9 +50,9 @@ This container includes:
 RStudio Workbench is configured via config files in the in the `/etc/rstudio` directory. Mount this directory as
 a volume from the host machine. Changes will take effect when the container is restarted.
 
-You can review possible RStudio Workbench configuration [in the documentation](https://docs.rstudio.com/ide/server-pro/).
+You can review possible RStudio Workbench configuration [in the documentation](https://docs.rstudio.com/ide/workbench/).
 
-See a complete example of server configuration at `server-pro/conf`.
+See a complete example of server configuration at `workbench/conf`.
 
 #### Persistent Data
 
@@ -76,7 +76,7 @@ By default, the container will create a test user, which you can control or disa
 variables: `RSP_TESTUSER`, `RSP_TESTUSER_PASSWD`, `RSP_TESTUSER_UID`.
 
 This container needs to be extended with a valid PAM configuration if you want to use it with an external user directory
-such as LDAP/AD. See the [RStudio Workbench guide](https://docs.rstudio.com/ide/server-pro/authenticating-users.html)
+such as LDAP/AD. See the [RStudio Workbench guide](https://docs.rstudio.com/ide/workbench/authenticating-users.html)
 for more information.
 
 #### Environment variables
@@ -102,21 +102,21 @@ for more information.
 
 ```bash
 # Replace with valid license
-export RSP_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
+export RSW_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 
 # Run without persistent data and using an external configuration
 docker run --privileged -it \
     -p 8787:8787 -p 5559:5559 \
-    -v $PWD/server-pro/conf/:/etc/rstudio \
-    -e RSP_LICENSE=$RSP_LICENSE \
+    -v $PWD/workbench/conf/:/etc/rstudio \
+    -e RSW_LICENSE=$RSP_LICENSE \
     rstudio/rstudio-workbench:latest
 
 # Run with persistent data and using an external configuration
 docker run --privileged -it \
     -p 8787:8787 -p 5559:5559 \
     -v $PWD/data/rsp:/home \
-    -v $PWD/server-pro/conf/:/etc/rstudio \
-    -e RSP_LICENSE=$RSP_LICENSE \
+    -v $PWD/workbench/conf/:/etc/rstudio \
+    -e RSW_LICENSE=$RSP_LICENSE \
     rstudio/rstudio-workbench:latest
 ```
 
