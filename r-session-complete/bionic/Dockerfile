@@ -8,7 +8,7 @@ ARG MINICONDA_VERSION=py37_4.8.3
 ARG PYTHON_VERSION=3.7.7
 ARG DRIVERS_VERSION=1.8.0
 
-# Install RStudio Server Pro session components -------------------------------#
+# Install RStudio Workbench session components -------------------------------#
 
 RUN apt-get update -y && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
