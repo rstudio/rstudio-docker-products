@@ -18,7 +18,7 @@ verify_installation(){
    echo "==VERIFY INSTALLATION==";
    mkdir -p $DIAGNOSTIC_DIR
    chmod 777 $DIAGNOSTIC_DIR
-   rstudio-server verify-installation --verify-user=$RSP_TESTUSER | tee $DIAGNOSTIC_DIR/verify.log
+   rstudio-server verify-installation --verify-user=$RSW_TESTUSER | tee $DIAGNOSTIC_DIR/verify.log 
 }
 
 # Support RSP_ or RSW_ prefix
@@ -42,21 +42,21 @@ unset RSW_LICENSE
 unset RSW_LICENSE_SERVER
 
 # Create one user
-if [ $(getent passwd $RSP_TESTUSER_UID) ] ; then
-    echo "UID $RSP_TESTUSER_UID already exists, not creating $RSP_TESTUSER test user";
+if [ $(getent passwd $RSW_TESTUSER_UID) ] ; then
+    echo "UID $RSW_TESTUSER_UID already exists, not creating $RSW_TESTUSER test user";
 else
-    if [ -z "$RSP_TESTUSER" ]; then
-        echo "Empty 'RSP_TESTUSER' variables, not creating test user";
+    if [ -z "$RSW_TESTUSER" ]; then
+        echo "Empty 'RSW_TESTUSER' variables, not creating test user";
     else
-        useradd -m -s /bin/bash -N -u "$RSP_TESTUSER_UID" "$RSP_TESTUSER"
-        echo "$RSP_TESTUSER:$RSP_TESTUSER_PASSWD" | sudo chpasswd
+        useradd -m -s /bin/bash -N -u $RSW_TESTUSER_UID $RSW_TESTUSER
+        echo "$RSW_TESTUSER:$RSW_TESTUSER_PASSWD" | sudo chpasswd
     fi
 fi
 
 # Start Launcher
-if [ "$RSP_LAUNCHER" == "true" ]; then
-  echo "Waiting for launcher to startup... to disable set RSP_LAUNCHER=false"
-  wait-for-it.sh localhost:5559 -t $RSP_LAUNCHER_TIMEOUT
+if [ "$RSW_LAUNCHER" == "true" ]; then
+  echo "Waiting for launcher to startup... to disable set RSW_LAUNCHER=false"
+  wait-for-it.sh localhost:5559 -t $RSW_LAUNCHER_TIMEOUT
 fi
 
 # Check diagnostic configurations
