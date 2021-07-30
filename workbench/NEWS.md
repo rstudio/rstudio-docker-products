@@ -1,3 +1,8 @@
+# dev
+
+- *BREAKING*: rename environment variables to use `RSW_` prefix instead of `RSP_` prefix
+  - i.e. `RSP_LICENSE` is now `RSW_LICENSE`
+
 # 1.4.1717-3
 
 - Added R version 4.1.0. Image includes versions 4.1.0, 3.6.3
