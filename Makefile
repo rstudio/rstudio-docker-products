@@ -30,12 +30,14 @@ MAKEFLAGS += --no-builtin-rules
 all: help
 
 
-images: server-pro connect package-manager  ## Build all images
+images: workbench connect package-manager  ## Build all images
 	docker-compose build
 
 
 update-versions:  ## Update the version files for all products
 	@sed -i '' "s/^RSW_VERSION=.*/RSW_VERSION=${RSW_VERSION}/g" workbench/.env
+	@sed -i '' "s/^RSW_VERSION=.*/RSW_VERSION=${RSW_VERSION}/g" r-session-complete/bionic/.env
+	@sed -i '' "s/^RSW_VERSION=.*/RSW_VERSION=${RSW_VERSION}/g" r-session-complete/centos7/.env
 	@sed -i '' "s/^RSC_VERSION=.*/RSC_VERSION=${RSC_VERSION}/g" connect/.env
 	@sed -i '' "s/^RSPM_VERSION=.*/RSPM_VERSION=${RSPM_VERSION}/g" package-manager/.env
 	@sed -i '' "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" workbench/Dockerfile
@@ -49,7 +51,7 @@ update-versions:  ## Update the version files for all products
 	@sed -i '' "s/rstudio\/rstudio-connect:.*/rstudio\/rstudio-connect:${RSC_VERSION}/g" docker-compose.yml
 	@sed -i '' "s/RSW_VERSION:.*/RSW_VERSION: ${RSW_VERSION}/g" docker-compose.yml
 	@sed -i '' "s/rstudio\/rstudio-workbench:.*/rstudio\/rstudio-workbench:${RSW_VERSION}/g" docker-compose.yml
-	@sed -i '' "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" server-pro/Dockerfile
+	@sed -i '' "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" workbench/Dockerfile
 	@sed -i '' "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" connect/Dockerfile
 	@sed -i '' "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" package-manager/Dockerfile
 	@sed -i '' "s|^RVersion.*=.*|RVersion = /opt/R/${R_VERSION}/|g" package-manager/rstudio-pm.gcfg
@@ -90,15 +92,6 @@ run-workbench:  ## Run RSP container
 rsc: connect
 connect:  ## Build RSC image
 	docker build -t rstudio/rstudio-connect:$(RSC_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSC_VERSION=$(RSC_VERSION) connect
-
-# TODO: a way to run this more like DockerHub does...
-#   ideally it would run pre_build and clean up after itself by removing changes to the .env file
-connect-hook:
-	cd ./connect && \
-	DOCKERFILE_PATH=Dockerfile \
-	IMAGE_NAME=rstudio/rstudio-connect-preview:$(RSC_VERSION) \
-	./hooks/build
-
 
 test-rsc: test-connect
 test-connect:
@@ -161,4 +154,4 @@ help:  ## Show this help menu
 	@grep -E '^[0-9a-zA-Z_-]+:.*?##.*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?##"; OFS="\t\t"}; {printf "\033[36m%-30s\033[0m %s\n", $$1, ($$2==""?"":$$2)}'
 
 
-.PHONY: server-pro rsp run-server-pro connect rsc run-connect package-manager rspm run-package-manager run-floatating-lic-server
+.PHONY: workbench rsp run-workbench connect rsc run-connect package-manager rspm run-package-manager run-floatating-lic-server
