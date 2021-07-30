@@ -16,7 +16,7 @@ TAG_BASE=rstudio/content-base
 R_VERSION=3.6.3
 PYTHON_VERSION=3.7.6
 
-all: push
+all: build
 .PHONY: all
 
 # Builds the image for a single distribution. Expects that the Dockerfile for
@@ -29,7 +29,6 @@ build:
 	docker build --build-arg R_VERSION=$(R_VERSION) --build-arg PYTHON_VERSION=$(PYTHON_VERSION) -t $(TAG_BASE):r$(R_VERSION)-py$(PYTHON_VERSION)-$(DISTRIBUTION) $(DISTRIBUTION)
 .PHONY: build
 
-# Do not run push if you are not Cole.
 push: build
 	docker push $(TAG_BASE):r$(R_VERSION)-py$(PYTHON_VERSION)-$(DISTRIBUTION)
 .PHONY: push
