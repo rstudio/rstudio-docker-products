@@ -74,7 +74,7 @@ sales@rstudio.com.
 After you have cloned [rstudio-docker-products](https://github.com/rstudio/rstudio-docker-products), you can create your
 own containers fairly simply with the provided Makefile.
 
-To build RStudio Server Pro:
+To build RStudio Workbench:
 ```
 make workbench
 ```
