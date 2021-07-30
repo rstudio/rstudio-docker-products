@@ -15,6 +15,8 @@ if ! [ -z "$RSPM_LICENSE" ]; then
     /opt/rstudio-pm/bin/license-manager activate $RSPM_LICENSE
 elif ! [ -z "$RSPM_LICENSE_SERVER" ]; then
     /opt/rstudio-pm/bin/license-manager license-server $RSPM_LICENSE_SERVER
+elif test -f "/etc/rstudio-licensing/license.lic"; then
+    /opt/rstudio-pm/bin/license-manager activate-file /etc/rstudio-licensing/license.lic
 elif test -f "/etc/rstudio-pm/license.lic"; then
     /opt/rstudio-pm/bin/license-manager activate-file /etc/rstudio-pm/license.lic
 fi

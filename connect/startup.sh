@@ -15,6 +15,8 @@ if ! [ -z "$RSC_LICENSE" ]; then
     /opt/rstudio-connect/bin/license-manager activate $RSC_LICENSE
 elif ! [ -z "$RSC_LICENSE_SERVER" ]; then
     /opt/rstudio-connect/bin/license-manager license-server $RSC_LICENSE_SERVER
+elif test -f "/etc/rstudio-licensing/license.lic"; then
+    /opt/rstudio-connect/bin/license-manager activate-file /etc/rstudio-licensing/license.lic
 elif test -f "/etc/rstudio-connect/license.lic"; then
     /opt/rstudio-connect/bin/license-manager activate-file /etc/rstudio-connect/license.lic
 fi
