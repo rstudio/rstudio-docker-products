@@ -39,16 +39,13 @@ RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5
     /opt/python/${PYTHON_VERSION}/bin/pip install --upgrade setuptools
 ENV PATH /opt/python/${PYTHON_VERSION}/bin:$PATH
 
-
 # Runtime settings ------------------------------------------------------------#
 ARG TINI_VERSION=0.18.0
 RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini && \
     chmod +x /usr/local/bin/tini
 
-
-
 COPY startup.sh /usr/local/bin/startup.sh
-RUN chmod +x /usr/local/bin/startup.sh 
+RUN chmod +x /usr/local/bin/startup.sh
 
 # Download RStudio Connect -----------------------------------------------------#
 ARG RSC_VERSION=1.8.8.2
@@ -64,7 +61,6 @@ EXPOSE 3939/tcp
 ENV RSC_LICENSE ""
 ENV RSC_LICENSE_SERVER ""
 COPY rstudio-connect.gcfg /etc/rstudio-connect/rstudio-connect.gcfg
-
 VOLUME ["/data"]
 
 ENTRYPOINT ["tini", "--"]

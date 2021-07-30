@@ -6,7 +6,7 @@ set -x
 # Deactivate license when it exists
 deactivate() {
     echo "Deactivating license ..."
-    /opt/rstudio-connect/bin/license-manager deactivate >/dev/null 2>&1 
+    /opt/rstudio-connect/bin/license-manager deactivate >/dev/null 2>&1
 }
 trap deactivate EXIT
 
