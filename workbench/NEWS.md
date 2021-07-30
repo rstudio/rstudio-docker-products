@@ -1,6 +1,8 @@
 # dev
 
-- BREAKING: Change execution model significantly
+- **BREAKING**: rename environment variables to use `RSW_` prefix instead of `RSP_` prefix
+  - i.e. `RSP_LICENSE` is now `RSW_LICENSE`
+- **BREAKING**: Change execution model significantly
   - Before, we had a single startup script `startup.sh` that would launch multiple services
   - There was no service manager, so launcher going down could not be detected  
   - We are now using `supervisord` as a service manager within the container
