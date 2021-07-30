@@ -122,7 +122,7 @@ ARG RSW_VERSION=1.4.1717-3
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 ARG RSW_NAME=rstudio-workbench
 RUN apt-get update --fix-missing \
-    && curl -O ${RSP_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION}-amd64.deb \
+    && curl -O ${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION}-amd64.deb \
     && gdebi --non-interactive ${RSW_NAME}-${RSW_VERSION}-amd64.deb \
     && rm ${RSW_NAME}-${RSW_VERSION}-amd64.deb \
     && apt-get clean \
