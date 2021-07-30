@@ -28,7 +28,7 @@ verify_installation(){
    echo "==VERIFY INSTALLATION==";
    mkdir -p $DIAGNOSTIC_DIR
    chmod 777 $DIAGNOSTIC_DIR
-   rstudio-server verify-installation --verify-user=$RSP_TESTUSER | tee $DIAGNOSTIC_DIR/verify.log 
+   rstudio-server verify-installation --verify-user=$RSW_TESTUSER | tee $DIAGNOSTIC_DIR/verify.log 
 }
 
 # touch log files to initialize them
@@ -45,34 +45,34 @@ chown rstudio-server:rstudio-server /var/lib/rstudio-launcher/Kubernetes
 su rstudio-server -c 'touch /var/lib/rstudio-launcher/Kubernetes/rstudio-kubernetes-launcher.log'
 
 # Activate License
-if ! [ -z "$RSP_LICENSE" ]; then
-    /usr/lib/rstudio-server/bin/license-manager activate $RSP_LICENSE
-elif ! [ -z "$RSP_LICENSE_SERVER" ]; then
-    /usr/lib/rstudio-server/bin/license-manager license-server $RSP_LICENSE_SERVER
+if ! [ -z "$RSW_LICENSE" ]; then
+    /usr/lib/rstudio-server/bin/license-manager activate $RSW_LICENSE
+elif ! [ -z "$RSW_LICENSE_SERVER" ]; then
+    /usr/lib/rstudio-server/bin/license-manager license-server $RSW_LICENSE_SERVER
 elif test -f "/etc/rstudio-server/license.lic"; then
     /usr/lib/rstudio-server/bin/license-manager activate-file /etc/rstudio-server/license.lic
 fi
 
 # lest this be inherited by child processes
-unset RSP_LICENSE
-unset RSP_LICENSE_SERVER
+unset RSW_LICENSE
+unset RSW_LICENSE_SERVER
 
 # Create one user
-if [ $(getent passwd $RSP_TESTUSER_UID) ] ; then
-    echo "UID $RSP_TESTUSER_UID already exists, not creating $RSP_TESTUSER test user";
+if [ $(getent passwd $RSW_TESTUSER_UID) ] ; then
+    echo "UID $RSW_TESTUSER_UID already exists, not creating $RSW_TESTUSER test user";
 else
-    if [ -z "$RSP_TESTUSER" ]; then
-        echo "Empty 'RSP_TESTUSER' variables, not creating test user";
+    if [ -z "$RSW_TESTUSER" ]; then
+        echo "Empty 'RSW_TESTUSER' variables, not creating test user";
     else
-        useradd -m -s /bin/bash -N -u $RSP_TESTUSER_UID $RSP_TESTUSER
-        echo "$RSP_TESTUSER:$RSP_TESTUSER_PASSWD" | sudo chpasswd
+        useradd -m -s /bin/bash -N -u $RSW_TESTUSER_UID $RSW_TESTUSER
+        echo "$RSW_TESTUSER:$RSW_TESTUSER_PASSWD" | sudo chpasswd
     fi
 fi
 
 # Start Launcher
-if [ "$RSP_LAUNCHER" == "true" ]; then
+if [ "$RSW_LAUNCHER" == "true" ]; then
   /usr/lib/rstudio-server/bin/rstudio-launcher > /var/log/rstudio-launcher.log 2>&1 &
-  wait-for-it.sh localhost:5559 -t $RSP_LAUNCHER_TIMEOUT
+  wait-for-it.sh localhost:5559 -t $RSW_LAUNCHER_TIMEOUT
 fi
 
 # Check diagnostic configurations
