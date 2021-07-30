@@ -1,9 +1,9 @@
 version: '3.5'
 services:
 
-  rsp-float-lic:
-    hostname: rsp-float-lic
-    image: rstudio/rstudio-server-pro-float-lic
+  rsw-float-lic:
+    hostname: rsw-float-lic
+    image: rstudio/rstudio-workbench-float-lic
     build:
       context: ./
       dockerfile: Dockerfile
@@ -15,7 +15,7 @@ services:
     ports:
       - "8989:8989"
     environment:
-      - "LICENSE=$RSP_FLOAT_LICENSE"
+      - "LICENSE=$RSW_FLOAT_LICENSE"
 
   rsc-float-lic:
     hostname: rsc-float-lic
