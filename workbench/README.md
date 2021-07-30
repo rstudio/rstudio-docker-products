@@ -152,7 +152,7 @@ docker run --privileged -it \
 # Run with persistent data and using an external configuration
 docker run --privileged -it \
     -p 8787:8787 -p 5559:5559 \
-    -v $PWD/data/rsp:/home \
+    -v $PWD/data/rsw:/home \
     -v $PWD/workbench/conf/:/etc/rstudio \
     -e RSW_LICENSE=$RSP_LICENSE \
     rstudio/rstudio-workbench:latest
