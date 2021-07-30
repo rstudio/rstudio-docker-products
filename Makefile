@@ -35,9 +35,6 @@ images: server-pro connect package-manager  ## Build all images
 
 
 update-versions:  ## Update the version files for all products
-	@sed -i '' "s/^RSP_VERSION=.*/RSP_VERSION=${RSP_VERSION}/g" server-pro/.env
-	@sed -i '' "s/^RSC_VERSION=.*/RSC_VERSION=${RSC_VERSION}/g" connect/.env
-	@sed -i '' "s/^RSPM_VERSION=.*/RSPM_VERSION=${RSPM_VERSION}/g" package-manager/.env
 	@sed -i '' "s/^ARG RSP_VERSION=.*/ARG RSP_VERSION=${RSP_VERSION}/g" server-pro/Dockerfile
 	@sed -i '' "s/^ARG RSC_VERSION=.*/ARG RSC_VERSION=${RSC_VERSION}/g" connect/Dockerfile
 	@sed -i '' "s/^ARG RSC_VERSION=.*/ARG RSC_VERSION=${RSC_VERSION}/g" connect-content-init/Dockerfile
@@ -90,15 +87,6 @@ run-server-pro:  ## Run RSP container
 rsc: connect
 connect:  ## Build RSC image
 	docker build -t rstudio/rstudio-connect:$(RSC_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSC_VERSION=$(RSC_VERSION) connect
-
-# TODO: a way to run this more like DockerHub does...
-#   ideally it would run pre_build and clean up after itself by removing changes to the .env file
-connect-hook:
-	cd ./connect && \
-	DOCKERFILE_PATH=Dockerfile \
-	IMAGE_NAME=rstudio/rstudio-connect-preview:$(RSC_VERSION) \
-	./hooks/build
-
 
 test-rsc: test-connect
 test-connect:
