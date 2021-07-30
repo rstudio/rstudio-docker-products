@@ -58,7 +58,7 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.s
     /opt/python/jupyter/bin/jupyter kernelspec remove python3 -f && \
     /opt/python/jupyter/bin/pip uninstall -y ipykernel
 
-# Install RSP/RSC Notebook Extensions --------------------#
+# Install RSW/RSC Notebook Extensions --------------------#
 
 RUN /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter && \
     /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter && \
