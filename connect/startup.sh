@@ -11,14 +11,13 @@ deactivate() {
 trap deactivate EXIT
 
 # Activate License
+CONNECT_LICENSE_FILE_PATH=${CONNECT_LICENSE_FILE_PATH:-/etc/rstudio-connect/license.lic}
 if ! [ -z "$RSC_LICENSE" ]; then
     /opt/rstudio-connect/bin/license-manager activate $RSC_LICENSE
 elif ! [ -z "$RSC_LICENSE_SERVER" ]; then
     /opt/rstudio-connect/bin/license-manager license-server $RSC_LICENSE_SERVER
-elif test -f "/etc/rstudio-licensing/license.lic"; then
-    /opt/rstudio-connect/bin/license-manager activate-file /etc/rstudio-licensing/license.lic
-elif test -f "/etc/rstudio-connect/license.lic"; then
-    /opt/rstudio-connect/bin/license-manager activate-file /etc/rstudio-connect/license.lic
+elif test -f "$CONNECT_LICENSE_FILE_PATH"; then
+    /opt/rstudio-connect/bin/license-manager activate-file $CONNECT_LICENSE_FILE_PATH
 fi
 
 # lest this be inherited by child processes
