@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # start package manager
-tini -- /usr/local/bin/startup.sh 2>/tmp/startup.log 2>&1 &
+tini -- /usr/local/bin/startup.sh >/tmp/startup.log 2>&1 &
 
 GOSS_FILE=${GOSS_FILE:-/tmp/goss.yaml}
 GOSS_VARS=${GOSS_VARS:-/tmp/goss_vars.yaml}
