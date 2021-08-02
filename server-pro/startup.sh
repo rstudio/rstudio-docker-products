@@ -44,18 +44,25 @@ mkdir -p /var/lib/rstudio-launcher/Kubernetes
 chown rstudio-server:rstudio-server /var/lib/rstudio-launcher/Kubernetes
 su rstudio-server -c 'touch /var/lib/rstudio-launcher/Kubernetes/rstudio-kubernetes-launcher.log'
 
+# Support RSP_ or RSW_ prefix
+RSP_LICENSE=${RSP_LICENSE:-${RSW_LICENSE}}
+RSP_LICENSE_SERVER=${RSP_LICENSE_SERVER:-${RSW_LICENSE_SERVER}}
+
 # Activate License
+RSW_LICENSE_FILE_PATH=${RSW_LICENSE_FILE_PATH:-/etc/rstudio-server/license.lic}
 if ! [ -z "$RSP_LICENSE" ]; then
     /usr/lib/rstudio-server/bin/license-manager activate $RSP_LICENSE
 elif ! [ -z "$RSP_LICENSE_SERVER" ]; then
     /usr/lib/rstudio-server/bin/license-manager license-server $RSP_LICENSE_SERVER
-elif test -f "/etc/rstudio-server/license.lic"; then
-    /usr/lib/rstudio-server/bin/license-manager activate-file /etc/rstudio-server/license.lic
+elif test -f "$RSW_LICENSE_FILE_PATH"; then
+    /usr/lib/rstudio-server/bin/license-manager activate-file $RSW_LICENSE_FILE_PATH
 fi
 
 # ensure these cannot be inherited by child processes
 unset RSP_LICENSE
 unset RSP_LICENSE_SERVER
+unset RSW_LICENSE
+unset RSW_LICENSE_SERVER
 
 # Create one user
 if [ $(getent passwd $RSP_TESTUSER_UID) ] ; then

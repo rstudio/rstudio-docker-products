@@ -2,7 +2,7 @@ on:
   workflow_dispatch:
     inputs:
       which:
-        description: "Which images to build. Default 'all'. Options: 'all','rstudio-workbench-preview','rstudio-connect-preview','rstudio-connect-content-init-preview','r-session-complete-preview'. Can also use a prefix (i.e. 'rstudio-connect') to trigger multiple image builds."
+        description: "Which images to build. Default 'all'. Options: 'all','rstudio-workbench-preview','rstudio-connect-preview','rstudio-connect-content-init-preview','rstudio-package-manager-preview','r-session-complete-preview'. Can also use a prefix (i.e. 'rstudio-connect') to trigger multiple image builds."
         required: true
         default: "all"
       version:
@@ -26,6 +26,7 @@ jobs:
           - {product: 'rstudio-workbench-preview', dir: 'server-pro', prefix: RSP, os: 'bionic/amd64', version: 'preview'}
           - {product: 'rstudio-connect-preview', dir: 'connect', prefix: RSC, version: 'daily'}
           - {product: 'rstudio-connect-content-init-preview', dir: 'connect-content-init', prefix: RSC, version: 'daily'}
+          - {product: 'rstudio-package-manager-preview', dir: 'package-manager', prefix: RSPM, version: 'daily'}
           - {product: 'r-session-complete-preview', tag_prefix: 'bionic-', dir: 'r-session-complete/bionic', os: 'bionic/amd64', prefix: RSP, version: 'daily'}
           - {product: 'r-session-complete-preview', tag_prefix: 'centos7-', dir: 'r-session-complete/centos7', os: 'centos7/x86_64', prefix: RSP, version: 'daily'}
           - {product: 'r-session-complete-preview', tag_prefix: 'bionic-', dir: 'r-session-complete/bionic', os: 'bionic/amd64', prefix: RSP, version: 'preview'}
