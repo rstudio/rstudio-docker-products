@@ -74,11 +74,11 @@ def rstudio_workbench_daily():
     daily_url = "https://dailies.rstudio.com/rstudioserver/pro/bionic/x86_64/"
     raw_daily = requests.get(daily_url).content
 
-    version_regex = re.compile('rstudio-workbench-(daily-)*([0-9\.\-]*)-amd64.deb')
+    version_regex = re.compile('rstudio-workbench-([0-9\.\-]*)-amd64.deb')
     version_match = version_regex.search(str(raw_daily))
 
-    # group 0 = whole match, group 1 = optional "daily-", 2 = version capture group
-    return version_match.group(2)
+    # group 0 = whole match, group 1 = first capture group
+    return version_match.group(1)
 
 
 def get_downloads_json():
