@@ -118,10 +118,10 @@ RUN chmod +x /usr/local/bin/startup.sh
 COPY conf/* /etc/rstudio/
 
 # Install RStudio Server Pro --------------------------------------------------#
-COPY try-to-install-ide.sh /
 ARG RSP_VERSION=1.4.1717-3
 ARG RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 ARG RSP_NAME=rstudio-workbench
+COPY try-to-install-ide.sh /
 RUN apt-get update --fix-missing \
     && ./try-to-install-ide.sh ${RSP_DOWNLOAD_URL} rstudio-workbench ${RSP_VERSION}-amd64.deb rstudio-workbench.deb \
     && gdebi --non-interactive rstudio-workbench.deb \
