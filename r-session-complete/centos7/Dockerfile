@@ -23,7 +23,7 @@ ARG RSP_VERSION=1.4.1717-3
 ARG RSP_NAME=rstudio-workbench-rhel
 ARG RSP_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x86_64
 COPY try-to-install-ide.sh /
-RUN ./try-to-install-ide.sh ${RSP_DOWNLOAD_URL} rstudio-workbnech rhel-${RSP_VERSION}-x86_64.rpm rstudio-workbench.rpm \
+RUN ./try-to-install-ide.sh ${RSP_DOWNLOAD_URL} rstudio-workbench rhel-${RSP_VERSION}-x86_64.rpm rstudio-workbench.rpm \
     && yum install -y rstudio-workbench.rpm \
     && rm rstudio-workbench.rpm \
     && rm /try-to-install-ide.sh \
