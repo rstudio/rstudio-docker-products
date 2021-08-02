@@ -71,6 +71,7 @@ def clean_product_selection(product: str) -> str:
 
 
 def rstudio_workbench_daily():
+    # NOTE: if we move to centos7/centos8, we have to worry about `rhel-` prefixes (i.e `daily-rhel-version-num`)
     daily_url = "https://dailies.rstudio.com/rstudioserver/pro/bionic/x86_64/"
     raw_daily = requests.get(daily_url).content
 
