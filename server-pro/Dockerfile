@@ -123,7 +123,7 @@ ARG RSP_VERSION=1.4.1717-3
 ARG RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 ARG RSP_NAME=rstudio-workbench
 RUN apt-get update --fix-missing \
-    && ./try-to-install-ide.sh ${RSP_DOWNLOAD_URL} rstudio-workbench ${RSP_VERSION}-amd64.deb rstudio-workbench.deb
+    && ./try-to-install-ide.sh ${RSP_DOWNLOAD_URL} rstudio-workbench ${RSP_VERSION}-amd64.deb rstudio-workbench.deb \
     && gdebi --non-interactive rstudio-workbench.deb \
     && rm rstudio-workbench.deb \
     && rm /try-to-install-ide.sh \
