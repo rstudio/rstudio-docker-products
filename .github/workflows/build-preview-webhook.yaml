@@ -25,8 +25,8 @@ jobs:
           # filter the matrix configuration
           MATRIX=$(jq -Mcr < matrix-preview.json)
           echo "Raw Matrix: $MATRIX"
-          echo "Input - which: ${{ github.events.inputs.which }}"
-          MATRIX_FILTER=$(echo "$MATRIX" | jq -Mcr 'map(select((.product | startswith("${{ github.events.inputs.which }}"))or("all"=="${{ github.events.inputs.which }}")))')
+          echo "Input - which: ${{ github.event.inputs.which }}"
+          MATRIX_FILTER=$(echo "$MATRIX" | jq -Mcr 'map(select((.product | startswith("${{ github.event.inputs.which }}"))or("all"=="${{ github.event.inputs.which }}")))')
           echo "Filtered Matrix: $MATRIX_FILTER"
           echo "::set-output name=matrix::$MATRIX_FILTER"
 
@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     name: build-${{ matrix.config.tag_prefix}}${{ matrix.config.product}}
     needs: matrix
-    if: ${{ github.events.inputs.version == 'auto' || github.events.inputs.which != 'all' }}
+    if: ${{ github.event.inputs.version == 'auto' || github.event.inputs.which != 'all' }}
 
     strategy:
       fail-fast: false
@@ -53,7 +53,7 @@ jobs:
         id: version
         run: |
           # NOTE: --local ensures that "latest" builds use the version in our Makefile (instead of latest from the web)
-          VERSION=`./get-version.py ${{ matrix.config.product }} --type=${{ matrix.config.version }} --local --override=${{ github.events.inputs.version }}`
+          VERSION=`./get-version.py ${{ matrix.config.product }} --type=${{ matrix.config.version }} --local --override=${{ github.event.inputs.version }}`
           echo "::set-output name=VERSION::${VERSION}"
 
       - name: Cache Docker layers
