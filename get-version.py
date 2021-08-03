@@ -241,9 +241,16 @@ if __name__ == "__main__":
     elif selected_product == 'package-manager':
         if version_type == 'release':
             version = get_release_version(selected_product, local)
+        elif version_type == 'daily':
+            print(
+                "WARNING: RStudio Package Manager pretends to have a daily version. " +
+                "But it is really just the true-latest released version for now",
+                file=sys.stderr
+            )
+            version = get_release_version(selected_product, False)
         else:
             print(
-                f"ERROR: RStudio Connect does not have the notion of a '{version_type}' version",
+                f"ERROR: RStudio Package Manager does not have the notion of a '{version_type}' version",
                 file=sys.stderr
             )
             exit(1)
