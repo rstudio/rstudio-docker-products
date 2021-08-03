@@ -24,8 +24,10 @@ jobs:
         run: |
           # filter the matrix configuration
           MATRIX=$(jq -Mcr < matrix-preview.json)
+          echo "Raw Matrix: $MATRIX"
+          echo "Input - which: {{ github.events.inputs.which }}"
           MATRIX_FILTER=$(echo "$MATRIX" | jq -Mcr 'map(select((.product | startswith("{{ github.events.inputs.which }}"))or("all"=="{{ github.events.inputs.which }}")))')
-          echo "$MATRIX_FILTER"
+          echo "Filtered Matrix: $MATRIX_FILTER"
           echo "::set-output name=matrix::$MATRIX_FILTER"
 
   build:
