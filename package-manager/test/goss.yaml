@@ -28,9 +28,10 @@ file:
     exists: true
   /usr/local/bin/tini:
     exists: true
-  /var/log/rstudio-pm.log:
-    exists: true
-    filetype: file 
+# TODO: Ensure that this does _not_ exist in the future
+#  /var/log/rstudio-pm.log:
+#    exists: true
+#    filetype: file
 
 
 # Check product version
@@ -45,8 +46,8 @@ command:
   "/opt/rstudio-pm/bin/rstudio-pm --config /etc/rstudio-pm/rstudio-pm.gcfg":
     title: rspm_start
     exit-status: 0
-  
-# Ensure correct R version 
+
+# Ensure correct R version
   "/opt/R/{{ .Env.R_VERSION }}/bin/R --version":
     title: r_version_match
     exit-status: 0
