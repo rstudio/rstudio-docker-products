@@ -13,24 +13,33 @@ on:
 name: build/test/push (preview)
 jobs:
 
+
+  matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: set-matrix
+        run: |
+          # filter the matrix configuration
+          MATRIX=$(jq -Mcr < matrix-preview.json)
+          echo "Raw Matrix: $MATRIX"
+          echo "Input - which: ${{ github.event.inputs.which }}"
+          MATRIX_FILTER=$(echo "$MATRIX" | jq -Mcr 'map(select((.product | startswith("${{ github.event.inputs.which }}"))or("all"=="${{ github.event.inputs.which }}")))')
+          echo "Filtered Matrix: $MATRIX_FILTER"
+          echo "::set-output name=matrix::$MATRIX_FILTER"
+
   build:
     runs-on: ubuntu-latest
     name: build-${{ matrix.config.tag_prefix}}${{ matrix.config.product}}
-    if: ${{ (github.events.inputs.which == 'all' || startsWith(matrix.config.product, github.events.inputs.which) ) && (github.events.inputs.version == 'auto' || github.events.inputs.which != 'all') }}
+    needs: matrix
+    if: ${{ github.event.inputs.version == 'auto' || github.event.inputs.which != 'all' }}
 
     strategy:
       fail-fast: false
       matrix:
-        config:
-          - {product: 'rstudio-workbench-preview', dir: 'server-pro', prefix: RSP, os: 'bionic/amd64', version: 'daily'}
-          - {product: 'rstudio-workbench-preview', dir: 'server-pro', prefix: RSP, os: 'bionic/amd64', version: 'preview'}
-          - {product: 'rstudio-connect-preview', dir: 'connect', prefix: RSC, version: 'daily'}
-          - {product: 'rstudio-connect-content-init-preview', dir: 'connect-content-init', prefix: RSC, version: 'daily'}
-          - {product: 'rstudio-package-manager-preview', dir: 'package-manager', prefix: RSPM, version: 'daily'}
-          - {product: 'r-session-complete-preview', tag_prefix: 'bionic-', dir: 'r-session-complete/bionic', os: 'bionic/amd64', prefix: RSP, version: 'daily'}
-          - {product: 'r-session-complete-preview', tag_prefix: 'centos7-', dir: 'r-session-complete/centos7', os: 'centos7/x86_64', prefix: RSP, version: 'daily'}
-          - {product: 'r-session-complete-preview', tag_prefix: 'bionic-', dir: 'r-session-complete/bionic', os: 'bionic/amd64', prefix: RSP, version: 'preview'}
-          - {product: 'r-session-complete-preview', tag_prefix: 'centos7-', dir: 'r-session-complete/centos7', os: 'centos7/x86_64', prefix: RSP, version: 'preview'}
+        config: ${{ fromJson(needs.matrix.outputs.matrix) }}
 
     steps:
       - name: Check Out Repo
@@ -44,7 +53,7 @@ jobs:
         id: version
         run: |
           # NOTE: --local ensures that "latest" builds use the version in our Makefile (instead of latest from the web)
-          VERSION=`./get-version.py ${{ matrix.config.product }} --type=${{ matrix.config.version }} --local --override=${{ github.events.inputs.version }}`
+          VERSION=`./get-version.py ${{ matrix.config.product }} --type=${{ matrix.config.version }} --local --override=${{ github.event.inputs.version }}`
           echo "::set-output name=VERSION::${VERSION}"
 
       - name: Cache Docker layers
