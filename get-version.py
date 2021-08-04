@@ -242,6 +242,7 @@ if __name__ == "__main__":
         if version_type == 'release':
             version = get_release_version(selected_product, local)
         elif version_type == 'daily':
+            # TODO: figure out how to use the `master-latest.deb` file
             print(
                 "WARNING: RStudio Package Manager pretends to have a daily version. " +
                 "But it is really just the true-latest released version for now",
