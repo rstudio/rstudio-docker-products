@@ -26,18 +26,35 @@ RUN apt-get update --fix-missing \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Add another R version -------------------------------------------------------#
+
+ARG R_VERSION_ALT=4.1.0
+RUN apt-get update -qq && \
+    curl -O https://cdn.rstudio.com/r/ubuntu-1804/pkgs/r-${R_VERSION_ALT}_1_amd64.deb && \
+    DEBIAN_FRONTEND=noninteractive gdebi --non-interactive r-${R_VERSION_ALT}_1_amd64.deb && \
+    rm -f ./r-${R_VERSION_ALT}_1_amd64.deb \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install Python  -------------------------------------------------------------#
-ARG PYTHON_VERSION=3.6.5
-RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5.4-Linux-x86_64.sh && \
-    /bin/bash /tmp/miniconda.sh -b -p /opt/python/${PYTHON_VERSION} && \
-    rm /tmp/miniconda.sh && \
-    /opt/python/${PYTHON_VERSION}/bin/conda clean -tipsy && \
-    ln -s /opt/python/${PYTHON_VERSION}/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
-    echo "PATH=/opt/python/${PYTHON_VERSION}/bin:$PATH" > /etc/profile.d/python.sh && \
-    /opt/python/${PYTHON_VERSION}/bin/conda clean -a && \
+ARG PYTHON_VERSION=3.9.5
+RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
+    bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION} && \
+    /opt/python/${PYTHON_VERSION}/bin/conda install -y python==${PYTHON_VERSION} && \
     /opt/python/${PYTHON_VERSION}/bin/pip install 'virtualenv<20' && \
-    /opt/python/${PYTHON_VERSION}/bin/pip install --upgrade setuptools
-ENV PATH /opt/python/${PYTHON_VERSION}/bin:$PATH
+    /opt/python/${PYTHON_VERSION}/bin/pip install --upgrade setuptools && \
+    rm -rf Miniconda3-*-Linux-x86_64.sh && \
+    /opt/python/${PYTHON_VERSION}/bin/python -m ipykernel install --name py${PYTHON_VERSION} --display-name "Python ${PYTHON_VERSION}"
+
+# Install another Python --------------------------------------------------------------#
+
+ARG PYTHON_VERSION_ALT=3.8.10
+RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
+    bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION_ALT} && \
+    /opt/python/${PYTHON_VERSION_ALT}/bin/conda install -y python==${PYTHON_VERSION_ALT} && \
+    /opt/python/${PYTHON_VERSION_ALT}/bin/pip install 'virtualenv<20' && \
+    /opt/python/${PYTHON_VERSION_ALT}/bin/pip install --upgrade setuptools && \
+    rm -rf Miniconda3-*-Linux-x86_64.sh
 
 # Runtime settings ------------------------------------------------------------#
 ARG TINI_VERSION=0.18.0
