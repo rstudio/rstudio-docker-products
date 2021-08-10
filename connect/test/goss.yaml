@@ -58,6 +58,12 @@ command:
     stdout: [
       "/{{ .Env.R_VERSION }}/"
     ]
+  "/opt/R/{{ .Env.R_VERSION_ALT }}/bin/R --version":
+    title: r_version_match
+    exit-status: 0
+    stdout: [
+      "/{{ .Env.R_VERSION_ALT }}/"
+    ]
 
 # Ensure correct python version
   "/opt/python/{{ .Env.PYTHON_VERSION }}/bin/python --version":
@@ -65,4 +71,10 @@ command:
     exit-status: 0
     stderr: [
       "/{{ .Env.PYTHON_VERSION }}/"
+    ]
+  "/opt/python/{{ .Env.PYTHON_VERSION_ALT }}/bin/python --version":
+    title: python_version_matches
+    exit-status: 0
+    stderr: [
+      "/{{ .Env.PYTHON_VERSION_ALT }}/"
     ]
