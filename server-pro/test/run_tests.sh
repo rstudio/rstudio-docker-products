@@ -1,7 +1,11 @@
 #!/bin/bash
 
 # start rstudio-server
+echo "--> Starting RStudio Workbench"
 tini -- /usr/local/bin/startup.sh >/tmp/startup.log 2>&1 &
+# TODO: make this wait more dynamically for the service to start
+sleep 5
+echo "--> Startup complete"
 
 GOSS_FILE=${GOSS_FILE:-/tmp/goss.yaml}
 GOSS_VARS=${GOSS_VARS:-/tmp/goss_vars.yaml}

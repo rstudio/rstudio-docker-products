@@ -34,8 +34,9 @@ file:
     filetype: symlink
   /opt/python/jupyter/bin/jupyter:
     exists: true
-  /var/lib/rstudio-server/r-versions:
-    exists: false
+  # this file gets created at startup?
+  # /var/lib/rstudio-server/r-versions:
+  #   exists: false
   /usr/lib/rstudio-server/bin/rserver:
     exists: true
   /usr/lib/rstudio-server/bin/rstudio-server:
