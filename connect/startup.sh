@@ -20,7 +20,7 @@ elif test -f "$RSC_LICENSE_FILE_PATH"; then
     /opt/rstudio-connect/bin/license-manager activate-file $RSC_LICENSE_FILE_PATH
 fi
 
-# lest this be inherited by child processes
+# ensure these cannot be inherited by child processes
 unset RSC_LICENSE
 unset RSC_LICENSE_SERVER
 
