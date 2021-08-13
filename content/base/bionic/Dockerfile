@@ -80,6 +80,26 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     /opt/TinyTeX/bin/*/tlmgr path add && \
     rm -rf /var/lib/apt/lists/*
 
+# install packages
+RUN /opt/TinyTeX/bin/*/tlmgr install \
+        baskervaldx \
+        carlisle \
+        fancyhdr \
+        hardwrap \
+        ly1 \
+        morefloats \
+        ms \
+        pagecolor \
+        pgf \
+        setspace \
+        textcase \
+        titlesec \
+        transparent \
+        tufte-latex \
+        units \
+        ulem \
+        xcolor
+
 # Install R -------------------------------------------------------------------#
 
 # Reference: https://docs.rstudio.com/resources/install-r/
