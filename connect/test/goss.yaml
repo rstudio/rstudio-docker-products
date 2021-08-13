@@ -35,6 +35,10 @@ file:
     exists: true
   /opt/python/{{.Env.PYTHON_VERSION}}/bin/python:
     exists: true 
+  /tmp/startup.log:
+    exists: true
+    contains:
+    - "!Error: Couldn't read configuration file "
 
 # Check product version
 command:
@@ -44,13 +48,10 @@ command:
    stdout: [
       "/{{ .Env.RSC_VERSION }}/"
    ]
-
-# Goss times out after 10 seconds
-  "timeout --signal=SIGINT 7 /opt/rstudio-connect/bin/connect --config /etc/rstudio-connect/rstudio-connect.gcfg":
-    title: connect_starts
-    # The timeout should stop connect, not a failure
-    exit-status: 124
-
+# Checks if connect is running
+  "pgrep connect":
+   title: connect_running
+   exit-status: 0
 # Ensure correct R version 
   "/opt/R/{{ .Env.R_VERSION }}/bin/R --version":
     title: r_version_match
@@ -58,7 +59,6 @@ command:
     stdout: [
       "/{{ .Env.R_VERSION }}/"
     ]
-
 # Ensure correct python version
   "/opt/python/{{ .Env.PYTHON_VERSION }}/bin/python --version":
     title: python_version_matches

@@ -20,7 +20,7 @@ elif test -f "$RSPM_LICENSE_FILE_PATH"; then
     /opt/rstudio-pm/bin/license-manager activate-file $RSPM_LICENSE_FILE_PATH
 fi
 
-# lest this be inherited by child processes
+# ensure these cannot be inherited by child processes
 unset RSPM_LICENSE
 unset RSPM_LICENSE_SERVER
 

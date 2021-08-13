@@ -11,6 +11,7 @@ services:
       - RSC_VERSION
       - R_VERSION
       - PYTHON_VERSION
+      - RSC_LICENSE
     volumes:
       - "./test/run_tests.sh:/run_tests.sh"
       - "./test/goss.yaml:/tmp/goss.yaml"

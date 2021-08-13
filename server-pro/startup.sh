@@ -28,7 +28,7 @@ verify_installation(){
    echo "==VERIFY INSTALLATION==";
    mkdir -p $DIAGNOSTIC_DIR
    chmod 777 $DIAGNOSTIC_DIR
-   rstudio-server verify-installation --verify-user=$RSP_TESTUSER | tee $DIAGNOSTIC_DIR/verify.log 
+   rstudio-server verify-installation --verify-user=$RSP_TESTUSER | tee $DIAGNOSTIC_DIR/verify.log
 }
 
 # touch log files to initialize them
@@ -58,7 +58,7 @@ elif test -f "$RSW_LICENSE_FILE_PATH"; then
     /usr/lib/rstudio-server/bin/license-manager activate-file $RSW_LICENSE_FILE_PATH
 fi
 
-# lest this be inherited by child processes
+# ensure these cannot be inherited by child processes
 unset RSP_LICENSE
 unset RSP_LICENSE_SERVER
 unset RSW_LICENSE
@@ -84,7 +84,7 @@ fi
 
 # Check diagnostic configurations
 if [ "$DIAGNOSTIC_ENABLE" == "true" ]; then
-  verify_installation 
+  verify_installation
   if [ "$DIAGNOSTIC_ONLY" == "true" ]; then
     echo $(<$DIAGNOSTIC_DIR/verify.log);
     echo "Exiting script because DIAGNOSTIC_ONLY=${DIAGNOSTIC_ONLY}";
