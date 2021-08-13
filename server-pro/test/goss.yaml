@@ -34,8 +34,9 @@ file:
     filetype: symlink
   /opt/python/jupyter/bin/jupyter:
     exists: true
-  /var/lib/rstudio-server/r-versions:
-    exists: false
+  # this file gets created at startup?
+  # /var/lib/rstudio-server/r-versions:
+  #   exists: false
   /usr/lib/rstudio-server/bin/rserver:
     exists: true
   /usr/lib/rstudio-server/bin/rstudio-server:
@@ -46,7 +47,10 @@ file:
     exists: true
     owner: rstudio-server
     group: rstudio-server
-
+  /tmp/startup.log:
+    exists: true
+    contains:
+    - "!Error reading /etc/rstudio/rserver.conf:"
 
 command:
   "su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'":
@@ -66,14 +70,18 @@ command:
   "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/jupyter/bin/jupyter nbconvert --to notebook --stdin --stdout":
     title: jupyter_works
     exit-status: 0
-# Ensure correct python version    
+# Ensure correct python version
   "/opt/python/3.8.10/bin/python --version":
     title: alternate_python_version_matches
     exit-status: 0
     stdout: [
         "/{{.Env.PYTHON_VERSION_ALT}}/"
     ]
-# Ensure correct python version    
+# Ensure rstudio-server is running
+  "pgrep rserver":
+    title: rsp_running
+    exit-status: 0
+# Ensure correct python version
   "/opt/python/3.9.5/bin/python --version":
     title: python_version_matches
     exit-status: 0
