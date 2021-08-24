@@ -45,15 +45,15 @@ file:
 # Check product version
 command:
   "/opt/rstudio-connect/bin/connect --version":
-   title: connect_version_matches
-   exit-status: 0
-   stdout: [
-      "/{{ .Env.RSC_VERSION }}/"
-   ]
+    title: connect_version_matches
+    exit-status: 0
+    stdout: [
+       "/{{ .Env.RSC_VERSION }}/"
+    ]
 # Checks if connect is running
   "pgrep connect":
-   title: connect_running
-   exit-status: 0
+    title: connect_running
+    exit-status: 0
 # Ensure correct R version 
   "/opt/R/{{ .Env.R_VERSION }}/bin/R --version":
     title: r_version_match
