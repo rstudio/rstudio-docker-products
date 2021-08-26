@@ -132,7 +132,7 @@ RUN apt-get update --fix-missing \
     && rm -rf /var/lib/rstudio-server/r-versions
 
 # Add LimLM certs 
-COPY ../*.crt /var/tmp/
+COPY *.crt /var/tmp/
 RUN cp -v /var/tmp/*.crt /usr/local/share/ca-certificates/ && \
     update-ca-certificates
 

@@ -44,7 +44,7 @@ RUN apt-get update --fix-missing \
     && rm -rf /var/lib/apt/lists/* \
     && ln -s /opt/rstudio-pm/bin/rspm /usr/local/bin/rspm
 
-COPY ../*.crt /var/tmp/
+COPY *.crt /var/tmp/
 RUN cp -v /var/tmp/*.crt /usr/local/share/ca-certificates/ && \
     update-ca-certificates
 

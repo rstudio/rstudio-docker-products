@@ -74,7 +74,7 @@ RUN apt-get update --fix-missing \
     && rm -rf /var/lib/apt/lists/*
 
 # Add LimeLM certs for successful license activation --------------------------#
-COPY ../*.crt /var/tmp/
+COPY *.crt /var/tmp/
 RUN cp -v /var/tmp/*.crt /usr/local/share/ca-certificates/ && \
     update-ca-certificates
 
