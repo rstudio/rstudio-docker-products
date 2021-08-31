@@ -31,7 +31,7 @@ command:
     title: r_version_match
     exit-status: 0
     stdout: [
-      "/{{.Env.R_VERSION}}/"
+      "{{.Env.R_VERSION}}"
     ]
 
 # Ensure correct python version
@@ -39,5 +39,5 @@ command:
     title: python_version_matches
     exit-status: 0
     stdout: [
-      "/{{ .Env.PYTHON_VERSION }}/"
+      "{{ .Env.PYTHON_VERSION }}"
     ]
