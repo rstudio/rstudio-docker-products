@@ -64,8 +64,8 @@ command:
     title: server-pro_version_matches
     exit-status: 0
     stdout: [
-       "/{{ .Env.RSP_VERSION }}/",
-       "/Workbench/"
+       "{{ .Env.RSP_VERSION }}",
+       "Workbench"
      ]
   "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/jupyter/bin/jupyter nbconvert --to notebook --stdin --stdout":
     title: jupyter_works
@@ -75,7 +75,7 @@ command:
     title: alternate_python_version_matches
     exit-status: 0
     stdout: [
-        "/{{.Env.PYTHON_VERSION_ALT}}/"
+        "{{.Env.PYTHON_VERSION_ALT}}"
     ]
 # Ensure rstudio-server is running
   "pgrep rserver":
@@ -86,13 +86,13 @@ command:
     title: python_version_matches
     exit-status: 0
     stdout: [
-      "/{{.Env.PYTHON_VERSION}}/"
+      "{{.Env.PYTHON_VERSION}}"
     ]
   "/opt/python/jupyter/bin/python --version":
     title: jupyter_python_version_matches
     exit-status: 0
     stdout: [
-        "/{{.Env.JUPYTER_PYTHON_VERSION}}/"
+        "{{.Env.JUPYTER_PYTHON_VERSION}}"
     ]
   "which openssl":
     title: uses_system_openssl
