@@ -26,18 +26,34 @@ RUN apt-get update --fix-missing \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Add another R version -------------------------------------------------------#
+
+ARG R_VERSION_ALT=4.1.0
+RUN apt-get update -qq && \
+    curl -O https://cdn.rstudio.com/r/ubuntu-1804/pkgs/r-${R_VERSION_ALT}_1_amd64.deb && \
+    DEBIAN_FRONTEND=noninteractive gdebi --non-interactive r-${R_VERSION_ALT}_1_amd64.deb && \
+    rm -f ./r-${R_VERSION_ALT}_1_amd64.deb \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install Python  -------------------------------------------------------------#
-ARG PYTHON_VERSION=3.6.5
-RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5.4-Linux-x86_64.sh && \
-    /bin/bash /tmp/miniconda.sh -b -p /opt/python/${PYTHON_VERSION} && \
-    rm /tmp/miniconda.sh && \
-    /opt/python/${PYTHON_VERSION}/bin/conda clean -tipsy && \
-    ln -s /opt/python/${PYTHON_VERSION}/etc/profile.d/conda.sh /etc/profile.d/conda.sh && \
-    echo "PATH=/opt/python/${PYTHON_VERSION}/bin:$PATH" > /etc/profile.d/python.sh && \
-    /opt/python/${PYTHON_VERSION}/bin/conda clean -a && \
+ARG PYTHON_VERSION=3.9.5
+RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
+    bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION} && \
+    /opt/python/${PYTHON_VERSION}/bin/conda install -y python==${PYTHON_VERSION} && \
     /opt/python/${PYTHON_VERSION}/bin/pip install 'virtualenv<20' && \
-    /opt/python/${PYTHON_VERSION}/bin/pip install --upgrade setuptools
-ENV PATH /opt/python/${PYTHON_VERSION}/bin:$PATH
+    /opt/python/${PYTHON_VERSION}/bin/pip install --upgrade setuptools && \
+    rm -rf Miniconda3-*-Linux-x86_64.sh
+
+# Install another Python --------------------------------------------------------------#
+
+ARG PYTHON_VERSION_ALT=3.8.10
+RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
+    bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION_ALT} && \
+    /opt/python/${PYTHON_VERSION_ALT}/bin/conda install -y python==${PYTHON_VERSION_ALT} && \
+    /opt/python/${PYTHON_VERSION_ALT}/bin/pip install 'virtualenv<20' && \
+    /opt/python/${PYTHON_VERSION_ALT}/bin/pip install --upgrade setuptools && \
+    rm -rf Miniconda3-*-Linux-x86_64.sh
 
 # Runtime settings ------------------------------------------------------------#
 ARG TINI_VERSION=0.18.0
@@ -48,7 +64,7 @@ COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
 
 # Download RStudio Connect -----------------------------------------------------#
-ARG RSC_VERSION=1.9.0
+ARG RSC_VERSION=1.9.0.1
 SHELL [ "/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update --fix-missing \
     && curl -L -o rstudio-connect.deb https://cdn.rstudio.com/connect/$(echo $RSC_VERSION | sed -r 's/([0-9]\.[0-9]\.[0-9]).*/\1/')/rstudio-connect_${RSC_VERSION}~ubuntu18_amd64.deb \
@@ -56,6 +72,11 @@ RUN apt-get update --fix-missing \
     && rm -rf rstudio-connect.deb \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+# Add LimeLM certs for successful license activation --------------------------#
+COPY *.crt /var/tmp/
+RUN cp -v /var/tmp/*.crt /usr/local/share/ca-certificates/ && \
+    update-ca-certificates
 
 EXPOSE 3939/tcp
 ENV RSC_LICENSE ""
