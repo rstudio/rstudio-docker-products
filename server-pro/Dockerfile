@@ -123,9 +123,9 @@ ARG RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 ARG RSP_NAME=rstudio-workbench
 RUN apt-get update --fix-missing \
     && RSP_VERSION_URL=`echo -n "${RSP_VERSION}" | sed 's/+/%2B/g'` \
-    && curl -O ${RSP_DOWNLOAD_URL}/${RSP_NAME}-${RSP_VERSION_URL}-amd64.deb \
-    && gdebi --non-interactive ${RSP_NAME}-${RSP_VERSION}-amd64.deb \
-    && rm ${RSP_NAME}-${RSP_VERSION}-amd64.deb \
+    && curl -o rstudio-workbench.deb ${RSP_DOWNLOAD_URL}/${RSP_NAME}-${RSP_VERSION_URL}-amd64.deb \
+    && gdebi --non-interactive rstudio-workbench.deb \
+    && rm rstudio-workbench.deb \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/rstudio-server/r-versions
