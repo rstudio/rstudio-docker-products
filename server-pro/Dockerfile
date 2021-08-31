@@ -122,14 +122,15 @@ ARG RSP_VERSION=1.4.1717-3
 ARG RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 ARG RSP_NAME=rstudio-workbench
 RUN apt-get update --fix-missing \
-    && curl -O ${RSP_DOWNLOAD_URL}/${RSP_NAME}-${RSP_VERSION}-amd64.deb \
+    && RSP_VERSION_URL=`echo -n "${RSP_VERSION}" | sed 's/+/%2B/g'` \
+    && curl -O ${RSP_DOWNLOAD_URL}/${RSP_NAME}-${RSP_VERSION_URL}-amd64.deb \
     && gdebi --non-interactive ${RSP_NAME}-${RSP_VERSION}-amd64.deb \
     && rm ${RSP_NAME}-${RSP_VERSION}-amd64.deb \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/rstudio-server/r-versions
 
-# Add LimLM certs 
+# Add LimLM certs
 COPY *.crt /var/tmp/
 RUN cp -v /var/tmp/*.crt /usr/local/share/ca-certificates/ && \
     update-ca-certificates
