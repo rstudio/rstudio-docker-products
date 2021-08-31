@@ -83,13 +83,13 @@ jobs:
         env:
           IMAGE_NAME: rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
           # because we cannot dynamically set env var names... set them all...
+          # NOTE: these are used inside the image, so should stay as VERSION
           RSP_VERSION: ${{ steps.version.outputs.VERSION }}
           RSC_VERSION: ${{ steps.version.outputs.VERSION }}
           RSPM_VERSION: ${{ steps.version.outputs.VERSION }}
           RSC_LICENSE: ${{ secrets.RSC_LICENSE }}
           RSPM_LICENSE: ${{ secrets.RSPM_LICENSE }}
-          RSW_LICENSE: ${{secrets.RSW_LICENSE}}
-
+          RSW_LICENSE: ${{ secrets.RSW_LICENSE }}
         run: |
           docker-compose -f ./${{ matrix.config.dir }}/docker-compose.test.yml run sut
 
