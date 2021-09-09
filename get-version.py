@@ -74,7 +74,7 @@ def rstudio_workbench_daily():
     daily_url = "https://dailies.rstudio.com/rstudioserver/pro/bionic/x86_64/"
     raw_daily = requests.get(daily_url).content
 
-    version_regex = re.compile('rstudio-workbench-([0-9\.\-]*)-amd64.deb')
+    version_regex = re.compile('rstudio-workbench-([0-9\.\-\+\w]*)-amd64.deb')
     version_match = version_regex.search(str(raw_daily))
 
     # group 0 = whole match, group 1 = first capture group
@@ -240,9 +240,17 @@ if __name__ == "__main__":
     elif selected_product == 'package-manager':
         if version_type == 'release':
             version = get_release_version(selected_product, local)
+        elif version_type == 'daily':
+            # TODO: figure out how to use the `master-latest.deb` file
+            print(
+                "WARNING: RStudio Package Manager pretends to have a daily version. " +
+                "But it is really just the true-latest released version for now",
+                file=sys.stderr
+            )
+            version = get_release_version(selected_product, False)
         else:
             print(
-                f"ERROR: RStudio Connect does not have the notion of a '{version_type}' version",
+                f"ERROR: RStudio Package Manager does not have the notion of a '{version_type}' version",
                 file=sys.stderr
             )
             exit(1)

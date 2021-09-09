@@ -43,7 +43,9 @@ jobs:
         run: |
           # NOTE: --local ensures that "latest" builds use the version in our Makefile (instead of latest from the web)
           VERSION=`./get-version.py ${{ matrix.config.product }} --type=${{ matrix.config.version }} --local`
+          SAFE_VERSION=`echo -n "$VERSION" | sed 's/+/--/g'`
           echo "::set-output name=VERSION::${VERSION}"
+          echo "::set-output name=SAFE_VERSION::${SAFE_VERSION}"
 
       - name: Cache Docker layers
         uses: actions/cache@v2
@@ -62,9 +64,9 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           tags: |
             rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-            rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.VERSION }}
+            rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
             ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-            ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.VERSION }}
+            ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           load: true
@@ -87,9 +89,13 @@ jobs:
         env:
           IMAGE_NAME: rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
           # because we cannot dynamically set env var names... set them all...
+          # NOTE: these are used inside the image, so should stay as VERSION
           RSP_VERSION: ${{ steps.version.outputs.VERSION }}
           RSC_VERSION: ${{ steps.version.outputs.VERSION }}
           RSPM_VERSION: ${{ steps.version.outputs.VERSION }}
+          RSC_LICENSE: ${{ secrets.RSC_LICENSE }}
+          RSPM_LICENSE: ${{ secrets.RSPM_LICENSE }}
+          RSW_LICENSE: ${{ secrets.RSW_LICENSE }}
         run: |
           docker-compose -f ./${{ matrix.config.dir }}/docker-compose.test.yml run sut
 
@@ -112,6 +118,6 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           docker push rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-          docker push rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.VERSION }}
+          docker push rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
           docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-          docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.VERSION }}
+          docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}

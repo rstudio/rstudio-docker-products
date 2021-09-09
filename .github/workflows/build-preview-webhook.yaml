@@ -2,7 +2,7 @@ on:
   workflow_dispatch:
     inputs:
       which:
-        description: "Which images to build. Default 'all'. Options: 'all','rstudio-workbench-preview','rstudio-connect-preview','rstudio-connect-content-init-preview','r-session-complete-preview'. Can also use a prefix (i.e. 'rstudio-connect') to trigger multiple image builds."
+        description: "Which images to build. Default 'all'. Options: 'all','rstudio-workbench-preview','rstudio-connect-preview','rstudio-connect-content-init-preview','rstudio-package-manager-preview','r-session-complete-preview'. Can also use a prefix (i.e. 'rstudio-connect') to trigger multiple image builds."
         required: true
         default: "all"
       version:
@@ -13,23 +13,33 @@ on:
 name: build/test/push (preview)
 jobs:
 
+
+  matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v2
+      - id: set-matrix
+        run: |
+          # filter the matrix configuration
+          MATRIX=$(jq -Mcr < matrix-preview.json)
+          echo "Raw Matrix: $MATRIX"
+          echo "Input - which: ${{ github.event.inputs.which }}"
+          MATRIX_FILTER=$(echo "$MATRIX" | jq -Mcr 'map(select((.product | startswith("${{ github.event.inputs.which }}"))or("all"=="${{ github.event.inputs.which }}")))')
+          echo "Filtered Matrix: $MATRIX_FILTER"
+          echo "::set-output name=matrix::$MATRIX_FILTER"
+
   build:
     runs-on: ubuntu-latest
     name: build-${{ matrix.config.tag_prefix}}${{ matrix.config.product}}
-    if: ${{ (github.events.inputs.which == 'all' || startsWith(matrix.config.product, github.events.inputs.which) ) && (github.events.inputs.version == 'auto' || github.events.inputs.which != 'all') }}
+    needs: matrix
+    if: ${{ github.event.inputs.version == 'auto' || github.event.inputs.which != 'all' }}
 
     strategy:
       fail-fast: false
       matrix:
-        config:
-          - {product: 'rstudio-workbench-preview', dir: 'server-pro', prefix: RSP, os: 'bionic/amd64', version: 'daily'}
-          - {product: 'rstudio-workbench-preview', dir: 'server-pro', prefix: RSP, os: 'bionic/amd64', version: 'preview'}
-          - {product: 'rstudio-connect-preview', dir: 'connect', prefix: RSC, version: 'daily'}
-          - {product: 'rstudio-connect-content-init-preview', dir: 'connect-content-init', prefix: RSC, version: 'daily'}
-          - {product: 'r-session-complete-preview', tag_prefix: 'bionic-', dir: 'r-session-complete/bionic', os: 'bionic/amd64', prefix: RSP, version: 'daily'}
-          - {product: 'r-session-complete-preview', tag_prefix: 'centos7-', dir: 'r-session-complete/centos7', os: 'centos7/x86_64', prefix: RSP, version: 'daily'}
-          - {product: 'r-session-complete-preview', tag_prefix: 'bionic-', dir: 'r-session-complete/bionic', os: 'bionic/amd64', prefix: RSP, version: 'preview'}
-          - {product: 'r-session-complete-preview', tag_prefix: 'centos7-', dir: 'r-session-complete/centos7', os: 'centos7/x86_64', prefix: RSP, version: 'preview'}
+        config: ${{ fromJson(needs.matrix.outputs.matrix) }}
 
     steps:
       - name: Check Out Repo
@@ -43,8 +53,10 @@ jobs:
         id: version
         run: |
           # NOTE: --local ensures that "latest" builds use the version in our Makefile (instead of latest from the web)
-          VERSION=`./get-version.py ${{ matrix.config.product }} --type=${{ matrix.config.version }} --local --override=${{ github.events.inputs.version }}`
+          VERSION=`./get-version.py ${{ matrix.config.product }} --type=${{ matrix.config.version }} --local --override=${{ github.event.inputs.version }}`
+          SAFE_VERSION=`echo -n "$VERSION" | sed 's/+/--/g'`
           echo "::set-output name=VERSION::${VERSION}"
+          echo "::set-output name=SAFE_VERSION::${SAFE_VERSION}"
 
       - name: Cache Docker layers
         uses: actions/cache@v2
@@ -63,9 +75,9 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           tags: |
             rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-            rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.VERSION }}
+            rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
             ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-            ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.VERSION }}
+            ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           load: true
@@ -88,9 +100,13 @@ jobs:
         env:
           IMAGE_NAME: rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
           # because we cannot dynamically set env var names... set them all...
+          # NOTE: these are used inside the image, so should stay as VERSION
           RSP_VERSION: ${{ steps.version.outputs.VERSION }}
           RSC_VERSION: ${{ steps.version.outputs.VERSION }}
           RSPM_VERSION: ${{ steps.version.outputs.VERSION }}
+          RSC_LICENSE: ${{ secrets.RSC_LICENSE }}
+          RSPM_LICENSE: ${{ secrets.RSPM_LICENSE }}
+          RSW_LICENSE: ${{ secrets.RSW_LICENSE }}
         run: |
           docker-compose -f ./${{ matrix.config.dir }}/docker-compose.test.yml run sut
 
@@ -113,6 +129,6 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           docker push rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-          docker push rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.VERSION }}
+          docker push rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
           docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-          docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.VERSION }}
+          docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
