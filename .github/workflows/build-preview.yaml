@@ -41,6 +41,13 @@ jobs:
           SAFE_VERSION=`echo -n "$VERSION" | sed 's/+/--/g'`
           echo "::set-output name=VERSION::${VERSION}"
           echo "::set-output name=SAFE_VERSION::${SAFE_VERSION}"
+          if [[ "true" == "${{ github.ref == 'refs/heads/dev' }}" ]]; then
+            echo "Setting BRANCH_PREFIX"
+            BRANCH="dev"
+          else
+            BRANCH=""
+          fi
+          echo "::set-output name=BRANCH_PREFIX::${BRANCH_PREFIX}-"
 
       - name: Cache Docker layers
         uses: actions/cache@v2
@@ -58,10 +65,10 @@ jobs:
           file: ./${{ matrix.config.dir }}/Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           tags: |
-            rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-            rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
-            ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-            ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
+            rstudio/${{ matrix.config.product }}:${{ matrix.version.outputs.BRANCH_PREFIX }}${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
+            rstudio/${{ matrix.config.product }}:${{ matrix.version.outputs.BRANCH_PREFIX }}${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
+            ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.version.outputs.BRANCH_PREFIX }}${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
+            ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.version.outputs.BRANCH_PREFIX }}${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           load: true
@@ -82,7 +89,7 @@ jobs:
 
       - name: Test image
         env:
-          IMAGE_NAME: rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
+          IMAGE_NAME: rstudio/${{ matrix.config.product }}:${{ matrix.version.outputs.BRANCH_PREFIX }}${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
           # because we cannot dynamically set env var names... set them all...
           # NOTE: these are used inside the image, so should stay as VERSION
           RSP_VERSION: ${{ steps.version.outputs.VERSION }}
@@ -112,7 +119,7 @@ jobs:
       - name: Push image(s) to Docker Hub
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
-          docker push rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-          docker push rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
-          docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-          docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
+          docker push rstudio/${{ matrix.config.product }}:${{ matrix.version.outputs.BRANCH_PREFIX }}${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
+          docker push rstudio/${{ matrix.config.product }}:${{ matrix.version.outputs.BRANCH_PREFIX }}${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
+          docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.version.outputs.BRANCH_PREFIX }}${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
+          docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.version.outputs.BRANCH_PREFIX }}${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
