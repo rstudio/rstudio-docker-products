@@ -4,11 +4,6 @@ on:
     # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#onschedule
     - cron: '0 8 * * *'
   push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
 
 name: build/test/push (preview)
 jobs:
