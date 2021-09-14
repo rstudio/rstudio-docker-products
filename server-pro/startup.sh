@@ -3,7 +3,7 @@
 set -e
 set -x
 
-# Deactivate license when it exists
+# Deactivate license when the process exits
 deactivate() {
     echo "== Exiting =="
     rstudio-server stop
@@ -27,9 +27,9 @@ RSP_LICENSE_SERVER=${RSP_LICENSE_SERVER:-${RSW_LICENSE_SERVER}}
 
 # Activate License
 RSW_LICENSE_FILE_PATH=${RSW_LICENSE_FILE_PATH:-/etc/rstudio-server/license.lic}
-if ! [ -z "$RSP_LICENSE" ]; then
+if [ -n "$RSP_LICENSE" ]; then
     /usr/lib/rstudio-server/bin/license-manager activate $RSP_LICENSE
-elif ! [ -z "$RSP_LICENSE_SERVER" ]; then
+elif [ -n "$RSP_LICENSE_SERVER" ]; then
     /usr/lib/rstudio-server/bin/license-manager license-server $RSP_LICENSE_SERVER
 elif test -f "$RSW_LICENSE_FILE_PATH"; then
     /usr/lib/rstudio-server/bin/license-manager activate-file $RSW_LICENSE_FILE_PATH
@@ -48,7 +48,7 @@ else
     if [ -z "$RSP_TESTUSER" ]; then
         echo "Empty 'RSP_TESTUSER' variables, not creating test user";
     else
-        useradd -m -s /bin/bash -N -u $RSP_TESTUSER_UID $RSP_TESTUSER
+        useradd -m -s /bin/bash -N -u "$RSP_TESTUSER_UID" "$RSP_TESTUSER"
         echo "$RSP_TESTUSER:$RSP_TESTUSER_PASSWD" | sudo chpasswd
     fi
 fi
