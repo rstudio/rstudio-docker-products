@@ -55,7 +55,7 @@ fi
 
 # Start Launcher
 if [ "$RSP_LAUNCHER" == "true" ]; then
-  /usr/lib/rstudio-server/bin/rstudio-launcher 1>&2 &
+  echo "Waiting for launcher to startup... to disable set RSP_LAUNCHER=false"
   wait-for-it.sh localhost:5559 -t $RSP_LAUNCHER_TIMEOUT
 fi
 
