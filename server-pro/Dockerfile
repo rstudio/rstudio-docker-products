@@ -114,6 +114,9 @@ ENV DIAGNOSTIC_ENABLE false
 ENV DIAGNOSTIC_ONLY false
 
 # Copy config and startup
+COPY startup/* /startup/base
+COPY startup-sssd/* /startup/sssd
+COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
 COPY conf/* /etc/rstudio/
@@ -138,7 +141,8 @@ RUN cp -v /var/tmp/*.crt /usr/local/share/ca-certificates/ && \
 
 # Create log dir
 RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
-    chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor
+    chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor && \
+    mkdir -p /startup/custom/
 
 EXPOSE 8787/tcp
 EXPOSE 5559/tcp
