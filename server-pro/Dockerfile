@@ -117,7 +117,7 @@ ENV DIAGNOSTIC_ONLY false
 # Copy config and startup
 COPY startup/* /startup/base
 COPY startup-launcher/* /startup/launcher
-COPY startup-sssd/* /startup/sssd
+COPY startup-user-provisioning/* /startup/user-provisioning
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
