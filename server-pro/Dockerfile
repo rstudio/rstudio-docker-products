@@ -113,10 +113,9 @@ ENV DIAGNOSTIC_DIR /var/log/rstudio
 ENV DIAGNOSTIC_ENABLE false
 ENV DIAGNOSTIC_ONLY false
 
-# Copy config and startup
+# Copy startup
 COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
-COPY conf/* /etc/rstudio/
 
 # Install RStudio Server Pro --------------------------------------------------#
 ARG RSP_VERSION=1.4.1717-3
@@ -130,6 +129,13 @@ RUN apt-get update --fix-missing \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/rstudio-server/r-versions
+
+# Install VSCode code-server --------------------------------------------------#
+
+RUN rstudio-server install-vs-code /opt/code-server/
+
+# Copy config
+COPY conf/* /etc/rstudio/
 
 # Add LimLM certs
 COPY *.crt /var/tmp/
