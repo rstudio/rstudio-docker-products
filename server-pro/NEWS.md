@@ -1,5 +1,6 @@
 # 1.4.1717-3
 
+- Add `code-server` / vscode installation and configuration
 - Added R version 4.1.0. Image includes versions 4.1.0, 3.6.3
 - BREAKING: change image name to `rstudio/rstudio-workbench`  
 - BREAKING: change the location / version of python. Now includes:
