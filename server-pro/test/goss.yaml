@@ -20,16 +20,13 @@ file:
     exists: false
   /usr/lib/rstudio-server:
     exists: true
-  /opt/R/3.6.3/bin/R:
+  /opt/R/{{.Env.R_VERSION_ALT}}/bin/R:
     exists: true
     filetype: file
-  /opt/R/4.1.0/bin/R:
-    exists: true
-    filetype: file
-  /opt/python/3.9.5/bin/python:
+  /opt/python/{{.Env.PYTHON_VERSION}}/bin/python:
     exists: true
     filetype: symlink
-  /opt/python/3.8.10/bin/python:
+  /opt/python/{{.Env.PYTHON_VERSION_ALT}}/bin/python:
     exists: true
     filetype: symlink
   /opt/python/jupyter/bin/python:
@@ -37,8 +34,9 @@ file:
     filetype: symlink
   /opt/python/jupyter/bin/jupyter:
     exists: true
-  /var/lib/rstudio-server/r-versions:
-    exists: false
+  # this file gets created at startup?
+  # /var/lib/rstudio-server/r-versions:
+  #   exists: false
   /usr/lib/rstudio-server/bin/rserver:
     exists: true
   /usr/lib/rstudio-server/bin/rstudio-server:
@@ -49,6 +47,10 @@ file:
     exists: true
     owner: rstudio-server
     group: rstudio-server
+  /tmp/startup.log:
+    exists: true
+    contains:
+    - "!Error reading /etc/rstudio/rserver.conf:"
 
 command:
   "su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'":
@@ -57,34 +59,40 @@ command:
   "touch /var/log/rstudio-server.log":
     title: server-pro_server_log_creates
     exit-status: 0
-  # check product version
-  #"rstudio-server version":
-  #  title: server-pro_version_matches
-  #  exit-status: 0
-  #  stdout: [
-  #    "/{{ .Env.RSP_VERSION }}/",
-  #    "/Pro/" # this will switch to Workbench when we release the preview build
-  #  ]
+# Check product version
+  "rstudio-server version":
+    title: server-pro_version_matches
+    exit-status: 0
+    stdout: [
+       "{{ .Env.RSP_VERSION }}",
+       "Workbench"
+     ]
   "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/jupyter/bin/jupyter nbconvert --to notebook --stdin --stdout":
     title: jupyter_works
     exit-status: 0
+# Ensure correct python version
   "/opt/python/3.8.10/bin/python --version":
-    title: python_version_matches
+    title: alternate_python_version_matches
     exit-status: 0
     stdout: [
-        "/3.8.10/"
+        "{{.Env.PYTHON_VERSION_ALT}}"
     ]
+# Ensure rstudio-server is running
+  "pgrep rserver":
+    title: rsp_running
+    exit-status: 0
+# Ensure correct python version
   "/opt/python/3.9.5/bin/python --version":
     title: python_version_matches
     exit-status: 0
     stdout: [
-      "/3.9.5/"
+      "{{.Env.PYTHON_VERSION}}"
     ]
   "/opt/python/jupyter/bin/python --version":
     title: jupyter_python_version_matches
     exit-status: 0
     stdout: [
-        "/3.8.10/"
+        "{{.Env.JUPYTER_PYTHON_VERSION}}"
     ]
   "which openssl":
     title: uses_system_openssl

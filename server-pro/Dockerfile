@@ -20,6 +20,7 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
         libpq5 \
         libsm6 \
         libssl1.0.0 \
+        openssl \
         libssl-dev \
         libuser \
         libuser1-dev \
@@ -32,29 +33,65 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python  -------------------------------------------------------------#
-ARG PYTHON_VERSION=3.6.5
-RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5.4-Linux-x86_64.sh && \
-    /bin/bash /tmp/miniconda.sh -b -p /opt/python/${PYTHON_VERSION} && \
-    rm /tmp/miniconda.sh && \
-    /opt/python/${PYTHON_VERSION}/bin/conda clean -tipsy && \
-    /opt/python/${PYTHON_VERSION}/bin/conda clean -a && \
-    /opt/python/${PYTHON_VERSION}/bin/pip install virtualenv
+# Add another R version -------------------------------------------------------#
 
-# Install other Python PyPi packages
-RUN /opt/python/${PYTHON_VERSION}/bin/pip install --no-cache-dir \
-                pip==20.0.2 \
-                jupyter==1.0.0 \
-                'jupyterlab<3.0.0' \
-                rsp_jupyter \
-                rsconnect_jupyter
+ARG R_VERSION_ALT=4.1.0
+RUN apt-get update -qq && \
+    curl -O https://cdn.rstudio.com/r/ubuntu-1804/pkgs/r-${R_VERSION_ALT}_1_amd64.deb && \
+    DEBIAN_FRONTEND=noninteractive gdebi --non-interactive r-${R_VERSION_ALT}_1_amd64.deb && \
+    rm -f ./r-${R_VERSION_ALT}_1_amd64.deb \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install Jupyter extensions
-RUN /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter && \
-    /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter && \
-    /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix --py rsconnect_jupyter && \
-    /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter && \
-    /opt/python/${PYTHON_VERSION}/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
+
+# Install jupyter -------------------------------------------------------------#
+
+ARG JUPYTER_VERSION=3.8.10
+RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
+    bash Miniconda3-latest-Linux-x86_64.sh -bp /opt/python/jupyter && \
+    /opt/python/jupyter/bin/conda install -y python==${JUPYTER_VERSION} && \
+    rm -rf Miniconda3-latest-Linux-x86_64.sh && \
+    /opt/python/jupyter/bin/pip install \
+    jupyter==1.0.0 \
+    'jupyterlab<3.0.0' \
+    rsp_jupyter \
+    rsconnect_jupyter && \
+    /opt/python/jupyter/bin/jupyter kernelspec remove python3 -f && \
+    /opt/python/jupyter/bin/pip uninstall -y ipykernel
+
+# Install RSP/RSC Notebook Extensions --------------------#
+
+RUN /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter && \
+    /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter && \
+    /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsconnect_jupyter && \
+    /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter && \
+    /opt/python/jupyter/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
+
+# Install Python --------------------------------------------------------------#
+
+ARG PYTHON_VERSION=3.9.5
+RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
+    bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION} && \
+    /opt/python/${PYTHON_VERSION}/bin/conda install -y python==${PYTHON_VERSION} && \
+    /opt/python/${PYTHON_VERSION}/bin/pip install \
+        ipykernel \
+        virtualenv \
+        && \
+    rm -rf Miniconda3-*-Linux-x86_64.sh && \
+    /opt/python/${PYTHON_VERSION}/bin/python -m ipykernel install --name py${PYTHON_VERSION} --display-name "Python ${PYTHON_VERSION}"
+
+# Install another Python --------------------------------------------------------------#
+
+ARG PYTHON_VERSION_ALT=3.8.10
+RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
+    bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION_ALT} && \
+    /opt/python/${PYTHON_VERSION_ALT}/bin/conda install -y python==${PYTHON_VERSION_ALT} && \
+    /opt/python/${PYTHON_VERSION_ALT}/bin/pip install \
+        ipykernel \
+        virtualenv \
+        && \
+    rm -rf Miniconda3-*-Linux-x86_64.sh && \
+    /opt/python/${PYTHON_VERSION_ALT}/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}"
 
 # Runtime settings ------------------------------------------------------------#
 ARG TINI_VERSION=0.18.0
@@ -72,6 +109,9 @@ ENV RSP_TESTUSER_PASSWD rstudio
 ENV RSP_TESTUSER_UID 10000
 ENV RSP_LAUNCHER true
 ENV RSP_LAUNCHER_TIMEOUT 10
+ENV DIAGNOSTIC_DIR /var/log/rstudio
+ENV DIAGNOSTIC_ENABLE false
+ENV DIAGNOSTIC_ONLY false
 
 # Copy config and startup
 COPY startup.sh /usr/local/bin/startup.sh
@@ -83,11 +123,18 @@ ARG RSP_VERSION=1.4.1717-3
 ARG RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 ARG RSP_NAME=rstudio-workbench
 RUN apt-get update --fix-missing \
-    && curl -O ${RSP_DOWNLOAD_URL}/${RSP_NAME}-${RSP_VERSION}-amd64.deb \
-    && gdebi --non-interactive ${RSP_NAME}-${RSP_VERSION}-amd64.deb \
-    && rm ${RSP_NAME}-${RSP_VERSION}-amd64.deb \
+    && RSP_VERSION_URL=`echo -n "${RSP_VERSION}" | sed 's/+/%2B/g'` \
+    && curl -o rstudio-workbench.deb ${RSP_DOWNLOAD_URL}/${RSP_NAME}-${RSP_VERSION_URL}-amd64.deb \
+    && gdebi --non-interactive rstudio-workbench.deb \
+    && rm rstudio-workbench.deb \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/lib/rstudio-server/r-versions
+
+# Add LimLM certs
+COPY *.crt /var/tmp/
+RUN cp -v /var/tmp/*.crt /usr/local/share/ca-certificates/ && \
+    update-ca-certificates
 
 # Create log dir
 RUN mkdir -p /var/lib/rstudio-server/monitor/log && \

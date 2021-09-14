@@ -74,7 +74,7 @@ def rstudio_workbench_daily():
     daily_url = "https://dailies.rstudio.com/rstudioserver/pro/bionic/x86_64/"
     raw_daily = requests.get(daily_url).content
 
-    version_regex = re.compile('rstudio-workbench-([0-9\.\-]*)-amd64.deb')
+    version_regex = re.compile('rstudio-workbench-([0-9\.\-\+\w]*)-amd64.deb')
     version_match = version_regex.search(str(raw_daily))
 
     # group 0 = whole match, group 1 = first capture group
@@ -167,10 +167,18 @@ if __name__ == "__main__":
         action="store_true",
         help="Whether to use the 'local' version for 'release'. Parsed from the local Makefile",
     )
+    parser.add_argument(
+        "--override", "-o",
+        type=str,
+        nargs=1,
+        help="Whether to override the version. If set to 'auto' then it has no effect. (default: 'auto')",
+        default=["auto"]
+    )
     args = parser.parse_args()
 
     selected_product = args.product[0]
     version_type = args.type[0]
+    override = args.override[0]
     local = args.local
 
     # ------------------------------------------
@@ -194,10 +202,18 @@ if __name__ == "__main__":
     print(f"Providing version for product: '{selected_product}' and version type: '{version_type}'", file=sys.stderr)
 
     # ------------------------------------------
+    # Use override, if defined
+    # ------------------------------------------
+    if override != 'auto':
+        print("The --override arg was set with a value other than 'auto'", file=sys.stderr)
+        print("Overriding version_type with: 'manual'", file=sys.stderr)
+        version_type = 'manual'
+        print(f"Overriding version with override: '{override}'", file=sys.stderr)
+        version = override
+    # ------------------------------------------
     # Product "switch" statements
     # ------------------------------------------
-
-    if selected_product == 'workbench':
+    elif selected_product == 'workbench':
         if version_type == 'daily':
             version = rstudio_workbench_daily()
         elif version_type == 'preview':
@@ -224,9 +240,17 @@ if __name__ == "__main__":
     elif selected_product == 'package-manager':
         if version_type == 'release':
             version = get_release_version(selected_product, local)
+        elif version_type == 'daily':
+            # TODO: figure out how to use the `master-latest.deb` file
+            print(
+                "WARNING: RStudio Package Manager pretends to have a daily version. " +
+                "But it is really just the true-latest released version for now",
+                file=sys.stderr
+            )
+            version = get_release_version(selected_product, False)
         else:
             print(
-                f"ERROR: RStudio Connect does not have the notion of a '{version_type}' version",
+                f"ERROR: RStudio Package Manager does not have the notion of a '{version_type}' version",
                 file=sys.stderr
             )
             exit(1)

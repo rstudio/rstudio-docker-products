@@ -1,10 +1,11 @@
 #!/bin/bash
 
-# install goss
+# start package manager
+tini -- /usr/local/bin/startup.sh >/tmp/startup.log 2>&1 &
 
 GOSS_FILE=${GOSS_FILE:-/tmp/goss.yaml}
 GOSS_VARS=${GOSS_VARS:-/tmp/goss_vars.yaml}
-GOSS_VERSION=${GOSS_VERSION:-0.3.8}
+GOSS_VERSION=${GOSS_VERSION:-0.3.16}
 GOSS_MAX_CONCURRENT=${GOSS_MAX_CONCURRENT:-50}
 
 # default to empty var file (since vars are not necessary)
