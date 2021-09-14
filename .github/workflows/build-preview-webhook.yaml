@@ -10,9 +10,8 @@ on:
         required: false
         default: "auto"
 
-name: build/test/push (preview)
+name: build/test/push (adhoc preview)
 jobs:
-
 
   matrix:
     runs-on: ubuntu-latest
