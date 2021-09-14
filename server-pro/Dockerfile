@@ -1,6 +1,5 @@
 ARG R_VERSION=3.6
-#FROM rstudio/r-base:${R_VERSION}-bionic
-FROM ghcr.io/rstudio/rstudio-workbench-preview:1.5.192-1
+FROM rstudio/r-base:${R_VERSION}-bionic
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 # Locale configuration --------------------------------------------------------#
@@ -33,15 +32,29 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Add another R version -------------------------------------------------------#
+# Install Python  -------------------------------------------------------------#
+ARG PYTHON_VERSION=3.6.5
+RUN curl -o /tmp/miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-4.5.4-Linux-x86_64.sh && \
+    /bin/bash /tmp/miniconda.sh -b -p /opt/python/${PYTHON_VERSION} && \
+    rm /tmp/miniconda.sh && \
+    /opt/python/${PYTHON_VERSION}/bin/conda clean -tipsy && \
+    /opt/python/${PYTHON_VERSION}/bin/conda clean -a && \
+    /opt/python/${PYTHON_VERSION}/bin/pip install virtualenv
 
-ARG R_VERSION_ALT=4.1.0
-RUN apt-get update -qq && \
-    curl -O https://cdn.rstudio.com/r/ubuntu-1804/pkgs/r-${R_VERSION_ALT}_1_amd64.deb && \
-    DEBIAN_FRONTEND=noninteractive gdebi --non-interactive r-${R_VERSION_ALT}_1_amd64.deb && \
-    rm -f ./r-${R_VERSION_ALT}_1_amd64.deb \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# Install other Python PyPi packages
+RUN /opt/python/${PYTHON_VERSION}/bin/pip install --no-cache-dir \
+                pip==20.0.2 \
+                jupyter==1.0.0 \
+                'jupyterlab<3.0.0' \
+                rsp_jupyter \
+                rsconnect_jupyter
+
+# Install Jupyter extensions
+RUN /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter && \
+    /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter && \
+    /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix --py rsconnect_jupyter && \
+    /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter && \
+    /opt/python/${PYTHON_VERSION}/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
 
 # Runtime settings ------------------------------------------------------------#
 ARG TINI_VERSION=0.18.0
@@ -62,9 +75,19 @@ ENV RSP_LAUNCHER_TIMEOUT 10
 
 # Copy config and startup
 COPY startup.sh /usr/local/bin/startup.sh
-COPY /conf/logging.conf /usr/local/bin/logging.conf
 RUN chmod +x /usr/local/bin/startup.sh
 COPY conf/* /etc/rstudio/
+
+# Install RStudio Server Pro --------------------------------------------------#
+ARG RSP_VERSION=1.4.1717-3
+ARG RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
+ARG RSP_NAME=rstudio-workbench
+RUN apt-get update --fix-missing \
+    && curl -O ${RSP_DOWNLOAD_URL}/${RSP_NAME}-${RSP_VERSION}-amd64.deb \
+    && gdebi --non-interactive ${RSP_NAME}-${RSP_VERSION}-amd64.deb \
+    && rm ${RSP_NAME}-${RSP_VERSION}-amd64.deb \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Create log dir
 RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
