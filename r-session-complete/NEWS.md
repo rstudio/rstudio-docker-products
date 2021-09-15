@@ -9,6 +9,7 @@ code-server is at `/opt/code-server/bin/code-server`
 
 ## Changes
 
+- Update RStudio Professional Drivers to 1.8.0
 - `BREAKING`: `code-server` no longer supports the `/opt/code-server/code-server` location. 
   - As a result, you need to set `exe=/opt/code-server/bin/code-server`
   - After two changes in a row, we suspect this is the final change for a while
