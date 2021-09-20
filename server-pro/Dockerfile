@@ -30,6 +30,7 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
         rrdtool \
         sssd \
 	sudo \
+        supervisor \
         wget \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
