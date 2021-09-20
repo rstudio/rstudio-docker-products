@@ -170,6 +170,12 @@ process supervisor with an active community. It enables running multiple
 services in the container, as well as exiting the container if _any_ of those
 services exit.
 
+> NOTE: generally speaking, running multiple services in a single container is an anti-pattern.
+> However, we have implemented the below as a workaround until RStudio Workbench can
+> handle users and other processes in a more container-friendly fashion
+
+Details on the various processes and their configuration is below:
+
 - **RStudio Workbench**: the main server process
   - this startup configuration is mounted at `/startup/base`
 
