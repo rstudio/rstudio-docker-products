@@ -72,13 +72,16 @@ to explore using a license server, license file, or custom image with manual int
 
 ### User Provisioning
 
-By default, the container will create a test user, which you can control or disable with the environment
-variables: `RSP_TESTUSER`, `RSP_TESTUSER_PASSWD`, `RSP_TESTUSER_UID`.
+By default, the container will create a test user, which you can control or
+disable with the environment variables: `RSP_TESTUSER`, `RSP_TESTUSER_PASSWD`,
+`RSP_TESTUSER_UID`.
 
 #### sssd / LDAP / Active Directory
 
-If you have a directory available to provision users, `sssd` is installed in the container and enabled by default (
-see `Process Management` below). In order to make use of it, you will need to mount your own configuration file into `/etc/sssd/conf.d/`. For instance,
+If you have a directory (LDAP server, Active Directory, etc.) available to
+provision users, `sssd` is installed in the container and enabled by default (
+see `Process Management` below). In order to make use of it, you will need to
+mount your own configuration file into `/etc/sssd/conf.d/`. For instance,
 
 _sssd.conf_
 ```ini
@@ -108,9 +111,11 @@ docker run --privileged -it \
     rstudio/rstudio-workbench:latest
 ```
 
-In order to function with an external directory, this container may also need to be extended with a valid PAM
-configuration. See the [RStudio Workbench guide](https://docs.rstudio.com/ide/server-pro/authenticating-users.html)
-for more information.
+It is worth noting that you may also need to modify the PAM configuration files
+in the container, if you are using PAM for custom authentication or session
+behavior. See the [RStudio Workbench
+guide](https://docs.rstudio.com/ide/server-pro/authenticating-users.html) for
+more information.
 
 ### Environment variables
 
@@ -158,21 +163,36 @@ The default username and password are `rstudio`.
 
 ### Process Management
 
-In order for RStudio Workbench to function properly, several services need to be accounted for. We run these services
-using `supervisord`.
+In order for RStudio Workbench to function properly, several services need to
+be accounted for. We run these services using
+[`supervisord`](http://supervisord.org/). `supervisord` is an open source
+process supervisor with an active community. It enables running multiple
+services in the container, as well as exiting the container if _any_ of those
+services exit.
 
 - **RStudio Workbench**: the main server process
   - this startup configuration is mounted at `/startup/base`
-- **RStudio Job Launcher**: a subprocess that is optional, but must be disabled by configuration changes. It enables
-  launching Jupyter, JupyterLab, and VSCode sessions, as well as talking to job schedulers like Slurm and Kubernetes.
+
+- **RStudio Job Launcher**: enables launching Jupyter, JupyterLab, and VSCode
+  sessions, as well as talking to job schedulers like Slurm and Kubernetes.
+  - Optional and enabled by default
   - this startup configuration is mounted at `/startup/launcher`
   - to disable, mount an empty volume over `/startup/launcher`  
-- **sssd**: Installed and enabled by default, but with a "dummy" / false domain so that it is doing nothing. This
-  service is useful for user provisioning when connected to an LDAP directory or other store of users.
-  - this startup configuration is mounted at `/startup/user-provisioning`
-  - to disable, mount an empty volume over `/startup/user-provisioning`
-- **custom**: Do you have a service that you need to run inside the container for user provisioning or otherwise?
-  Mount other configuration files into `/startup/custom`, and they will be started and managed by `supervisord` as well
+
+- **sssd**: often used for user provisioning when connected to an LDAP
+  directory or other user store. 
+  - Optional, and enabled by default, but with a "dummy" domain so it does
+    nothing.
+  - To use this with your directory, mount required `.conf` files into
+    `/etc/sssd/conf.d/` (more details in `User Provisioning`, above)
+  - Startup configuration is installed at `/startup/user-provisioning/`
+  - To disable entirely, mount an empty volume over
+    `/startup/user-provisioning/`
+
+- **custom**: Do you have a service that you need to run inside the container
+  for user provisioning or otherwise?  Mount other configuration files into
+  `/startup/custom`, and they will be started and managed by `supervisord` as
+  well
   - NOTE: in many cases (i.e. Kubernetes) `initContainers` or `sidecar` containers are a better fit
 
 # Licensing
