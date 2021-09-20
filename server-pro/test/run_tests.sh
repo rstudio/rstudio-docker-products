@@ -3,6 +3,9 @@ set -xe
 
 RSW_TIMEOUT=${RSW_TIMEOUT:-15}
 
+touch /tmp/startup.log
+trap 'err=$?; echo >&2 "run_tests.sh encountered an error: $err"; cat /tmp/startup.log; exit $err' ERR
+
 # start rstudio-server
 echo "--> Starting RStudio Workbench"
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf > /tmp/startup.log 2>&1 &
