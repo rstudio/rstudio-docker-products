@@ -17,6 +17,8 @@ services:
     volumes:
       - "./test/run_tests.sh:/run_tests.sh"
       - "./test/goss.yaml:/tmp/goss.yaml"
+      # overwrite the config file for floating
+      - "./conf/rserver-float.conf:/etc/rstudio/rserver.conf"
     networks:
       - default
 
