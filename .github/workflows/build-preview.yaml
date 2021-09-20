@@ -42,12 +42,12 @@ jobs:
           echo "::set-output name=VERSION::${VERSION}"
           echo "::set-output name=SAFE_VERSION::${SAFE_VERSION}"
           if [[ "true" == "${{ github.ref == 'refs/heads/dev' }}" ]]; then
-            BRANCH_PREFIX="dev"
-            echo "Setting BRANCH_PREFIX=$BRANCH_PREFIX"
+            BRANCH_PREFIX="dev-"
+            echo "Setting BRANCH_PREFIX=$BRANCH_PREFIX-"
           else
             BRANCH_PREFIX=""
           fi
-          echo "::set-output name=BRANCH_PREFIX::${BRANCH_PREFIX}-"
+          echo "::set-output name=BRANCH_PREFIX::${BRANCH_PREFIX}"
 
       - name: Cache Docker layers
         uses: actions/cache@v2
