@@ -127,6 +127,8 @@ RUN /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix -
     /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter && \
     /opt/python/${PYTHON_VERSION}/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
 
+RUN ln -s /opt/python/${PYTHON_VERSION}/bin/jupyter /usr/local/bin/jupyter
+
 # Install VSCode code-server --------------------------------------------------#
 
 RUN rstudio-server install-vs-code /opt/code-server/
