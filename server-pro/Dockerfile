@@ -153,5 +153,5 @@ RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
 EXPOSE 8787/tcp
 EXPOSE 5559/tcp
 
-ENTRYPOINT ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
-CMD []
+ENTRYPOINT []
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
