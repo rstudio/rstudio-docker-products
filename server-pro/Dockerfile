@@ -28,7 +28,9 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
         libxrender1 \
         openssh-client \
         rrdtool \
+        sssd \
 	sudo \
+        supervisor \
         wget \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -94,10 +96,6 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64
     /opt/python/${PYTHON_VERSION_ALT}/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}"
 
 # Runtime settings ------------------------------------------------------------#
-ARG TINI_VERSION=0.18.0
-RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini && \
-    chmod +x /usr/local/bin/tini
-
 RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh && \
     chmod +x /usr/local/bin/wait-for-it.sh
 
@@ -113,7 +111,11 @@ ENV DIAGNOSTIC_DIR /var/log/rstudio
 ENV DIAGNOSTIC_ENABLE false
 ENV DIAGNOSTIC_ONLY false
 
-# Copy startup
+# Copy config and startup
+COPY startup/* /startup/base/
+COPY startup-launcher/* /startup/launcher/
+COPY startup-user-provisioning/* /startup/user-provisioning/
+COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
 
@@ -144,10 +146,11 @@ RUN cp -v /var/tmp/*.crt /usr/local/share/ca-certificates/ && \
 
 # Create log dir
 RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
-    chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor
+    chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor && \
+    mkdir -p /startup/custom/
 
 EXPOSE 8787/tcp
 EXPOSE 5559/tcp
 
-ENTRYPOINT ["tini", "--"]
-CMD ["/usr/local/bin/startup.sh"]
+ENTRYPOINT ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+CMD []

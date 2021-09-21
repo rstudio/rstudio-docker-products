@@ -1,3 +1,17 @@
+# dev
+
+- BREAKING: Change execution model significantly
+  - Before, we had a single startup script `startup.sh` that would launch multiple services
+  - There was no service manager, so launcher going down could not be detected  
+  - We are now using `supervisord` as a service manager within the container
+  - `supervisord` is configured to exit if any of its child processes exit  
+  - `ENTRYPOINT` and `CMD` have changed accordingly
+  - A more thorough write-up is in `README.md`
+- Improve logging behaviors to send logs to `stdout`/`stderr` instead of using `tail`
+- Add `sssd` to the container for user provisioning. It starts by default with no directory configured.
+  - To utilize, mount your own `*.conf` files into `/etc/sssd/conf.d/` (ensure ownership by root, and 0600 permissions)
+  - Examples and further documentation is in `README.md`
+
 # 1.4.1717-3
 
 - Add `code-server` / vscode installation and configuration

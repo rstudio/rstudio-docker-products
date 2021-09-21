@@ -13,6 +13,26 @@ package:
   rstudio-server:
     installed: true
 
+port:
+  tcp:8787:
+    listening: true
+    ip:
+    - 0.0.0.0
+    skip: false
+  tcp:5559:
+    listening: true
+    ip:
+    - 127.0.0.1
+    skip: false
+
+process:
+  rserver:
+    running: true
+    skip: false
+  rstudio-launche:
+    running: true
+    skip: false
+
 file:
   /etc/rstudio-server/license.lic:
     # currently does not exist
@@ -83,10 +103,6 @@ command:
     stdout: [
         "{{.Env.PYTHON_VERSION_ALT}}"
     ]
-# Ensure rstudio-server is running
-  "pgrep rserver":
-    title: rsp_running
-    exit-status: 0
 # Ensure correct python version
   "/opt/python/3.9.5/bin/python --version":
     title: python_version_matches

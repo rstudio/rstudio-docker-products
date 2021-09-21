@@ -15,7 +15,7 @@ Docker images for RStudio Professional Products
    provide [instructions for building](https://github.com/rstudio/rstudio-docker-products#instructions-for-building) for
    these cases.
 
-#### Simple Example
+### Simple Example
 
 To verify basic functionality as a first step:
 
@@ -34,7 +34,7 @@ Open http://localhost:8787 to access RStudio Workbench. The default username and
 
 For a more "real" deployment, continue reading!
 
-#### Overview
+### Overview
 
 Note that running the RStudio Workbench Docker image requires the container to run using the `--privileged` flag and a
 valid RStudio Workbench license.
@@ -45,7 +45,7 @@ This container includes:
 2. Python 3.6.5
 3. RStudio Workbench
 
-#### Configuration
+### Configuration
 
 RStudio Workbench is configured via config files in the in the `/etc/rstudio` directory. Mount this directory as
 a volume from the host machine. Changes will take effect when the container is restarted.
@@ -54,12 +54,12 @@ You can review possible RStudio Workbench configuration [in the documentation](h
 
 See a complete example of server configuration at `server-pro/conf`.
 
-#### Persistent Data
+### Persistent Data
 
 In order to persist user files between container restarts please mount the `/home` directory from a persistent volume on the host
 machine or your docker orchestration system.
 
-#### Licensing
+### Licensing
 
 The RStudio Workbench Docker image requires a valid license, which can be set in three ways:
 
@@ -70,16 +70,54 @@ The RStudio Workbench Docker image requires a valid license, which can be set in
 **NOTE:** the "offline activation process" is not supported by this image today. Offline installations will need
 to explore using a license server, license file, or custom image with manual intervention.
 
-#### Users
+### User Provisioning
 
-By default, the container will create a test user, which you can control or disable with the environment
-variables: `RSP_TESTUSER`, `RSP_TESTUSER_PASSWD`, `RSP_TESTUSER_UID`.
+By default, the container will create a test user, which you can control or
+disable with the environment variables: `RSP_TESTUSER`, `RSP_TESTUSER_PASSWD`,
+`RSP_TESTUSER_UID`.
 
-This container needs to be extended with a valid PAM configuration if you want to use it with an external user directory
-such as LDAP/AD. See the [RStudio Workbench guide](https://docs.rstudio.com/ide/server-pro/authenticating-users.html)
-for more information.
+#### sssd / LDAP / Active Directory
 
-#### Environment variables
+If you have a directory (LDAP server, Active Directory, etc.) available to
+provision users, `sssd` is installed in the container and enabled by default (
+see `Process Management` below). In order to make use of it, you will need to
+mount your own configuration file into `/etc/sssd/conf.d/`. For instance,
+
+_sssd.conf_
+```ini
+[sssd]
+config_file_version = 2
+domains = LDAP
+
+[domain/LDAP]
+id_provider = ldap
+auth_provider = ldap
+chpass_provider = ldap
+sudo_provider = ldap
+# ... more configuration
+```
+
+Then:
+```bash
+# sssd is picky about file permissions
+chmod 600 sssd.conf
+
+docker run --privileged -it \
+    -p 8787:8787 -p 5559:5559 \
+    -v $PWD/data/rsp:/home \
+    -v $PWD/server-pro/conf/:/etc/rstudio \
+    -v $PWD/sssd.conf:/etc/sssd/conf.d/sssd.conf \
+    -e RSP_LICENSE=$RSP_LICENSE \
+    rstudio/rstudio-workbench:latest
+```
+
+It is worth noting that you may also need to modify the PAM configuration files
+in the container, if you are using PAM for custom authentication or session
+behavior. See the [RStudio Workbench
+guide](https://docs.rstudio.com/ide/server-pro/authenticating-users.html) for
+more information.
+
+### Environment variables
 
 | Variable | Description | Default |
 |-----|---|---|
@@ -91,14 +129,14 @@ for more information.
 | `RSP_LAUNCHER` | Whether or not to use launcher locally / start the launcher process | true |
 | `RSP_LAUNCHER_TIMEOUT` | The timeout, in seconds, to wait for launcher to start listening on the expected port before failing startup | 10 |
 
-#### Ports
+### Ports
 
 | Variable | Description |
 |-----|---|
 | `8787` | Default HTTP Port for RStudio Connect |
 | `5559` | Port for RStudio Launcher server |
 
-#### Example usage:
+### Example usage:
 
 ```bash
 # Replace with valid license
@@ -122,6 +160,46 @@ docker run --privileged -it \
 
 Open [http://localhost:8787](http://localhost:8787) to access RStudio Server Pro.
 The default username and password are `rstudio`.
+
+### Process Management
+
+In order for RStudio Workbench to function properly, several services need to
+be accounted for. We run these services using
+[`supervisord`](http://supervisord.org/). `supervisord` is an open source
+process supervisor with an active community. It enables running multiple
+services in the container, as well as exiting the container if _any_ of those
+services exit.
+
+> NOTE: generally speaking, running multiple services in a single container is an anti-pattern.
+> However, we have implemented the below as a workaround until RStudio Workbench can
+> handle users and other processes in a more container-friendly fashion
+
+Details on the various processes and their configuration is below:
+
+- **RStudio Workbench**: the main server process
+  - this startup configuration is mounted at `/startup/base`
+
+- **RStudio Job Launcher**: enables launching Jupyter, JupyterLab, and VSCode
+  sessions, as well as talking to job schedulers like Slurm and Kubernetes.
+  - Optional and enabled by default
+  - this startup configuration is mounted at `/startup/launcher`
+  - to disable, mount an empty volume over `/startup/launcher`  
+
+- **sssd**: often used for user provisioning when connected to an LDAP
+  directory or other user store. 
+  - Optional, and enabled by default, but with a "dummy" domain so it does
+    nothing.
+  - To use this with your directory, mount required `.conf` files into
+    `/etc/sssd/conf.d/` (more details in `User Provisioning`, above)
+  - Startup configuration is installed at `/startup/user-provisioning/`
+  - To disable entirely, mount an empty volume over
+    `/startup/user-provisioning/`
+
+- **custom**: Do you have a service that you need to run inside the container
+  for user provisioning or otherwise?  Mount other configuration files into
+  `/startup/custom`, and they will be started and managed by `supervisord` as
+  well
+  - NOTE: in many cases (i.e. Kubernetes) `initContainers` or `sidecar` containers are a better fit
 
 # Licensing
 
