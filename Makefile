@@ -83,10 +83,11 @@ test-server-pro-i:
 
 run-rsp: run-server-pro
 run-server-pro:  ## Run RSP container
-	docker rm rstudio-server-pro
+	docker rm -f rstudio-server-pro
 	docker run -it --privileged \
 		--name rstudio-server-pro \
 		-p 8787:8787 \
+		-v $(PWD)/server-pro/conf:/etc/rstudio/ \
 		-v /run \
 		-e RSP_LICENSE=$(RSP_LICENSE) \
 		rstudio/rstudio-server-pro:$(RSP_VERSION) $(CMD)
@@ -106,7 +107,7 @@ test-connect-i:
 
 run-rsc: run-connect
 run-connect:  ## Run RSC container
-	docker rm rstudio-connect
+	docker rm -f rstudio-connect
 	docker run -it --privileged \
 		--name rstudio-connect \
 		-p 3939:3939 \
@@ -131,7 +132,7 @@ test-package-manager-i:
 
 run-rspm: run-package-manager
 run-package-manager:  ## Run RSPM container
-	docker rm rstudio-package-manager
+	docker rm -f rstudio-package-manager
 	docker run -it --privileged \
 		--name rstudio-package-manager \
 		-p 4242:4242 \
