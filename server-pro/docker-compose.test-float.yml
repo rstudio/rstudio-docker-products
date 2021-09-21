@@ -4,7 +4,11 @@ services:
   sut:
     image: $IMAGE_NAME
     command: /run_tests.sh
+    # command: /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
     entrypoint: []
+    privileged: true
+    ports:
+      - "8787"
     environment:
       # uses .env by default
       - RSP_VERSION
