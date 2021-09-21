@@ -26,6 +26,7 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
         libuser1-dev \
         libxext6 \
         libxrender1 \
+	oddjob-mkhomedir \
         openssh-client \
         rrdtool \
         sssd \
