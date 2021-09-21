@@ -140,7 +140,6 @@ RUN rstudio-server install-vs-code /opt/code-server/
 
 # Copy config
 COPY conf/* /etc/rstudio/
-COPY pam/* /etc/pam.d/
 
 # Add LimLM certs
 COPY *.crt /var/tmp/
@@ -150,7 +149,8 @@ RUN cp -v /var/tmp/*.crt /usr/local/share/ca-certificates/ && \
 # Create log dir
 RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
     chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor && \
-    mkdir -p /startup/custom/
+    mkdir -p /startup/custom/ && \
+    echo 'session required pam_mkhomedir.so skel=/etc/skel umask=0022' >> /etc/pam.d/common-session
 
 EXPOSE 8787/tcp
 EXPOSE 5559/tcp
