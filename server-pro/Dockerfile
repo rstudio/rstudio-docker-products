@@ -17,6 +17,7 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
         git \
         libcap2 \
         libglib2.0-0 \
+        libpam-sss \
         libpq5 \
         libsm6 \
         libssl1.0.0 \
@@ -26,11 +27,11 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
         libuser1-dev \
         libxext6 \
         libxrender1 \
-	oddjob-mkhomedir \
+	    oddjob-mkhomedir \
         openssh-client \
         rrdtool \
         sssd \
-	sudo \
+	    sudo \
         supervisor \
         wget \
     && apt-get clean \
