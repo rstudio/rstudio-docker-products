@@ -139,6 +139,7 @@ RUN rstudio-server install-vs-code /opt/code-server/
 
 # Copy config
 COPY conf/* /etc/rstudio/
+COPY pam/* /etc/pam.d/
 
 # Add LimLM certs
 COPY *.crt /var/tmp/
