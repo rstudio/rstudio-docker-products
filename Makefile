@@ -31,6 +31,19 @@ SHELL := bash
 MAKEFLAGS += --warn-undefined-variables
 MAKEFLAGS += --no-builtin-rules
 
+
+# To avoid the issue between mac and linux
+# Mac require -i '', while -i is the preferred on linux
+UNAME_S := $(shell uname -s)
+
+SED_FLAGS=""
+ifeq ($(UNAME_S),Linux)
+	SED_FLAGS="-i"
+else ifeq ($(UNAME_S),Darwin)
+	SED_FLAGS="-i ''"
+endif
+
+
 all: help
 
 
@@ -39,30 +52,32 @@ images: workbench connect package-manager  ## Build all images
 
 
 update-versions:  ## Update the version files for all products
-	@sed -i '' "s/^RSW_VERSION=.*/RSW_VERSION=${RSW_VERSION}/g" workbench/.env
-	@sed -i '' "s/^RSC_VERSION=.*/RSC_VERSION=${RSC_VERSION}/g" connect/.env
-	@sed -i '' "s/^RSPM_VERSION=.*/RSPM_VERSION=${RSPM_VERSION}/g" package-manager/.env
-	@sed -i '' "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" workbench/Dockerfile
-	@sed -i '' "s/^ARG RSC_VERSION=.*/ARG RSC_VERSION=${RSC_VERSION}/g" connect/Dockerfile
-	@sed -i '' "s/^ARG RSC_VERSION=.*/ARG RSC_VERSION=${RSC_VERSION}/g" connect-content-init/Dockerfile
-	@sed -i '' "s/^ARG RSPM_VERSION=.*/ARG RSPM_VERSION=${RSPM_VERSION}/g" package-manager/Dockerfile
-	@sed -i '' "s/^RSPM_VERSION:.*/RSPM_VERSION: ${RSPM_VERSION}/g" docker-compose.yml
-	@sed -i '' "s/RSPM_VERSION:.*/RSPM_VERSION: ${RSPM_VERSION}/g" docker-compose.yml
-	@sed -i '' "s/rstudio\/rstudio-package-manager:.*/rstudio\/rstudio-package-manager:${RSPM_VERSION}/g" docker-compose.yml
-	@sed -i '' "s/RSC_VERSION:.*/RSC_VERSION: ${RSC_VERSION}/g" docker-compose.yml
-	@sed -i '' "s/rstudio\/rstudio-connect:.*/rstudio\/rstudio-connect:${RSC_VERSION}/g" docker-compose.yml
-	@sed -i '' "s/RSW_VERSION:.*/RSW_VERSION: ${RSW_VERSION}/g" docker-compose.yml
-	@sed -i '' "s/rstudio\/rstudio-workbench:.*/rstudio\/rstudio-workbench:${RSW_VERSION}/g" docker-compose.yml
-	@sed -i '' "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" workbench/Dockerfile
-	@sed -i '' "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" connect/Dockerfile
-	@sed -i '' "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" package-manager/Dockerfile
-	@sed -i '' "s|^RVersion.*=.*|RVersion = /opt/R/${R_VERSION}/|g" package-manager/rstudio-pm.gcfg
-	@sed -i '' "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" r-session-complete/bionic/Dockerfile
-	@sed -i '' "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" r-session-complete/centos7/Dockerfile
+	@sed $(SED_FLAGS) "s/^RSW_VERSION=.*/RSW_VERSION=${RSW_VERSION}/g" workbench/.env
+	@sed $(SED_FLAGS) "s/^RSW_VERSION=.*/RSW_VERSION=${RSW_VERSION}/g" r-session-complete/bionic/.env
+	@sed $(SED_FLAGS) "s/^RSW_VERSION=.*/RSW_VERSION=${RSW_VERSION}/g" r-session-complete/centos7/.env
+	@sed $(SED_FLAGS) "s/^RSC_VERSION=.*/RSC_VERSION=${RSC_VERSION}/g" connect/.env
+	@sed $(SED_FLAGS) "s/^RSPM_VERSION=.*/RSPM_VERSION=${RSPM_VERSION}/g" package-manager/.env
+	@sed $(SED_FLAGS) "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" workbench/Dockerfile
+	@sed $(SED_FLAGS) "s/^ARG RSC_VERSION=.*/ARG RSC_VERSION=${RSC_VERSION}/g" connect/Dockerfile
+	@sed $(SED_FLAGS) "s/^ARG RSC_VERSION=.*/ARG RSC_VERSION=${RSC_VERSION}/g" connect-content-init/Dockerfile
+	@sed $(SED_FLAGS) "s/^ARG RSPM_VERSION=.*/ARG RSPM_VERSION=${RSPM_VERSION}/g" package-manager/Dockerfile
+	@sed $(SED_FLAGS) "s/^RSPM_VERSION:.*/RSPM_VERSION: ${RSPM_VERSION}/g" docker-compose.yml
+	@sed $(SED_FLAGS) "s/RSPM_VERSION:.*/RSPM_VERSION: ${RSPM_VERSION}/g" docker-compose.yml
+	@sed $(SED_FLAGS) "s/rstudio\/rstudio-package-manager:.*/rstudio\/rstudio-package-manager:${RSPM_VERSION}/g" docker-compose.yml
+	@sed $(SED_FLAGS) "s/RSC_VERSION:.*/RSC_VERSION: ${RSC_VERSION}/g" docker-compose.yml
+	@sed $(SED_FLAGS) "s/rstudio\/rstudio-connect:.*/rstudio\/rstudio-connect:${RSC_VERSION}/g" docker-compose.yml
+	@sed $(SED_FLAGS) "s/RSW_VERSION:.*/RSW_VERSION: ${RSW_VERSION}/g" docker-compose.yml
+	@sed $(SED_FLAGS) "s/rstudio\/rstudio-workbench:.*/rstudio\/rstudio-workbench:${RSW_VERSION}/g" docker-compose.yml
+	@sed $(SED_FLAGS) "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" workbench/Dockerfile
+	@sed $(SED_FLAGS) "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" connect/Dockerfile
+	@sed $(SED_FLAGS) "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" package-manager/Dockerfile
+	@sed $(SED_FLAGS) "s|^RVersion.*=.*|RVersion = /opt/R/${R_VERSION}/|g" package-manager/rstudio-pm.gcfg
+	@sed $(SED_FLAGS) "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" r-session-complete/bionic/Dockerfile
+	@sed $(SED_FLAGS) "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" r-session-complete/centos7/Dockerfile
 
 
 rsp: workbench
-server-pro:  ## Build RSP image
+workbench:  ## Build RSP image
 	RSW_TAG_VERSION=`echo "$(RSW_VERSION)" | sed -e 's/\+/--/'`
 	docker build -t rstudio/rstudio-server-pro:$${RSW_TAG_VERSION} --build-arg R_VERSION=$(R_VERSION) --build-arg RSW_VERSION=$(RSW_VERSION) workbench
 
