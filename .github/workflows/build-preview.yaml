@@ -78,7 +78,7 @@ jobs:
             RSC_VERSION=${{ steps.version.outputs.VERSION }}
             RSPM_VERSION=${{ steps.version.outputs.VERSION }}
             # TODO: need a better way to handle pivoting DOWNLOAD_URL for OS
-            RSP_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/${{ matrix.config.os }}
+            RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/${{ matrix.config.os }}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
