@@ -43,7 +43,7 @@ command:
     title: package-manager_version_matches
     exit-status: 0
     stdout: [
-      "/{{ .Env.RSPM_VERSION }}/"
+      "{{ .Env.RSPM_VERSION }}"
     ]
 # Ensure package manager is running
   "pgrep rstudio-pm":
@@ -55,5 +55,5 @@ command:
     title: r_version_match
     exit-status: 0
     stdout: [
-      "/{{ .Env.R_VERSION }}/"
+      "{{ .Env.R_VERSION }}"
     ]
