@@ -34,7 +34,7 @@ MAKEFLAGS += --no-builtin-rules
 all: help
 
 
-images: server-pro connect package-manager  ## Build all images
+images: workbench connect package-manager  ## Build all images
 	docker-compose build
 
 
@@ -53,7 +53,7 @@ update-versions:  ## Update the version files for all products
 	@sed -i '' "s/rstudio\/rstudio-connect:.*/rstudio\/rstudio-connect:${RSC_VERSION}/g" docker-compose.yml
 	@sed -i '' "s/RSW_VERSION:.*/RSW_VERSION: ${RSW_VERSION}/g" docker-compose.yml
 	@sed -i '' "s/rstudio\/rstudio-workbench:.*/rstudio\/rstudio-workbench:${RSW_VERSION}/g" docker-compose.yml
-	@sed -i '' "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" server-pro/Dockerfile
+	@sed -i '' "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" workbench/Dockerfile
 	@sed -i '' "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" connect/Dockerfile
 	@sed -i '' "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" package-manager/Dockerfile
 	@sed -i '' "s|^RVersion.*=.*|RVersion = /opt/R/${R_VERSION}/|g" package-manager/rstudio-pm.gcfg
@@ -85,7 +85,7 @@ run-workbench:  ## Run RSW container
 	docker run -it --privileged \
 		--name rstudio-workbench \
 		-p 8787:8787 \
-		-v $(PWD)/server-pro/conf:/etc/rstudio/ \
+		-v $(PWD)/workbench/conf:/etc/rstudio/ \
 		-v /run \
 		-e RSW_LICENSE=$(RSW_LICENSE) \
 		rstudio/rstudio-workbench:$(RSW_VERSION) $(CMD)
@@ -156,4 +156,4 @@ help:  ## Show this help menu
 	@grep -E '^[0-9a-zA-Z_-]+:.*?##.*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?##"; OFS="\t\t"}; {printf "\033[36m%-30s\033[0m %s\n", $$1, ($$2==""?"":$$2)}'
 
 
-.PHONY: server-pro rsp run-server-pro connect rsc run-connect package-manager rspm run-package-manager run-floatating-lic-server
+.PHONY: workbench rsw run-workbench connect rsc run-connect package-manager rspm run-package-manager run-floatating-lic-server
