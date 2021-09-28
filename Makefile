@@ -77,7 +77,7 @@ update-versions:  ## Update the version files for all products
 
 
 rsp: workbench
-workbench:  ## Build RSP image
+workbench:  ## Build Workbench image
 	RSW_TAG_VERSION=`echo "$(RSW_VERSION)" | sed -e 's/\+/--/'`
 	docker build -t rstudio/rstudio-server-pro:$${RSW_TAG_VERSION} --build-arg R_VERSION=$(R_VERSION) --build-arg RSW_VERSION=$(RSW_VERSION) workbench
 
