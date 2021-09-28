@@ -3,9 +3,9 @@ FROM ubuntu:bionic
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 # Set versions and platforms
-ARG R_VERSION=4.0.2
+ARG R_VERSION=4.1.0
 ARG MINICONDA_VERSION=py37_4.8.3
-ARG PYTHON_VERSION=3.7.7
+ARG PYTHON_VERSION=3.9.5
 ARG DRIVERS_VERSION=1.8.0
 
 # Install RStudio Workbench session components -------------------------------#
@@ -72,10 +72,10 @@ RUN /opt/R/${R_VERSION}/bin/R -e 'install.packages("devtools", repos="https://pa
 
 # Install Python --------------------------------------------------------------#
 
-RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh && \
-    bash Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION} && \
-    /opt/python/${PYTHON_VERSION}/bin/pip install virtualenv && \
-    rm -rf Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh
+RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
+    bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION} && \
+    /opt/python/${PYTHON_VERSION}/bin/conda install -y python==${PYTHON_VERSION} && \
+    rm -rf Miniconda3-*-Linux-x86_64.sh
 
 ENV PATH="/opt/python/${PYTHON_VERSION}/bin:${PATH}"
 
@@ -110,6 +110,7 @@ RUN /opt/python/${PYTHON_VERSION}/bin/pip install \
     statsmodels \
     streamlit \
     tensorflow \
+    virtualenv \
     xgboost
 
 # Install Jupyter Notebook and RSW/RSC Notebook Extensions and Packages -------#

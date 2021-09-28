@@ -1,3 +1,9 @@
+# dev
+
+- **BREAKING**: Rename `RSP_` variables to `RSW_`. Rename RStudio Server Pro to RStudio Workbench
+- **BREAKING**: Change `R_VERSION` to 4.1.0
+- **BREAKING**: Change `PYTHON_VERSION` to 3.9.5
+
 # 1.4.1717-3
 
 ## Overview
