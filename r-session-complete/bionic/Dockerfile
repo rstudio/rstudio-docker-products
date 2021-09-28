@@ -24,13 +24,13 @@ RUN apt-get update -y && \
     rrdtool && \
     rm -rf /var/lib/apt/lists/*
 
-ARG RSP_VERSION=1.4.1717-3
-ARG RSP_NAME=rstudio-workbench
-ARG RSP_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64
+ARG RSW_VERSION=1.4.1717-3
+ARG RSW_NAME=rstudio-workbench
+ARG RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64
 RUN apt-get update --fix-missing \
     && apt-get install -y gdebi-core \
-    && RSP_VERSION_URL=`echo -n "${RSP_VERSION}" | sed 's/+/%2B/g'` \
-    && curl -o rstudio-workbench.deb ${RSP_DOWNLOAD_URL}/${RSP_NAME}-${RSP_VERSION_URL}-amd64.deb \
+    && RSW_VERSION_URL=`echo -n "${RSW_VERSION}" | sed 's/+/%2B/g'` \
+    && curl -o rstudio-workbench.deb ${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-amd64.deb \
     && gdebi --non-interactive rstudio-workbench.deb \
     && rm rstudio-workbench.deb \
     && apt-get autoremove -y \
@@ -112,7 +112,7 @@ RUN /opt/python/${PYTHON_VERSION}/bin/pip install \
     tensorflow \
     xgboost
 
-# Install Jupyter Notebook and RSP/RSC Notebook Extensions and Packages -------#
+# Install Jupyter Notebook and RSW/RSC Notebook Extensions and Packages -------#
 
 RUN /opt/python/${PYTHON_VERSION}/bin/pip install \
     jupyter \
