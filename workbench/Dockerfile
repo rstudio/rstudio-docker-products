@@ -121,7 +121,7 @@ COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
 
-# Install RStudio Server Pro --------------------------------------------------#
+# Install RStudio Workbench --------------------------------------------------#
 ARG RSW_VERSION=1.4.1717-3
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 ARG RSW_NAME=rstudio-workbench
