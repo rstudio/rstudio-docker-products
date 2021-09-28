@@ -19,11 +19,11 @@ RUN yum update -y && \
     rrdtool && \
     yum clean all
 
-ARG RSP_VERSION=1.4.1717-3
-ARG RSP_NAME=rstudio-workbench-rhel
-ARG RSP_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x86_64
-RUN RSP_VERSION_URL=`echo -n "${RSP_VERSION}" | sed 's/+/%2B/g'` \
-    && curl -o rstudio-workbench.rpm ${RSP_DOWNLOAD_URL}/${RSP_NAME}-${RSP_VERSION_URL}-x86_64.rpm \
+ARG RSW_VERSION=1.4.1717-3
+ARG RSW_NAME=rstudio-workbench-rhel
+ARG RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x86_64
+RUN RSW_VERSION_URL=`echo -n "${RSW_VERSION}" | sed 's/+/%2B/g'` \
+    && curl -o rstudio-workbench.rpm ${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-x86_64.rpm \
     && yum install -y rstudio-workbench.rpm \
     && rm rstudio-workbench.rpm \
     && yum clean all \
@@ -110,7 +110,7 @@ RUN /opt/python/${PYTHON_VERSION}/bin/pip install \
     tensorflow \
     xgboost
 
-# Install Jupyter Notebook and RSP/RSC Notebook Extensions and Packages -------#
+# Install Jupyter Notebook and RSW/RSC Notebook Extensions and Packages -------#
 
 RUN /opt/python/${PYTHON_VERSION}/bin/pip install \
     jupyter \
