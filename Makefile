@@ -79,7 +79,7 @@ update-versions:  ## Update the version files for all products
 
 rsw: workbench
 workbench:  ## Build Workbench image
-	docker build -t rstudio/rstudio-server-pro:$(RSW_TAG_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSW_VERSION=$(RSW_VERSION) workbench
+	docker build -t rstudio/rstudio-workbench:$(RSW_TAG_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSW_VERSION=$(RSW_VERSION) workbench
 
 rsw-hook:
 	cd ./workbench && \
