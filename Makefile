@@ -62,7 +62,7 @@ update-versions:  ## Update the version files for all products
 
 
 rsw: workbench
-workbench:  ## Build RSP image
+workbench:  ## Build RSW image
 	docker build -t rstudio/rstudio-workbench:$(RSW_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSW_VERSION=$(RSW_VERSION) workbench
 
 rsw-hook:
@@ -147,8 +147,8 @@ float:
 	docker-compose -f helper/float/docker-compose.yml build
 
 run-float: run-floating-lic-server
-run-floating-lic-server:  ## Run the floating license server for RSP products
-	RSP_FLOAT_LICENSE=$(RSP_FLOAT_LICENSE) RSC_FLOAT_LICENSE=$(RSC_FLOAT_LICENSE) RSPM_FLOAT_LICENSE=$(RSPM_FLOAT_LICENSE) SSP_FLOAT_LICENSE=$(SSP_FLOAT_LICENSE) \
+run-floating-lic-server:  ## Run the floating license server for pro products
+	RSW_FLOAT_LICENSE=$(RSW_FLOAT_LICENSE) RSC_FLOAT_LICENSE=$(RSC_FLOAT_LICENSE) RSPM_FLOAT_LICENSE=$(RSPM_FLOAT_LICENSE) SSP_FLOAT_LICENSE=$(SSP_FLOAT_LICENSE) \
 	docker-compose -f helper/float/docker-compose.yml up
 
 
