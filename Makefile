@@ -43,6 +43,7 @@ else ifeq ($(UNAME_S),Darwin)
 	SED_FLAGS="-i ''"
 endif
 
+RSW_TAG_VERSION=`echo "$(RSW_VERSION)" | sed -e 's/\+/--/'`
 
 all: help
 
@@ -67,7 +68,7 @@ update-versions:  ## Update the version files for all products
 	@sed $(SED_FLAGS) "s/RSC_VERSION:.*/RSC_VERSION: ${RSC_VERSION}/g" docker-compose.yml
 	@sed $(SED_FLAGS) "s/rstudio\/rstudio-connect:.*/rstudio\/rstudio-connect:${RSC_VERSION}/g" docker-compose.yml
 	@sed $(SED_FLAGS) "s/RSW_VERSION:.*/RSW_VERSION: ${RSW_VERSION}/g" docker-compose.yml
-	@sed $(SED_FLAGS) "s/rstudio\/rstudio-workbench:.*/rstudio\/rstudio-workbench:${RSW_VERSION}/g" docker-compose.yml
+	@sed $(SED_FLAGS) "s/rstudio\/rstudio-workbench:.*/rstudio\/rstudio-workbench:${RSW_TAG_VERSION}/g" docker-compose.yml
 	@sed $(SED_FLAGS) "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" workbench/Dockerfile
 	@sed $(SED_FLAGS) "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" connect/Dockerfile
 	@sed $(SED_FLAGS) "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" package-manager/Dockerfile
@@ -78,8 +79,7 @@ update-versions:  ## Update the version files for all products
 
 rsw: workbench
 workbench:  ## Build Workbench image
-	RSW_TAG_VERSION=`echo "$(RSW_VERSION)" | sed -e 's/\+/--/'`
-	docker build -t rstudio/rstudio-server-pro:$${RSW_TAG_VERSION} --build-arg R_VERSION=$(R_VERSION) --build-arg RSW_VERSION=$(RSW_VERSION) workbench
+	docker build -t rstudio/rstudio-server-pro:$(RSW_TAG_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSW_VERSION=$(RSW_VERSION) workbench
 
 rsw-hook:
 	cd ./workbench && \
