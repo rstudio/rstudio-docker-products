@@ -61,9 +61,10 @@ update-versions:  ## Update the version files for all products
 	@sed -i '' "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" r-session-complete/centos7/Dockerfile
 
 
-rsw: workbench
-workbench:  ## Build RSW image
-	docker build -t rstudio/rstudio-workbench:$(RSW_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSW_VERSION=$(RSW_VERSION) workbench
+rsp: workbench
+server-pro:  ## Build RSP image
+	RSW_TAG_VERSION=`echo "$(RSW_VERSION)" | sed -e 's/\+/--/'`
+	docker build -t rstudio/rstudio-server-pro:$${RSW_TAG_VERSION} --build-arg R_VERSION=$(R_VERSION) --build-arg RSW_VERSION=$(RSW_VERSION) workbench
 
 rsw-hook:
 	cd ./workbench && \
