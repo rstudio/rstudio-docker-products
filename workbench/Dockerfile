@@ -121,8 +121,8 @@ COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
 
-# Install RStudio Workbench --------------------------------------------------#
-ARG RSW_VERSION=1.4.1717-3
+# Install RStudio Server Pro --------------------------------------------------#
+ARG RSW_VERSION=2021.09.0+351.pro6
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 ARG RSW_NAME=rstudio-workbench
 RUN apt-get update --fix-missing \
