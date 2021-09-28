@@ -49,12 +49,12 @@ repository on Docker Hub.
 These images include the following layers:
 
 * Base OS
-* RSP session components
+* RSW session components
 * System packages required for R, R packages, and RStudio Professional Drivers
 * One version of R
 * R packages (devtools, tidyverse, shiny, and rmarkdown)
 * One version of Python
-* Jupyter Notebooks, JupyterLab, and RSP/RSC notebook extensions
+* Jupyter Notebooks, JupyterLab, and RSW/RSC notebook extensions
 * Python packages
 * RStudio Professional Drivers
 
