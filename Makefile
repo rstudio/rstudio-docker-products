@@ -156,7 +156,7 @@ run-package-manager:  ## Run RSPM container
 		rstudio/rstudio-package-manager:$(RSPM_VERSION) $(CMD)
 
 
-test-all: rspm test-rspm rsc test-rsc rsp test-rsp
+test-all: rspm test-rspm rsc test-rsc rsp test-rsw
 
 
 float:
