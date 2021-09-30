@@ -80,17 +80,17 @@ file:
 
 command:
   "su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'":
-    title: server-pro_monitor_log_file_creates
+    title: workbench_monitor_log_file_creates
     exit-status: 0
   "touch /var/log/rstudio-server.log":
-    title: server-pro_server_log_creates
+    title: workbench_server_log_creates
     exit-status: 0
 # Check product version
   "rstudio-server version":
-    title: server-pro_version_matches
+    title: workbench_version_matches
     exit-status: 0
     stdout: [
-       "{{ .Env.RSP_VERSION }}",
+       "{{ .Env.RSW_VERSION }}",
        "Workbench"
      ]
   "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/jupyter/bin/jupyter nbconvert --to notebook --stdin --stdout":

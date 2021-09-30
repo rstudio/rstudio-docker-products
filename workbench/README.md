@@ -21,12 +21,12 @@ To verify basic functionality as a first step:
 
 ```
 # Replace with valid license
-export RSP_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
+export RSW_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 
 # Run without persistent data using default configuration
 docker run --privileged -it \
     -p 8787:8787 \
-    -e RSP_LICENSE=$RSP_LICENSE \
+    -e RSW_LICENSE=$RSW_LICENSE \
     rstudio/rstudio-workbench:latest
 ```
 
@@ -50,9 +50,9 @@ This container includes:
 RStudio Workbench is configured via config files in the in the `/etc/rstudio` directory. Mount this directory as
 a volume from the host machine. Changes will take effect when the container is restarted.
 
-You can review possible RStudio Workbench configuration [in the documentation](https://docs.rstudio.com/ide/server-pro/).
+You can review possible RStudio Workbench configuration [in the documentation](https://docs.rstudio.com/ide/workbench/).
 
-See a complete example of server configuration at `server-pro/conf`.
+See a complete example of server configuration at `workbench/conf`.
 
 ### Persistent Data
 
@@ -63,18 +63,17 @@ machine or your docker orchestration system.
 
 The RStudio Workbench Docker image requires a valid license, which can be set in three ways:
 
-1. Setting the `RSP_LICENSE` environment variable to a valid license key inside the container
-2. Setting the `RSP_LICENSE_SERVER` environment variable to a valid license server / port inside the container
-3. Mounting a `/etc/rstudio-server/license.lic` single file that contains a valid license for RStudio Server Pro
+1. Setting the `RSW_LICENSE` environment variable to a valid license key inside the container
+2. Setting the `RSW_LICENSE_SERVER` environment variable to a valid license server / port inside the container
+3. Mounting a `/etc/rstudio-server/license.lic` single file that contains a valid license for RStudio Workbench
 
 **NOTE:** the "offline activation process" is not supported by this image today. Offline installations will need
 to explore using a license server, license file, or custom image with manual intervention.
 
 ### User Provisioning
 
-By default, the container will create a test user, which you can control or
-disable with the environment variables: `RSP_TESTUSER`, `RSP_TESTUSER_PASSWD`,
-`RSP_TESTUSER_UID`.
+By default, the container will create a test user, which you can control or disable with the environment
+variables: `RSW_TESTUSER`, `RSW_TESTUSER_PASSWD`, `RSW_TESTUSER_UID`.
 
 #### sssd / LDAP / Active Directory
 
@@ -121,13 +120,13 @@ more information.
 
 | Variable | Description | Default |
 |-----|---|---|
-| `RSP_TESTUSER` | Test user to be created in the container, turn off with an empty value | `rstudio` |
-| `RSP_TESTUSER_PASSWD` | Test user password | `rstudio` |
-| `RSP_TESTUSER_UID` | Test user UID | `10000` |
-| `RSP_LICENSE` | License key for RStudio Server Pro, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None |
-| `RSP_LICENSE_SERVER` | Floating license server, format should be: `my.url.com:port` | None |
-| `RSP_LAUNCHER` | Whether or not to use launcher locally / start the launcher process | true |
-| `RSP_LAUNCHER_TIMEOUT` | The timeout, in seconds, to wait for launcher to start listening on the expected port before failing startup | 10 |
+| `RSW_TESTUSER` | Test user to be created in the container, turn off with an empty value | `rstudio` |
+| `RSW_TESTUSER_PASSWD` | Test user password | `rstudio` |
+| `RSW_TESTUSER_UID` | Test user UID | `10000` |
+| `RSW_LICENSE` | License key for RStudio Workbench, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None |
+| `RSW_LICENSE_SERVER` | Floating license server, format should be: `my.url.com:port` | None |
+| `RSW_LAUNCHER` | Whether or not to use launcher locally / start the launcher process | true |
+| `RSW_LAUNCHER_TIMEOUT` | The timeout, in seconds, to wait for launcher to start listening on the expected port before failing startup | 10 |
 
 ### Ports
 
@@ -140,25 +139,25 @@ more information.
 
 ```bash
 # Replace with valid license
-export RSP_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
+export RSW_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 
 # Run without persistent data and using an external configuration
 docker run --privileged -it \
     -p 8787:8787 -p 5559:5559 \
-    -v $PWD/server-pro/conf/:/etc/rstudio \
-    -e RSP_LICENSE=$RSP_LICENSE \
+    -v $PWD/workbench/conf/:/etc/rstudio \
+    -e RSW_LICENSE=$RSW_LICENSE \
     rstudio/rstudio-workbench:latest
 
 # Run with persistent data and using an external configuration
 docker run --privileged -it \
     -p 8787:8787 -p 5559:5559 \
-    -v $PWD/data/rsp:/home \
-    -v $PWD/server-pro/conf/:/etc/rstudio \
-    -e RSP_LICENSE=$RSP_LICENSE \
+    -v $PWD/data/rsw:/home \
+    -v $PWD/workbench/conf/:/etc/rstudio \
+    -e RSW_LICENSE=$RSW_LICENSE \
     rstudio/rstudio-workbench:latest
 ```
 
-Open [http://localhost:8787](http://localhost:8787) to access RStudio Server Pro.
+Open [http://localhost:8787](http://localhost:8787) to access RStudio Workbench.
 The default username and password are `rstudio`.
 
 ### Process Management

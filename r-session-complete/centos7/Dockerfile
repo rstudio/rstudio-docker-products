@@ -5,10 +5,10 @@ LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 # Set versions and platforms
 ARG R_VERSION=4.0.2
 ARG MINICONDA_VERSION=py37_4.8.3
-ARG PYTHON_VERSION=3.7.7
+ARG PYTHON_VERSION=3.9.5
 ARG DRIVERS_VERSION=1.8.0-1
 
-# Install RStudio Server Pro session components -------------------------------#
+# Install RStudio Workbench session components -------------------------------#
 
 RUN yum update -y && \
     yum install -y \
@@ -19,11 +19,11 @@ RUN yum update -y && \
     rrdtool && \
     yum clean all
 
-ARG RSP_VERSION=1.4.1717-3
-ARG RSP_NAME=rstudio-workbench-rhel
-ARG RSP_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x86_64
-RUN RSP_VERSION_URL=`echo -n "${RSP_VERSION}" | sed 's/+/%2B/g'` \
-    && curl -o rstudio-workbench.rpm ${RSP_DOWNLOAD_URL}/${RSP_NAME}-${RSP_VERSION_URL}-x86_64.rpm \
+ARG RSW_VERSION=2021.09.0+351.pro6
+ARG RSW_NAME=rstudio-workbench-rhel
+ARG RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x86_64
+RUN RSW_VERSION_URL=`echo -n "${RSW_VERSION}" | sed 's/+/%2B/g'` \
+    && curl -o rstudio-workbench.rpm ${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-x86_64.rpm \
     && yum install -y rstudio-workbench.rpm \
     && rm rstudio-workbench.rpm \
     && yum clean all \
@@ -70,10 +70,10 @@ RUN yum update -y && \
     yum install -y bzip2 && \
     yum clean all
 
-RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh && \
-    bash Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION} && \
-    /opt/python/${PYTHON_VERSION}/bin/pip install virtualenv && \
-    rm -rf Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh
+RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
+    bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION} && \
+    /opt/python/${PYTHON_VERSION}/bin/conda install -y python==${PYTHON_VERSION} && \
+    rm -rf Miniconda3-*-Linux-x86_64.sh
 
 ENV PATH="/opt/python/${PYTHON_VERSION}/bin:${PATH}"
 
@@ -108,9 +108,10 @@ RUN /opt/python/${PYTHON_VERSION}/bin/pip install \
     statsmodels \
     streamlit \
     tensorflow \
+    virtualenv \
     xgboost
 
-# Install Jupyter Notebook and RSP/RSC Notebook Extensions and Packages -------#
+# Install Jupyter Notebook and RSW/RSC Notebook Extensions and Packages -------#
 
 RUN /opt/python/${PYTHON_VERSION}/bin/pip install \
     jupyter \

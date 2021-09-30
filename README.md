@@ -19,7 +19,7 @@ Docker images for RStudio Professional Products
 
 ### Professional Products
 
-- [RStudio Workbench](./server-pro/)
+- [RStudio Workbench](./workbench/)
 - [RStudio Connect](./connect/)
 - [RStudio Package Manager](./package-manager/)
 
@@ -45,12 +45,12 @@ If you are using this locally you need to setup some hostnames to point to `loca
 work fine in your browser. In your `/etc/hosts` add one line:
 
 ```
-127.0.0.1 rstudio-server-pro rstudio-connect rstudio-pm
+127.0.0.1 rstudio-workbench rstudio-connect rstudio-pm
 ```
 
 ```bash
 # Replace this with valid licenses
-export RSP_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
+export RSW_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 export RSC_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 export RSPM_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 
@@ -74,9 +74,9 @@ sales@rstudio.com.
 After you have cloned [rstudio-docker-products](https://github.com/rstudio/rstudio-docker-products), you can create your
 own containers fairly simply with the provided Makefile.
 
-To build RStudio Server Pro:
+To build RStudio Workbench:
 ```
-make server-pro
+make workbench
 ```
 To build RStudio Connect:
 ```
@@ -87,19 +87,19 @@ To build RStudio Package Manager:
 make package-manager
 ```
 
-You can alter what exactly is built by changing `server-pro/Dockerfile`, `connect/Dockerfile`,
+You can alter what exactly is built by changing `workbench/Dockerfile`, `connect/Dockerfile`,
 and `package-manager/Dockerfile`.
 
-You can then run what you've built to test out with the `run-` commands. For instance, to run the server-pro container
+You can then run what you've built to test out with the `run-` commands. For instance, to run the workbench container
 you have built:
 ```
-make run-server-pro
+make run-workbench
 ```
 
 Note you must have a license in place, and all of the other instructions in separate sections are still relevant.
 
 If you have created an image you want to use yourself, you can push to your own image repository system. The images are
-named `rstudio-server-pro`, `rstudio-connect`, and `rstudio-package-manager`.
+named `rstudio-workbench`, `rstudio-connect`, and `rstudio-package-manager`.
 
 # Licensing
 

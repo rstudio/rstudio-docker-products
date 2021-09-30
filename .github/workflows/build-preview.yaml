@@ -16,14 +16,14 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {product: 'rstudio-workbench-preview', dir: 'server-pro', prefix: RSP, os: 'bionic/amd64', version: 'daily'}
-          - {product: 'rstudio-workbench-preview', dir: 'server-pro', prefix: RSP, os: 'bionic/amd64', version: 'preview'}
+          - {product: 'rstudio-workbench-preview', dir: 'workbench', prefix: RSW, os: 'bionic/amd64', version: 'daily'}
+          - {product: 'rstudio-workbench-preview', dir: 'workbench', prefix: RSW, os: 'bionic/amd64', version: 'preview'}
           - {product: 'rstudio-connect-preview', dir: 'connect', prefix: RSC, version: 'daily'}
           - {product: 'rstudio-connect-content-init-preview', dir: 'connect-content-init', prefix: RSC, version: 'daily'}
-          - {product: 'r-session-complete-preview', tag_prefix: 'bionic-', dir: 'r-session-complete/bionic', os: 'bionic/amd64', prefix: RSP, version: 'daily'}
-          - {product: 'r-session-complete-preview', tag_prefix: 'centos7-', dir: 'r-session-complete/centos7', os: 'centos7/x86_64', prefix: RSP, version: 'daily'}
-          - {product: 'r-session-complete-preview', tag_prefix: 'bionic-', dir: 'r-session-complete/bionic', os: 'bionic/amd64', prefix: RSP, version: 'preview'}
-          - {product: 'r-session-complete-preview', tag_prefix: 'centos7-', dir: 'r-session-complete/centos7', os: 'centos7/x86_64', prefix: RSP, version: 'preview'}
+          - {product: 'r-session-complete-preview', tag_prefix: 'bionic-', dir: 'r-session-complete/bionic', os: 'bionic/amd64', prefix: RSW, version: 'daily'}
+          - {product: 'r-session-complete-preview', tag_prefix: 'centos7-', dir: 'r-session-complete/centos7', os: 'centos7/x86_64', prefix: RSW, version: 'daily'}
+          - {product: 'r-session-complete-preview', tag_prefix: 'bionic-', dir: 'r-session-complete/bionic', os: 'bionic/amd64', prefix: RSW, version: 'preview'}
+          - {product: 'r-session-complete-preview', tag_prefix: 'centos7-', dir: 'r-session-complete/centos7', os: 'centos7/x86_64', prefix: RSW, version: 'preview'}
 
     steps:
       - name: Check Out Repo
@@ -38,7 +38,7 @@ jobs:
         run: |
           # NOTE: --local ensures that "latest" builds use the version in our Makefile (instead of latest from the web)
           VERSION=`./get-version.py ${{ matrix.config.product }} --type=${{ matrix.config.version }} --local`
-          SAFE_VERSION=`echo -n "$VERSION" | sed 's/+/--/g'`
+          SAFE_VERSION=`echo -n "$VERSION" | sed 's/+/-/g'`
           echo "::set-output name=VERSION::${VERSION}"
           echo "::set-output name=SAFE_VERSION::${SAFE_VERSION}"
           if [[ "true" == "${{ github.ref == 'refs/heads/dev' }}" ]]; then
@@ -74,11 +74,11 @@ jobs:
           load: true
           push: false
           build-args: |
-            RSP_VERSION=${{ steps.version.outputs.VERSION }}
+            RSW_VERSION=${{ steps.version.outputs.VERSION }}
             RSC_VERSION=${{ steps.version.outputs.VERSION }}
             RSPM_VERSION=${{ steps.version.outputs.VERSION }}
             # TODO: need a better way to handle pivoting DOWNLOAD_URL for OS
-            RSP_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/${{ matrix.config.os }}
+            RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/${{ matrix.config.os }}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
@@ -91,8 +91,7 @@ jobs:
         env:
           IMAGE_NAME: rstudio/${{ matrix.config.product }}:${{ steps.version.outputs.BRANCH_PREFIX }}${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
           # because we cannot dynamically set env var names... set them all...
-          # NOTE: these are used inside the image, so should stay as VERSION
-          RSP_VERSION: ${{ steps.version.outputs.VERSION }}
+          RSW_VERSION: ${{ steps.version.outputs.VERSION }}
           RSC_VERSION: ${{ steps.version.outputs.VERSION }}
           RSPM_VERSION: ${{ steps.version.outputs.VERSION }}
           RSC_LICENSE: ${{ secrets.RSC_LICENSE }}

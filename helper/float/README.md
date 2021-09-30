@@ -14,7 +14,7 @@ Then run:
 
 ```bash
 # Replace this with valid licenses
-export RSP_FLOAT_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
+export RSW_FLOAT_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 export RSC_FLOAT_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 export RSPM_FLOAT_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 
@@ -23,25 +23,25 @@ make run-floating-lic-server
 
 This will build and run 3 containers that are accessible in the `rstudio-docker-products` network at these hostnames:
 
-- RStudio Server Pro: `rsp-float-lic:8989`
+- RStudio Workbench: `rsw-float-lic:8989`
 - RStudio Connect: `rsc-float-lic:8999`
 - RStudio Package Manager: `rspm-float-lic:8969`
 
 After on a new terminal that you can run any product docker containers, for example:
 
 ```bash
-export RSP_LICENSE_SERVER=rsp-float-lic:8989
+export RSW_LICENSE_SERVER=rsw-float-lic:8989
 export RSC_LICENSE_SERVER=rsc-float-lic:8999
 export RSPM_LICENSE_SERVER=rspm-float-lic:8969
 
-# RStudio Server Pro
+# RStudio Workbench
 docker run --privileged -it \
     -p 8787:8787 -p 5559:5559 \
-    -v $PWD/data/rsp:/home \
-    -v $PWD/server-pro/conf/:/etc/rstudio \
-    -e RSP_LICENSE_SERVER=$RSP_LICENSE_SERVER \
+    -v $PWD/data/rsw:/home \
+    -v $PWD/workbench/conf/:/etc/rstudio \
+    -e RSW_LICENSE_SERVER=$RSW_LICENSE_SERVER \
     --network rstudio-docker-products \
-    rstudio/rstudio-server-pro:1.2.5033-1
+    rstudio/rstudio-workbench:1.2.5033-1
 
 # RStudio Connect
 docker run -it --privileged \
@@ -64,7 +64,7 @@ docker run -it --privileged \
 
 **Note:** You need to configure the products (config files) to use remote license, please look at the corresponding admin guides.
 
-- [RStudio Server Pro](https://docs.rstudio.com/ide/server-pro/license-management.html#floating-licensing)
+- [RStudio Workbench](https://docs.rstudio.com/ide/workbench/license-management.html#floating-licensing)
 - [RStudio Connect](https://docs.rstudio.com/connect/admin/licensing/#floating-licenses)
 - [RStudio Package Manager](https://docs.rstudio.com/rspm/admin/licensing/#licensing-floating)
 
@@ -96,7 +96,7 @@ these images, using an environment variable to provide the LICENSE variable.
 
 | PRODUCT | PORT | LICENSE                 |
 |---------|------|-------------------------|
-| rsp     | 8989 | `RSP_FLOAT_LICENSE`     |
+| rsp     | 8989 | `RSW_FLOAT_LICENSE`     |
 | connect | 8999 | `RSC_FLOAT_LICENSE`     |
 | rspm    | 8969 | `RSPM_FLOAT_LICENSE`    |
 | ssp     | 8979 | `SSP_FLOAT_LICENSE`     |
