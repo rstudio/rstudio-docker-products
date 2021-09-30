@@ -74,11 +74,6 @@ RUN apt-get update --fix-missing \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Add LimeLM certs for successful license activation --------------------------#
-COPY *.crt /var/tmp/
-RUN cp -v /var/tmp/*.crt /usr/local/share/ca-certificates/ && \
-    update-ca-certificates
-
 EXPOSE 3939/tcp
 ENV RSC_LICENSE ""
 ENV RSC_LICENSE_SERVER ""
