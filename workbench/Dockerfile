@@ -141,11 +141,6 @@ RUN rstudio-server install-vs-code /opt/code-server/
 # Copy config
 COPY conf/* /etc/rstudio/
 
-# Add LimLM certs
-COPY *.crt /var/tmp/
-RUN cp -v /var/tmp/*.crt /usr/local/share/ca-certificates/ && \
-    update-ca-certificates
-
 # Create log dir
 RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
     chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor && \
