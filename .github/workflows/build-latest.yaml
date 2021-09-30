@@ -31,7 +31,7 @@ jobs:
         run: |
           # NOTE: --local ensures that "latest" builds use the version in our Makefile (instead of latest from the web)
           VERSION=`./get-version.py ${{ matrix.config.product }} --type=${{ matrix.config.version }} --local`
-          SAFE_VERSION=`echo -n "$VERSION" | sed 's/+/--/g'`
+          SAFE_VERSION=`echo -n "$VERSION" | sed 's/+/-/g'`
           echo "::set-output name=VERSION::${VERSION}"
           echo "::set-output name=SAFE_VERSION::${SAFE_VERSION}"
 
