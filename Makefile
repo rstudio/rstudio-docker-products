@@ -43,7 +43,7 @@ else ifeq ($(UNAME_S),Darwin)
 	SED_FLAGS="-i ''"
 endif
 
-RSW_TAG_VERSION=`echo "$(RSW_VERSION)" | sed -e 's/\+/--/'`
+RSW_TAG_VERSION=`echo "$(RSW_VERSION)" | sed -e 's/\+/-/'`
 
 all: help
 
