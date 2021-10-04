@@ -13,7 +13,7 @@ file:
     exists: false
 
 command:
-  "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/3.7.7/bin/jupyter nbconvert --to notebook --stdin --stdout":
+  "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/3.9.5/bin/jupyter nbconvert --to notebook --stdin --stdout":
     title: jupyter_works
     exit-status: 0
 
