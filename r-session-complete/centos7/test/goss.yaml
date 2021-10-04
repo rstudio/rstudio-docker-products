@@ -17,15 +17,6 @@ command:
     title: jupyter_works
     exit-status: 0
 
-# Ensure all R Packages are installed
- {{ $pkgs := .Vars.RPackages }}
-  /opt/R/{{ .Env.R_VERSION }}/bin/R --slave -e 'library()' | cut -f 1 -d ' ' | grep -v '^Packages$' | grep -v '^$':
-    exit-status: 0
-    stdout:
-      {{ range $pkg := $pkgs }}
-      - {{ $pkg }}
-      {{end}}
-
 # Ensure correct R version
   "/opt/R/{{.Env.R_VERSION}}/bin/R --version":
     title: r_version_match

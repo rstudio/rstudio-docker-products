@@ -3,7 +3,6 @@
 # install goss
 
 GOSS_FILE=${GOSS_FILE:-/tmp/goss.yaml}
-GOSS_VARS=${GOSS_VARS:-/tmp/goss_vars.yaml}
 GOSS_VERSION=${GOSS_VERSION:-0.3.8}
 GOSS_MAX_CONCURRENT=${GOSS_MAX_CONCURRENT:-50}
 
