@@ -56,14 +56,6 @@ RUN curl -O https://cdn.rstudio.com/r/centos-7/pkgs/R-${R_VERSION}-1-1.x86_64.rp
 RUN ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R && \
     ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
 
-# Install R packages ----------------------------------------------------------#
-
-RUN /opt/R/${R_VERSION}/bin/R -e 'install.packages("devtools", repos="https://packagemanager.rstudio.com/cran/__linux__/centos7/latest")' && \
-    /opt/R/${R_VERSION}/bin/R -e 'install.packages("tidyverse", repos="https://packagemanager.rstudio.com/cran/__linux__/centos7/latest")' && \
-    /opt/R/${R_VERSION}/bin/R -e 'install.packages("shiny", repos="https://packagemanager.rstudio.com/cran/__linux__/centos7/latest")' && \
-    /opt/R/${R_VERSION}/bin/R -e 'install.packages("rmarkdown", repos="https://packagemanager.rstudio.com/cran/__linux__/centos7/latest")' && \
-    /opt/R/${R_VERSION}/bin/R -e 'install.packages("plumber", repos="https://packagemanager.rstudio.com/cran/__linux__/centos7/latest")'
-
 # Install Python --------------------------------------------------------------#
 
 RUN yum update -y && \
@@ -76,40 +68,6 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64
     rm -rf Miniconda3-*-Linux-x86_64.sh
 
 ENV PATH="/opt/python/${PYTHON_VERSION}/bin:${PATH}"
-
-# Install Python packages -----------------------------------------------------#
-
-RUN /opt/python/${PYTHON_VERSION}/bin/pip install \
-    altair \
-    beautifulsoup4 \
-    bokeh \
-    cloudpickle \
-    cython \
-    dash \
-    dask \
-    flask \
-    gensim \
-    keras \
-    matplotlib \
-    nltk \
-    numpy \
-    pandas \
-    pillow \
-    plotly \
-    pyarrow \
-    requests \
-    scipy \
-    scikit-image \
-    scikit-learn \
-    scrapy \
-    seaborn \
-    spacy \
-    sqlalchemy \
-    statsmodels \
-    streamlit \
-    tensorflow \
-    virtualenv \
-    xgboost
 
 # Install Jupyter Notebook and RSW/RSC Notebook Extensions and Packages -------#
 
