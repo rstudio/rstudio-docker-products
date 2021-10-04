@@ -3,7 +3,7 @@ FROM centos:7
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 # Set versions and platforms
-ARG R_VERSION=4.0.2
+ARG R_VERSION=4.1.0
 ARG MINICONDA_VERSION=py37_4.8.3
 ARG PYTHON_VERSION=3.9.5
 ARG DRIVERS_VERSION=1.8.0-1
