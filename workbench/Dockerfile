@@ -22,6 +22,7 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
         libsm6 \
         libssl1.0.0 \
         openssl \
+        libnss-sss \
         libssl-dev \
         libuser \
         libuser1-dev \
@@ -140,6 +141,7 @@ RUN rstudio-server install-vs-code /opt/code-server/
 
 # Copy config
 COPY conf/* /etc/rstudio/
+COPY sssd.conf /etc/sssd/sssd.conf
 
 # Create log dir
 RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
