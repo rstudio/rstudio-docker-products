@@ -22,6 +22,7 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
         libsm6 \
         libssl1.0.0 \
         openssl \
+        libnss-sss \
         libssl-dev \
         libuser \
         libuser1-dev \
