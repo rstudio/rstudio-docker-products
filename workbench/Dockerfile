@@ -140,6 +140,7 @@ RUN rstudio-server install-vs-code /opt/code-server/
 
 # Copy config
 COPY conf/* /etc/rstudio/
+COPY sssd.conf /etc/sssd/sssd.conf
 
 # Create log dir
 RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
