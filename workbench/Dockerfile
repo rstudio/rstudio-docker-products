@@ -146,6 +146,7 @@ COPY sssd.conf /etc/sssd/sssd.conf
 # Create log dir
 RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
     chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor && \
+    chmod 600 /etc/sssd/sssd.conf && \
     mkdir -p /startup/custom/ && \
     echo -e '\n# allow home directory creation\nsession required pam_mkhomedir.so skel=/etc/skel umask=0022' >> /etc/pam.d/common-session
 
