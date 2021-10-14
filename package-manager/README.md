@@ -56,7 +56,7 @@ Be sure the config file has these fields:
 - `Server.DataDir` set to `/data/`
 - `HTTP.Listen`
 
-See a complete example of that file at `pacakge-manager/rstudio-connect.gcfg`.
+See a complete example of that file at `package-manager/rstudio-pm.gcfg`.
 
 #### Persistent Data
 
