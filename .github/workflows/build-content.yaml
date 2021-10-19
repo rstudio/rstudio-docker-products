@@ -1,4 +1,9 @@
-on: push
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
 
 name: build/push RStudio Content Images
 jobs:
