@@ -1,3 +1,17 @@
+# 2021.09.0
+
+- **BREAKING**: Rename `RSP_` variables to `RSW_`. Rename RStudio Server Pro to RStudio Workbench
+- **BREAKING**: Change `R_VERSION` to 4.1.0
+- **BREAKING**: Change `PYTHON_VERSION` to 3.9.5
+- **BREAKING**: R and Python packages are no longer installed by default in session images.
+
+We have removed R and Python packages from the session image.  This should:
+- reduce the image build time and size
+- make it easier for data scientists to develop reproducible environments
+- eliminate conflicts between system libraries and subsequent user updates
+
+If the removal of these system libraries introduces some problems for you, please file an issue.
+
 # 1.4.1717-3
 
 ## Overview

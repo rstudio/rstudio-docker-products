@@ -17,18 +17,23 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
         git \
         libcap2 \
         libglib2.0-0 \
+        libpam-sss \
         libpq5 \
         libsm6 \
         libssl1.0.0 \
         openssl \
+        libnss-sss \
         libssl-dev \
         libuser \
         libuser1-dev \
         libxext6 \
         libxrender1 \
+        oddjob-mkhomedir \
         openssh-client \
         rrdtool \
-	sudo \
+        sssd \
+        sudo \
+        supervisor \
         wget \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
@@ -59,7 +64,7 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.s
     /opt/python/jupyter/bin/jupyter kernelspec remove python3 -f && \
     /opt/python/jupyter/bin/pip uninstall -y ipykernel
 
-# Install RSP/RSC Notebook Extensions --------------------#
+# Install RSW/RSC Notebook Extensions --------------------#
 
 RUN /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter && \
     /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter && \
@@ -94,36 +99,36 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64
     /opt/python/${PYTHON_VERSION_ALT}/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}"
 
 # Runtime settings ------------------------------------------------------------#
-ARG TINI_VERSION=0.18.0
-RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini && \
-    chmod +x /usr/local/bin/tini
-
 RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh && \
     chmod +x /usr/local/bin/wait-for-it.sh
 
 # Set default env values
-ENV RSP_LICENSE ""
-ENV RSP_LICENSE_SERVER ""
-ENV RSP_TESTUSER rstudio
-ENV RSP_TESTUSER_PASSWD rstudio
-ENV RSP_TESTUSER_UID 10000
-ENV RSP_LAUNCHER true
-ENV RSP_LAUNCHER_TIMEOUT 10
+ENV RSW_LICENSE ""
+ENV RSW_LICENSE_SERVER ""
+ENV RSW_TESTUSER rstudio
+ENV RSW_TESTUSER_PASSWD rstudio
+ENV RSW_TESTUSER_UID 10000
+ENV RSW_LAUNCHER true
+ENV RSW_LAUNCHER_TIMEOUT 10
 ENV DIAGNOSTIC_DIR /var/log/rstudio
 ENV DIAGNOSTIC_ENABLE false
 ENV DIAGNOSTIC_ONLY false
 
-# Copy startup
+# Copy config and startup
+COPY startup/* /startup/base/
+COPY startup-launcher/* /startup/launcher/
+COPY startup-user-provisioning/* /startup/user-provisioning/
+COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
 
-# Install RStudio Server Pro --------------------------------------------------#
-ARG RSP_VERSION=1.4.1717-3
-ARG RSP_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
-ARG RSP_NAME=rstudio-workbench
+# Install RStudio Workbench --------------------------------------------------#
+ARG RSW_VERSION=2021.09.0+351.pro6
+ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
+ARG RSW_NAME=rstudio-workbench
 RUN apt-get update --fix-missing \
-    && RSP_VERSION_URL=`echo -n "${RSP_VERSION}" | sed 's/+/%2B/g'` \
-    && curl -o rstudio-workbench.deb ${RSP_DOWNLOAD_URL}/${RSP_NAME}-${RSP_VERSION_URL}-amd64.deb \
+    && RSW_VERSION_URL=`echo -n "${RSW_VERSION}" | sed 's/+/%2b/g'` \
+    && curl -o rstudio-workbench.deb ${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-amd64.deb \
     && gdebi --non-interactive rstudio-workbench.deb \
     && rm rstudio-workbench.deb \
     && apt-get clean \
@@ -136,13 +141,17 @@ RUN rstudio-server install-vs-code /opt/code-server/
 
 # Copy config
 COPY conf/* /etc/rstudio/
+COPY sssd.conf /etc/sssd/sssd.conf
 
 # Create log dir
 RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
-    chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor
+    chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor && \
+    chmod 600 /etc/sssd/sssd.conf && \
+    mkdir -p /startup/custom/ && \
+    echo '\n# allow home directory creation\nsession required pam_mkhomedir.so skel=/etc/skel umask=0022' >> /etc/pam.d/common-session
 
 EXPOSE 8787/tcp
 EXPOSE 5559/tcp
 
-ENTRYPOINT ["tini", "--"]
-CMD ["/usr/local/bin/startup.sh"]
+ENTRYPOINT []
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]

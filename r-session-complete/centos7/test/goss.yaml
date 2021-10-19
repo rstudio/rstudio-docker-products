@@ -13,18 +13,9 @@ file:
     exists: false
 
 command:
-  "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/3.7.7/bin/jupyter nbconvert --to notebook --stdin --stdout":
+  "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/3.9.5/bin/jupyter nbconvert --to notebook --stdin --stdout":
     title: jupyter_works
     exit-status: 0
-
-# Ensure all R Packages are installed
- {{ $pkgs := .Vars.RPackages }}
-  /opt/R/{{ .Env.R_VERSION }}/bin/R --slave -e 'library()' | cut -f 1 -d ' ' | grep -v '^Packages$' | grep -v '^$':
-    exit-status: 0
-    stdout:
-      {{ range $pkg := $pkgs }}
-      - {{ $pkg }}
-      {{end}}
 
 # Ensure correct R version
   "/opt/R/{{.Env.R_VERSION}}/bin/R --version":

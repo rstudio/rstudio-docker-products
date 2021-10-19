@@ -1,23 +1,23 @@
 version: "3.5"
 
 services:
-  rstudio-server-pro:
-    container_name: rstudio-server-pro
+  rstudio-workbench:
+    container_name: rstudio-workbench
     build:
-      context: ./server-pro
+      context: ./workbench
       args:
-        RSP_VERSION: 1.4.1717-3
-    image: rstudio/rstudio-server-pro:1.4.1717-3
+        RSW_VERSION: 2021.09.0+351.pro6
+    image: rstudio/rstudio-workbench:2021.09.0-351.pro6
     privileged: true
     environment:
-      RSP_LICENSE: ${RSP_LICENSE}
-      LICENSE_SERVER: ${RSP_LICENSE_SERVER}
+      RSW_LICENSE: ${RSW_LICENSE}
+      LICENSE_SERVER: ${RSW_LICENSE_SERVER}
     ports:
       - 8787:8787
       - 5559:5559
     volumes:
-      - ./server-pro/conf/:/etc/rstudio
-      - ./data/rsp:/home
+      - ./workbench/conf/:/etc/rstudio
+      - ./data/rsw:/home
 
   rstudio-connect:
     container_name: rstudio-connect

@@ -1,10 +1,17 @@
 #!/bin/bash
+set -xe
+
+RSW_TIMEOUT=${RSW_TIMEOUT:-15}
+
+touch /tmp/startup.log
+trap 'err=$?; echo >&2 "run_tests.sh encountered an error: $err"; cat /tmp/startup.log; exit $err' ERR
 
 # start rstudio-server
 echo "--> Starting RStudio Workbench"
-tini -- /usr/local/bin/startup.sh >/tmp/startup.log 2>&1 &
-# TODO: make this wait more dynamically for the service to start
-sleep 5
+/usr/bin/supervisord -c /etc/supervisor/supervisord.conf > /tmp/startup.log 2>&1 &
+
+echo "--> Waiting for workbench to startup... with RSW_TIMEOUT: $RSW_TIMEOUT"
+wait-for-it.sh localhost:8787 -t $RSW_TIMEOUT
 echo "--> Startup complete"
 
 GOSS_FILE=${GOSS_FILE:-/tmp/goss.yaml}

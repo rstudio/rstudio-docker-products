@@ -13,6 +13,26 @@ package:
   rstudio-server:
     installed: true
 
+port:
+  tcp:8787:
+    listening: true
+    ip:
+    - 0.0.0.0
+    skip: false
+  tcp:5559:
+    listening: true
+    ip:
+    - 127.0.0.1
+    skip: false
+
+process:
+  rserver:
+    running: true
+    skip: false
+  rstudio-launche:
+    running: true
+    skip: false
+
 file:
   /etc/rstudio-server/license.lic:
     # currently does not exist
@@ -57,20 +77,29 @@ file:
     exists: true
     contains:
     - "!Error reading /etc/rstudio/rserver.conf:"
+  /etc/pam.d/common-session:
+    exists: true
+    contains:
+      - "/^session required pam_mkhomedir.so skel=/etc/skel umask=0022$/"
+  /etc/sssd/sssd.conf:
+    exists: true
+    owner: root
+    group: root
+    mode: "0600"
 
 command:
   "su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'":
-    title: server-pro_monitor_log_file_creates
+    title: workbench_monitor_log_file_creates
     exit-status: 0
   "touch /var/log/rstudio-server.log":
-    title: server-pro_server_log_creates
+    title: workbench_server_log_creates
     exit-status: 0
 # Check product version
   "rstudio-server version":
-    title: server-pro_version_matches
+    title: workbench_version_matches
     exit-status: 0
     stdout: [
-       "{{ .Env.RSP_VERSION }}",
+       "{{ .Env.RSW_VERSION }}",
        "Workbench"
      ]
   "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/jupyter/bin/jupyter nbconvert --to notebook --stdin --stdout":
@@ -83,10 +112,6 @@ command:
     stdout: [
         "{{.Env.PYTHON_VERSION_ALT}}"
     ]
-# Ensure rstudio-server is running
-  "pgrep rserver":
-    title: rsp_running
-    exit-status: 0
 # Ensure correct python version
   "/opt/python/3.9.5/bin/python --version":
     title: python_version_matches
