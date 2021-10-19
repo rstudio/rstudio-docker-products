@@ -1,4 +1,4 @@
-# dev
+# 2021.09.0
 
 - **BREAKING**: Rename `RSP_` variables to `RSW_`. Rename RStudio Server Pro to RStudio Workbench
 - **BREAKING**: Change `R_VERSION` to 4.1.0

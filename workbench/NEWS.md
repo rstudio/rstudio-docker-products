@@ -1,4 +1,4 @@
-# dev
+# 2021.09.0
 
 - **BREAKING**: rename environment variables to use `RSW_` prefix instead of `RSP_` prefix
   - i.e. `RSP_LICENSE` is now `RSW_LICENSE`

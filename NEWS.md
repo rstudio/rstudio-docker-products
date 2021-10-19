@@ -5,7 +5,7 @@ changed in each image.
 
 This file only captures pervasive, repository-wide changes.
 
-# 2021-07-30
+# 2021-10
 
 - *BREAKING*: Rstudio Server Pro has Been Renamed to `Rstudio Workbench`
   - Important environment variables have been renamed from `RSP_` prefix to
