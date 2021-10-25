@@ -29,7 +29,7 @@ ARG RSW_NAME=rstudio-workbench
 ARG RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64
 RUN apt-get update --fix-missing \
     && apt-get install -y gdebi-core \
-    && RSW_VERSION_URL=`echo -n "${RSW_VERSION}" | sed 's/+/%2B/g'` \
+    && RSW_VERSION_URL=`echo -n "${RSW_VERSION}" | sed 's/+/-/g'` \
     && curl -o rstudio-workbench.deb ${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-amd64.deb \
     && gdebi --non-interactive rstudio-workbench.deb \
     && rm rstudio-workbench.deb \
