@@ -13,6 +13,11 @@ package:
   rstudio-connect:
     installed: true
 
+port:
+  tcp6:3939:
+    listening: true
+    skip: false
+
 file:
   /etc/rstudio-connect/license.lic:
     # Currently does not exist
@@ -50,10 +55,6 @@ command:
     stdout: [
        "{{ .Env.RSC_VERSION }}"
     ]
-# Checks if connect is running
-  "pgrep connect":
-    title: connect_running
-    exit-status: 0
 # Ensure correct R version
   "/opt/R/{{ .Env.R_VERSION }}/bin/R --version":
     title: r_version_match
