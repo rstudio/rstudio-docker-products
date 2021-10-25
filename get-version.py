@@ -71,21 +71,18 @@ def clean_product_selection(product: str) -> str:
 
 
 def rstudio_workbench_daily():
-    daily_url = "https://dailies.rstudio.com/rstudioserver/pro/bionic/x86_64/"
-    raw_daily = requests.get(daily_url).content
+    version_json = download_json("https://dailies.rstudio.com/rstudio/latest/index.json")
+    return version_json['products']['workbench']['platforms']['bionic']['version']
 
-    version_regex = re.compile('rstudio-workbench-([0-9\.\-\+\w]*)-amd64.deb')
-    version_match = version_regex.search(str(raw_daily))
 
-    # group 0 = whole match, group 1 = first capture group
-    return version_match.group(1)
+def download_json(url):
+    raw_json = requests.get(url).content
+    downloaded_json = json.loads(raw_json)
+    return downloaded_json
 
 
 def get_downloads_json():
-    downloads_json_url = "https://rstudio.com/wp-content/downloads.json"
-    raw_downloads_json = requests.get(downloads_json_url).content
-    downloads_json = json.loads(raw_downloads_json)
-    return downloads_json
+    return download_json("https://rstudio.com/wp-content/downloads.json")
 
 
 def rstudio_workbench_preview():
@@ -134,13 +131,16 @@ def get_actual_release_version(product):
 
 
 def rstudio_connect_daily():
-    latest_url = "https://cdn.rstudio.com/connect/latest-packages.json"
-
-    raw_content = requests.get(latest_url).content
-    connect_build_info = json.loads(raw_content)
+    connect_build_info = download_json("https://cdn.rstudio.com/connect/latest-packages.json")
 
     # just grab the first... all we need is a version string... (for now)
     return connect_build_info['packages'][0]['version']
+
+
+def rstudio_pm_daily():
+    latest_url = "https://cdn.rstudio.com/package-manager/ubuntu/amd64/rstudio-pm-master-latest.txt"
+    raw_version = requests.get(latest_url).content
+    return raw_version.decode('utf-8').replace('\n','')
 
 
 if __name__ == "__main__":
@@ -241,13 +241,7 @@ if __name__ == "__main__":
         if version_type == 'release':
             version = get_release_version(selected_product, local)
         elif version_type == 'daily':
-            # TODO: figure out how to use the `master-latest.deb` file
-            print(
-                "WARNING: RStudio Package Manager pretends to have a daily version. " +
-                "But it is really just the true-latest released version for now",
-                file=sys.stderr
-            )
-            version = get_release_version(selected_product, False)
+            version = rstudio_pm_daily()
         else:
             print(
                 f"ERROR: RStudio Package Manager does not have the notion of a '{version_type}' version",
