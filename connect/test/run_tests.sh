@@ -3,7 +3,9 @@
 # start connect
 trap 'err=$?; echo >&2 "run_tests.sh encountered an error: $err"; cat /tmp/startup.log; exit $err' ERR
 
+echo '--> Starting connect'
 tini -- /usr/local/bin/startup.sh >/tmp/startup.log 2>&1 &
+echo '--> Waiting for startup'
 sleep 15
 
 echo '--> Startup complete'
