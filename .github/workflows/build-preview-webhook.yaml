@@ -31,7 +31,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    name: build-${{ matrix.config.tag_prefix}}${{ matrix.config.product}}
+    name: build-${{ matrix.config.tag_prefix }}${{ matrix.config.product }}:${{ matrix.config.version }}
     needs: matrix
     if: ${{ github.event.inputs.version == 'auto' || github.event.inputs.which != 'all' }}
 
