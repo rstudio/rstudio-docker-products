@@ -46,6 +46,7 @@ def clean_product_selection(product: str) -> str:
     - Remove -preview suffix
     - Convert r-session prefixed products to workbench
     - Convert connect- prefixed products to connect
+    - Convert rsw -> workbench, rsc -> connect, rspm -> package-manager
 
     :rtype: str
     :param product: The current product being requested
@@ -56,6 +57,18 @@ def clean_product_selection(product: str) -> str:
 
     suffix = re.compile('-preview$')
     product = suffix.sub('', product)
+
+    rsw = re.compile('^rsw$')
+    if rsw.match(product):
+      product = 'workbench'
+
+    rsc = re.compile('^rsc$')
+    if rsc.match(product):
+      product = 'connect'
+
+    rspm = re.compile('^rspm$')
+    if rspm.match(product):
+      product = 'package-manager'
 
     session_pref = re.compile('^r-session')
     if session_pref.match(product):
