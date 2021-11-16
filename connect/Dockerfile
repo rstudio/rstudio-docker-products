@@ -14,7 +14,6 @@ RUN apt-get update --fix-missing \
     && apt-get install -y --no-install-recommends \
         bzip2 \
         ca-certificates \
-        default-jdk \
         gdal-bin \
         gdebi-core \
         git \
