@@ -12,17 +12,53 @@ ENV DEBIAN_FRONTEND=noninteractive
 # hadolint ignore=DL3008,DL3009
 RUN apt-get update --fix-missing \
     && apt-get install -y --no-install-recommends \
-        wget \
         bzip2 \
         ca-certificates \
-        libglib2.0-0 \
-        libxext6 \
-        libsm6 \
-        libxrender1 \
+        gdal-bin \
         gdebi-core \
+        git \
+        gsfonts \
+        imagemagick \
+        libcairo2-dev \
+        libcurl4-openssl-dev \
+        libfontconfig1-dev \
+        libfreetype6-dev \
+        libfribidi-dev \
+        libgdal-dev \
+        libgeos-dev \
+        libgl1-mesa-dev \
+        libglib2.0-0 \
+        libglpk-dev \
+        libglu1-mesa-dev \
+        libgmp3-dev \
+        libharfbuzz-dev \
+        libicu-dev \
+        libjpeg-dev \
+        libmagick++-dev \
+        libmysqlclient-dev \
+        libpng-dev \
+        libproj-dev \
+        libsm6 \
+        libsodium-dev \
+        libssh2-1-dev \
+        libssl-dev \
         libssl1.0.0 \
-        libssl-dev git \
-	sudo \
+        libtiff-dev \
+        libudunits2-dev \
+        libv8-dev \
+        libxext6 \
+        libxml2-dev \
+        libxrender1 \
+        make \
+        perl \
+        sudo \
+        tcl \
+        tk \
+        tk-dev \
+        tk-table \
+        unixodbc-dev \
+        wget \
+        zlib1g-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

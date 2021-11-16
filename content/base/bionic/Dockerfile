@@ -27,6 +27,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
         default-jdk \
         gdal-bin \
         git \
+        gsfonts \
         imagemagick \
         libcairo2-dev \
         libcurl4-openssl-dev \
@@ -53,6 +54,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
         libtiff-dev \
         libudunits2-dev \
         libv8-dev \
+        libicu-dev \
         libxml2-dev \
         make \
         perl \
