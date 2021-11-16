@@ -1,3 +1,9 @@
+# 2021.10.0
+
+- Add a bunch of system dependencies. This makes the image build bigger (~4GB),
+  but ensures that R and Python content / packages are much more likely to
+  build and run without error
+
 # 2021.08.0
 
 - WARNING: this Dockerfile now only works with `YYYY.MM.PATCH` (this is because
