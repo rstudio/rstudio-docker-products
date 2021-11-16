@@ -52,7 +52,7 @@ RUN apt-get update --fix-missing \
         libxrender1 \
         make \
         perl \
-	    sudo \
+        sudo \
         tcl \
         tk \
         tk-dev \
