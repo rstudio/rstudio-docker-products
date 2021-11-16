@@ -71,6 +71,11 @@ jobs:
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
+      - name: Show image size
+        run: |
+          docker image ls
+
+
   build-pro:
     runs-on: ubuntu-latest
     needs: [ matrix, build ]
@@ -123,6 +128,10 @@ jobs:
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
+
+      - name: Show image size
+        run: |
+          docker image ls
 
   push:
     runs-on: ubuntu-latest
