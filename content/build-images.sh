@@ -28,6 +28,15 @@ build() {
     make ${1} R_VERSION=4.0.5 PYTHON_VERSION=3.9.2
     make ${1} R_VERSION=4.1.0 PYTHON_VERSION=3.8.8
     make ${1} R_VERSION=4.1.0 PYTHON_VERSION=3.9.2
+
+    # Additional from server usage analysis
+    make ${1} R_VERSION=4.0.5 PYTHON_VERSION=3.7.10
+    make ${1} R_VERSION=4.0.5 PYTHON_VERSION=3.6.13
+    make ${1} R_VERSION=3.6.3 PYTHON_VERSION=3.6.13
+    make ${1} R_VERSION=3.6.3 PYTHON_VERSION=2.7.18
+    make ${1} R_VERSION=3.5.3 PYTHON_VERSION=2.7.18
+    make ${1} R_VERSION=3.4.4 PYTHON_VERSION=3.7.10
+    make ${1} R_VERSION=3.3.3 PYTHON_VERSION=3.6.13
 }
 
 # build content-base
