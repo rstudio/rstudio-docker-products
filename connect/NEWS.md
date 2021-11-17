@@ -1,10 +1,8 @@
-# 2021.11.0
+# 2021.10.0
 
 - Add a bunch of system dependencies. This makes the image build bigger (~4GB),
   but ensures that R and Python content / packages are much more likely to
   build and run without error
-
-- Add additional content images.
 
 # 2021.08.0
 
