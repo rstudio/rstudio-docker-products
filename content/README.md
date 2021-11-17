@@ -34,27 +34,38 @@ This command generates a single YAML for the available `rstudio/content-base`
 and `rstudio/content-pro` images:
 
 ```console
-./scripts/build-image-yaml.sh \
-    rstudio/content-base:r3.1.3-py2.7.18-bionic \
-    rstudio/content-base:r3.2.5-py2.7.18-bionic \
-    rstudio/content-base:r3.3.3-py3.6.13-bionic \
-    rstudio/content-base:r3.4.4-py3.6.13-bionic \
-    rstudio/content-base:r3.5.3-py3.7.10-bionic \
-    rstudio/content-base:r3.6.3-py3.8.8-bionic \
-    rstudio/content-base:r4.0.5-py3.8.8-bionic \
-    rstudio/content-base:r4.0.5-py3.9.2-bionic \
-    rstudio/content-base:r4.1.0-py3.8.8-bionic \
-    rstudio/content-base:r4.1.0-py3.9.2-bionic \
-    rstudio/content-pro:r3.1.3-py2.7.18-bionic \
-    rstudio/content-pro:r3.2.5-py2.7.18-bionic \
-    rstudio/content-pro:r3.3.3-py3.6.13-bionic \
-    rstudio/content-pro:r3.4.4-py3.6.13-bionic \
-    rstudio/content-pro:r3.5.3-py3.7.10-bionic \
-    rstudio/content-pro:r3.6.3-py3.8.8-bionic \
-    rstudio/content-pro:r4.0.5-py3.8.8-bionic \
-    rstudio/content-pro:r4.0.5-py3.9.2-bionic \
-    rstudio/content-pro:r4.1.0-py3.8.8-bionic \
-    rstudio/content-pro:r4.1.0-py3.9.2-bionic > runtime.yaml
+./scripts/build-image-yaml.sh rstudio/content-base:r3.1.3-py2.7.18-bionic \
+		rstudio/content-base:r3.2.5-py2.7.18-bionic \
+		rstudio/content-base:r3.3.3-py3.6.13-bionic \
+		rstudio/content-base:r3.4.4-py3.6.13-bionic \
+		rstudio/content-base:r3.4.4-py3.7.10-bionic \
+		rstudio/content-base:r3.5.3-py2.7.18-bionic \
+		rstudio/content-base:r3.5.3-py3.7.10-bionic \
+		rstudio/content-base:r3.6.3-py2.7.18-bionic \
+		rstudio/content-base:r3.6.3-py3.6.13-bionic \
+		rstudio/content-base:r3.6.3-py3.8.8-bionic  \
+		rstudio/content-base:r4.0.5-py3.6.13-bionic \
+		rstudio/content-base:r4.0.5-py3.7.10-bionic \
+		rstudio/content-base:r4.0.5-py3.8.8-bionic  \
+		rstudio/content-base:r4.0.5-py3.9.2-bionic  \
+		rstudio/content-base:r4.1.0-py3.8.8-bionic  \
+		rstudio/content-base:r4.1.0-py3.9.2-bionic  \
+		rstudio/content-pro:r3.1.3-py2.7.18-bionic \
+		rstudio/content-pro:r3.2.5-py2.7.18-bionic \
+		rstudio/content-pro:r3.3.3-py3.6.13-bionic \
+		rstudio/content-pro:r3.4.4-py3.6.13-bionic \
+		rstudio/content-pro:r3.4.4-py3.7.10-bionic \
+		rstudio/content-pro:r3.5.3-py2.7.18-bionic \
+		rstudio/content-pro:r3.5.3-py3.7.10-bionic \
+		rstudio/content-pro:r3.6.3-py2.7.18-bionic \
+		rstudio/content-pro:r3.6.3-py3.6.13-bionic \
+		rstudio/content-pro:r3.6.3-py3.8.8-bionic  \
+		rstudio/content-pro:r4.0.5-py3.6.13-bionic \
+		rstudio/content-pro:r4.0.5-py3.7.10-bionic \
+		rstudio/content-pro:r4.0.5-py3.8.8-bionic  \
+		rstudio/content-pro:r4.0.5-py3.9.2-bionic  \
+		rstudio/content-pro:r4.1.0-py3.8.8-bionic  \
+		rstudio/content-pro:r4.1.0-py3.9.2-bionic  > runtime.yaml
 ```
 
 
