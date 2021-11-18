@@ -71,6 +71,28 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64
 
 ENV PATH="/opt/python/${PYTHON_VERSION}/bin:${PATH}"
 
+# Install dependencies for using pyenv ----------------------------------------#
+
+RUN apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    make \
+    build-essential \
+    libssl-dev \
+    zlib1g-dev \
+    libbz2-dev \
+    libreadline-dev \
+    libsqlite3-dev \
+    wget \
+    curl \
+    llvm \
+    libncursesw5-dev \
+    xz-utils \
+    tk-dev \
+    libxml2-dev \
+    libxmlsec1-dev \
+    libffi-dev \
+    liblzma-dev
+
 # Install Jupyter Notebook and RSW/RSC Notebook Extensions and Packages -------#
 
 RUN /opt/python/${PYTHON_VERSION}/bin/pip install \
