@@ -62,12 +62,6 @@ jobs:
             R_VERSION=${{ matrix.config.r }}
             PYTHON_VERSION=${{ matrix.config.py }}
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}-image
-          path: /tmp/r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}-image.tar
-
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
