@@ -30,8 +30,7 @@ This command produces the YAML for a single image.
 ./scripts/build-image-yaml.sh rstudio/content-base:r3.6.3-py3.8.8-bionic > runtime.yaml
 ```
 
-This command generates a single YAML for the available `rstudio/content-base`
-and `rstudio/content-pro` images:
+This command generates a single YAML for the available `rstudio/content-base` images:
 
 ```console
 ./scripts/build-image-yaml.sh rstudio/content-base:r3.1.3-py2.7.18-bionic \
@@ -49,8 +48,12 @@ and `rstudio/content-pro` images:
 		rstudio/content-base:r4.0.5-py3.8.8-bionic  \
 		rstudio/content-base:r4.0.5-py3.9.2-bionic  \
 		rstudio/content-base:r4.1.0-py3.8.8-bionic  \
-		rstudio/content-base:r4.1.0-py3.9.2-bionic  \
-		rstudio/content-pro:r3.1.3-py2.7.18-bionic \
+		rstudio/content-base:r4.1.0-py3.9.2-bionic  > runtime.yaml
+```
+This command generates a single YAML for the available `rstudio/content-pro` images:
+
+```console
+./scripts/build-image-yaml.sh rstudio/content-pro:r3.1.3-py2.7.18-bionic \
 		rstudio/content-pro:r3.2.5-py2.7.18-bionic \
 		rstudio/content-pro:r3.3.3-py3.6.13-bionic \
 		rstudio/content-pro:r3.4.4-py3.6.13-bionic \
@@ -68,7 +71,6 @@ and `rstudio/content-pro` images:
 		rstudio/content-pro:r4.1.0-py3.9.2-bionic  > runtime.yaml
 ```
 
-
 ## Build matrix
 
 The json defined in `matrix.json` is loaded by the Github Action to
@@ -77,12 +79,14 @@ our `content-base` and `content-pro` images. To add a new R and Python
 version combination, simply update the matrix and the Github Action will publish
 the new image combinations to our registries upon the next push to `main`
 
+**NOTE** This combination should be kept in sync with the `build-images.sh` script, as the
+file `matrix.json` is used by Github Actions as described above, but the `build-images.sh` script
+is used when the developer is validating the ability to build the new images locally.
 
 ## Github Actions
 
 Because of the dependency on the content-base images, the github actions that build the pro images
 depend on completion of the base image builds in [build-content](../.github/workflows/build-content.yaml)
-
 
 # Licensing
 
