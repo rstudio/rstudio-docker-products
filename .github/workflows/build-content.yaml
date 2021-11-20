@@ -57,7 +57,8 @@ jobs:
             ghcr.io/rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-          outputs: type=docker,dest=/tmp/r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}-image.tar
+          load: true
+          push: false
           build-args: |
             R_VERSION=${{ matrix.config.r }}
             PYTHON_VERSION=${{ matrix.config.py }}
@@ -129,7 +130,8 @@ jobs:
             ghcr.io/rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
-          outputs: type=docker,dest=/tmp/pro-r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}-image.tar
+          load: true
+          push: false
           build-args: |
             R_VERSION=${{ matrix.config.r }}
             PYTHON_VERSION=${{ matrix.config.py }}
