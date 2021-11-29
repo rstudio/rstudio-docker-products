@@ -1,5 +1,5 @@
-ARG R_VERSION=3.6
-FROM rstudio/r-base:${R_VERSION}-bionic
+ARG R_VERSION=3.6.3
+FROM rstudio/r-base:${R_VERSION}-focal
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 # Locale configuration --------------------------------------------------------#
@@ -11,38 +11,38 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # hadolint ignore=DL3008,DL3009
 RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
-        bzip2 \
-        ca-certificates \
-        gdebi-core \
-        git \
-        libcap2 \
-        libglib2.0-0 \
-        libpam-sss \
-        libpq5 \
-        libsm6 \
-        libssl1.0.0 \
-        openssl \
-        libnss-sss \
-        libssl-dev \
-        libuser \
-        libuser1-dev \
-        libxext6 \
-        libxrender1 \
-        oddjob-mkhomedir \
-        openssh-client \
-        rrdtool \
-        sssd \
-        sudo \
-        supervisor \
-        wget \
+    bzip2 \
+    ca-certificates \
+    gdebi-core \
+    git \
+    libcap2 \
+    libglib2.0-0 \
+    libpam-sss \
+    libpq5 \
+    libsm6 \
+    libssl1.1 \
+    openssl \
+    libnss-sss \
+    libssl-dev \
+    libuser \
+    libuser1-dev \
+    libxext6 \
+    libxrender1 \
+    oddjob-mkhomedir \
+    openssh-client \
+    rrdtool \
+    sssd \
+    sudo \
+    supervisor \
+    wget \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Add another R version -------------------------------------------------------#
 
-ARG R_VERSION_ALT=4.1.0
+ARG R_VERSION_ALT=4.1.2
 RUN apt-get update -qq && \
-    curl -O https://cdn.rstudio.com/r/ubuntu-1804/pkgs/r-${R_VERSION_ALT}_1_amd64.deb && \
+    curl -O https://cdn.rstudio.com/r/ubuntu-2004/pkgs/r-${R_VERSION_ALT}_1_amd64.deb && \
     DEBIAN_FRONTEND=noninteractive gdebi --non-interactive r-${R_VERSION_ALT}_1_amd64.deb && \
     rm -f ./r-${R_VERSION_ALT}_1_amd64.deb \
     && apt-get clean \
@@ -79,9 +79,9 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64
     bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION} && \
     /opt/python/${PYTHON_VERSION}/bin/conda install -y python==${PYTHON_VERSION} && \
     /opt/python/${PYTHON_VERSION}/bin/pip install \
-        ipykernel \
-        virtualenv \
-        && \
+    ipykernel \
+    virtualenv \
+    && \
     rm -rf Miniconda3-*-Linux-x86_64.sh && \
     /opt/python/${PYTHON_VERSION}/bin/python -m ipykernel install --name py${PYTHON_VERSION} --display-name "Python ${PYTHON_VERSION}"
 
@@ -92,9 +92,9 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64
     bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION_ALT} && \
     /opt/python/${PYTHON_VERSION_ALT}/bin/conda install -y python==${PYTHON_VERSION_ALT} && \
     /opt/python/${PYTHON_VERSION_ALT}/bin/pip install \
-        ipykernel \
-        virtualenv \
-        && \
+    ipykernel \
+    virtualenv \
+    && \
     rm -rf Miniconda3-*-Linux-x86_64.sh && \
     /opt/python/${PYTHON_VERSION_ALT}/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}"
 

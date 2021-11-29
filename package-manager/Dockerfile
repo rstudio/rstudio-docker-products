@@ -1,5 +1,5 @@
-ARG R_VERSION=3.6.2
-FROM rstudio/r-base:${R_VERSION}-bionic
+ARG R_VERSION=3.6.3
+FROM rstudio/r-base:${R_VERSION}-focal
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 # Locale configuration --------------------------------------------------------#
@@ -12,10 +12,10 @@ ENV DEBIAN_FRONTEND=noninteractive
 # hadolint ignore=DL3008,DL3009
 RUN apt-get update --fix-missing \
     && apt-get install -y --no-install-recommends \
-        gdebi-core \
-        libssl1.0.0 \
-        libssl-dev \
-	sudo \
+    gdebi-core \
+    libssl1.1 \
+    libssl-dev \
+    sudo \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -23,7 +23,7 @@ RUN mkdir -p /var/run/rstudio-pm
 ENV PATH /opt/rstudio-pm/bin:$PATH
 
 # Runtime settings ------------------------------------------------------------#
-ARG TINI_VERSION=0.18.0
+ARG TINI_VERSION=0.19.0
 RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini && \
     chmod +x /usr/local/bin/tini
 

@@ -1,5 +1,5 @@
-R_VERSION ?= 3.6.2
-R_VERSION_ALT ?= 4.1.0
+R_VERSION ?= 3.6.3
+R_VERSION_ALT ?= 4.1.2
 
 PYTHON_VERSION ?= 3.9.5
 PYTHON_VERSION_ALT ?= 3.8.10
@@ -89,7 +89,7 @@ rsw-hook:
 
 test-rsw: test-workbench
 test-workbench:
-	cd ./workbench && IMAGE_NAME=rstudio/rstudio-workbench$(RSW_VERSION) docker-compose -f docker-compose.test.yml run sut
+	cd ./workbench && IMAGE_NAME=rstudio/rstudio-workbench:$(RSW_TAG_VERSION) docker-compose -f docker-compose.test.yml run sut
 test-rsw-i: test-workbench-i
 test-workbench-i:
 	cd ./workbench && IMAGE_NAME=rstudio/rstudio-workbench:$(RSW_VERSION) docker-compose -f docker-compose.test.yml run sut bash
@@ -156,7 +156,7 @@ run-package-manager:  ## Run RSPM container
 		rstudio/rstudio-package-manager:$(RSPM_VERSION) $(CMD)
 
 
-test-all: rspm test-rspm rsc test-rsc rsp test-rsw
+test-all: rspm test-rspm rsc test-rsc rsw test-rsw
 
 
 float:

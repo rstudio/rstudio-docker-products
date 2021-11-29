@@ -1,5 +1,5 @@
-ARG R_VERSION=3.6.2
-FROM rstudio/r-base:${R_VERSION}-bionic
+ARG R_VERSION=3.6.3
+FROM rstudio/r-base:${R_VERSION}-focal
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 # Locale configuration --------------------------------------------------------#
@@ -12,61 +12,61 @@ ENV DEBIAN_FRONTEND=noninteractive
 # hadolint ignore=DL3008,DL3009
 RUN apt-get update --fix-missing \
     && apt-get install -y --no-install-recommends \
-        bzip2 \
-        ca-certificates \
-        gdal-bin \
-        gdebi-core \
-        git \
-        gsfonts \
-        imagemagick \
-        libcairo2-dev \
-        libcurl4-openssl-dev \
-        libfontconfig1-dev \
-        libfreetype6-dev \
-        libfribidi-dev \
-        libgdal-dev \
-        libgeos-dev \
-        libgl1-mesa-dev \
-        libglib2.0-0 \
-        libglpk-dev \
-        libglu1-mesa-dev \
-        libgmp3-dev \
-        libharfbuzz-dev \
-        libicu-dev \
-        libjpeg-dev \
-        libmagick++-dev \
-        libmysqlclient-dev \
-        libpng-dev \
-        libproj-dev \
-        libsm6 \
-        libsodium-dev \
-        libssh2-1-dev \
-        libssl-dev \
-        libssl1.0.0 \
-        libtiff-dev \
-        libudunits2-dev \
-        libv8-dev \
-        libxext6 \
-        libxml2-dev \
-        libxrender1 \
-        make \
-        perl \
-        sudo \
-        tcl \
-        tk \
-        tk-dev \
-        tk-table \
-        unixodbc-dev \
-        wget \
-        zlib1g-dev \
+    bzip2 \
+    ca-certificates \
+    gdal-bin \
+    gdebi-core \
+    git \
+    gsfonts \
+    imagemagick \
+    libcairo2-dev \
+    libcurl4-openssl-dev \
+    libfontconfig1-dev \
+    libfreetype6-dev \
+    libfribidi-dev \
+    libgdal-dev \
+    libgeos-dev \
+    libgl1-mesa-dev \
+    libglib2.0-0 \
+    libglpk-dev \
+    libglu1-mesa-dev \
+    libgmp3-dev \
+    libharfbuzz-dev \
+    libicu-dev \
+    libjpeg-dev \
+    libmagick++-dev \
+    libmysqlclient-dev \
+    libpng-dev \
+    libproj-dev \
+    libsm6 \
+    libsodium-dev \
+    libssh2-1-dev \
+    libssl-dev \
+    libssl1.1 \
+    libtiff-dev \
+    libudunits2-dev \
+    libv8-dev \
+    libxext6 \
+    libxml2-dev \
+    libxrender1 \
+    make \
+    perl \
+    sudo \
+    tcl \
+    tk \
+    tk-dev \
+    tk-table \
+    unixodbc-dev \
+    wget \
+    zlib1g-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Add another R version -------------------------------------------------------#
 
-ARG R_VERSION_ALT=4.1.0
+ARG R_VERSION_ALT=4.1.2
 RUN apt-get update -qq && \
-    curl -O https://cdn.rstudio.com/r/ubuntu-1804/pkgs/r-${R_VERSION_ALT}_1_amd64.deb && \
+    curl -O https://cdn.rstudio.com/r/ubuntu-2004/pkgs/r-${R_VERSION_ALT}_1_amd64.deb && \
     DEBIAN_FRONTEND=noninteractive gdebi --non-interactive r-${R_VERSION_ALT}_1_amd64.deb && \
     rm -f ./r-${R_VERSION_ALT}_1_amd64.deb \
     && apt-get clean \
@@ -92,7 +92,7 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64
     rm -rf Miniconda3-*-Linux-x86_64.sh
 
 # Runtime settings ------------------------------------------------------------#
-ARG TINI_VERSION=0.18.0
+ARG TINI_VERSION=0.19.0
 RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini && \
     chmod +x /usr/local/bin/tini
 
