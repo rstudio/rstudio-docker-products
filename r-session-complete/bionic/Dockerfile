@@ -26,7 +26,7 @@ RUN apt-get update -y && \
 
 ARG RSW_VERSION=2021.09.0+351.pro6
 ARG RSW_NAME=rstudio-workbench
-ARG RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64
+ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 RUN apt-get update --fix-missing \
     && apt-get install -y gdebi-core \
     && RSW_VERSION_URL=`echo -n "${RSW_VERSION}" | sed 's/+/-/g'` \
@@ -109,6 +109,21 @@ RUN /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packag
 RUN apt-get update -y && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y locales && \
     rm -rf /var/lib/apt/lists/*
+
+# Install Java ----------------------------------------------------------------#
+
+RUN apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+	default-jdk && \
+	rm -rf /var/lib/apt/lists/*
+
+# Reconfigure R  
+RUN /opt/R/${R_VERSION}/bin/R CMD javareconf 
+
+# Add ldpaths to rstudio config
+RUN mkdir -p /etc/rstudio && echo "Path: /opt/R/${R_VERSION}\nScript: /opt/R/${R_VERSION}/lib/R/etc/ldpaths" > /etc/rstudio/r-versions
+
+RUN /opt/R/${R_VERSION}/bin/R -e 'install.packages("rJava", repos="https://packagemanager.rstudio.com/cran/__linux__/bionic/latest")'
 
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
