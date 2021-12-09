@@ -6,8 +6,8 @@ services:
     build:
       context: ./workbench
       args:
-        RSW_VERSION: 2021.09.0+351.pro6
-    image: rstudio/rstudio-workbench:2021.09.0-351.pro6
+        RSW_VERSION: 2021.09.1+372.pro1
+    image: rstudio/rstudio-workbench:2021.09.1-372.pro1
     privileged: true
     environment:
       RSW_LICENSE: ${RSW_LICENSE}
@@ -24,8 +24,8 @@ services:
     build:
       context: ./connect
       args:
-        RSC_VERSION: 2021.11.0
-    image: rstudio/rstudio-connect:2021.09.0
+        RSC_VERSION: 2021.11.1
+    image: rstudio/rstudio-connect:2021.11.1
     privileged: true
     environment:
       RSC_LICENSE: ${RSC_LICENSE}
