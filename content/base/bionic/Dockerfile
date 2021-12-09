@@ -36,6 +36,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
         libfribidi-dev \
         libgdal-dev \
         libgeos-dev \
+        libgit2-dev \
         libgl1-mesa-dev \
         libglpk-dev \
         libglu1-mesa-dev \
