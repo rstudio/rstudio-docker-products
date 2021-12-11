@@ -126,6 +126,19 @@ RUN mkdir -p /etc/rstudio && echo "Path: /opt/R/${R_VERSION}\nScript: /opt/R/${R
 
 RUN /opt/R/${R_VERSION}/bin/R -e 'install.packages("rJava", repos="https://packagemanager.rstudio.com/cran/__linux__/bionic/latest")'
 
+# Add pointer to latest CRAN and bioconductor repositories (binary) from public package manager
+COPY create.R /
+RUN /opt/R/${R_VERSION}/bin/Rscript /create.R  > /opt/R/${R_VERSION}/lib/R/etc/Rprofile.site && rm -f /create.R
+
+# Add renv settings for global cache as well as linux distro specific directory hierarchy in cache
+RUN echo "#renv settings\nRENV_PATHS_PREFIX_AUTO = TRUE\nRENV_PATHS_CACHE=/scratch/renv" >> /opt/R/${R_VERSION}/lib/R/etc/Renviron.site
+
+# Disable local package installs 
+RUN echo "#Disable local package installs into R_LIBS_USER\nR_LIBS_USER=/dev/null\n" >> /opt/R/${R_VERSION}/lib/R/etc/Renviron.site
+
+# Install renv 
+RUN /opt/R/${R_VERSION}/bin/R -q -e "install.packages('renv',lib='/opt/R/${R_VERSION}/lib/R/library/')" 
+
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
