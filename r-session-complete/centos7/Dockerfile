@@ -115,6 +115,13 @@ RUN mkdir -p /etc/rstudio && echo "Path: /opt/R/${R_VERSION}\nScript: /opt/R/${R
 
 RUN /opt/R/${R_VERSION}/bin/R -e 'install.packages("rJava", repos="https://packagemanager.rstudio.com/cran/__linux__/bionic/latest")'
 
+    /opt/R/${R_VERSION}/bin/Rscript /create.R  > /opt/R/${R_VERSION}/lib/R/etc/Rprofile.site && \
+    echo "#renv settings\nRENV_PATHS_PREFIX_AUTO = TRUE\nRENV_PATHS_CACHE=/scratch/renv" >> /opt/R/${R_VERSION}/lib/R/etc/Renviron.si
+te && \
+    echo "#Disable local package installs into R_LIBS_USER\nR_LIBS_USER=/dev/null\n" >> /opt/R/${R_VERSION}/lib/R/etc/Renviron.si
+te && \
+    /opt/R/${R_VERSION}/bin/R -q -e "install.packages('renv',lib='/opt/R/${R_VERSION}/lib/R/library/')" && \
+
 # Locale configuration --------------------------------------------------------#
 
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
