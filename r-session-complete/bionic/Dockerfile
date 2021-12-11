@@ -139,6 +139,14 @@ RUN echo "#Disable local package installs into R_LIBS_USER\nR_LIBS_USER=/dev/nul
 # Install renv 
 RUN /opt/R/${R_VERSION}/bin/R -q -e "install.packages('renv',lib='/opt/R/${R_VERSION}/lib/R/library/')" 
 
+# Install zeromq
+
+RUN apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        libzmq5 && \
+        rm -rf /var/lib/apt/lists/*
+
+
 RUN locale-gen en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
