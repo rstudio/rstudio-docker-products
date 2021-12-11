@@ -139,6 +139,26 @@ RUN apt-get update --fix-missing \
 
 RUN rstudio-server install-vs-code /opt/code-server/
 
+# Install Java ----------------------------------------------------------------#
+
+RUN apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y \
+        default-jdk && \
+        rm -rf /var/lib/apt/lists/*
+
+# Reconfigure R
+RUN R CMD javareconf
+RUN /opt/R/${R_VERSION_ALT}/bin/R CMD javareconf
+
+# Add ldpaths to rstudio config
+RUN mkdir -p /etc/rstudio && echo "Path: /opt/R/${R_VERSION}\nScript: /opt/R/${R_VERSION}/lib/R/etc/ldpaths" > /etc/rstudio/r-versions
+
+RUN /opt/R/${R_VERSION_ALT}/bin/R -e 'install.packages("rJava", repos="https://packagemanager.rstudio.com/cran/__linux__/bionic/latest")'
+RUN R -e 'install.packages("rJava", repos="https://packagemanager.rstudio.com/cran/__linux__/bionic/latest")'
+
+# Add ldpaths to rstudio config
+RUN mkdir -p /etc/rstudio && echo "Path: /opt/R/${R_VERSION_ALT}\nLabel: R ${R_VERSION_ALT}\nScript: /opt/R/${R_VERSION_ALT}/lib/R/etc/ldpaths" > /etc/rstudio/r-versions
+RUN echo "\n\nPath: /usr/lib/R\nLabel: R 3.6.3\nScript: /usr/lib/R/etc/ldpaths" >> /etc/rstudio/r-versions
 # Copy config
 COPY conf/* /etc/rstudio/
 COPY sssd.conf /etc/sssd/sssd.conf

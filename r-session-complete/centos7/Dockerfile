@@ -21,8 +21,9 @@ RUN yum update -y && \
 
 ARG RSW_VERSION=2021.09.1+372.pro1
 ARG RSW_NAME=rstudio-workbench-rhel
-ARG RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x86_64
+ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/centos7/x86_64
 RUN RSW_VERSION_URL=`echo -n "${RSW_VERSION}" | sed 's/+/-/g'` \
+    && echo ${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-x86_64.rpm \
     && curl -o rstudio-workbench.rpm ${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-x86_64.rpm \
     && yum install -y rstudio-workbench.rpm \
     && rm rstudio-workbench.rpm \
@@ -101,6 +102,18 @@ RUN curl -O https://drivers.rstudio.org/7C152C12/installer/rstudio-drivers-${DRI
     cp /opt/rstudio-drivers/odbcinst.ini.sample /etc/odbcinst.ini
 
 RUN /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.rstudio.com/cran/__linux__/centos7/latest")'
+
+# Install Java ----------------------------------------------------------------#
+
+RUN yum install java-1.8.0-openjdk-devel -y && \
+	yum clean all
+# Reconfigure R
+RUN /opt/R/${R_VERSION}/bin/R CMD javareconf
+
+# Add ldpaths to rstudio config
+RUN mkdir -p /etc/rstudio && echo "Path: /opt/R/${R_VERSION}\nScript: /opt/R/${R_VERSION}/lib/R/etc/ldpaths" > /etc/rstudio/r-versions
+
+RUN /opt/R/${R_VERSION}/bin/R -e 'install.packages("rJava", repos="https://packagemanager.rstudio.com/cran/__linux__/bionic/latest")'
 
 # Locale configuration --------------------------------------------------------#
 
