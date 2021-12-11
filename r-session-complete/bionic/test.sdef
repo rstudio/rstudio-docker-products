@@ -1,3 +1,14 @@
 Bootstrap: docker
-From: r-session-complete:0.2-bionic 
+From: r-session-complete:0.4-bionic 
 Registry: localhost:5000
+
+%post
+    # SLURM stuff
+    groupadd -g 401 slurm 
+    useradd -u 401 -g 401 slurm  
+    apt-get install libmunge2
+
+    rm -rf /var/cache/apt/*
+
+%environment
+    export PATH=/opt/slurm/bin:$PATH
