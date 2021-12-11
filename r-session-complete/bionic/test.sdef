@@ -1,0 +1,3 @@
+Bootstrap: docker
+From: r-session-complete:0.2-bionic 
+Registry: localhost:5000
