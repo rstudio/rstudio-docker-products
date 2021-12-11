@@ -6,9 +6,7 @@ Registry: localhost:5000
     # SLURM stuff
     groupadd -g 401 slurm 
     useradd -u 401 -g 401 slurm  
-    apt-get install libmunge2
-
-    rm -rf /var/cache/apt/*
+    apt-get update && apt-get install libmunge2 && rm -rf /var/cache/apt/*
 
 %environment
     export PATH=/opt/slurm/bin:$PATH
