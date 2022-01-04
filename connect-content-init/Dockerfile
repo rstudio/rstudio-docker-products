@@ -9,7 +9,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
     curl \
     && \
     rm -rf /var/lib/apt/lists/*
-ARG RSC_VERSION=2021.12.0
+ARG RSC_VERSION=2021.12.1
 RUN mkdir -p /rsc-staging && \
     cd /rsc-staging && \
     RSC_VERSION_URL=`echo -n "${RSC_VERSION}" | sed 's/+/%2B/g'` && \
