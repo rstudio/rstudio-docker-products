@@ -116,7 +116,7 @@ ARG PYTHON_VERSION=3.7.6
 RUN curl -fsSL -o miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh \
     && chmod 755 miniconda.sh \
     && ./miniconda.sh -b -p /opt/miniconda \
-    && /opt/miniconda/bin/conda create --quiet --yes --prefix /opt/python/${PYTHON_VERSION} --channel conda-forge python=${PYTHON_VERSION} virtualenv \
+    && /opt/miniconda/bin/conda create --quiet --yes --prefix /opt/python/${PYTHON_VERSION} python=${PYTHON_VERSION} virtualenv \
     && rm -f miniconda.sh \
     # remove miniconda too, for size
     && rm -rf /opt/miniconda
