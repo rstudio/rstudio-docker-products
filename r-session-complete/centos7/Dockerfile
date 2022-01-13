@@ -6,7 +6,7 @@ LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 ARG R_VERSION=4.1.0
 ARG MINICONDA_VERSION=py37_4.8.3
 ARG PYTHON_VERSION=3.9.5
-ARG DRIVERS_VERSION=1.8.0-1
+ARG DRIVERS_VERSION=2021.10.0-1
 
 # Install RStudio Workbench session components -------------------------------#
 
