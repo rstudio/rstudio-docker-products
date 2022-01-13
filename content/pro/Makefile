@@ -16,7 +16,7 @@ TAG_BASE=rstudio/content-base
 TAG_PRO=rstudio/content-pro
 R_VERSION=3.6.3
 PYTHON_VERSION=3.7.6
-DRIVERS_VERSION=1.8.0
+DRIVERS_VERSION=2021.10.0
 
 all: build
 .PHONY: all
