@@ -1,6 +1,11 @@
 #!/bin/bash
 set -xe -o pipefail
 
+# quick way to call out specific logging lines in packer stdout
+pp() {
+  printf "============== $1  ==============\n"
+}
+
 install_r_packages() {
   # given a one-per-line file of R packages, parses the file and installs those R
   # packages to the provided (or default) R installation.
