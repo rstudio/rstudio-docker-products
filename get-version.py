@@ -75,6 +75,11 @@ def clean_product_selection(product: str) -> str:
         print(f"Swapping product '{product}' for 'workbench'", file=sys.stderr)
         product = 'workbench'
 
+    workbench_pref = re.compile('^workbench')
+    if workbench_pref.match(product):
+        print(f"Swapping product '{product}' for 'workbench'", file=sys.stderr)
+        product = 'workbench'
+
     connect_pref = re.compile('^connect-')
     if connect_pref.match(product):
         print(f"Swapping product '{product}' for 'connect'", file=sys.stderr)
