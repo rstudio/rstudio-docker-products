@@ -33,7 +33,7 @@ for rvers in 3.3.3 3.4.4 3.5.3 3.6.3 4.0.5 4.1.2; do
     rm -f ./r-${R_VERSION_ALT}_1_amd64.deb
 
     # install packages
-    install_packages /tmp/package_list.txt /opt/R/${rvers}/bin/R https://packagemanager.rstudio.com/cran/__linux__/bionic/latest
+    install_r_packages /tmp/package_list.txt /opt/R/${rvers}/bin/R https://packagemanager.rstudio.com/cran/__linux__/bionic/latest
 done
 
 rm -f /tmp/package_list.txt
