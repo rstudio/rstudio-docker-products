@@ -14,6 +14,7 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
         ca-certificates \
         gdebi-core \
         git \
+	g++ \
         libcap2 \
         libglib2.0-0 \
         libpq5 \
@@ -38,7 +39,10 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
 # Install R and R Packages
 COPY package-list.txt /tmp/package-list.txt
 COPY install-r.sh /tmp/install-r.sh
-RUN /tmp/install-r.sh
+RUN apt-get update --fix-missing -qq && \
+    /tmp/install-r.sh && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install jupyter -------------------------------------------------------------#
 
