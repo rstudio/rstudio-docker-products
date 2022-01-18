@@ -40,9 +40,6 @@ file:
     exists: false
   /usr/lib/rstudio-server:
     exists: true
-  /opt/R/{{.Env.R_VERSION_ALT}}/bin/R:
-    exists: true
-    filetype: file
   /opt/python/{{.Env.PYTHON_VERSION}}/bin/python:
     exists: true
     filetype: symlink
@@ -77,22 +74,10 @@ file:
     exists: true
     contains:
     - "!Error reading /etc/rstudio/rserver.conf:"
-  /etc/pam.d/common-session:
-    exists: true
-    contains:
-      - "/^session required pam_mkhomedir.so skel=/etc/skel umask=0022$/"
-  /etc/sssd/sssd.conf:
-    exists: true
-    owner: root
-    group: root
-    mode: "0600"
 
 command:
   "su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'":
     title: workbench_monitor_log_file_creates
-    exit-status: 0
-  "touch /var/log/rstudio-server.log":
-    title: workbench_server_log_creates
     exit-status: 0
 # Check product version
   "rstudio-server version":
