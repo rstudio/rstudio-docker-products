@@ -32,6 +32,7 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
         openssh-client \
         rrdtool \
         sssd \
+        krb5-user \
         sudo \
         supervisor \
         wget \

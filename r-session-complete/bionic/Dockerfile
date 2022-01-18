@@ -15,6 +15,7 @@ RUN apt-get update -y && \
     curl \
     wget \
     gdebi \
+    krb5-user \
     libcurl4-gnutls-dev \
     libssl1.0.0 \
     libssl-dev \
