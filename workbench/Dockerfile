@@ -124,7 +124,7 @@ COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
 
 # Install RStudio Workbench --------------------------------------------------#
-ARG RSW_VERSION=2021.09.2+382.pro1
+ARG RSW_VERSION=2021.09.2+383.pro1
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 ARG RSW_NAME=rstudio-workbench
 RUN apt-get update --fix-missing \
