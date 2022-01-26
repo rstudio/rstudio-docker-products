@@ -1,5 +1,4 @@
-ARG R_VERSION=3.6
-FROM rstudio/r-base:${R_VERSION}-bionic
+FROM rstudio/r-base:bionic
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 # Locale configuration --------------------------------------------------------#
@@ -15,39 +14,33 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
         ca-certificates \
         gdebi-core \
         git \
+	g++ \
         libcap2 \
         libglib2.0-0 \
-        libpam-sss \
         libpq5 \
         libsm6 \
         libssl1.0.0 \
         openssl \
-        libnss-sss \
         libssl-dev \
         libuser \
         libuser1-dev \
         libxext6 \
         libxrender1 \
-        oddjob-mkhomedir \
         openssh-client \
         rrdtool \
-        sssd \
-        sudo \
         supervisor \
         wget \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Add another R version -------------------------------------------------------#
 
-ARG R_VERSION_ALT=4.1.0
-RUN apt-get update -qq && \
-    curl -O https://cdn.rstudio.com/r/ubuntu-1804/pkgs/r-${R_VERSION_ALT}_1_amd64.deb && \
-    DEBIAN_FRONTEND=noninteractive gdebi --non-interactive r-${R_VERSION_ALT}_1_amd64.deb && \
-    rm -f ./r-${R_VERSION_ALT}_1_amd64.deb \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
+# Install R and R Packages
+COPY package-list.txt /tmp/package-list.txt
+COPY install-r.sh /tmp/install-r.sh
+RUN apt-get update --fix-missing -qq && \
+    /tmp/install-r.sh && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install jupyter -------------------------------------------------------------#
 
@@ -117,7 +110,6 @@ ENV DIAGNOSTIC_ONLY false
 # Copy config and startup
 COPY startup/* /startup/base/
 COPY startup-launcher/* /startup/launcher/
-COPY startup-user-provisioning/* /startup/user-provisioning/
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
@@ -141,14 +133,14 @@ RUN rstudio-server install-vs-code /opt/code-server/
 
 # Copy config
 COPY conf/* /etc/rstudio/
-COPY sssd.conf /etc/sssd/sssd.conf
 
 # Create log dir
 RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
     chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor && \
-    chmod 600 /etc/sssd/sssd.conf && \
-    mkdir -p /startup/custom/ && \
-    echo '\n# allow home directory creation\nsession required pam_mkhomedir.so skel=/etc/skel umask=0022' >> /etc/pam.d/common-session
+    mkdir -p /startup/custom/
+
+# create user -----------------------------------------------------------------#
+RUN adduser azure-user
 
 EXPOSE 8787/tcp
 EXPOSE 5559/tcp

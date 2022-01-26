@@ -6,7 +6,7 @@ LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 ARG R_VERSION=4.1.0
 ARG MINICONDA_VERSION=py37_4.8.3
 ARG PYTHON_VERSION=3.9.5
-ARG DRIVERS_VERSION=1.8.0
+ARG DRIVERS_VERSION=2021.10.0
 
 # Install RStudio Workbench session components -------------------------------#
 
@@ -23,7 +23,7 @@ RUN apt-get update -y && \
     rrdtool && \
     rm -rf /var/lib/apt/lists/*
 
-ARG RSW_VERSION=2021.09.1+372.pro1
+ARG RSW_VERSION=2021.09.2+382.pro1
 ARG RSW_NAME=rstudio-workbench
 ARG RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64
 RUN apt-get update --fix-missing \
@@ -99,6 +99,7 @@ RUN curl -O https://drivers.rstudio.org/7C152C12/installer/rstudio-drivers_${DRI
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive gdebi --non-interactive rstudio-drivers_${DRIVERS_VERSION}_amd64.deb && \
     rm -rf /var/lib/apt/lists/* && \
+    rm -f rstudio-drivers_${DRIVERS_VERSION}_amd64.deb && \
     cp /opt/rstudio-drivers/odbcinst.ini.sample /etc/odbcinst.ini
 
 RUN /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.rstudio.com/cran/__linux__/bionic/latest")'

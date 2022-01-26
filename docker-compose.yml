@@ -6,8 +6,8 @@ services:
     build:
       context: ./workbench
       args:
-        RSW_VERSION: 2021.09.1+372.pro1
-    image: rstudio/rstudio-workbench:2021.09.1-372.pro1
+        RSW_VERSION: 2021.09.2+382.pro1
+    image: rstudio/rstudio-workbench:2021.09.2-382.pro1
     privileged: true
     environment:
       RSW_LICENSE: ${RSW_LICENSE}
@@ -24,8 +24,8 @@ services:
     build:
       context: ./connect
       args:
-        RSC_VERSION: 2021.11.1
-    image: rstudio/rstudio-connect:2021.11.1
+        RSC_VERSION: 2021.12.1
+    image: rstudio/rstudio-connect:2021.12.1
     privileged: true
     environment:
       RSC_LICENSE: ${RSC_LICENSE}
@@ -41,8 +41,8 @@ services:
     build:
       context: ./package-manager
       args:
-        RSPM_VERSION: 2021.09.0-1
-    image: rstudio/rstudio-package-manager:2021.09.0-1
+        RSPM_VERSION: 2021.12.0-3
+    image: rstudio/rstudio-package-manager:2021.12.0-3
     privileged: true
     environment:
       RSPM_LICENSE: ${RSPM_LICENSE}

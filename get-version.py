@@ -75,6 +75,11 @@ def clean_product_selection(product: str) -> str:
         print(f"Swapping product '{product}' for 'workbench'", file=sys.stderr)
         product = 'workbench'
 
+    workbench_pref = re.compile('^workbench')
+    if workbench_pref.match(product):
+        print(f"Swapping product '{product}' for 'workbench'", file=sys.stderr)
+        product = 'workbench'
+
     connect_pref = re.compile('^connect-')
     if connect_pref.match(product):
         print(f"Swapping product '{product}' for 'connect'", file=sys.stderr)
@@ -84,8 +89,8 @@ def clean_product_selection(product: str) -> str:
 
 
 def rstudio_workbench_daily():
-    version_json = download_json("https://dailies.rstudio.com/rstudio/latest/index.json")
-    return version_json['products']['workbench']['platforms']['bionic']['version']
+    version_json = download_json("https://dailies.rstudio.com/rstudio/prairie-trillium/index.json")
+    return version_json['workbench']['platforms']['bionic']['version']
 
 
 def download_json(url):

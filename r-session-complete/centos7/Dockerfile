@@ -6,7 +6,7 @@ LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 ARG R_VERSION=4.1.0
 ARG MINICONDA_VERSION=py37_4.8.3
 ARG PYTHON_VERSION=3.9.5
-ARG DRIVERS_VERSION=1.8.0-1
+ARG DRIVERS_VERSION=2021.10.0-1
 
 # Install RStudio Workbench session components -------------------------------#
 
@@ -19,7 +19,7 @@ RUN yum update -y && \
     rrdtool && \
     yum clean all
 
-ARG RSW_VERSION=2021.09.1+372.pro1
+ARG RSW_VERSION=2021.09.2+382.pro1
 ARG RSW_NAME=rstudio-workbench-rhel
 ARG RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x86_64
 RUN RSW_VERSION_URL=`echo -n "${RSW_VERSION}" | sed 's/+/-/g'` \
@@ -97,6 +97,7 @@ RUN yum update -y && \
 RUN curl -O https://drivers.rstudio.org/7C152C12/installer/rstudio-drivers-${DRIVERS_VERSION}.el7.x86_64.rpm && \
     yum install -y rstudio-drivers-${DRIVERS_VERSION}.el7.x86_64.rpm && \
     yum clean all && \
+    rm -f rstudio-drivers-${DRIVERS_VERSION}.el7.x86_64.rpm && \
     cp /opt/rstudio-drivers/odbcinst.ini.sample /etc/odbcinst.ini
 
 RUN /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.rstudio.com/cran/__linux__/centos7/latest")'

@@ -1,0 +1,12 @@
+fleur
+gdal
+ggplot2
+mlflow
+packrat
+renv
+rmarkdown
+rsconnect
+sf
+shiny
+tidymodels
+tidyverse
