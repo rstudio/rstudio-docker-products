@@ -14,7 +14,6 @@ RUN apt-get update -y && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
     curl \
     wget \
-    gdebi \
     libcurl4-gnutls-dev \
     libssl1.0.0 \
     libssl-dev \
