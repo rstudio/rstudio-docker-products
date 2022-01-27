@@ -8,7 +8,7 @@ ARG DRIVERS_VERSION
 ARG R_VERSION
 
 RUN apt-get update -y && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y unixodbc unixodbc-dev gdebi && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y unixodbc unixodbc-dev gdebi-core && \
     rm -rf /var/lib/apt/lists/*
 
 RUN curl -O https://drivers.rstudio.org/7C152C12/installer/rstudio-drivers_${DRIVERS_VERSION}_amd64.deb && \
