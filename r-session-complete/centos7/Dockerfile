@@ -19,7 +19,7 @@ RUN yum update -y && \
     rrdtool && \
     yum clean all
 
-ARG RSW_VERSION=2021.09.2+383.pro1
+ARG RSW_VERSION=2021.09.2+382.pro1
 ARG RSW_NAME=rstudio-workbench-rhel
 ARG RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x86_64
 RUN RSW_VERSION_URL=`echo -n "${RSW_VERSION}" | sed 's/+/-/g'` \
