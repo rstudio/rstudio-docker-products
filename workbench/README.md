@@ -20,7 +20,6 @@ Docker images for RStudio Professional Products
    provide [instructions for building](https://github.com/rstudio/rstudio-docker-products#instructions-for-building) for
    these cases.
 
-
 ### Simple Example
 
 To verify basic functionality as a first step:
