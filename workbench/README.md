@@ -1,5 +1,10 @@
 # RStudio Workbench
 
+> **WARNING: pwnkit vulernability response**
+>
+> Bionic-based versions of the r-session-complete docker image are affected by the [PwnKit vulnerability](https://ubuntu.com/security/CVE-2021-4034).
+> If you are using this image in your RStudio Workbench Kubernetes environment, you should update it immediately. [See the linked support article for details](https://support.rstudio.com/hc/en-us/articles/4420538249495)
+
 Docker images for RStudio Professional Products
 
 **IMPORTANT:** There are a few things you need to know before using these images:
@@ -14,6 +19,7 @@ Docker images for RStudio Professional Products
    changes. We
    provide [instructions for building](https://github.com/rstudio/rstudio-docker-products#instructions-for-building) for
    these cases.
+
 
 ### Simple Example
 
