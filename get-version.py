@@ -15,6 +15,7 @@
 #   - rstudio- prefix is removed
 #   - -preview suffix is removed
 #   - r-session prefixed products are replaced with workbench
+#   - workbench prefixed products are replaced with workbench
 #   - connect- prefixed products are replaced with connect
 #   - version latest == release
 
@@ -45,6 +46,7 @@ def clean_product_selection(product: str) -> str:
     - Remove rstudio- prefix
     - Remove -preview suffix
     - Convert r-session prefixed products to workbench
+    - Convert workbench prefixed products to workbench
     - Convert connect- prefixed products to connect
     - Convert rsw -> workbench, rsc -> connect, rspm -> package-manager
 
