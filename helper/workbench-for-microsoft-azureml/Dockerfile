@@ -14,7 +14,7 @@ RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
         ca-certificates \
         gdebi-core \
         git \
-	    g++ \
+        g++ \
         libcap2 \
         libglib2.0-0 \
         libpq5 \
