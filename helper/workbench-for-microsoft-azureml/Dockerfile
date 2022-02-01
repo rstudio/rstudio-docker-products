@@ -131,6 +131,24 @@ RUN apt-get update --fix-missing \
 
 RUN rstudio-server install-vs-code /opt/code-server/
 
+# Install Azure CLI -----------------------------------------------------------#
+
+RUN apt-get update --fix-missing \
+    && apt-get install -y ca-certificates curl apt-transport-https lsb-release gnupg \
+    && curl -sL https://packages.microsoft.com/keys/microsoft.asc |
+        gpg --dearmor |
+        tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null \
+    && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" |
+        tee /etc/apt/sources.list.d/azure-cli.list \
+    && apt-get update --fix-missing \
+    && apt-get install -y azure-cli \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install AzureML extension ---------------------------------------------------#
+
+RUN az extension add -n ml -y
+
 # Copy config
 COPY conf/* /etc/rstudio/
 
