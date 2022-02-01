@@ -67,10 +67,10 @@ jobs:
           tags: |
             rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
             rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
-            rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}{{ steps.version.outputs.SHA_SHORT }}
+            rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}${{ steps.version.outputs.SHA_SHORT }}
             ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
             ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
-            ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}{{ steps.version.outputs.SHA_SHORT }}
+            ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}${{ steps.version.outputs.SHA_SHORT }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           load: true
@@ -122,5 +122,7 @@ jobs:
         run: |
           docker push rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
           docker push rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
+          docker push rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}${{ steps.version.outputs.SHA_SHORT }}
           docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
           docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
+          docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}${{ steps.version.outputs.SHA_SHORT }}
