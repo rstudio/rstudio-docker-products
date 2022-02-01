@@ -95,6 +95,20 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64
 RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh && \
     chmod +x /usr/local/bin/wait-for-it.sh
 
+# Install RStudio Professional Drivers ----------------------------------------#
+
+ARG DRIVERS_VERSION=2021.10.0
+RUN apt-get update -y && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y unixodbc unixodbc-dev gdebi && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN curl -O https://drivers.rstudio.org/7C152C12/installer/rstudio-drivers_${DRIVERS_VERSION}_amd64.deb && \
+    apt-get update && \
+    DEBIAN_FRONTEND=noninteractive gdebi --non-interactive rstudio-drivers_${DRIVERS_VERSION}_amd64.deb && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm -f rstudio-drivers_${DRIVERS_VERSION}_amd64.deb && \
+    cp /opt/rstudio-drivers/odbcinst.ini.sample /etc/odbcinst.ini
+
 # Set default env values
 ENV RSW_LICENSE ""
 ENV RSW_LICENSE_SERVER ""
@@ -152,13 +166,9 @@ RUN az extension add -n ml -y
 # Copy config
 COPY conf/* /etc/rstudio/
 
-# Create log dir
-RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
-    chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor && \
-    mkdir -p /startup/custom/
-
 # create user -----------------------------------------------------------------#
-RUN adduser azure-user
+RUN groupadd -g 1000 azure-user \
+    && useradd -m -u 1000 -g 1000 azure-user
 
 EXPOSE 8787/tcp
 EXPOSE 5559/tcp
