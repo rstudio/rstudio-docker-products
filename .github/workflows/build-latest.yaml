@@ -38,6 +38,14 @@ jobs:
           # NOTE: --local ensures that "latest" builds use the version in our Makefile (instead of latest from the web)
           VERSION=`./get-version.py ${{ matrix.config.product }} --type=${{ matrix.config.version }} --local`
           SAFE_VERSION=`echo -n "$VERSION" | sed 's/+/-/g'`
+
+          # strip build metadata for azure builds
+          if [[ "${{ matrix.config.product  }}" == "rstudio-workbench-for-microsoft-azureml" ]]; then
+            SAFE_VERSION=`echo -n "$SAFE_VERSION" | sed 's/^\([0-9]\{4\}\.[0-9]\{2\}\.[0-9]*\).*/\1/g'`
+          fi
+
+          echo "::set-output name=SHA_SHORT::--$(git rev-parse --short HEAD)"
+
           echo "::set-output name=VERSION::${VERSION}"
           echo "::set-output name=SAFE_VERSION::${SAFE_VERSION}"
 
@@ -59,8 +67,10 @@ jobs:
           tags: |
             rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
             rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
+            rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}${{ steps.version.outputs.SHA_SHORT }}
             ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
             ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
+            ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}${{ steps.version.outputs.SHA_SHORT }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           load: true
@@ -112,5 +122,7 @@ jobs:
         run: |
           docker push rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
           docker push rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
+          docker push rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}${{ steps.version.outputs.SHA_SHORT }}
           docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
           docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
+          docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}${{ steps.version.outputs.SHA_SHORT }}
