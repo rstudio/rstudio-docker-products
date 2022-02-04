@@ -15,6 +15,7 @@
 #   - rstudio- prefix is removed
 #   - -preview suffix is removed
 #   - r-session prefixed products are replaced with workbench
+#   - workbench prefixed products are replaced with workbench
 #   - connect- prefixed products are replaced with connect
 #   - version latest == release
 
@@ -45,6 +46,7 @@ def clean_product_selection(product: str) -> str:
     - Remove rstudio- prefix
     - Remove -preview suffix
     - Convert r-session prefixed products to workbench
+    - Convert workbench prefixed products to workbench
     - Convert connect- prefixed products to connect
     - Convert rsw -> workbench, rsc -> connect, rspm -> package-manager
 
@@ -60,15 +62,15 @@ def clean_product_selection(product: str) -> str:
 
     rsw = re.compile('^rsw$')
     if rsw.match(product):
-      product = 'workbench'
+        product = 'workbench'
 
     rsc = re.compile('^rsc$')
     if rsc.match(product):
-      product = 'connect'
+        product = 'connect'
 
     rspm = re.compile('^rspm$')
     if rspm.match(product):
-      product = 'package-manager'
+        product = 'package-manager'
 
     session_pref = re.compile('^r-session')
     if session_pref.match(product):
@@ -181,7 +183,7 @@ if __name__ == "__main__":
         default=["release"]
     )
     parser.add_argument(
-        "--local","-l",
+        "--local", "-l",
         action="store_true",
         help="Whether to use the 'local' version for 'release'. Parsed from the local Makefile",
     )
@@ -218,6 +220,9 @@ if __name__ == "__main__":
         exit(1)
 
     print(f"Providing version for product: '{selected_product}' and version type: '{version_type}'", file=sys.stderr)
+
+    # set a default value - this should never make it all the way through
+    version = 'UNDEFINED'
 
     # ------------------------------------------
     # Use override, if defined
