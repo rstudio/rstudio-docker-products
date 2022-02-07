@@ -2,6 +2,7 @@ fleur
 gdal
 ggplot2
 mlflow
+odbc
 packrat
 renv
 rmarkdown
