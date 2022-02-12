@@ -5,6 +5,7 @@ set -x
 
 # Deactivate license when it exists
 deactivate() {
+    tail -n 200 /var/log/rstudio-connect.log
     echo "Deactivating license ..."
     /opt/rstudio-connect/bin/license-manager deactivate >/dev/null 2>&1
 }
@@ -25,4 +26,4 @@ unset RSC_LICENSE
 unset RSC_LICENSE_SERVER
 
 # Start RStudio Connect
-/opt/rstudio-connect/bin/connect --config /etc/rstudio-connect/rstudio-connect.gcfg
+/opt/rstudio-connect/bin/connect --config /etc/rstudio-connect/rstudio-connect.gcfg >>/var/log/rstudio-connect.log 2>&1
