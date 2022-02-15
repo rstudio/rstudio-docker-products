@@ -100,11 +100,6 @@ if __name__ == "__main__":
         help="Whether to bypass checks and return the input",
     )
     parser.add_argument(
-        "--search", "-s",
-        action="store_true",
-        help="Whether to ignore input and search directories that have a Dockerfile",
-    )
-    parser.add_argument(
         "--dirs", "-d",
         type=str,
         action='extend',
@@ -115,7 +110,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     file = args.file
-    search = args.search
     dirs = args.dirs
     return_all = args.all
     read_stdin = args.stdin
@@ -147,11 +141,7 @@ if __name__ == "__main__":
     # Determine base directories to check
     # ----------------------------------------------------------
     directories_base = []
-    if search:
-        print("Finding directories with a Dockerfile present", file=sys.stderr)
-        # TODO: figure out core directory in more savvy fashion...?
-        directories_base = get_dirs_from_find(".")
-    elif dirs:
+    if dirs:
         print("Using directories specified on command", file=sys.stderr)
         directories_base = dirs
 
