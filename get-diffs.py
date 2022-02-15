@@ -90,6 +90,11 @@ if __name__ == "__main__":
         help="The input matrix.json file to parse"
     )
     parser.add_argument(
+        "--stdin", "-i",
+        action="store_true",
+        help="Read matrix.json from stdin"
+    )
+    parser.add_argument(
         "--all", "-a",
         action="store_true",
         help="Whether to bypass checks and return the input",
@@ -113,18 +118,27 @@ if __name__ == "__main__":
     search = args.search
     dirs = args.dirs
     return_all = args.all
+    read_stdin = args.stdin
 
     # ----------------------------------------------------------
     # Read in base matrix.json data
     # ----------------------------------------------------------
     matrix_data = []
-    if file:
+    if read_stdin:
+        print("Reading configuration from stdin, due to -i/--stdin", file=sys.stderr)
+        file_input = sys.stdin.read()
+        stripped_input = file_input.strip()
+        if len(stripped_input) == 0:
+            print("WARNING: input was empty", file=sys.stderr)
+        else:
+            # TODO: invalid JSON input returns a nasty error we should catch
+            matrix_data = json.loads(file_input)
+    elif file:
         file = file[0]
         print(f"Reading configuration from file: {file}", file=sys.stderr)
         with open(file, 'r') as f:
             file_input = f.read()
             matrix_data = json.loads(file_input)
-            directories_base = get_dirs_from_json(matrix_data)
     else:
         print("ERROR: no -f/--file parameter provided. matrix.json input is needed", file=sys.stderr)
         exit(2)
