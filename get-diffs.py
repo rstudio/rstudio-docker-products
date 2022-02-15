@@ -137,16 +137,16 @@ if __name__ == "__main__":
 
     print(f"All? {return_all}", file=sys.stderr)
 
+    # ----------------------------------------------------------
+    # Determine which base directories have diffs
+    # ----------------------------------------------------------
+
     cc = get_current_commit()
     mb = get_merge_base(cc, 'main')
     print(f'Current commit: {cc}', file=sys.stderr)
     print(f"Changed Directories from CC: {get_changed_dirs(cc)}", file=sys.stderr)
     print(f"Merge Base: {mb}", file=sys.stderr)
     print(f"Changed Directories from MB: {get_changed_dirs(mb)}", file=sys.stderr)
-
-    # ----------------------------------------------------------
-    # Determine which base directories have diffs
-    # ----------------------------------------------------------
 
     # output
     print("Done")
