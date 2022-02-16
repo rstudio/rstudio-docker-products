@@ -5,10 +5,6 @@ Listen = :4242
 DataDir = /data
 RVersion = /opt/R/3.6.2/
 
-[Launcher]
-ServerUser = root
-AdminGroup = root
-
 [Git]
 BuilderDir = "/tmp/git"
 
