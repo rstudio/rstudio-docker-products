@@ -4,15 +4,15 @@ set -e
 set -x
 
 # Deactivate license when the process exits
-deactivate() {
-    echo "== Exiting =="
-    rstudio-server stop
-    echo "Deactivating license ..."
-    /usr/lib/rstudio-server/bin/license-manager deactivate >/dev/null 2>&1
-
-    echo "== Done =="
-}
-trap deactivate EXIT
+# deactivate() {
+#     echo "== Exiting =="
+#     rstudio-server stop
+#     echo "Deactivating license ..."
+#     /usr/lib/rstudio-server/bin/license-manager deactivate >/dev/null 2>&1
+# 
+#     echo "== Done =="
+# }
+# trap deactivate EXIT
 
 verify_installation(){
    echo "==VERIFY INSTALLATION==";
@@ -26,14 +26,14 @@ RSP_LICENSE=${RSP_LICENSE:-${RSW_LICENSE}}
 RSP_LICENSE_SERVER=${RSP_LICENSE_SERVER:-${RSW_LICENSE_SERVER}}
 
 # Activate License
-RSW_LICENSE_FILE_PATH=${RSW_LICENSE_FILE_PATH:-/etc/rstudio-server/license.lic}
-if [ -n "$RSP_LICENSE" ]; then
-    /usr/lib/rstudio-server/bin/license-manager activate $RSP_LICENSE
-elif [ -n "$RSP_LICENSE_SERVER" ]; then
-    /usr/lib/rstudio-server/bin/license-manager license-server $RSP_LICENSE_SERVER
-elif test -f "$RSW_LICENSE_FILE_PATH"; then
-    /usr/lib/rstudio-server/bin/license-manager activate-file $RSW_LICENSE_FILE_PATH
-fi
+# RSW_LICENSE_FILE_PATH=${RSW_LICENSE_FILE_PATH:-/etc/rstudio-server/license.lic}
+# if [ -n "$RSP_LICENSE" ]; then
+#     /usr/lib/rstudio-server/bin/license-manager activate $RSP_LICENSE
+# elif [ -n "$RSP_LICENSE_SERVER" ]; then
+#     /usr/lib/rstudio-server/bin/license-manager license-server $RSP_LICENSE_SERVER
+# elif test -f "$RSW_LICENSE_FILE_PATH"; then
+#     /usr/lib/rstudio-server/bin/license-manager activate-file $RSW_LICENSE_FILE_PATH
+# fi
 
 # ensure these cannot be inherited by child processes
 unset RSP_LICENSE
