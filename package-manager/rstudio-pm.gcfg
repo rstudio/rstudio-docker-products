@@ -1,12 +1,53 @@
-[HTTP]
-Listen = :4242
+; RStudio Package Manager configuration file
 
 [Server]
-DataDir = /data
+; Address is a public URL for this RStudio Package Manager server. Must be configured
+; to enable features like including links to your content in emails. If
+; Package Manager is deployed behind an HTTP proxy, this should be the URL for Package Manager
+; in terms of that proxy.
+;
+; Address = https://rstudio-pm.company.com
+Address =
+;
+; Git sources require a configured R installation. R is often installed at `/usr/lib/R`
+; or `/usr/lib64/R`.
 RVersion = /opt/R/3.6.2/
+;
+; Customize the data directory if necessary. This is where all packages and metadata are
+; stored by default. Refer to Admin Guide for details.
+;DataDir = /mnt/rspm/data
 
+[HTTP]
+; RStudio Package Manager will listen on this network address for HTTP connections.
+Listen = :4242
+
+[HTTPS]
+; Path to a TLS certificate file. If the certificate is signed by a certificate authority, the
+; certificate file should be the concatenation of the server's certificate followed by the CA's
+; certificate. Must be paired with `HTTPS.Key`.
+;Certificate = ""
+;
+; Path to a private key file corresponding to the certificate specified with `HTTPS.Certificate`.
+; Required when `HTTPS.Certificate` is specified.
+;Key = ""
+
+[CRAN]
+; Customize the default schedule for CRAN sync.
+;SyncSchedule = "0 0 * * *"
+
+[Bioconductor]
+; Customize the default schedule for Bioconductor syncs.
+;SyncSchedule = "0 2 * * *"
+
+[PyPI]
+; Customize the default schedule for PyPI syncs.
+;SyncSchedule = "0 1 * * *"
+
+; Configure Git if you are intending to build and share packages stored in Git repositories.
 [Git]
-BuilderDir = "/tmp/git"
-
-[Metrics]
-Enabled = true
+; The amount of time to wait between polling git repos to look for package changes.
+;PollInterval = 5m
+;
+; The maximum number of times to attempt building a git package when the build fails.
+;BuildRetries = 3
+AllowUnsandboxedGitBuilds = true
