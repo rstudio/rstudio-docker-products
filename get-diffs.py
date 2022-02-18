@@ -7,11 +7,24 @@
 #   ONLY the filtered output goes to stdout
 #
 # Example usage:
-# echo "$MATRIX" | get-diffs.py
-# get-diffs.py --input matrix-preview.json
+# echo "$MATRIX" | get-diffs.py -i
+# get-diffs.py -f matrix-preview.json
+# get-diffs.py -f matrix-preview.json -a
+#
+# Help:
+# usage: get-diffs.py [-h] [--file FILE] [--stdin] [--all] [--dirs DIRS [DIRS ...]]
+#
+# Arguments to determine how diffs are detected
+#
+# optional arguments:
+# -h, --help            show this help message and exit
+# --file FILE, -f FILE  The input matrix.json file to parse
+# --stdin, -i           Read matrix.json from stdin
+# --all, -a             Whether to bypass checks and return the input
+# --dirs DIRS [DIRS ...], -d DIRS [DIRS ...]
+#                       A subset of directories to check for differences
 
 import re
-# import requests
 import json
 import argparse
 import sys
@@ -20,7 +33,7 @@ import typing
 import subprocess
 
 
-def uniq_list(input: typing.List[typing.Any]):
+def uniq_list(input: typing.List[typing.Any]) -> typing.List:
     output = []
     for item in input:
         if item not in output:
@@ -28,13 +41,17 @@ def uniq_list(input: typing.List[typing.Any]):
     return output
 
 
-def get_changed_dirs(commit : str, dirs : typing.List[str] = []):
+def get_changed_dirs(commit : str, dirs=None) -> typing.List[str]:
+    if dirs is None:
+        dirs = []
     changed_files = get_changed_files(commit, dirs)
     changed_dirs = [os.path.dirname(f) for f in changed_files]
     return uniq_list(changed_dirs)
 
 
-def get_changed_files(commit : str, dirs : typing.List[str] = []):
+def get_changed_files(commit : str, dirs=None) -> typing.List[str]:
+    if dirs is None:
+        dirs = []
     command = ['git', 'diff', '--name-only', '--find-renames',  commit, '--'] + dirs
     # print(f"Command: {command}", file=sys.stderr)
     res = subprocess.check_output(command)
@@ -42,17 +59,19 @@ def get_changed_files(commit : str, dirs : typing.List[str] = []):
     return [x for x in changed_files if len(x) > 0]
 
 
-def get_current_commit():
+def get_current_commit() -> str:
     res = subprocess.check_output(['git', 'show', "--format='%H'", '-q'])
     return res.decode('utf-8').strip().replace("'", '')
 
 
-def get_merge_base(commit1 : str, commit2 : str):
+def get_merge_base(commit1 : str, commit2 : str) -> str:
     res = subprocess.check_output(['git', 'merge-base', commit1, commit2])
     return res.decode('utf-8').strip()
 
 
-def filter_json_by_dirs(json_input: typing.List[typing.Dict], dirs: typing.List[str] = []):
+def filter_json_by_dirs(json_input: typing.List[typing.Dict], dirs=None) -> typing.List[dict]:
+    if dirs is None:
+        dirs = []
     output_data = []
     for m in json_input:
         if m['dir'] in dirs:
@@ -60,21 +79,9 @@ def filter_json_by_dirs(json_input: typing.List[typing.Dict], dirs: typing.List[
     return output_data
 
 
-def get_dirs_from_json(json_input: typing.List[typing.Dict]):
+def get_dirs_from_json(json_input: typing.List[typing.Dict]) -> typing.List[str]:
     base_data = [m['dir'] for m in json_input]
     return uniq_list(base_data)
-
-
-def get_dirs_from_find(base_dir):
-    find_dockerfile = re.compile("Dockerfile$")
-
-    dir_list = []
-    for (root, dirs, file) in os.walk(base_dir):
-        for f in file:
-            if find_dockerfile.match(f):
-                dir_list.append(root)
-
-    return dir_list
 
 
 if __name__ == "__main__":
