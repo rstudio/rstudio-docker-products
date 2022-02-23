@@ -12,6 +12,11 @@ group:
 package:
   rstudio-server:
     installed: true
+# test all system packages
+  {{range .Vars.syspkgs}}
+  {{.}}:
+      installed: true
+  {{end}}
 
 port:
   tcp:8787:
@@ -116,3 +121,17 @@ command:
     stdout: [
       "/usr/bin/openssl"
     ]
+
+  # test all R versions and packages
+  {{ $rvers := mkSlice "/opt/R/3.3.3/bin/R" "/opt/R/3.4.4/bin/R" "/opt/R/3.5.3/bin/R" "/opt/R/3.6.3/bin/R" "/opt/R/4.0.5/bin/R" "/opt/R/4.1.2/bin/R"}}
+  {{ $pkgs := .Vars.packages}}
+  # loops the library command for each R version to ensure expected libraries exist for all.
+  # notably, it also ensures that each expected R version exists and is runnable
+  {{range $rver := $rvers }}
+  {{$rver}} --slave -e 'library()' | cut -f 1 -d ' ' | grep -v '^Packages$' | grep -v '^$':
+  exit-status: 0
+  stdout:
+    {{range $pkg := $pkgs}}
+    - {{ $pkg }}
+    {{end}}
+  {{end}}

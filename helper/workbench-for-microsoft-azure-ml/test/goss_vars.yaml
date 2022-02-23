@@ -1,0 +1,35 @@
+packages:
+  - fleur
+  - gdal
+  - ggplot2
+  - mlflow
+  - odbc
+  - packrat
+  - renv
+  - rmarkdown
+  - rsconnect
+  - sf
+  - shiny
+  - tidymodels
+  - tidyverse
+syspkgs:
+  - bzip2
+  - ca-certificates
+  - gdebi-core
+  - git
+  - g++
+  - libcap2
+  - libglib2.0-0
+  - libpq5
+  - libsm6
+  - libssl1.0.0
+  - openssl
+  - libssl-dev
+  - libuser
+  - libuser1-dev
+  - libxext6
+  - libxrender1
+  - openssh-client
+  - rrdtool
+  - supervisor
+  - wget
