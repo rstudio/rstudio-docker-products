@@ -58,6 +58,7 @@ for IMAGE in ${IMAGES} ; do
 
     R_FOUND=0
     PYTHON_FOUND=0
+    QUARTO_FOUND=0
 
     # examine-image.sh may produce duplicates; order and uniquify what we have.
     while IFS= read -r line; do
@@ -77,6 +78,12 @@ for IMAGE in ${IMAGES} ; do
             if [ ${R_FOUND} = 0 ] ; then
                 R_FOUND=1
                 echo "    r:"
+                echo "      installations:"
+            fi
+        elif [ "${language}" = "quarto" ] ; then
+            if [ ${QUARTO_FOUND} = 0 ] ; then
+                QUARTO_FOUND=1
+                echo "    quarto:"
                 echo "      installations:"
             fi
         fi
