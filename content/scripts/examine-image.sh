@@ -1,15 +1,16 @@
 #!/usr/bin/env sh
 #
-# Print the R and Python installations on this host and the version of each.
+# Print the R, Python, and Quarto installations on this host and the version
+# of each.
 #
 
-# The R and Python "homes" are locations that are well-known to contain
-# multiple interpreter installations; one per sub-directory.
+# The R, Python, and Quarto "homes" are locations that are well-known to
+# contain multiple installations; one per sub-directory.
 #
 # The alternate "default" locations often contain an R installation when a
 # system has only one version of R.
 #
-# PATH lookup almost always overlaps one of the other R or Python
+# PATH lookup almost always overlaps one of the R, Python, or Quarto
 # installations.
 #
 # The "python", "python2", and "python3" PATH lookup likely has some overlap.
@@ -30,6 +31,7 @@
 
 R_HOMES="/opt/R /opt/local/R"
 PYTHON_HOMES="/opt/python /opt/local/python"
+QUARTO_HOMES="/opt/quarto /opt/local/quarto"
 
 # The alternate R locations are almost always redundant with the PATH and
 # R_HOMES search...
@@ -177,4 +179,68 @@ fi
 
 if [ ${PYTHON_FOUND} = 0 ] ; then
     log "Unable to locate a Python installation."
+fi
+
+# Quarto ----------------------------------------------------------------------#
+
+QUARTO_FOUND=0
+record_quarto() {
+    CANONICAL=$1
+    QUARTO_VERSION=$2
+    QUARTO_FOUND=1
+    echo "quarto:${QUARTO_VERSION}:${CANONICAL}"
+}
+
+quarto_exe_probe() {
+    QUARTO_INSTALL=$1
+    QUARTO_EXE=$2
+
+    # shellcheck disable=SC2016
+    QUARTO_VERSION=$("${QUARTO_EXE}" --version 2>/dev/null)
+    status=$?
+    if [ ${status} = 0 ] ; then
+        CANONICAL=$(readlink -f "${QUARTO_EXE}")
+        log "Found Quarto at ${QUARTO_EXE} in ${QUARTO_INSTALL} with with canonical location ${CANONICAL} and version ${QUARTO_VERSION}."
+        record_quarto "${CANONICAL}" "${QUARTO_VERSION}"
+    fi
+}
+
+quarto_install_probe() {
+    QUARTO_INSTALL=$1
+
+    debug "Probing ${QUARTO_INSTALL}"
+    QUARTO_EXE="${QUARTO_INSTALL}/bin/quarto"
+    if [ -x "${QUARTO_EXE}" ] ; then
+        debug "Have Quarto at ${QUARTO_EXE}"
+        quarto_exe_probe "${QUARTO_INSTALL}" "${QUARTO_EXE}"
+    fi
+}
+
+for QUARTO_HOME in ${QUARTO_HOMES} ; do
+    debug "${QUARTO_HOME}"
+
+    if [ -d "${QUARTO_HOME}" ] ; then
+        # Does QUARTO_HOME=/opt/quarto look like an installation or a
+        # directory containing installations?
+        if [ -d "${QUARTO_HOME}/bin" ] ; then
+            quarto_install_probe "${QUARTO_HOME}"
+        else
+            for QUARTO_INSTALL in "${QUARTO_HOME}"/* ; do
+                quarto_install_probe "${QUARTO_INSTALL}"
+            done
+        fi
+    fi
+done
+
+# Probe Quarto in PATH only when no other quarto available.
+if [ ${QUARTO_FOUND} = 0 ] ; then
+    QUARTO_EXE=$(which quarto 2>/dev/null)
+    status=$?
+    if [ ${status} = 0 ] ; then
+        quarto_exe_probe "PATH" "${QUARTO_EXE}"
+    fi
+fi
+
+if [ ${QUARTO_FOUND} = 0 ] ; then
+    log "Unable to locate a Quarto installation."
 fi
