@@ -100,7 +100,7 @@ COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
 
 # Download RStudio Connect -----------------------------------------------------#
-ARG RSC_VERSION=2022.02.0
+ARG RSC_VERSION=2022.02.2
 SHELL [ "/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update --fix-missing \
     && RSC_VERSION_URL=`echo -n "${RSC_VERSION}" | sed 's/+/%2B/g'` \
