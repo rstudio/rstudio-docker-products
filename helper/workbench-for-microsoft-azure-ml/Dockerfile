@@ -12,21 +12,26 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
         bzip2 \
         ca-certificates \
+        g++ \
+        gdal-bin \
         gdebi-core \
         git \
-        g++ \
         libcap2 \
+        libgdal-dev \
+        libgeos-dev \
         libglib2.0-0 \
         libpq5 \
+        libproj-dev \
         libsm6 \
-        libssl1.0.0 \
-        openssl \
         libssl-dev \
+        libssl1.0.0 \
+        libudunits2-dev \
         libuser \
         libuser1-dev \
         libxext6 \
         libxrender1 \
         openssh-client \
+        openssl \
         rrdtool \
         supervisor \
         wget \
