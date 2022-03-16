@@ -117,9 +117,10 @@ RUN curl -O https://drivers.rstudio.org/7C152C12/installer/rstudio-drivers_${DRI
 # Set default env values
 ENV RSW_LICENSE ""
 ENV RSW_LICENSE_SERVER ""
-ENV RSW_TESTUSER rstudio
-ENV RSW_TESTUSER_PASSWD rstudio
-ENV RSW_TESTUSER_UID 10000
+ENV RSW_TESTUSER azureuser
+ENV RSW_TESTUSER_PASSWD ""
+ENV RSW_TESTUSER_UID 1001
+ENV RSW_TESTUSER_GID 1001
 ENV RSW_LAUNCHER true
 ENV RSW_LAUNCHER_TIMEOUT 10
 ENV DIAGNOSTIC_DIR /var/log/rstudio
@@ -170,10 +171,6 @@ RUN az extension add -n ml -y
 
 # Copy config
 COPY conf/* /etc/rstudio/
-
-# create user -----------------------------------------------------------------#
-RUN groupadd -g 1000 azure-user \
-    && useradd -m -u 1000 -g 1000 azure-user
 
 EXPOSE 8787/tcp
 EXPOSE 5559/tcp
