@@ -12,7 +12,7 @@ group:
 package:
   rstudio-server:
     installed: true
-# test all system packages
+  # test all system packages
   {{range .Vars.syspkgs}}
   {{.}}:
       installed: true
@@ -129,9 +129,9 @@ command:
   # notably, it also ensures that each expected R version exists and is runnable
   {{range $rver := $rvers }}
   {{$rver}} --slave -e 'library()' | cut -f 1 -d ' ' | grep -v '^Packages$' | grep -v '^$':
-  exit-status: 0
-  stdout:
-    {{range $pkg := $pkgs}}
-    - {{ $pkg }}
-    {{end}}
+    exit-status: 0
+    stdout:
+      {{range $pkg := $pkgs}}
+      - {{ $pkg }}
+      {{end}}
   {{end}}
