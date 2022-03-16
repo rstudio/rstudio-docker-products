@@ -171,6 +171,7 @@ RUN az extension add -n ml -y
 
 # Copy config
 COPY conf/* /etc/rstudio/
+COPY landing/* /usr/lib/rstudio-server/www/
 
 EXPOSE 8787/tcp
 EXPOSE 5559/tcp
