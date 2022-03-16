@@ -48,8 +48,11 @@ else
     if [ -z "$RSW_TESTUSER" ]; then
         echo "Empty 'RSW_TESTUSER' variables, not creating test user";
     else
-        useradd -m -s /bin/bash -N -u $RSW_TESTUSER_UID $RSW_TESTUSER
-        echo "$RSW_TESTUSER:$RSW_TESTUSER_PASSWD" | sudo chpasswd
+        groupadd -g $RSW_TESTUSER_GID $RSW_TESTUSER
+        useradd -m -s /bin/bash -N -u $RSW_TESTUSER_UID -g $RSW_TESTUSER_GID $RSW_TESTUSER
+        if [ -n "$RSW_TESTUSER_PASSWD" ] ; then
+            echo "$RSW_TESTUSER:$RSW_TESTUSER_PASSWD" | sudo chpasswd;
+        fi
     fi
 fi
 

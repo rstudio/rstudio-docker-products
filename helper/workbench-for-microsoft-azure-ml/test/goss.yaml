@@ -3,11 +3,20 @@ user:
     exists: true
     uid: 999
     gid: 999
+  # created in the startup script... and changeable by env var
+  # but should still exist
+  azureuser:
+    exists: true
+    uid: 1001
+    gid: 1001
 
 group:
   rstudio-server:
     exists: true
     gid: 999
+  azureuser:
+    exists: true
+    gid: 1001
 
 package:
   rstudio-server:
