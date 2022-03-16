@@ -1,6 +1,5 @@
 packages:
-  - fleur
-  - gdal
+  - rgdal
   - ggplot2
   - mlflow
   - odbc
