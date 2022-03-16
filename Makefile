@@ -158,6 +158,10 @@ run-package-manager:  ## Run RSPM container
 
 test-all: rspm test-rspm rsc test-rsc rsp test-rsw
 
+test-azure:
+	cd ./helper/workbench-for-microsoft-azure-ml && IMAGE_NAME=ghcr.io/rstudio/rstudio-workbench-for-microsoft-azure-ml:latest docker-compose -f docker-compose.test.yml run sut
+test-azure-i:
+	cd ./helper/workbench-for-microsoft-azure-ml && IMAGE_NAME=ghcr.io/rstudio/rstudio-workbench-for-microsoft-azure-ml:latest docker-compose -f docker-compose.test.yml run sut bash
 
 float:
 	docker-compose -f helper/float/docker-compose.yml build
