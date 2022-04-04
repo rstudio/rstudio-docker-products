@@ -9,16 +9,6 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
-# hadolint ignore=DL3008,DL3009
-RUN apt-get update --fix-missing \
-    && apt-get install -y --no-install-recommends \
-        gdebi-core \
-        libssl1.0.0 \
-        libssl-dev \
-	sudo \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
 ENV PATH /opt/rstudio-pm/bin:$PATH
 
 # Runtime settings ------------------------------------------------------------#
@@ -36,9 +26,12 @@ EXPOSE 2112/tcp
 ARG RSPM_VERSION=2021.12.0-3
 ARG RSPM_DOWNLOAD_URL=https://cdn.rstudio.com/package-manager/ubuntu/amd64
 RUN apt-get update --fix-missing \
+    && apt-get install -y --no-install-recommends gdebi-core \
     && curl -O ${RSPM_DOWNLOAD_URL}/rstudio-pm_${RSPM_VERSION}_amd64.deb \
     && RSTUDIO_INSTALL_NO_LICENSE_INITIALIZATION=1 gdebi -n rstudio-pm_${RSPM_VERSION}_amd64.deb \
     && rm rstudio-pm_${RSPM_VERSION}_amd64.deb \
+    && apt-get purge -y gdebi-core \
+    && apt-get autoremove -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && ln -s /opt/rstudio-pm/bin/rspm /usr/local/bin/rspm
