@@ -16,8 +16,7 @@ ARG TINI_VERSION=0.18.0
 RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini && \
     chmod +x /usr/local/bin/tini
 
-COPY startup.sh /usr/local/bin/startup.sh
-RUN chmod +x /usr/local/bin/startup.sh
+COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
 
 EXPOSE 4242/tcp
 EXPOSE 2112/tcp
