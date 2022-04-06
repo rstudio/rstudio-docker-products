@@ -120,8 +120,7 @@ COPY startup/* /startup/base/
 COPY startup-launcher/* /startup/launcher/
 COPY startup-user-provisioning/* /startup/user-provisioning/
 COPY supervisord.conf /etc/supervisor/supervisord.conf
-COPY startup.sh /usr/local/bin/startup.sh
-RUN chmod +x /usr/local/bin/startup.sh
+COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
 
 # Install RStudio Workbench --------------------------------------------------#
 ARG RSW_VERSION=2022.02.1+461.pro1
@@ -142,12 +141,11 @@ RUN rstudio-server install-vs-code /opt/code-server/
 
 # Copy config
 COPY conf/* /etc/rstudio/
-COPY sssd.conf /etc/sssd/sssd.conf
+COPY --chmod=600 sssd.conf /etc/sssd/sssd.conf
 
 # Create log dir
 RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
     chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor && \
-    chmod 600 /etc/sssd/sssd.conf && \
     mkdir -p /startup/custom/ && \
     echo '\n# allow home directory creation\nsession required pam_mkhomedir.so skel=/etc/skel umask=0022' >> /etc/pam.d/common-session
 

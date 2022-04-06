@@ -1,3 +1,8 @@
+# 2022-04-07
+
+- The Dockerfile now uses BuildKit features and must be built with
+  DOCKER_BUILDKIT=1.
+
 # 2021.09.0
 
 - **BREAKING**: rename environment variables to use `RSW_` prefix instead of `RSP_` prefix

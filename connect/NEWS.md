@@ -1,3 +1,8 @@
+# 2022-04-07
+
+- The Dockerfile now uses BuildKit features and must be built with
+  DOCKER_BUILDKIT=1.
+
 # 2021.10.0
 
 - Add a bunch of system dependencies. This makes the image build bigger (~4GB),
