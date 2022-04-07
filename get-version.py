@@ -91,7 +91,7 @@ def clean_product_selection(product: str) -> str:
 
 
 def rstudio_workbench_daily():
-    version_json = download_json("https://dailies.rstudio.com/rstudio/prairie-trillium/index.json")
+    version_json = download_json("https://dailies.rstudio.com/rstudio/spotted-wakerobin/index.json")
     return version_json['workbench']['platforms']['bionic']['version']
 
 
