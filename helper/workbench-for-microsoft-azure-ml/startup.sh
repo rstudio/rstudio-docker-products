@@ -18,7 +18,7 @@ verify_installation(){
    echo "==VERIFY INSTALLATION==";
    mkdir -p $DIAGNOSTIC_DIR
    chmod 777 $DIAGNOSTIC_DIR
-   rstudio-server verify-installation --verify-user=$RSW_TESTUSER | tee $DIAGNOSTIC_DIR/verify.log 
+   rstudio-server verify-installation --verify-user=$USER_NAME | tee $DIAGNOSTIC_DIR/verify.log
 }
 
 # Support RSP_ or RSW_ prefix
@@ -42,16 +42,16 @@ unset RSW_LICENSE
 unset RSW_LICENSE_SERVER
 
 # Create one user
-if [ $(getent passwd $RSW_TESTUSER_UID) ] ; then
-    echo "UID $RSW_TESTUSER_UID already exists, not creating $RSW_TESTUSER test user";
+if [ $(getent passwd $PUID) ] ; then
+    echo "UID $PUID already exists, not creating $USER_NAME test user";
 else
-    if [ -z "$RSW_TESTUSER" ]; then
-        echo "Empty 'RSW_TESTUSER' variables, not creating test user";
+    if [ -z "$USER_NAME" ]; then
+        echo "Empty 'USER_NAME' variables, not creating test user";
     else
-        groupadd -g $RSW_TESTUSER_GID $RSW_TESTUSER
-        useradd -m -s /bin/bash -N -u $RSW_TESTUSER_UID -g $RSW_TESTUSER_GID $RSW_TESTUSER
-        if [ -n "$RSW_TESTUSER_PASSWD" ] ; then
-            echo "$RSW_TESTUSER:$RSW_TESTUSER_PASSWD" | sudo chpasswd;
+        groupadd -g $PGID $USER_NAME
+        useradd -m -s /bin/bash -N -u $PUID -g $PGID $USER_NAME
+        if [ -n "$USER_PASSWORD" ] ; then
+            echo "$USER_NAME:$USER_PASSWORD" | sudo chpasswd;
         fi
     fi
 fi
