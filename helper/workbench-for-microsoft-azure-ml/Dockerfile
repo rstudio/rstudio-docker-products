@@ -1,4 +1,4 @@
-FROM rstudio/r-base:bionic
+FROM rstudio/r-base:bionic AS workbench
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 # Locale configuration --------------------------------------------------------#
@@ -178,3 +178,38 @@ EXPOSE 5559/tcp
 
 ENTRYPOINT []
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+
+
+FROM workbench AS clamav
+
+# Set up ClamAV
+RUN apt-get update && \
+    apt-get install -y \
+        clamav \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Reconfigure freshclam to get database from our S3 location
+RUN cat /etc/clamav/freshclam.conf | grep -v "DatabaseMirror" > /etc/clamav/freshclam.conf.new
+RUN echo "DatabaseMirror http://rstudio-platform-public-artifacts.s3-website-us-east-1.amazonaws.com/clamav" >> /etc/clamav/freshclam.conf.new
+RUN mv /etc/clamav/freshclam.conf.new /etc/clamav/freshclam.conf
+
+# Update ClamAV
+RUN touch /clamupdate.log
+RUN chown clamav:clamav /clamupdate.log
+RUN freshclam --log=/clamupdate.log
+
+# Scan all but /sys for viruses. If this fails, the Docker build will
+# fail.
+RUN clamscan --recursive --infected --log=/clamscan.log --exclude-dir="^/sys" /
+
+
+# Ignore the intermediate 'clamav' multi-stage build step so we don't distribute
+# with ClamAV installed. Avoid adding changes in this stage unless they are related
+# to the ClamAV stage. Since the ClamAV stage may be cached, you can't guarantee
+# another full scan if you change anything beyond this point.
+FROM workbench AS final
+
+# Copy ClamAV scan logs so the end user can see them.
+COPY --from=clamav /clamscan.log /
+COPY --from=clamav /clamupdate.log /
