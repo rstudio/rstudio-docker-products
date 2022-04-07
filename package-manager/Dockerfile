@@ -26,7 +26,7 @@ EXPOSE 2112/tcp
 ARG RSPM_VERSION=2021.12.0-3
 ARG RSPM_DOWNLOAD_URL=https://cdn.rstudio.com/package-manager/ubuntu/amd64
 RUN apt-get update --fix-missing \
-    && apt-get install -y --no-install-recommends dpkg-sig \
+    && apt-get install -y --no-install-recommends dpkg-sig libssl1.0.0 \
     && curl -O ${RSPM_DOWNLOAD_URL}/rstudio-pm_${RSPM_VERSION}_amd64.deb \
     && gpg --keyserver keyserver.ubuntu.com --recv-keys 3F32EE77E331692F \
     && dpkg-sig --verify rstudio-pm_${RSPM_VERSION}_amd64.deb \
