@@ -190,14 +190,15 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/*
 
 # Reconfigure freshclam to get database from our S3 location
-RUN cat /etc/clamav/freshclam.conf | grep -v "DatabaseMirror" > /etc/clamav/freshclam.conf.new
-RUN echo "DatabaseMirror http://rstudio-platform-public-artifacts.s3-website-us-east-1.amazonaws.com/clamav" >> /etc/clamav/freshclam.conf.new
-RUN mv /etc/clamav/freshclam.conf.new /etc/clamav/freshclam.conf
+RUN cat /etc/clamav/freshclam.conf | grep -v "DatabaseMirror" > /etc/clamav/freshclam.conf.new && \
+    echo "DatabaseMirror ${CLAMAV_MIRROR}" >> /etc/clamav/freshclam.conf.new && \
+    mv /etc/clamav/freshclam.conf.new /etc/clamav/freshclam.conf
 
 # Update ClamAV
-RUN touch /clamupdate.log
-RUN chown clamav:clamav /clamupdate.log
-RUN freshclam --log=/clamupdate.log
+ARG CLAMAV_MIRROR=http://rstudio-platform-public-artifacts.s3-website-us-east-1.amazonaws.com/clamav
+RUN touch /clamupdate.log && \
+    chown clamav:clamav /clamupdate.log && \
+    freshclam --log=/clamupdate.log
 
 # Scan all but /sys for viruses. If this fails, the Docker build will
 # fail.
@@ -211,5 +212,4 @@ RUN clamscan --recursive --infected --log=/clamscan.log --exclude-dir="^/sys" /
 FROM workbench AS final
 
 # Copy ClamAV scan logs so the end user can see them.
-COPY --from=clamav /clamscan.log /
-COPY --from=clamav /clamupdate.log /
+COPY --from=clamav /clamscan.log /clamupdate.log /
