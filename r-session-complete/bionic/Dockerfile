@@ -86,14 +86,16 @@ RUN /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix -
     /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter && \
     /opt/python/${PYTHON_VERSION}/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
 
-# Install VSCode code-server --------------------------------------------------#
+# Install VSCode code-server, extensions, etc. --------------------------------------------------#
 
 RUN rstudio-server install-vs-code /opt/code-server/ && \
 	wget https://rstudio-ide-build.s3.amazonaws.com/rsw-jupyterlab/jupyterlab_rsw-9.9.9-py3-none-any.whl && \
 	/opt/python/${PYTHON_VERSION}/bin/pip install ./jupyterlab_rsw-9.9.9-py3-none-any.whl && \
 	rm -rf ./jupyterlab_rsw-9.9.9-py3-none-any.whl && \
 	curl -L -o /quarto.vsix https://github.com/quarto-dev/quarto-vscode/raw/main/visx/quarto-1.14.0.vsix && \
-	ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
+	ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server && \
+	mkdir -p /opt/python/jupyter/bin && \
+	ln -s /opt/python/3.9.5/bin/jupyter /opt/python/jupyter/bin/jupyter
 
 # Install RStudio Professional Drivers ----------------------------------------#
 
