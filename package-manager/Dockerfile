@@ -32,12 +32,11 @@ RUN apt-get update --fix-missing \
     && ln -s /opt/rstudio-pm/bin/rspm /usr/local/bin/rspm
 
 # Add run script and set permissions -------------------------------------------#
-COPY startup.sh /usr/local/bin/startup.sh
+COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
 RUN mkdir -p /var/run/rstudio-pm \
     && chmod +x /usr/local/bin/startup.sh \
     && chown rstudio-pm:rstudio-pm /usr/local/bin/startup.sh \
-    && chown -R rstudio-pm:rstudio-pm /var/run/rstudio-pm \
-    chsh -s /bin/bash rstudio-pm
+    && chown -R rstudio-pm:rstudio-pm /var/run/rstudio-pm
 
 USER rstudio-pm
 COPY rstudio-pm.gcfg /etc/rstudio-pm/rstudio-pm.gcfg
