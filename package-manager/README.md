@@ -17,8 +17,8 @@ Docker images for RStudio Professional Products
 1. The Package Manager image uses the `No Sandbox` option documented
    [here](https://docs.rstudio.com/rspm/admin/process-management/#process-management-sandboxing) by default, if you need
    a more secure option for configuring
-   [Git-related package builds](https://docs.rstudio.com/rspm/admin/building-packages/) we recommend using a system with
-   sandboxing enabled.
+   [Git-related package builds](https://docs.rstudio.com/rspm/admin/building-packages/) we recommend [using a system with
+   sandboxing enabled](https://docs.rstudio.com/rspm/admin/process-management/#docker).
 
 ## Simple Example
 
