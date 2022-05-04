@@ -1,5 +1,6 @@
 ARG R_VERSION=3.6.2
 FROM rstudio/r-base:${R_VERSION}-bionic
+LABEL maintainer="RStudio Package Manager Team <rspm@rstudio.com>"
 
 # Locale configuration --------------------------------------------------------#
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
