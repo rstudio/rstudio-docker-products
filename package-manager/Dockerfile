@@ -1,6 +1,6 @@
 ARG R_VERSION=3.6.2
 FROM rstudio/r-base:${R_VERSION}-bionic
-LABEL maintainer="RStudio Docker <docker@rstudio.com>"
+LABEL maintainer="RStudio Package Manager Team <rspm@rstudio.com>"
 
 # Locale configuration --------------------------------------------------------#
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
@@ -15,11 +15,6 @@ ENV PATH /opt/rstudio-pm/bin:$PATH
 ARG TINI_VERSION=0.18.0
 RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini && \
     chmod +x /usr/local/bin/tini
-
-COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
-
-EXPOSE 4242/tcp
-EXPOSE 2112/tcp
 
 # Download RStudio Package Manager ---------------------------------------------#
 ARG RSPM_VERSION=2022.04.0-7
@@ -37,24 +32,21 @@ RUN apt-get update --fix-missing \
     && rm -rf /var/lib/apt/lists/* \
     && ln -s /opt/rstudio-pm/bin/rspm /usr/local/bin/rspm
 
-ENV RSPM_LICENSE ""
-ENV RSPM_LICENSE_SERVER ""
-COPY rstudio-pm.gcfg /etc/rstudio-pm/rstudio-pm.gcfg
+# Add run script and set permissions -------------------------------------------#
+COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
+RUN mkdir -p /var/run/rstudio-pm \
+    && chmod +x /usr/local/bin/startup.sh \
+    && chown rstudio-pm:rstudio-pm /usr/local/bin/startup.sh \
+    && chown -R rstudio-pm:rstudio-pm /var/run/rstudio-pm
 
-# These directories must be owned by rstudio-pm:rstudio-pm for a container to
-# work correctly when run as this user. (The container can also be run as root,
-# which will have access to these directories anyway.)
-RUN mkdir -p /var/run/rstudio-pm /data/launcher_internal \
-    && chown rstudio-pm:rstudio-pm /var/run/rstudio-pm \
-    && chown -R rstudio-pm:rstudio-pm /data
+USER rstudio-pm
+COPY rstudio-pm.gcfg /etc/rstudio-pm/rstudio-pm.gcfg
 
 # Set up licensing to work in userspace mode. This will not prevent activating a
 # license as root, but it is required to activate one as the non-root user at
 # runtime. It's possible for this to fail and the trail will be considered over,
 # in which case we can ignore it anyway.
-USER rstudio-pm
 RUN license-manager initialize --userspace || true
-USER root
 
 ENTRYPOINT ["tini", "--"]
 CMD ["/usr/local/bin/startup.sh"]
