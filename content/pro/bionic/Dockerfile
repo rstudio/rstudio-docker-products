@@ -17,4 +17,7 @@ RUN curl -O https://drivers.rstudio.org/7C152C12/installer/rstudio-drivers_${DRI
     rm -rf /var/lib/apt/lists/* && \
     cp /opt/rstudio-drivers/odbcinst.ini.sample /etc/odbcinst.ini
 
-RUN /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.rstudio.com/cran/__linux__/bionic/latest")'
+COPY maybe_install_quarto.sh /tmp/maybe_install_quarto.sh
+RUN /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.rstudio.com/cran/__linux__/bionic/latest")' && \
+    /tmp/maybe_install_quarto.sh && \
+    rm -f /tmp/maybe_install_quarto.sh
