@@ -195,7 +195,7 @@ RUN cat /etc/clamav/freshclam.conf | grep -v "DatabaseMirror" > /etc/clamav/fres
     mv /etc/clamav/freshclam.conf.new /etc/clamav/freshclam.conf
 
 # Update ClamAV
-ARG CLAMAV_MIRROR=http://rstudio-platform-public-artifacts.s3-website-us-east-1.amazonaws.com/clamav
+ARG CLAMAV_MIRROR=https://cdn.rstudio.com/platform/clamav
 RUN touch /clamupdate.log && \
     chown clamav:clamav /clamupdate.log && \
     freshclam --log=/clamupdate.log
