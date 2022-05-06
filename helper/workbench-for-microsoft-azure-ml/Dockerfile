@@ -127,6 +127,9 @@ ENV DIAGNOSTIC_DIR /var/log/rstudio
 ENV DIAGNOSTIC_ENABLE false
 ENV DIAGNOSTIC_ONLY false
 
+# Copy eicar
+COPY eicar.com.txt /usr/local/bin/eicar.com.txt
+
 # Copy config and startup
 COPY startup/* /startup/base/
 COPY startup-launcher/* /startup/launcher/
