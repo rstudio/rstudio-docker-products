@@ -190,12 +190,12 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/*
 
 # Reconfigure freshclam to get database from our S3 location
+ARG CLAMAV_MIRROR=https://cdn.rstudio.com/platform/clamav
 RUN cat /etc/clamav/freshclam.conf | grep -v "DatabaseMirror" > /etc/clamav/freshclam.conf.new && \
     echo "DatabaseMirror ${CLAMAV_MIRROR}" >> /etc/clamav/freshclam.conf.new && \
     mv /etc/clamav/freshclam.conf.new /etc/clamav/freshclam.conf
 
 # Update ClamAV
-ARG CLAMAV_MIRROR=https://cdn.rstudio.com/platform/clamav
 RUN touch /clamupdate.log && \
     chown clamav:clamav /clamupdate.log && \
     freshclam --log=/clamupdate.log
