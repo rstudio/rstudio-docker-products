@@ -36,6 +36,8 @@ RUN apt-get update --fix-missing \
         libjpeg-dev \
         libmagick++-dev \
         libmysqlclient-dev \
+        libnss-sss=1.16.1-1ubuntu1.8 \
+        libpam-sss=1.16.1-1ubuntu1.8 \
         libpng-dev \
         libproj-dev \
         libsm6 \
