@@ -159,7 +159,7 @@ for PYTHON_HOME in ${PYTHON_HOMES} ; do
 done
 
 # Probe Python in PATH only when no other Python available.
-if [ ${R_FOUND} = 0 ] ; then
+if [ ${PYTHON_FOUND} = 0 ] ; then
     PYTHON_EXE=$(which python 2>/dev/null)
     status=$?
     if [ ${status} = 0 ] ; then
