@@ -1,0 +1,9 @@
+[
+  {"product": "rstudio-workbench", "dir": "workbench", "os": "bionic/amd64", "prefix": "RSW", "version": "latest"},
+  {"product": "rstudio-connect", "dir": "connect", "prefix": "RSC", "version": "latest"},
+  {"product": "rstudio-connect-content-init", "dir": "connect-content-init", "prefix": "RSC", "version": "latest"},
+  {"product": "rstudio-package-manager", "dir": "package-manager", "prefix": "RSPM", "version": "latest"},
+  {"product": "r-session-complete", "tag_prefix": "bionic-", "dir": "r-session-complete/bionic", "os": "bionic/amd64", "prefix": "RSW", "version": "latest"},
+  {"product": "r-session-complete", "tag_prefix": "centos7-", "dir": "r-session-complete/centos7", "os": "centos7/x86_64", "prefix": "RSW", "version": "latest"},
+  {"product": "rstudio-workbench-for-microsoft-azure-ml", "dir": "helper/workbench-for-microsoft-azure-ml", "os": "bionic/amd64", "prefix": "RSW", "version": "latest"}
+]
