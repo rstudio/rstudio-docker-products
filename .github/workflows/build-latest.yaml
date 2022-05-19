@@ -3,30 +3,54 @@ on:
     branches:
       - main
       - dev
+      - dev-rspm
   pull_request:
 
 name: build/test/push (latest)
 jobs:
 
+  matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.9'
+          architecture: 'x64'
+      - id: set-matrix
+        run: |
+          # filter the matrix configuration
+          MATRIX=$(jq -Mcr < matrix-latest.json)
+          echo "Raw Matrix: $MATRIX"
+          MATRIX_DIFF_FILTER=$(echo "$MATRIX" | ./get-diffs.py -i -t origin/main)
+          echo "Filtered Diff Matrix: $MATRIX_DIFF_FILTER"
+          echo "::set-output name=matrix::$MATRIX_DIFF_FILTER"
+
   build:
     runs-on: ubuntu-latest
     name: build-${{ matrix.config.tag_prefix}}${{ matrix.config.product}}
+    needs: matrix
 
     strategy:
       fail-fast: false
       matrix:
-        config:
-          - {product: 'rstudio-workbench', dir: 'workbench', os: 'bionic/amd64', prefix: RSW, version: 'latest'}
-          - {product: 'rstudio-connect', dir: 'connect', prefix: RSC, version: 'latest'}
-          - {product: 'rstudio-connect-content-init', dir: 'connect-content-init', prefix: RSC, version: 'latest'}
-          - {product: 'rstudio-package-manager', dir: 'package-manager', prefix: RSPM, version: 'latest'}
-          - {product: 'r-session-complete', tag_prefix: 'bionic-', dir: 'r-session-complete/bionic', os: 'bionic/amd64', prefix: RSW, version: 'latest'}
-          - {product: 'r-session-complete', tag_prefix: 'centos7-', dir: 'r-session-complete/centos7', os: 'centos7/x86_64', prefix: RSW, version: 'latest'}
-          - {product: 'rstudio-workbench-for-microsoft-azure-ml', dir: 'helper/workbench-for-microsoft-azure-ml', os: 'bionic/amd64', prefix: RSW, version: 'latest'}
+        config: ${{ fromJson(needs.matrix.outputs.matrix) }}
 
     steps:
       - name: Check Out Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
+      # setup python
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.9'
+          architecture: 'x64'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
 
       - name: Set up Docker Buildx
         id: buildx
@@ -117,7 +141,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.BUILD_PAT }}
 
-      - name: Push image(s) to Docker Hub
+      - name: Push image(s)
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           docker push rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
