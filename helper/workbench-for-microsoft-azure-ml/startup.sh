@@ -50,6 +50,9 @@ else
     else
         groupadd -g $PGID $USER_NAME
         useradd -m -s /bin/bash -N -u $PUID -g $PGID $USER_NAME
+
+        # TODO: make sure that $USER_NAME is replaces azureuser in /etc/rstudio/nginx.site.conf
+
         if [ -n "$USER_PASSWORD" ] ; then
             echo "$USER_NAME:$USER_PASSWORD" | sudo chpasswd;
         fi
