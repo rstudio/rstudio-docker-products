@@ -3,3 +3,4 @@ data
 *.lic
 .idea/
 tmp*/
+.python-version
