@@ -75,6 +75,7 @@ update-versions:  ## Update the version files for all products
 	@sed $(SED_FLAGS) "s|^RVersion.*=.*|RVersion = /opt/R/${R_VERSION}/|g" package-manager/rstudio-pm.gcfg
 	@sed $(SED_FLAGS) "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" r-session-complete/bionic/Dockerfile
 	@sed $(SED_FLAGS) "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" r-session-complete/centos7/Dockerfile
+	@sed $(SED_FLAGS) "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" helper/workbench-for-microsoft-azure-ml/Dockerfile
 
 
 rsw: workbench
