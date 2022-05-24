@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<link rel="shortcut icon" type="image/png" href="./favicon.ico"/>
+
+<title>Service Not Up Yet</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+<style type="text/css">
+.loader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #75AADB; /* RStudio Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="/air.css" type="text/css">
+
+<script>
+function check_for_service_up() {
+    // make Ajax call here, inside the callback call:
+    setTimeout(check_for_service_up, 1000);
+    
+    const Http = new XMLHttpRequest();
+    const url=window.location.href;
+    Http.open("GET", url);
+
+    // important to create this listenter _before_ we send it... #asyncprobs
+    Http.onreadystatechange=(e)=>{
+        if (Http.status != 502) {
+            window.location.reload();
+        }
+    }
+    Http.send();
+}
+
+function update_message() {
+  var obj = document.getElementById("wait-detail");
+  obj.innerHTML = "Something happened! The service should have started by now. You can continue to wait or see <a href='https://support.rstudio.com/' target='_blank'>RStudio Troubleshooting</a> for common issues. Please refer any specific issues to the <a href='https://support.rstudio.com' target='_blank'>RStudio Support Team</a>.";
+}
+
+setTimeout(check_for_service_up, 1000);
+
+setTimeout(update_message, 45000);
+
+</script>
+
+</head>
+
+
+<style type="text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<div>
+
+<a href="/"><img src="./RStudio-Logo-Flat.png"></a>
+
+<h2>Waiting for service to start...</h2>
+
+<div style="width: 100%; text-align: center;"><div class="loader" style="display: inline-block;"></div></div>
+
+<p id="wait-detail">
+The service is not available yet... please wait.
+</p>
+
+<p><small><a href="https://www.rstudio.com/">RStudio PBC</a><br>250 Northern Ave, Boston, MA 02210<br>844-448-1212</small></p>
+<p><small>Copyright 2022 RStudio PBC | All Rights Reserved | <a href="https://www.rstudio.com/about/eula/">Legal Terms</a></small></p>
+
+</div>
+
+</body></html>
