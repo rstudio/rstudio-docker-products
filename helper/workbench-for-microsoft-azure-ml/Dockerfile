@@ -219,3 +219,16 @@ FROM workbench AS final
 
 # Copy ClamAV scan logs so the end user can see them.
 COPY --from=clamav /clamscan.log /clamupdate.log /
+
+LABEL \
+     azure.ii.language='en-US' \
+     azure.ii.support.stage='preview' \
+     azure.ii.privacy='{"tracking":false,"ads":false,"network-traffic":true}' \
+     azure.ii.auth='{"disable":"DISABLE_AUTH"}' \
+     azure.ii.user='{"mode":"entrypoint","name":"USER_NAME","uid":"PUID","gid":"PGID"}' \
+     azure.ii.locale='{"tz":"TZ","lang":"LANG"}' \
+     azure.ii.endpoints='[{"label":"connect","target":8787,"protocol":"http"}]' \
+     org.opencontainers.image.description='A professional integrated development environment for data science teams using R and Python' \
+     org.opencontainers.image.title='RStudio Workbench' \
+     org.opencontainers.image.version='2022.02.2+485.pro2' \
+     org.opencontainers.image.url='https://www.rstudio.com/products/workbench/'
