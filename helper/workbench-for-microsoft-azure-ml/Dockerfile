@@ -135,7 +135,7 @@ COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
 
 # Install RStudio Workbench --------------------------------------------------#
-ARG RSW_VERSION=2021.09.2+382.pro1
+ARG RSW_VERSION=2022.02.2+485.pro2
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 ARG RSW_NAME=rstudio-workbench
 RUN apt-get update --fix-missing \
@@ -143,6 +143,12 @@ RUN apt-get update --fix-missing \
     && curl -o rstudio-workbench.deb ${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-amd64.deb \
     && gdebi --non-interactive rstudio-workbench.deb \
     && rm rstudio-workbench.deb \
+    # custom license manager \
+    && mkdir -p /opt/rstudio-license/ \
+    && curl -sL https://s3.amazonaws.com/rstudio-ide-build/monitor/bionic/rsp-monitor-workbench-azureml-${RSW_VERSION_URL}.tar.gz |  \
+       tar xzvf - --strip 2 -C /opt/rstudio-license/ --wildcards '*/*/license-manager' \
+    && chown 0755 /opt/rstudio-license/license-manager \
+    && rm -f /usr/lib/rstudio-server/bin/license-manager \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/rstudio-server/r-versions
@@ -213,3 +219,16 @@ FROM workbench AS final
 
 # Copy ClamAV scan logs so the end user can see them.
 COPY --from=clamav /clamscan.log /clamupdate.log /
+
+LABEL \
+     azure.ii.language='en-US' \
+     azure.ii.support.stage='preview' \
+     azure.ii.privacy='{"tracking":false,"ads":false,"network-traffic":true}' \
+     azure.ii.auth='{"disable":"DISABLE_AUTH"}' \
+     azure.ii.user='{"mode":"entrypoint","name":"USER_NAME","uid":"PUID","gid":"PGID"}' \
+     azure.ii.locale='{"tz":"TZ","lang":"LANG"}' \
+     azure.ii.endpoints='[{"label":"connect","target":8787,"protocol":"http"}]' \
+     org.opencontainers.image.description='A professional integrated development environment for data science teams using R and Python' \
+     org.opencontainers.image.title='RStudio Workbench' \
+     org.opencontainers.image.version='2022.02.2+485.pro2' \
+     org.opencontainers.image.url='https://www.rstudio.com/products/workbench/'
