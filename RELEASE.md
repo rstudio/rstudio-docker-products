@@ -21,6 +21,11 @@ For RStudio Package Manager, edit `RSPM_VERSION`
 **IMPORTANT NOTE:** The "default" ARG value in the respective `Dockerfile` has
 no effect on the build process
 
+**ALSO:** When updating `RSW_VERSION`, be sure to update the
+[`helper/workbench-for-microsoft-azure-ml/Dockerfile`](./helper/workbench-for-microsoft-azure-ml/Dockerfile)
+with both a `RSW_VERSION` and a version label. The `Makefile` does not yet
+handle this case well.
+
 ## Building Images in CI
 
 GitHub Actions build a matrix of many images:
