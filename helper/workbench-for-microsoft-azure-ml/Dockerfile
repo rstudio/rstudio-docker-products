@@ -153,6 +153,9 @@ RUN apt-get update --fix-missing \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/rstudio-server/r-versions
 
+# Custom license manager
+COPY TurboActivate.dat /opt/rstudio-license/license-manager.conf
+
 # Install VSCode code-server --------------------------------------------------#
 
 RUN rstudio-server install-vs-code /opt/code-server/
