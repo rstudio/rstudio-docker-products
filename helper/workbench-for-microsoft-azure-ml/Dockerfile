@@ -145,6 +145,7 @@ RUN apt-get update --fix-missing \
     && rm rstudio-workbench.deb \
     # custom license manager \
     && mkdir -p /opt/rstudio-license/ \
+    && mkdir -p /var/lib/rstudio-workbench/ \
     && curl -sL https://s3.amazonaws.com/rstudio-ide-build/monitor/bionic/rsp-monitor-workbench-azureml-${RSW_VERSION_URL}.tar.gz |  \
        tar xzvf - --strip 2 -C /opt/rstudio-license/ \
     && chown 0755 /opt/rstudio-license/license-manager \
