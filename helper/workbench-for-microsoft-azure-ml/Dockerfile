@@ -148,15 +148,15 @@ RUN apt-get update --fix-missing \
     && mkdir -p /var/lib/rstudio-workbench/ \
     && curl -sL https://s3.amazonaws.com/rstudio-ide-build/monitor/bionic/rsp-monitor-workbench-azureml-${RSW_VERSION_URL}.tar.gz |  \
        tar xzvf - --strip 2 -C /opt/rstudio-license/ \
-    && chown 0755 /opt/rstudio-license/license-manager \
+    && chmod 0755 /opt/rstudio-license/license-manager \
     && rm -f /usr/lib/rstudio-server/bin/license-manager \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/rstudio-server/r-versions
 
 # Custom license manager
-COPY TurboActivate.dat /opt/rstudio-license/license-manager.conf
-RUN chown 0755 /opt/rstudio-license/license-manager.conf
+COPY --chmod 755 TurboActivate.dat /opt/rstudio-license/license-manager.conf
+
 
 # Install VSCode code-server --------------------------------------------------#
 
