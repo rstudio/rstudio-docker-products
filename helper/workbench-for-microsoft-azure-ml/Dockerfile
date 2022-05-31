@@ -156,6 +156,7 @@ RUN apt-get update --fix-missing \
 
 # Custom license manager
 COPY TurboActivate.dat /opt/rstudio-license/license-manager.conf
+RUN chown 0755 /opt/rstudio-license/license-manager.conf
 
 # Install VSCode code-server --------------------------------------------------#
 
