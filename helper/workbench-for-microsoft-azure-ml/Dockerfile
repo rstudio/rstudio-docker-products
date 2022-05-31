@@ -229,7 +229,7 @@ LABEL \
      azure.ii.support.stage='preview' \
      azure.ii.privacy='{"tracking":false,"ads":false,"network-traffic":true}' \
      azure.ii.auth='{"disable":"DISABLE_AUTH"}' \
-     azure.ii.user='{"mode":"entrypoint","name":"USER_NAME","uid":"PUID","gid":"PGID"}' \
+     azure.ii.user='{"mode":"entry_point","name":"USER_NAME","uid":"PUID","gid":"PGID"}' \
      azure.ii.locale='{"tz":"TZ","lang":"LANG"}' \
      azure.ii.endpoints='[{"label":"connect","target":8787,"protocol":"http"}]' \
      org.opencontainers.image.description='A professional integrated development environment for data science teams using R and Python' \
