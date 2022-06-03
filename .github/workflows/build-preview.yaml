@@ -9,6 +9,9 @@ on:
       - dev
       - dev-rspm
   pull_request:
+  
+env:
+  daily_branches: ['main', 'dev', 'dev-rspm']
 
 name: build/test/push (preview)
 jobs:
@@ -39,18 +42,13 @@ jobs:
       fail-fast: false
       matrix:
         config: ${{ fromJson(needs.matrix.outputs.matrix) }}
-        ref: ["main", "dev", "dev-rspm"]
+        ref: ${{ github.GITHUB_EVENT_NAME == 'schedule' && env.daily_branches || github.GITHUB_BASE_REF }}
 
     steps:
-      - if: ${{ github.GITHUB_EVENT_NAME == 'schedule' }}
-        name: Check Out Repo CRON
+      - name: Check Out Repo CRON
         uses: actions/checkout@v2
         with:
           ref: ${{ matrix.ref }}
-          
-      - if: ${{ github.GITHUB_EVENT_NAME != 'schedule' }}
-        name: Check Out Repo
-        uses: actions/checkout@v2
 
       - name: Set up Docker Buildx
         id: buildx
