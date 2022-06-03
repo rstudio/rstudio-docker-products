@@ -42,10 +42,15 @@ jobs:
         ref: ["main", "dev", "dev-rspm"]
 
     steps:
-      - name: Check Out Repo
+      - if: ${{ github.GITHUB_EVENT_NAME == 'schedule' }}
+        name: Check Out Repo CRON
         uses: actions/checkout@v2
         with:
           ref: ${{ matrix.ref }}
+          
+      - if: ${{ github.GITHUB_EVENT_NAME != 'schedule' }}
+        name: Check Out Repo
+        uses: actions/checkout@v2
 
       - name: Set up Docker Buildx
         id: buildx
