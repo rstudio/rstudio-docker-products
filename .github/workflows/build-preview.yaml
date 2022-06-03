@@ -45,7 +45,7 @@ jobs:
         ref: ${{ github.GITHUB_EVENT_NAME == 'schedule' && env.daily_branches || github.GITHUB_BASE_REF }}
 
     steps:
-      - name: Check Out Repo CRON
+      - name: Check Out Repo
         uses: actions/checkout@v2
         with:
           ref: ${{ matrix.ref }}
