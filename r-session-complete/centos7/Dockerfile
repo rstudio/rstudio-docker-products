@@ -94,7 +94,7 @@ RUN yum update -y && \
     yum install -y unixODBC unixODBC-devel && \
     yum clean all
 
-RUN curl -O https://drivers.rstudio.org/7C152C12/installer/rstudio-drivers-${DRIVERS_VERSION}.el7.x86_64.rpm && \
+RUN curl -O https://cdn.rstudio.com/drivers/7C152C12/installer/rstudio-drivers-${DRIVERS_VERSION}.el7.x86_64.rpm && \
     yum install -y rstudio-drivers-${DRIVERS_VERSION}.el7.x86_64.rpm && \
     yum clean all && \
     rm -f rstudio-drivers-${DRIVERS_VERSION}.el7.x86_64.rpm && \
