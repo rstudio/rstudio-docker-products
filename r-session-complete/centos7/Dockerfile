@@ -74,6 +74,7 @@ ENV PATH="/opt/python/${PYTHON_VERSION}/bin:${PATH}"
 RUN /opt/python/${PYTHON_VERSION}/bin/pip install \
     jupyter \
     jupyterlab \
+    jupyterlab-rsw \
     rsp_jupyter \
     rsconnect_jupyter \
     rsconnect_python

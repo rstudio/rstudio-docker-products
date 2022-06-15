@@ -76,6 +76,7 @@ ENV PATH="/opt/python/${PYTHON_VERSION}/bin:${PATH}"
 RUN /opt/python/${PYTHON_VERSION}/bin/pip install \
     jupyter \
     jupyterlab \
+    jupyterlab-rsw \
     rsp_jupyter \
     rsconnect_jupyter \
     rsconnect_python
@@ -89,9 +90,6 @@ RUN /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix -
 # Install VSCode code-server, extensions, etc. --------------------------------------------------#
 
 RUN rstudio-server install-vs-code /opt/code-server/ && \
-	wget https://rstudio-ide-build.s3.amazonaws.com/rsw-jupyterlab/jupyterlab_rsw-9.9.9-py3-none-any.whl && \
-	/opt/python/${PYTHON_VERSION}/bin/pip install ./jupyterlab_rsw-9.9.9-py3-none-any.whl && \
-	rm -rf ./jupyterlab_rsw-9.9.9-py3-none-any.whl && \
 	curl -L -o /quarto.vsix https://github.com/quarto-dev/quarto-vscode/raw/main/visx/quarto-1.14.0.vsix && \
 	ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server && \
 	mkdir -p /opt/python/jupyter/bin && \
