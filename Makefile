@@ -21,6 +21,9 @@ RSW_LICENSE_SERVER ?= ""
 RSC_LICENSE_SERVER ?= ""
 RSPM_LICENSE_SERVER ?= ""
 
+VARIANTS ?= bionic jammy
+PACKAGES ?= workbench package-manager connect
+
 # Optional Command for docker run
 CMD ?=
 
@@ -77,15 +80,69 @@ update-versions:  ## Update the version files for all products
 	@sed $(SED_FLAGS) "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" r-session-complete/centos7/Dockerfile
 	@sed $(SED_FLAGS) "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" helper/workbench-for-microsoft-azure-ml/Dockerfile
 
+define GEN_TAGS
+ifeq (workbench, $(package))
+CURRENT_TAG = $(RSW_TAG_VERSION)
+CURRENT_VERSION = $(RSW_VERSION)
+SHORT_NAME = RSW
+endif
+
+ifeq (package-manager, $(package))
+CURRENT_TAG = $(RSPM_VERSION)
+CURRENT_VERSION = $(RSPM_VERSION)
+SHORT_NAME = RSPM
+endif
+
+ifeq (connect, $(package))
+CURRENT_TAG = $(RSC_VERSION)
+CURRENT_VERSION = $(RSC_VERSION)
+SHORT_NAME = RSC
+endif
+endef
+
+# Generate all build rules
+define GEN_BUILD_TARGETS
+
+build-$(package)-$(variant):
+	docker build -t rstudio/rstudio-$(package)-$(variant):$(CURRENT_TAG) --build-arg R_VERSION=$(R_VERSION) --build-arg $(SHORT_NAME)_VERSION=$(CURRENT_VERSION) --file=./$(package)/docker/$(variant)/Dockerfile $(package)
+
+test-$(package)-$(variant):
+	cd ./$(package) && IMAGE_NAME=rstudio/rstudio-$(package)-$(variant):$(CURRENT_TAG) docker-compose -f docker-compose.test.yml run sut
+
+test-$(package)-$(variant)-i:
+	cd ./$(package) && IMAGE_NAME=rstudio/rstudio-$(package)-$(variant):$(CURRENT_TAG) docker-compose -f docker-compose.test.yml run sut bash
+
+BUILD_PACKAGES += build-$(package)-$(variant)
+TEST_PACKAGES += test-$(package)-$(variant)
+TEST_PACKAGES_I += test-$(package)-$(variant)-i
+endef
+
+$(foreach variant,$(VARIANTS), \
+	$(foreach package,$(PACKAGES), \
+		$(eval $(GEN_TAGS)) \
+		$(eval $(GEN_BUILD_TARGETS)) \
+	) \
+)
+
+dk-temp: 
+	echo $(RSC_VERSION)
+
+dk-all: $(DK)
+
+build-all: $(BUILD_PACKAGES)
+
+test-all: $(TEST_PACKAGES)
+
+test-all-i: $(TEST_PACKAGES_I)
 
 rsw: workbench
 workbench:  ## Build Workbench image
-	docker build -t rstudio/rstudio-workbench:$(RSW_TAG_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSW_VERSION=$(RSW_VERSION) workbench
+	docker build -t rstudio/rstudio-workbench:$(RSW_TAG_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSW_VERSION=$(RSW_VERSION) workbench --file=./workbench/docker/bionic/Dockerfile
 
 rsw-hook:
 	cd ./workbench && \
 	DOCKERFILE_PATH=Dockerfile \
-	IMAGE_NAME=rstudio/rstudio-workbench$(RSW_VERSION) \
+	IMAGE_NAME=rstudio/rstudio-workbench:$(RSW_VERSION) \
 	./hooks/build
 
 test-rsw: test-workbench
@@ -157,7 +214,7 @@ run-package-manager:  ## Run RSPM container
 		rstudio/rstudio-package-manager:$(RSPM_VERSION) $(CMD)
 
 
-test-all: rspm test-rspm rsc test-rsc rsp test-rsw
+# test-all: rspm test-rspm rsc test-rsc rsp test-rsw
 
 test-azure:
 	cd ./helper/workbench-for-microsoft-azure-ml && IMAGE_NAME=ghcr.io/rstudio/rstudio-workbench-for-microsoft-azure-ml:latest docker-compose -f docker-compose.test.yml run sut
