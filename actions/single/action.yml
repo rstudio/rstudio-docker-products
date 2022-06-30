@@ -1,0 +1,58 @@
+name: "Build-Single-Composite"
+description: "Build a single package-os-type"
+inputs:
+  build_type:
+    description: "Which type of build to perform. Default 'release'. Options: 'preview', 'release', 'daily' "
+    default: 'preview'
+    required: true
+    type: string
+  product:
+    required: true
+    type: string
+  os:
+    required: true
+    type: string
+  version:
+    required: false
+    type: string
+runs:
+  using: "composite"
+  steps:
+    - name: Check out
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Set up just
+      id: just
+      uses: extractions/setup-just@v1
+    
+    - name: Cache Docker layers
+      uses: actions/cache@v2
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
+
+    - name: Build Image
+      id: docker_build
+      run: |
+        OTAG=`just b ${{ inputs.build_type }} ${{ inputs.product }} ${{ inputs.os }} ${{ inputs.version }}`
+        echo "::set-output name=TEST_TAG::${OTAG}"
+      shell: bash
+
+    - name: Show image size
+      run: |
+        docker image ls
+      shell: bash
+
+    - name: Test Image
+      env: 
+        RSC_LICENSE: ${{ secrets.RSC_LICENSE }}
+        RSPM_LICENSE: ${{ secrets.RSPM_LICENSE }}
+        RSW_LICENSE: ${{ secrets.RSW_LICENSE }}
+      run: |
+        just t ${{ inputs.product }} ${{ steps.docker_build.outputs.TEST_TAG }}

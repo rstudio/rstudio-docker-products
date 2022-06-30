@@ -104,13 +104,13 @@ endef
 define GEN_BUILD_TARGETS
 
 build-$(package)-$(variant):
-	docker build -t rstudio/rstudio-$(package)-$(variant):$(CURRENT_TAG) --build-arg R_VERSION=$(R_VERSION) --build-arg $(SHORT_NAME)_VERSION=$(CURRENT_VERSION) --file=./$(package)/docker/$(variant)/Dockerfile $(package)
+	docker build -t rstudio/rstudio-$(package):$(CURRENT_TAG)-$(variant) --build-arg R_VERSION=$(R_VERSION) --build-arg $(SHORT_NAME)_VERSION=$(CURRENT_VERSION) --file=./$(package)/docker/$(variant)/Dockerfile $(package)
 
 test-$(package)-$(variant):
-	cd ./$(package) && IMAGE_NAME=rstudio/rstudio-$(package)-$(variant):$(CURRENT_TAG) docker-compose -f docker-compose.test.yml run sut
+	cd ./$(package) && IMAGE_NAME=rstudio/rstudio-$(package):$(CURRENT_TAG)-$(variant) docker-compose -f docker-compose.test.yml run sut
 
 test-$(package)-$(variant)-i:
-	cd ./$(package) && IMAGE_NAME=rstudio/rstudio-$(package)-$(variant):$(CURRENT_TAG) docker-compose -f docker-compose.test.yml run sut bash
+	cd ./$(package) && IMAGE_NAME=rstudio/rstudio-$(package):$(CURRENT_TAG)-$(variant) docker-compose -f docker-compose.test.yml run sut bash
 
 BUILD_PACKAGES += build-$(package)-$(variant)
 TEST_PACKAGES += test-$(package)-$(variant)
@@ -123,11 +123,6 @@ $(foreach variant,$(VARIANTS), \
 		$(eval $(GEN_BUILD_TARGETS)) \
 	) \
 )
-
-dk-temp: 
-	echo $(RSC_VERSION)
-
-dk-all: $(DK)
 
 build-all: $(BUILD_PACKAGES)
 
