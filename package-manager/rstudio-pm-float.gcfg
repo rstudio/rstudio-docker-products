@@ -16,10 +16,11 @@ RVersion = /opt/R/3.6.2/
 ; Customize the data directory if necessary. This is where all packages and metadata are
 ; stored by default. Refer to Admin Guide for details.
 ;DataDir = /mnt/rspm/data
+;
 ; Use a consistent location for the Launcher directory. The default location
 ; is based on the hostname, and the hostname may be different in each container.
+; When customizing the data directory, this should be set to {DataDir}/launcher_internal
 LauncherDir = /var/lib/rstudio-pm/launcher_internal
-RVersion = /opt/R/3.6.2/
 
 [HTTP]
 ; RStudio Package Manager will listen on this network address for HTTP connections.

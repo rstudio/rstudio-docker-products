@@ -1,9 +1,6 @@
 ; RStudio Package Manager configuration file
 
 [Server]
-; Use a consistent location for the Launcher directory. The default location
-; is based on the hostname, and the hostname may be different in each container.
-LauncherDir = /var/lib/rstudio-pm/launcher_internal
 ; Address is a public URL for this RStudio Package Manager server. Must be configured
 ; to enable features like including links to your content in emails. If
 ; Package Manager is deployed behind an HTTP proxy, this should be the URL for Package Manager
@@ -19,6 +16,11 @@ RVersion = /opt/R/3.6.2/
 ; Customize the data directory if necessary. This is where all packages and metadata are
 ; stored by default. Refer to Admin Guide for details.
 ;DataDir = /mnt/rspm/data
+;
+; Use a consistent location for the Launcher directory. The default location
+; is based on the hostname, and the hostname may be different in each container.
+; When customizing the data directory, this should be set to {DataDir}/launcher_internal
+LauncherDir = /var/lib/rstudio-pm/launcher_internal
 
 [HTTP]
 ; RStudio Package Manager will listen on this network address for HTTP connections.
