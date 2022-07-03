@@ -6,7 +6,7 @@ alias t := test-image
 alias gm := getmatrix
 
 build $TYPE $PRODUCT OS VERSION="":
-    #!/usr/bin/env sh
+    #!/usr/bin/env bash
     set -euxo pipefail
     type="{{TYPE}}"
     if [[ $type == "preview" || $type == "daily" ]]; then
@@ -17,7 +17,7 @@ build $TYPE $PRODUCT OS VERSION="":
     
 
 build-preview $TYPE $PRODUCT OS VERSION="" BRANCH=`git branch --show`:
-    #!/usr/bin/env sh
+    #!/usr/bin/env bash
     set -euxo pipefail
     version={{ if VERSION == "" { `just gv $PRODUCT --type=$TYPE --local` } else { VERSION } }}
     safe_version=`echo -n "$version" | sed 's/+/-/g'`
@@ -45,6 +45,9 @@ build-preview $TYPE $PRODUCT OS VERSION="" BRANCH=`git branch --show`:
          --build-arg "${short_name}"_VERSION=$version ${rsw_download_url_arg} --file=./{{PRODUCT}}/docker/{{OS}}/Dockerfile {{PRODUCT}}
 
     echo rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-"${safe_version}"
+
+build-release $TYPE $PRODUCT OS VERSION="" BRANCH=`git branch --show`:
+    #!/usr/bin/env bash
 
 test-image PRODUCT IMAGE:
     cd ./{{PRODUCT}} && IMAGE_NAME={{IMAGE}} docker-compose -f docker-compose.test.yml run sut

@@ -9,17 +9,27 @@ inputs:
   product:
     required: true
     type: string
+    default: "invalid"
   os:
     required: true
     type: string
+    default: "invalid"
   version:
     required: false
     type: string
 runs:
   using: "composite"
   steps:
-    - name: Check out
-      uses: actions/checkout@v2
+    - uses: actions/checkout@v2
+
+    - name: Get Input
+      id: input
+      run: |
+        echo "::set-output name=BUILD_OS::${{ inputs.os }}"
+        echo "::set-output name=BUILD_PACKAGE::${{ inputs.package }}"
+        echo "::set-output name=BUILD_TYPE::${{ inputs.build_type }}"
+        echo "::set-output name=BUILD_VERSION::${{ inputs.version }}"
+      shell: bash
 
     - name: Set up Docker Buildx
       id: buildx
@@ -38,9 +48,9 @@ runs:
           ${{ runner.os }}-buildx-
 
     - name: Build Image
-      id: docker_build
+      id: build
       run: |
-        OTAG=`just b ${{ inputs.build_type }} ${{ inputs.product }} ${{ inputs.os }} ${{ inputs.version }}`
+        OTAG=`just b ${{ steps.input.outputs.BUILD_TYPE }} ${{ steps.input.outputs.BUILD_PACKAGE }} ${{ steps.input.outputs.BUILD_OS }} ${{ steps.input.outputs.BUILD_VERSION }}`
         echo "::set-output name=TEST_TAG::${OTAG}"
       shell: bash
 
@@ -49,10 +59,14 @@ runs:
         docker image ls
       shell: bash
 
+    - uses: KengoTODA/actions-setup-docker-compose@main
+      with:
+        version: '1.29.2'
+
     - name: Test Image
       env: 
         RSC_LICENSE: ${{ secrets.RSC_LICENSE }}
         RSPM_LICENSE: ${{ secrets.RSPM_LICENSE }}
         RSW_LICENSE: ${{ secrets.RSW_LICENSE }}
       run: |
-        just t ${{ inputs.product }} ${{ steps.docker_build.outputs.TEST_TAG }}
+        just t ${{ steps.input.outputs.BUILD_PACKAGE }} ${{ steps.build.outputs.TEST_TAG }}
