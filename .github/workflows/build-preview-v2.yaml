@@ -15,7 +15,7 @@ jobs:
       - uses: ./actions/single
         name: "build one"
         with:
-          build_type: "release"
+          build_type: "preview"
           package: "workbench"
           os: "bionic"
           RSPM_LICENSE: ${{ secrets.RSPM_LICENSE }}
