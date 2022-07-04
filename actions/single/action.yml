@@ -17,8 +17,22 @@ inputs:
   version:
     required: false
     type: string
+  RSPM_LICENSE:
+    required: true
+    type: string
+  RSW_LICENSE:
+    required: true
+    type: string
+  RSC_LICENSE:
+    required: true
+    type: string
+
 runs:
   using: "composite"
+  env:
+    RSC_LICENSE: ${{ inputs.RSC_LICENSE }}
+    RSPM_LICENSE: ${{ inputs.RSPM_LICENSE }}
+    RSC_LICENSE: ${{ inputs.RSC_LICENSE }}
   steps:
     - uses: actions/checkout@v2
 
@@ -59,14 +73,10 @@ runs:
         docker image ls
       shell: bash
 
-    - uses: KengoTODA/actions-setup-docker-compose@main
-      with:
-        version: '1.29.2'
-
     - name: Test Image
       env: 
-        RSC_LICENSE: ${{ secrets.RSC_LICENSE }}
-        RSPM_LICENSE: ${{ secrets.RSPM_LICENSE }}
-        RSW_LICENSE: ${{ secrets.RSW_LICENSE }}
+        RSC_LICENSE: ${{ env.RSC_LICENSE }}
+        RSPM_LICENSE: ${{ env.RSPM_LICENSE }}
+        RSW_LICENSE: ${{ env.RSW_LICENSE }}
       run: |
         just t ${{ steps.input.outputs.BUILD_PACKAGE }} ${{ steps.build.outputs.TEST_TAG }}

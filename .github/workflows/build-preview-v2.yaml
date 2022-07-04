@@ -1,11 +1,9 @@
 on:
-  schedule:
-    - cron: '0 8 * * *'
+  # schedule:
+  #   - cron: '0 8 * * *'
   push:
-    # branches:
-    #   - main
-    #   - dev
-    #   - dev-rspm
+    branches:
+      - dk/add-variants
   pull_request:
 
 name: build,test,push (preview)
@@ -18,76 +16,9 @@ jobs:
       - uses: ./actions/single
         name: "build one"
         with:
-          build_type: "daily"
+          build_type: "release"
           package: "workbench"
           os: "bionic"
-  # build_package_manager:
-  #   runs-on: ubuntu-latest
-  #   name: build-package-manager
-  #   steps:
-  #     - uses: rstudio/rstudio-docker-products/.github/workflows/build-single.yaml@dk/add-variants
-  #       with:
-  #         build_type: "daily"
-  #         package: "package-manager"
-  #         os: "bionic"
-
-  #     - uses: rstudio/rstudio-docker-products/.github/workflows/build-single.yaml@dk/add-variants
-  #       with:
-  #         build_type: "daily"
-  #         package: "package-manager"
-  #         os: "jammy"
-
-  # build_connect_content:
-  #   runs-on: ubuntu-latest
-  #   name: build-connect-content
-  #   steps:
-  #     - uses: rstudio/rstudio-docker-products/.github/workflows/build-single.yaml@dk/add-variants
-  #       with:
-  #         build_type: "daily"
-  #         package: "connect-content-init"
-  #         os: "focal"
-
-  # build_connect:
-  #   runs-on: ubuntu-latest
-  #   name: build-connect
-  #   steps:
-  #     - uses: rstudio/rstudio-docker-products/.github/workflows/build-single.yaml@dk/add-variants
-  #       with:
-  #         build_type: "daily"
-  #         package: "connect"
-  #         os: "bionic"
-
-  #     - uses: rstudio/rstudio-docker-products/.github/workflows/build-single.yaml@dk/add-variants
-  #       with:
-  #         build_type: "daily"
-  #         package: "connect"
-  #         os: "jammy"
-
-  # build_workbench:
-  #   runs-on: ubuntu-latest
-  #   name: build-workbench
-  #   steps:
-  #     - uses: rstudio/rstudio-docker-products/.github/workflows/build-single.yaml@dk/add-variants
-  #       with:
-  #         build_type: "daily"
-  #         package: "workbench"
-  #         os: "bionic"
-
-  #     - uses: rstudio/rstudio-docker-products/.github/workflows/build-single.yaml@dk/add-variants
-  #       with:
-  #         buld_type: "daily"
-  #         package: "workbench"
-  #         os: "jammy"
-
-  #     - uses: rstudio/rstudio-docker-products/.github/workflows/build-single.yaml@dk/add-variants
-  #       with:
-  #         build_type: "preview"
-  #         package: "workbench"
-  #         os: "bionic"
-        
-  #     - uses: rstudio/rstudio-docker-products/.github/workflows/build-single.yaml@dk/add-variants
-  #       with:
-  #         build_type: "preview"
-  #         package: "workbench"
-  #         os: "jammy"
-
+          RSPM_LICENSE: ${{ secrets.RSPM_LICENSE }}
+          RSC_LICENSE: ${{ secrets.RSC_LICENSE }}
+          RSW_LICENSE: ${{ secrets.RSW_LICENSE }}
