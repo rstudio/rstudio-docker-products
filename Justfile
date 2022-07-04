@@ -91,7 +91,7 @@ push-images +IMAGES:
 test-image PRODUCT +IMAGES:
     #!/usr/bin/env bash
     set -euxo pipefail
-    images="{{NARGS}}"
+    images="{{IMAGES}}"
     read -ra arr <<<"$images"
     cd ./{{PRODUCT}} && IMAGE_NAME="${arr[0]}" docker-compose -f docker-compose.test.yml run sut    
     
