@@ -29,10 +29,6 @@ inputs:
 
 runs:
   using: "composite"
-  env:
-    RSC_LICENSE: ${{ inputs.RSC_LICENSE }}
-    RSPM_LICENSE: ${{ inputs.RSPM_LICENSE }}
-    RSC_LICENSE: ${{ inputs.RSC_LICENSE }}
   steps:
     - uses: actions/checkout@v2
 
@@ -75,8 +71,8 @@ runs:
 
     - name: Test Image
       env: 
-        RSC_LICENSE: ${{ env.RSC_LICENSE }}
-        RSPM_LICENSE: ${{ env.RSPM_LICENSE }}
-        RSW_LICENSE: ${{ env.RSW_LICENSE }}
+        RSC_LICENSE: ${{ inputs.RSC_LICENSE }}
+        RSPM_LICENSE: ${{ inputs.RSPM_LICENSE }}
+        RSW_LICENSE: ${{ inputs.RSW_LICENSE }}
       run: |
         just t ${{ steps.input.outputs.BUILD_PACKAGE }} ${{ steps.build.outputs.TEST_TAG }}
