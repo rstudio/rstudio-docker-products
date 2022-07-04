@@ -76,3 +76,4 @@ runs:
         RSW_LICENSE: ${{ inputs.RSW_LICENSE }}
       run: |
         just t ${{ steps.input.outputs.BUILD_PACKAGE }} ${{ steps.build.outputs.TEST_TAG }}
+      shell: bash
