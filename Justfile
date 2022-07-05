@@ -18,7 +18,7 @@ build $TYPE $PRODUCT OS VERSION="":
 build-release $TYPE $PRODUCT OS BRANCH=`git branch --show` SHA_SHORT=`git rev-parse --short HEAD`:
     #!/usr/bin/env bash
     set -euxo pipefail
-    verison=`just gv $PRODUCT --type=$TYPE --local` 
+    version=`just gv $PRODUCT --type=$TYPE --local` 
     safe_version=`echo -n "$version" | sed 's/+/-/g'`
     short_name=""
     rsw_download_url_arg=""
@@ -40,7 +40,7 @@ build-release $TYPE $PRODUCT OS BRANCH=`git branch --show` SHA_SHORT=`git rev-pa
         -t rstudio/rstudio-{{PRODUCT}}:{{OS}}-"${safe_version}"--{{SHA_SHORT}} \
         -t ghcr.io/rstudio/rstudio-{{PRODUCT}}:{{OS}}-latest \
         -t ghcr.io/rstudio/rstudio-{{PRODUCT}}:{{OS}}-"${safe_version}" \
-        -t ghcr.io/rstudio/rstudio-{{PRODUCT}}:{{OS}}-"${safe_version}"--{{SHA_SHORT}}
+        -t ghcr.io/rstudio/rstudio-{{PRODUCT}}:{{OS}}-"${safe_version}"--{{SHA_SHORT}} \
          --build-arg "${short_name}"_VERSION=$version  ${rsw_download_url_arg} --file=./{{PRODUCT}}/docker/{{OS}}/Dockerfile {{PRODUCT}}
 
     echo rstudio/rstudio-{{PRODUCT}}:{{OS}}-latest
