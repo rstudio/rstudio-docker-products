@@ -6,7 +6,7 @@ inputs:
     default: 'preview'
     required: true
     type: string
-  product:
+  package:
     required: true
     type: string
     default: "invalid"

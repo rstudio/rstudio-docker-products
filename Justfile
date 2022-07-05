@@ -35,7 +35,7 @@ build-release $TYPE $PRODUCT OS BRANCH=`git branch --show` SHA_SHORT=`git rev-pa
         short_name="RSPM"
     fi
 
-    docker build -t rstudio/rstudio-{{PRODUCT}}:{{OS}}-latest \
+    DOCKER_BUILDKIT=1 docker build -t rstudio/rstudio-{{PRODUCT}}:{{OS}}-latest \
         -t rstudio/rstudio-{{PRODUCT}}:{{OS}}-"${safe_version}" \
         -t rstudio/rstudio-{{PRODUCT}}:{{OS}}-"${safe_version}"--{{SHA_SHORT}} \
         -t ghcr.io/rstudio/rstudio-{{PRODUCT}}:{{OS}}-latest \
@@ -68,7 +68,7 @@ build-preview $TYPE $PRODUCT OS VERSION="" BRANCH=`git branch --show`:
         short_name="RSPM"
     fi
 
-    docker build -t rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-"${safe_version}" \
+    DOCKER_BUILDKIT=1 docker build -t rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-"${safe_version}" \
         -t rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-{{TYPE}} \
         -t ghcr.io/rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-"${safe_version}" \
         -t ghcr.io/rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-{{TYPE}} \
