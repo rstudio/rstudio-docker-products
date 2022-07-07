@@ -43,7 +43,12 @@ build-release $TYPE $PRODUCT OS BRANCH=`git branch --show` SHA_SHORT=`git rev-pa
         -t ghcr.io/rstudio/rstudio-{{PRODUCT}}:{{OS}}-"${safe_version}"--{{SHA_SHORT}} \
          --build-arg "${short_name}"_VERSION=$version  ${rsw_download_url_arg} --file=./{{PRODUCT}}/docker/{{OS}}/Dockerfile {{PRODUCT}}
 
-    echo rstudio/rstudio-{{PRODUCT}}:{{OS}}-latest
+    echo rstudio/rstudio-{{PRODUCT}}:{{OS}}-latest \
+        rstudio/rstudio-{{PRODUCT}}:{{OS}}-"${safe_version}" \
+        rstudio/rstudio-{{PRODUCT}}:{{OS}}-"${safe_version}"--{{SHA_SHORT}} \
+        ghcr.io/rstudio/rstudio-{{PRODUCT}}:{{OS}}-latest \
+        ghcr.io/rstudio/rstudio-{{PRODUCT}}:{{OS}}-"${safe_version}" \
+        ghcr.io/rstudio/rstudio-{{PRODUCT}}:{{OS}}-"${safe_version}"--{{SHA_SHORT}} 
     
 
 build-preview $TYPE $PRODUCT OS VERSION="" BRANCH=`git branch --show`:
@@ -77,7 +82,7 @@ build-preview $TYPE $PRODUCT OS VERSION="" BRANCH=`git branch --show`:
     echo rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-"${safe_version}" \
         rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-{{TYPE}} \
         ghcr.io/rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-"${safe_version}" \
-        ghcr.io/rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-{{TYPE}} \
+        ghcr.io/rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-{{TYPE}}
 
 push-images +IMAGES:
     #!/usr/bin/env bash

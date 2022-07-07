@@ -26,6 +26,13 @@ inputs:
   RSC_LICENSE:
     required: true
     type: string
+outputs:
+  BUILD_IMAGES_OUTPUT:
+    description: "output of the build image process"
+    value: ${{ steps.build.ouptuts}}
+  TEST_IMAGES_OUTPUT:
+    description: "output of the test image process"
+    value: ${{ steps.test.outputs }}
 
 runs:
   using: "composite"
@@ -70,6 +77,7 @@ runs:
       shell: bash
 
     - name: Test Image
+      id: test
       env: 
         RSC_LICENSE: ${{ inputs.RSC_LICENSE }}
         RSPM_LICENSE: ${{ inputs.RSPM_LICENSE }}

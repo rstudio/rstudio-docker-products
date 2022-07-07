@@ -1,5 +1,22 @@
 on:
   workflow_dispatch:
+    inputs:
+      packages:
+        description: "Which images to build. Default 'all'. Options: 'all', 'workbench', 'package-manager', 'connct'"
+        required: true
+        default: "all"
+      version:
+        description: "The version to build. Default 'auto'. Can use any string, but must have which != 'all' if using something other than 'auto'"
+        required: false
+        default: "auto"
+      os:
+        description: "The os to build. Default 'all'. Options: 'all', 'bionic', 'jammy'"
+        required: true
+        default: "all"
+      types:
+        description: "The types to build. Default 'preview daily' . Options: 'preview', 'daily'"
+        required: false
+        default: "preview daily"
 
 name: build,test,push (preview)
 jobs:
@@ -15,7 +32,7 @@ jobs:
       - name: Set Matrix
         id: set-matrix
         run: |
-          MATRIX=$(jq -Mcr < just gm --types preview --os bionic jammy --packages workbench connect package-manager)
+          MATRIX=$(jq -Mcr < just gm --types ${{ github.event.inputs.types }} --os ${{ github.event.inputs.os }} --packages ${{ github.event.inputs.packages }})
           echo "Raw Matrix: $MATRIX"
           echo "::set-output name=matrix::$MATRIX"
 
