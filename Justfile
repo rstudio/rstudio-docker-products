@@ -99,7 +99,7 @@ test-image $TYPE $PRODUCT +IMAGES:
     images="{{IMAGES}}"
     version=`just gv $PRODUCT --type=$TYPE --local`
     read -ra arr <<<"$images"
-    cd ./{{PRODUCT}} && IMAGE_NAME="${arr[0]}" RSW_VERSION="$version" RSC_VERSION="$version" RSPM_VERSION="$version" docker-compose -f docker-compose.test.yml run sut    
+    cd ./{{PRODUCT}} && IMAGE_NAME="${arr[0]}" RSW_VERSION="$version" docker-compose -f docker-compose.test.yml run sut    
     
 getversion +NARGS:
     ./get-version.py {{NARGS}}
