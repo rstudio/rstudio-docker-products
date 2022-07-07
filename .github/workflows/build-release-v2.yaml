@@ -1,7 +1,7 @@
 on:
   workflow_dispatch:
 
-name: build,test,push (release)
+name: build,test,push (release) V2
 jobs:
   matrix:
     runs-on: ubuntu-latest

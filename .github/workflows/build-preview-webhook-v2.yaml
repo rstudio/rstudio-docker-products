@@ -18,7 +18,7 @@ on:
         required: false
         default: "preview daily"
 
-name: build,test,push (preview)
+name: build,test,push (webhook) V2
 jobs:
   matrix:
     runs-on: ubuntu-latest
