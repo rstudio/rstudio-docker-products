@@ -74,8 +74,8 @@ build-preview $TYPE $PRODUCT OS VERSION="" BRANCH=`git branch --show`:
     fi
 
     docker buildx --builder=$BUILDX build \
-        --cache-from type=local,src=/tmp/.buildx-cache \
-        --cache-to type=local,src=/tmp/.buildx-cache \
+        --cache-from=type=local,src=/tmp/.buildx-cache \
+        --cache-to=type=local,dest=/tmp/.buildx-cache \
         -t rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-"${safe_version}" \
         -t rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-{{TYPE}} \
         -t ghcr.io/rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-"${safe_version}" \
