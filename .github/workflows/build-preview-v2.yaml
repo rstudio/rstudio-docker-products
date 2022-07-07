@@ -63,7 +63,7 @@ jobs:
           RSPM_LICENSE: ${{ secrets.RSPM_LICENSE }}
           RSW_LICENSE: ${{ secrets.RSW_LICENSE }}
         run: |
-          just t ${{ matrix.config.package }} ${{ steps.build-images.outputs.tags }}
+          just t ${{ matrix.config.type }} ${{ matrix.config.package }} ${{ steps.build-images.outputs.tags }}
 
       # - name: Login to Docker Hub
       #   if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}

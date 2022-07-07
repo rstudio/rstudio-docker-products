@@ -73,10 +73,7 @@ build-preview $TYPE $PRODUCT OS VERSION="" BRANCH=`git branch --show`:
         short_name="RSPM"
     fi
 
-    docker buildx --builder=$BUILDX build \
-        --cache-from=type=local,src=/tmp/.buildx-cache \
-        --cache-to=type=local,dest=/tmp/.buildx-cache \
-        -t rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-"${safe_version}" \
+    docker buildx --builder=$BUILDX build -t rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-"${safe_version}" \
         -t rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-{{TYPE}} \
         -t ghcr.io/rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-"${safe_version}" \
         -t ghcr.io/rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-{{TYPE}} \
@@ -96,12 +93,13 @@ push-images +IMAGES:
     done
     
 
-test-image PRODUCT +IMAGES:
+test-image $TYPE $PRODUCT +IMAGES:
     #!/usr/bin/env bash
     set -euxo pipefail
     images="{{IMAGES}}"
+    version=`just gv $PRODUCT --type=$TYPE --local`
     read -ra arr <<<"$images"
-    cd ./{{PRODUCT}} && IMAGE_NAME="${arr[0]}" docker-compose -f docker-compose.test.yml run sut    
+    cd ./{{PRODUCT}} && IMAGE_NAME="${arr[0]}" RSW_VERSION="$version" RSC_VERSION="$version" RSPM_VERSION="$version" docker-compose -f docker-compose.test.yml run sut    
     
 getversion +NARGS:
     ./get-version.py {{NARGS}}
