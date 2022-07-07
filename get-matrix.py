@@ -40,6 +40,8 @@ if __name__ == "__main__":
     for package in selected_packages:
         for oss in selected_os:
             for build_type in selected_types:
+                if build_type == "preview" and package in ["connect", "package-manager"]:
+                    continue
                 matrix_conf.append({
                     "package": package,
                     "os": oss,

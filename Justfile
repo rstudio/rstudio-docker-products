@@ -5,7 +5,7 @@ alias gv := getversion
 alias t := test-image
 alias gm := getmatrix
 
-build $TYPE $PRODUCT OS VERSION="":
+build $TYPE $PRODUCT OS $BUILDX="" VERSION="":
     #!/usr/bin/env bash
     set -euxo pipefail
     type="{{TYPE}}"
@@ -35,7 +35,7 @@ build-release $TYPE $PRODUCT OS BRANCH=`git branch --show` SHA_SHORT=`git rev-pa
         short_name="RSPM"
     fi
 
-    DOCKER_BUILDKIT=1 docker build -t rstudio/rstudio-{{PRODUCT}}:{{OS}}-latest \
+    docker build -t rstudio/rstudio-{{PRODUCT}}:{{OS}}-latest \
         -t rstudio/rstudio-{{PRODUCT}}:{{OS}}-"${safe_version}" \
         -t rstudio/rstudio-{{PRODUCT}}:{{OS}}-"${safe_version}"--{{SHA_SHORT}} \
         -t ghcr.io/rstudio/rstudio-{{PRODUCT}}:{{OS}}-latest \
@@ -73,7 +73,10 @@ build-preview $TYPE $PRODUCT OS VERSION="" BRANCH=`git branch --show`:
         short_name="RSPM"
     fi
 
-    DOCKER_BUILDKIT=1 docker build -t rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-"${safe_version}" \
+    docker buildx --builder=$BUILDX build \
+        --cache-from type=local,src=/tmp/.buildx-cache \
+        --cache-to type=local,src=/tmp/.buildx-cache \
+        -t rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-"${safe_version}" \
         -t rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-{{TYPE}} \
         -t ghcr.io/rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-"${safe_version}" \
         -t ghcr.io/rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-{{TYPE}} \

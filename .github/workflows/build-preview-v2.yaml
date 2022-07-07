@@ -17,7 +17,7 @@ jobs:
       - name: Set Matrix
         id: set-matrix
         run: |
-          MATRIX=`just gm --types preview --os bionic jammy --packages workbench connect package-manager | jq -Mcr`
+          MATRIX=`just gm --types preview daily --os bionic jammy --packages workbench connect package-manager | jq -Mcr`
           echo "Raw Matrix: $MATRIX"
           echo "::set-output name=matrix::$MATRIX"
 
@@ -36,11 +36,20 @@ jobs:
       - uses: extractions/setup-just@v1
 
       - uses: docker/setup-buildx-action@v1
+        id: buildx
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
 
       - name: Build Images (just)
         id: build-images
         run: |
-          TAGS=`just b ${{ matrix.config.type }} ${{ matrix.config.package }} ${{ matrix.config.os }}`
+          TAGS=`just b ${{ matrix.config.type }} ${{ matrix.config.package }} ${{ matrix.config.os }} ${{ steps.buildx.outputs.name }}`
           echo "::set-output name=tags::$TAGS"
         
       - name: Show Image Sizes
