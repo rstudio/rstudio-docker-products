@@ -6,8 +6,8 @@ services:
     build:
       context: ./workbench
       args:
-        RSW_VERSION: 2022.02.3+492.pro3
-    image: rstudio/rstudio-workbench:2022.02.3-492.pro3
+        RSW_VERSION: 2022.07.0+548.pro5
+    image: rstudio/rstudio-workbench:2022.07.0-548.pro5
     privileged: true
     environment:
       RSW_LICENSE: ${RSW_LICENSE}
