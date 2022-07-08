@@ -58,6 +58,7 @@ build-preview $TYPE $PRODUCT OS VERSION="" BRANCH=`git branch --show`:
     safe_version=`echo -n "$version" | sed 's/+/-/g'`
     branch_prefix=""
     rsw_download_url_arg=""
+    buildx_args=""
     if [[ "{{BRANCH}}" == "dev" ]]; then
         branch_prefix="dev-"
     elif [[ "{{BRANCH}}" == "dev-rspm" ]]; then
@@ -73,9 +74,11 @@ build-preview $TYPE $PRODUCT OS VERSION="" BRANCH=`git branch --show`:
         short_name="RSPM"
     fi
 
-    docker buildx --builder=$BUILDX build --load -t rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-"${safe_version}" \
-        --cache-from=type=local,src=/tmp/.buildx-cache \
-        --cache-to=type=local,dest=/tmp/.buildx-cache \
+    if [ "$BUILDX" != "" ]; then
+        buildx_args="--cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache"
+    fi
+
+    docker buildx --builder=$BUILDX build --load $buildx_args -t rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-"${safe_version}" \
         -t rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-{{TYPE}} \
         -t ghcr.io/rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-"${safe_version}" \
         -t ghcr.io/rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-{{TYPE}} \
