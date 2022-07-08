@@ -93,7 +93,7 @@ build-preview $TYPE $PRODUCT OS VERSION="" BRANCH=`git branch --show`:
 push-images +IMAGES:
     #!/usr/bin/env bash
     set -euxo pipefail
-    for image in "{{IMAGES}}"
+    for image in {{IMAGES}}
     do
         docker push "${image}"
     done
