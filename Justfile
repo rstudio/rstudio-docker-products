@@ -4,6 +4,7 @@ alias b := build
 alias gv := getversion
 alias t := test-image
 alias gm := getmatrix
+alias p := push-images
 
 build $TYPE $PRODUCT OS $BUILDX="" VERSION="":
     #!/usr/bin/env bash
