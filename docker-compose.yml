@@ -24,8 +24,8 @@ services:
     build:
       context: ./connect
       args:
-        RSC_VERSION: 2022.06.0
-    image: rstudio/rstudio-connect:2022.06.0
+        RSC_VERSION: 2022.06.2
+    image: rstudio/rstudio-connect:2022.06.2
     privileged: true
     environment:
       RSC_LICENSE: ${RSC_LICENSE}
