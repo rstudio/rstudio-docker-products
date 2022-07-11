@@ -23,16 +23,16 @@ jobs:
   matrix:
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.set-matrix.output.matrix }}
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - uses: actions/checkout@v2
 
       - uses: extractions/setup-just@v1
-
+      
       - name: Set Matrix
         id: set-matrix
         run: |
-          MATRIX=$(jq -Mcr < just gm --types ${{ github.event.inputs.types }} --os ${{ github.event.inputs.os }} --packages ${{ github.event.inputs.packages }})
+          MATRIX=`just gm --types ${{ github.event.inputs.types }} --os ${{ github.event.inputs.os }} --packages ${{ github.event.inputs.packages }} | jq -Mcr`
           echo "Raw Matrix: $MATRIX"
           echo "::set-output name=matrix::$MATRIX"
 
