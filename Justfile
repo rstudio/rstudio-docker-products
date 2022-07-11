@@ -23,6 +23,7 @@ build-release $TYPE $PRODUCT OS BRANCH=`git branch --show` SHA_SHORT=`git rev-pa
     safe_version=`echo -n "$version" | sed 's/+/-/g'`
     short_name=""
     rsw_download_url_arg=""
+    buildx_args=""
     if [[ "{{PRODUCT}}" == "rstudio-workbench-for-microsoft-azure-ml" ]]; then
         safe_version=`echo -n "$safe_version" | sed 's/^\([0-9]\{4\}\.[0-9]\{2\}\.[0-9]*\).*/\1/g'`
     fi
@@ -36,7 +37,11 @@ build-release $TYPE $PRODUCT OS BRANCH=`git branch --show` SHA_SHORT=`git rev-pa
         short_name="RSPM"
     fi
 
-    docker build -t rstudio/rstudio-{{PRODUCT}}:{{OS}}-latest \
+    if [ "$BUILDX" != "" ]; then
+        buildx_args="--cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache"
+    fi
+
+    docker buildx --builder=$BUILDX build --load $buildx_args -t rstudio/rstudio-{{PRODUCT}}:{{OS}}-latest \
         -t rstudio/rstudio-{{PRODUCT}}:{{OS}}-"${safe_version}" \
         -t rstudio/rstudio-{{PRODUCT}}:{{OS}}-"${safe_version}"--{{SHA_SHORT}} \
         -t ghcr.io/rstudio/rstudio-{{PRODUCT}}:{{OS}}-latest \

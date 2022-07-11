@@ -28,16 +28,13 @@ jobs:
       - uses: actions/checkout@v2
 
       - uses: extractions/setup-just@v1
-      
+
       - name: Set Matrix
         id: set-matrix
         run: |
           MATRIX=$(jq -Mcr < just gm --types ${{ github.event.inputs.types }} --os ${{ github.event.inputs.os }} --packages ${{ github.event.inputs.packages }})
           echo "Raw Matrix: $MATRIX"
           echo "::set-output name=matrix::$MATRIX"
-
-
-
 
   build:
     runs-on: "ubuntu-latest"
@@ -51,14 +48,25 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - uses: extractions/setup-just@v1
+
       - uses: docker/setup-buildx-action@v1
+        id: buildx
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
 
       - name: Build Images (just)
         id: build-images
         run: |
-          TAGS=`just b ${{ matrix.config.type }} ${{ matrix.config.package }} ${{ matrix.config.os }}`
+          TAGS=`just b ${{ matrix.config.type }} ${{ matrix.config.package }} ${{ matrix.config.os }} ${{ steps.buildx.outputs.name }}`
           echo "::set-output name=tags::$TAGS"
-        
+
       - name: Show Image Sizes
         run: |
           docker image ls
@@ -70,7 +78,7 @@ jobs:
           RSPM_LICENSE: ${{ secrets.RSPM_LICENSE }}
           RSW_LICENSE: ${{ secrets.RSW_LICENSE }}
         run: |
-          just t ${{ matrix.config.package }} ${{ steps.build-images.outputs.tags }}
+          just t ${{ matrix.config.type }} ${{ matrix.config.package }} ${{ steps.build-images.outputs.tags }}
 
       - name: Login to Docker Hub
         if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
@@ -91,4 +99,3 @@ jobs:
         id: push-images
         run: |
           just p ${{ steps.build-images.outputs.tags }}
-      
