@@ -1,8 +1,7 @@
 on:
-  # push:
-  #   branches:
-  #     - "dk/add-variants"
-  workflow_dispatch:
+  push:
+    branches:
+      - "dk/add-variants"
 
 name: build,test,push (preview) V2
 jobs:
