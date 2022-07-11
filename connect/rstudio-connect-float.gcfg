@@ -41,3 +41,11 @@ Executable = /opt/python/3.6.5/bin/python
 ;
 ;[RPackageRepository "RSPM"]
 ;URL = https://demo.rstudiopm.com/all/__linux__/bionic/latest
+
+[Logging]
+Enabled = true
+ServiceLog = STDOUT
+ServiceLogFormat = TEXT    ; TEXT or JSON
+ServiceLogLevel = INFO     ; INFO, WARNING or ERROR
+AccessLog = STDOUT
+AccessLogFormat = COMMON   ; COMMON, COMBINED, or JSON
