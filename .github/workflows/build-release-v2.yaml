@@ -1,8 +1,9 @@
 on:
-  workflow_dispatch:
   push:
     branches:
-      - "dk/add-variants"
+      - main
+      - dev
+  pull_request:
 
 name: build,test,push (release) V2
 jobs:
@@ -81,7 +82,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.BUILD_PAT }}
 
-      # Commented out for extra safety
       # - name: Push Images (just)
       #   id: push-images
       #   run: |
