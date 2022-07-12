@@ -62,6 +62,7 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.s
     'jupyterlab<3.0.0' \
     rsp_jupyter \
     rsconnect_jupyter && \
+    workbench_jupyterlab && \
     /opt/python/jupyter/bin/jupyter kernelspec remove python3 -f && \
     /opt/python/jupyter/bin/pip uninstall -y ipykernel
 
