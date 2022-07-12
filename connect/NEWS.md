@@ -1,3 +1,9 @@
+# 2022-07-11
+
+- Switch container default configuration to use the `Logging` configuration
+  section. [See the docs](https://docs.rstudio.com/connect/admin/logging/) for
+  more info
+
 # 2022-04-07
 
 - The Dockerfile now uses BuildKit features and must be built with
