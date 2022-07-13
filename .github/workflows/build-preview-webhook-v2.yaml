@@ -32,7 +32,7 @@ jobs:
       - name: Set Matrix
         id: set-matrix
         run: |
-          MATRIX=`just gm --types ${{ github.event.inputs.types }} --os ${{ github.event.inputs.os }} --packages ${{ github.event.inputs.packages }} | jq -Mcr`
+          MATRIX=`just getmatrix --types ${{ github.event.inputs.types }} --os ${{ github.event.inputs.os }} --packages ${{ github.event.inputs.packages }} | jq -Mcr`
           echo "Raw Matrix: $MATRIX"
           echo "::set-output name=matrix::$MATRIX"
 
@@ -64,7 +64,7 @@ jobs:
       - name: Build Images (just)
         id: build-images
         run: |
-          TAGS=`just b ${{ matrix.config.type }} ${{ matrix.config.package }} ${{ matrix.config.os }} ${{ steps.buildx.outputs.name }}`
+          TAGS=`just build ${{ matrix.config.type }} ${{ matrix.config.package }} ${{ matrix.config.os }} ${{ steps.buildx.outputs.name }}`
           echo "::set-output name=tags::$TAGS"
 
       - name: Show Image Sizes
@@ -78,7 +78,7 @@ jobs:
           RSPM_LICENSE: ${{ secrets.RSPM_LICENSE }}
           RSW_LICENSE: ${{ secrets.RSW_LICENSE }}
         run: |
-          just t ${{ matrix.config.type }} ${{ matrix.config.package }} ${{ steps.build-images.outputs.tags }}
+          just test-image ${{ matrix.config.type }} ${{ matrix.config.package }} ${{ steps.build-images.outputs.tags }}
 
       - name: Login to Docker Hub
         uses: docker/login-action@v1
@@ -96,4 +96,4 @@ jobs:
       - name: Push Images (just)
         id: push-images
         run: |
-          just p ${{ steps.build-images.outputs.tags }}
+          just push-images ${{ steps.build-images.outputs.tags }}

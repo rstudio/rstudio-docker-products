@@ -19,7 +19,7 @@ build $TYPE $PRODUCT OS $BUILDX="" VERSION="":
 build-release $TYPE $PRODUCT OS BRANCH=`git branch --show` SHA_SHORT=`git rev-parse --short HEAD`:
     #!/usr/bin/env bash
     set -euxo pipefail
-    version=`just gv $PRODUCT --type=$TYPE --local` 
+    version=`just getversion $PRODUCT --type=$TYPE --local` 
     safe_version=`echo -n "$version" | sed 's/+/-/g'`
     short_name=""
     rsw_download_url_arg=""
@@ -60,7 +60,7 @@ build-release $TYPE $PRODUCT OS BRANCH=`git branch --show` SHA_SHORT=`git rev-pa
 build-preview $TYPE $PRODUCT OS VERSION="" BRANCH=`git branch --show`:
     #!/usr/bin/env bash
     set -euxo pipefail
-    version={{ if VERSION == "" { `just gv $PRODUCT --type=$TYPE --local` } else { VERSION } }}
+    version={{ if VERSION == "" { `just getversion $PRODUCT --type=$TYPE --local` } else { VERSION } }}
     safe_version=`echo -n "$version" | sed 's/+/-/g'`
     branch_prefix=""
     rsw_download_url_arg=""
@@ -108,7 +108,7 @@ test-image $TYPE $PRODUCT +IMAGES:
     #!/usr/bin/env bash
     set -euxo pipefail
     images="{{IMAGES}}"
-    version=`just gv $PRODUCT --type=$TYPE --local`
+    version=`just getversion $PRODUCT --type=$TYPE --local`
     read -ra arr <<<"$images"
     cd ./{{PRODUCT}} && IMAGE_NAME="${arr[0]}" RSW_VERSION="$version" RSC_VERSION="$version" RSPM_VERSION="$version" docker-compose -f docker-compose.test.yml run sut    
     
@@ -117,3 +117,6 @@ getversion +NARGS:
 
 getmatrix *NARGS:
     ./get-matrix.py {{NARGS}}
+
+test A B:
+    echo "{{A}} {{B}}"
