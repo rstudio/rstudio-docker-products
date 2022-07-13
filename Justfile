@@ -117,6 +117,3 @@ getversion +NARGS:
 
 getmatrix *NARGS:
     ./get-matrix.py {{NARGS}}
-
-test A B:
-    echo "{{A}} {{B}}"
