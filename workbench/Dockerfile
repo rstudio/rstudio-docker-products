@@ -58,8 +58,8 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.s
     /opt/python/jupyter/bin/conda install -y python==${JUPYTER_VERSION} && \
     rm -rf Miniconda3-latest-Linux-x86_64.sh && \
     /opt/python/jupyter/bin/pip install \
-    jupyter==1.0.0 \
-    'jupyterlab<3.0.0' \
+    jupyter \
+    jupyterlab \
     rsp_jupyter \
     rsconnect_jupyter \
     workbench_jupyterlab && \
