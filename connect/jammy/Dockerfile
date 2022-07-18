@@ -61,11 +61,6 @@ RUN apt-get update --fix-missing \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# This is sketchy and should be removed, keeping it for the sake of building everything
-RUN wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.0g-2ubuntu4_amd64.deb \
-    && sudo dpkg -i ./libssl1.1_1.1.0g-2ubuntu4_amd64.deb \
-    && rm -i libssl1.1_1.1.0g-2ubuntu4_amd64.deb
-
 
 # Add another R version -------------------------------------------------------#
 
@@ -108,7 +103,7 @@ ARG RSC_VERSION=2022.05.0
 SHELL [ "/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update --fix-missing \
     && RSC_VERSION_URL=`echo -n "${RSC_VERSION}" | sed 's/+/%2B/g'` \
-    && curl -L -o rstudio-connect.deb https://cdn.rstudio.com/connect/$(echo $RSC_VERSION | sed -r 's/([0-9]+\.[0-9]+).*/\1/')/rstudio-connect_${RSC_VERSION_URL}~ubuntu20_amd64.deb \
+    && curl -L -o rstudio-connect.deb https://cdn.rstudio.com/connect/$(echo $RSC_VERSION | sed -r 's/([0-9]+\.[0-9]+).*/\1/')/rstudio-connect_${RSC_VERSION_URL}~ubuntu22_amd64.deb \
     && gdebi -n rstudio-connect.deb \
     && rm -rf rstudio-connect.deb \
     && apt-get clean \
