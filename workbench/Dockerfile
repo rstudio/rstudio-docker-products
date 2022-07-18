@@ -58,10 +58,11 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.s
     /opt/python/jupyter/bin/conda install -y python==${JUPYTER_VERSION} && \
     rm -rf Miniconda3-latest-Linux-x86_64.sh && \
     /opt/python/jupyter/bin/pip install \
-    jupyter==1.0.0 \
-    'jupyterlab<3.0.0' \
+    jupyter \
+    jupyterlab \
     rsp_jupyter \
-    rsconnect_jupyter && \
+    rsconnect_jupyter \
+    workbench_jupyterlab && \
     /opt/python/jupyter/bin/jupyter kernelspec remove python3 -f && \
     /opt/python/jupyter/bin/pip uninstall -y ipykernel
 
@@ -138,9 +139,6 @@ RUN apt-get update --fix-missing \
 # Install VSCode code-server, extensions, etc. --------------------------------------------------#
 
 RUN rstudio-server install-vs-code /opt/code-server/ && \
-	wget https://rstudio-ide-build.s3.amazonaws.com/rsw-jupyterlab/jupyterlab_rsw-9.9.9-py3-none-any.whl && \
-	/opt/python/jupyter/bin/pip install ./jupyterlab_rsw-9.9.9-py3-none-any.whl && \
-	rm -rf ./jupyterlab_rsw-9.9.9-py3-none-any.whl && \
 	curl -L -o /quarto.vsix https://github.com/quarto-dev/quarto-vscode/raw/main/visx/quarto-1.14.0.vsix && \
 	ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
 
