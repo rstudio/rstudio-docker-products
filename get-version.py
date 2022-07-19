@@ -118,23 +118,13 @@ def get_release_version(product, local=False):
 
 
 def get_local_release_version(product):
-    if product == 'workbench':
-        prefix = 'RSW'
-    elif product == 'connect':
-        prefix = 'RSC'
-    elif product == 'package-manager':
-        prefix = 'RSPM'
-    else:
-        raise ValueError(f'Invalid product {product}')
+    if product not in ["workbench", "connect", "package-manager"]:
+        raise ValueError(f"Invalid product {product}")
 
-    with open('Makefile', 'r') as f:
-        content = f.read()
+    with open('versions.json', 'r') as f:
+        content = json.load(f)
 
-    vers = re.compile(f'{prefix}_VERSION \?= (.*)')
-    res = vers.search(content)
-    # from the first capture group
-    output_version = res[1]
-    return output_version
+    return content["versions"][product]
 
 
 def get_actual_release_version(product):

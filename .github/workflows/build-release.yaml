@@ -7,21 +7,6 @@ on:
 
 name: build,test,push (release) V2
 jobs:
-  matrix:
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
-    steps:
-      - uses: actions/checkout@v2
-
-      - uses: extractions/setup-just@v1
-
-      - name: Set Matrix
-        id: set-matrix
-        run: |
-          MATRIX=`just getmatrix --types release --os bionic jammy --packages workbench connect package-manager | jq -Mcr`
-          echo "Raw Matrix: $MATRIX"
-          echo "::set-output name=matrix::$MATRIX"
 
   build:
     runs-on: "ubuntu-latest"
@@ -31,7 +16,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        config: ${{ fromJson(needs.matrix.outputs.matrix) }}
+        config:
+          - {package: "workbench", os: "bionic", type: "release"}
+          - {package: "workbench", os: "jammy", type: "release"}
+          - {package: "connect", os: "bionic", type: "release"}
+          - {package: "connect", os: "jammy", type: "release"}
+          - {package: "package-manager", os: "bionic", type: "release"}
+          - {package: "workbench-for-microsoft-azure-ml", os: "bionic", type: "release"}
+          - {package: "connect-content-init", os: "focal", type: "release"}
+          - {package: "r-session-complete", os: "bionic", type: "release"}
+          - {package: "r-session-complete", os: "centos7", type: "release"}
+
     steps:
       - uses: actions/checkout@v2
 

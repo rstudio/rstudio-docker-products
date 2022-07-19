@@ -3,7 +3,6 @@
 alias b := build
 alias gv := getversion
 alias t := test-image
-alias gm := getmatrix
 alias p := push-images
 
 build $TYPE $PRODUCT OS $BUILDX="" VERSION="":
@@ -47,7 +46,7 @@ build-release $TYPE $PRODUCT OS BRANCH=`git branch --show` SHA_SHORT=`git rev-pa
         -t ghcr.io/rstudio/rstudio-{{PRODUCT}}:{{OS}}-latest \
         -t ghcr.io/rstudio/rstudio-{{PRODUCT}}:{{OS}}-"${safe_version}" \
         -t ghcr.io/rstudio/rstudio-{{PRODUCT}}:{{OS}}-"${safe_version}"--{{SHA_SHORT}} \
-         --build-arg "${short_name}"_VERSION=$version  ${rsw_download_url_arg} --file=./{{PRODUCT}}/docker/{{OS}}/Dockerfile {{PRODUCT}}
+         --build-arg "${short_name}"_VERSION=$version  ${rsw_download_url_arg} --file=./{{PRODUCT}}/{{OS}}/Dockerfile {{PRODUCT}}
 
     echo rstudio/rstudio-{{PRODUCT}}:{{OS}}-latest \
         rstudio/rstudio-{{PRODUCT}}:{{OS}}-"${safe_version}" \
@@ -88,7 +87,7 @@ build-preview $TYPE $PRODUCT OS VERSION="" BRANCH=`git branch --show`:
         -t rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-{{TYPE}} \
         -t ghcr.io/rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-"${safe_version}" \
         -t ghcr.io/rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-{{TYPE}} \
-         --build-arg "${short_name}"_VERSION=$version ${rsw_download_url_arg} --file=./{{PRODUCT}}/docker/{{OS}}/Dockerfile {{PRODUCT}}
+         --build-arg "${short_name}"_VERSION=$version ${rsw_download_url_arg} --file=./{{PRODUCT}}/{{OS}}/Dockerfile {{PRODUCT}}
 
     echo rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-"${safe_version}" \
         rstudio/rstudio-{{PRODUCT}}-preview:"${branch_prefix}"{{OS}}-{{TYPE}} \
@@ -110,10 +109,7 @@ test-image $TYPE $PRODUCT +IMAGES:
     images="{{IMAGES}}"
     version=`just getversion $PRODUCT --type=$TYPE --local`
     read -ra arr <<<"$images"
-    cd ./{{PRODUCT}} && IMAGE_NAME="${arr[0]}" RSW_VERSION="$version" RSC_VERSION="$version" RSPM_VERSION="$version" docker-compose -f docker-compose.test.yml run sut    
+    cd ./{{PRODUCT}} && IMAGE_NAME="${arr[0]}" RSW_VERSION="$safe_version" RSC_VERSION="$safe_version" RSPM_VERSION="$safe_version" docker-compose -f docker-compose.test.yml run sut    
     
 getversion +NARGS:
     ./get-version.py {{NARGS}}
-
-getmatrix *NARGS:
-    ./get-matrix.py {{NARGS}}
