@@ -113,3 +113,6 @@ test-image $TYPE $PRODUCT +IMAGES:
     
 getversion +NARGS:
     ./get-version.py {{NARGS}}
+
+getmatrix +NARGS:
+    ./get-matrix.py {{NARGS}}
