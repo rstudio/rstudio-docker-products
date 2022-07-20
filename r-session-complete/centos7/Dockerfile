@@ -77,7 +77,8 @@ RUN /opt/python/${PYTHON_VERSION}/bin/pip install \
     rsp_jupyter \
     rsconnect_jupyter \
     rsconnect_python \
-    workbench_jupyterlab 
+    workbench_jupyterlab && \
+    ln -s /opt/python/${PYTHON_VERSION}/bin/jupyter /usr/local/bin/jupyter
 
 RUN /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter && \
     /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter && \
