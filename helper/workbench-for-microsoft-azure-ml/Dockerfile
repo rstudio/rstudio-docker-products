@@ -1,4 +1,4 @@
-FROM rstudio/r-base:bionic
+FROM rstudio/r-base:bionic AS workbench
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 # Locale configuration --------------------------------------------------------#
@@ -99,7 +99,7 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64
     /opt/python/${PYTHON_VERSION_ALT}/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}"
 
 # Runtime settings ------------------------------------------------------------#
-RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh && \
+RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh && \
     chmod +x /usr/local/bin/wait-for-it.sh
 
 # Install RStudio Professional Drivers ----------------------------------------#
@@ -109,7 +109,7 @@ RUN apt-get update -y && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y unixodbc unixodbc-dev gdebi && \
     rm -rf /var/lib/apt/lists/*
 
-RUN curl -O https://drivers.rstudio.org/7C152C12/installer/rstudio-drivers_${DRIVERS_VERSION}_amd64.deb && \
+RUN curl -O https://cdn.rstudio.com/drivers/7C152C12/installer/rstudio-drivers_${DRIVERS_VERSION}_amd64.deb && \
     apt-get update && \
     DEBIAN_FRONTEND=noninteractive gdebi --non-interactive rstudio-drivers_${DRIVERS_VERSION}_amd64.deb && \
     rm -rf /var/lib/apt/lists/* && \
@@ -119,10 +119,10 @@ RUN curl -O https://drivers.rstudio.org/7C152C12/installer/rstudio-drivers_${DRI
 # Set default env values
 ENV RSW_LICENSE ""
 ENV RSW_LICENSE_SERVER ""
-ENV RSW_TESTUSER azureuser
-ENV RSW_TESTUSER_PASSWD ""
-ENV RSW_TESTUSER_UID 1001
-ENV RSW_TESTUSER_GID 1001
+ENV USER_NAME azureuser
+ENV USER_PASSWORD ""
+ENV PUID 1001
+ENV PGID 1001
 ENV RSW_LAUNCHER true
 ENV RSW_LAUNCHER_TIMEOUT 10
 ENV DIAGNOSTIC_DIR /var/log/rstudio
@@ -137,7 +137,7 @@ COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
 
 # Install RStudio Workbench --------------------------------------------------#
-ARG RSW_VERSION=2021.09.2+382.pro1
+ARG RSW_VERSION=2022.07.0+548.pro5
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 ARG RSW_NAME=rstudio-workbench
 RUN apt-get update --fix-missing \
@@ -145,9 +145,21 @@ RUN apt-get update --fix-missing \
     && curl -o rstudio-workbench.deb ${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-amd64.deb \
     && gdebi --non-interactive rstudio-workbench.deb \
     && rm rstudio-workbench.deb \
+    # custom license manager \
+    && mkdir -p /opt/rstudio-license/ \
+    && mkdir -p /var/lib/rstudio-workbench/ \
+    && curl -sL https://s3.amazonaws.com/rstudio-ide-build/monitor/bionic/rsp-monitor-workbench-azureml-${RSW_VERSION_URL}.tar.gz |  \
+       tar xzvf - --strip 2 -C /opt/rstudio-license/ \
+    && chmod 0755 /opt/rstudio-license/license-manager \
+    && mv /opt/rstudio-license/license-manager /opt/rstudio-license/license-manager-orig \
+    && rm -f /usr/lib/rstudio-server/bin/license-manager \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/rstudio-server/r-versions
+
+# Custom license manager
+COPY --chmod=755 license-manager-shim /opt/rstudio-license/license-manager
+COPY --chmod=755 TurboActivate.dat /opt/rstudio-license/license-manager.conf
 
 # Install VSCode code-server --------------------------------------------------#
 
@@ -180,3 +192,51 @@ EXPOSE 5559/tcp
 
 ENTRYPOINT []
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+
+
+FROM workbench AS clamav
+
+# Set up ClamAV
+RUN apt-get update && \
+    apt-get install -y \
+        clamav \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Reconfigure freshclam to get database from our S3 location
+ARG CLAMAV_MIRROR=https://cdn.rstudio.com/platform/clamav
+RUN cat /etc/clamav/freshclam.conf | grep -v "DatabaseMirror" > /etc/clamav/freshclam.conf.new && \
+    echo "DatabaseMirror ${CLAMAV_MIRROR}" >> /etc/clamav/freshclam.conf.new && \
+    mv /etc/clamav/freshclam.conf.new /etc/clamav/freshclam.conf
+
+# Update ClamAV
+RUN touch /clamupdate.log && \
+    chown clamav:clamav /clamupdate.log && \
+    freshclam --log=/clamupdate.log
+
+# Scan all but /sys for viruses. If this fails, the Docker build will
+# fail.
+RUN clamscan --recursive --infected --log=/clamscan.log --exclude-dir="^/sys" /
+
+
+# Ignore the intermediate 'clamav' multi-stage build step so we don't distribute
+# with ClamAV installed. Avoid adding changes in this stage unless they are related
+# to the ClamAV stage. Since the ClamAV stage may be cached, you can't guarantee
+# another full scan if you change anything beyond this point.
+FROM workbench AS final
+
+# Copy ClamAV scan logs so the end user can see them.
+COPY --from=clamav /clamscan.log /clamupdate.log /
+
+LABEL \
+     azure.ii.language='en-US' \
+     azure.ii.support.stage='preview' \
+     azure.ii.privacy='{"tracking":false,"ads":false,"network-traffic":true}' \
+     azure.ii.auth='{"disable":"DISABLE_AUTH"}' \
+     azure.ii.user='{"mode":"entry_point","name":"USER_NAME","uid":"PUID","gid":"PGID"}' \
+     azure.ii.locale='{"tz":"TZ","lang":"LANG"}' \
+     azure.ii.endpoints='[{"label":"connect","target":8787,"protocol":"http"}]' \
+     org.opencontainers.image.description='A professional integrated development environment for data science teams using R and Python' \
+     org.opencontainers.image.title='RStudio Workbench' \
+     org.opencontainers.image.version='2022.02.2+485.pro2' \
+     org.opencontainers.image.url='https://www.rstudio.com/products/workbench/'

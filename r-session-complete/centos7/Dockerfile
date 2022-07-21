@@ -19,7 +19,7 @@ RUN yum update -y && \
     rrdtool && \
     yum clean all
 
-ARG RSW_VERSION=2022.02.1+461.pro1
+ARG RSW_VERSION=2022.07.0+548.pro5
 ARG RSW_NAME=rstudio-workbench-rhel
 ARG RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x86_64
 RUN RSW_VERSION_URL=`echo -n "${RSW_VERSION}" | sed 's/+/-/g'` \
@@ -99,7 +99,7 @@ RUN yum update -y && \
     yum install -y unixODBC unixODBC-devel && \
     yum clean all
 
-RUN curl -O https://drivers.rstudio.org/7C152C12/installer/rstudio-drivers-${DRIVERS_VERSION}.el7.x86_64.rpm && \
+RUN curl -O https://cdn.rstudio.com/drivers/7C152C12/installer/rstudio-drivers-${DRIVERS_VERSION}.el7.x86_64.rpm && \
     yum install -y rstudio-drivers-${DRIVERS_VERSION}.el7.x86_64.rpm && \
     yum clean all && \
     rm -f rstudio-drivers-${DRIVERS_VERSION}.el7.x86_64.rpm && \

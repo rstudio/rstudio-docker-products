@@ -4,8 +4,8 @@ R_VERSION_ALT ?= 4.1.0
 PYTHON_VERSION ?= 3.9.5
 PYTHON_VERSION_ALT ?= 3.8.10
 
-RSW_VERSION ?= 2022.02.1+461.pro1
-RSC_VERSION ?= 2022.04.0
+RSW_VERSION ?= 2022.07.0+548.pro5
+RSC_VERSION ?= 2022.06.2
 RSPM_VERSION ?= 2022.04.0-7
 
 RSW_LICENSE ?= ""
@@ -75,6 +75,7 @@ update-versions:  ## Update the version files for all products
 	@sed $(SED_FLAGS) "s|^RVersion.*=.*|RVersion = /opt/R/${R_VERSION}/|g" package-manager/rstudio-pm.gcfg
 	@sed $(SED_FLAGS) "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" r-session-complete/bionic/Dockerfile
 	@sed $(SED_FLAGS) "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" r-session-complete/centos7/Dockerfile
+	@sed $(SED_FLAGS) "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" helper/workbench-for-microsoft-azure-ml/Dockerfile
 
 
 rsw: workbench

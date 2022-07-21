@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export LICENSE_MANAGER_PATH=${LICENSE_MANAGER_PATH:-/opt/rstudio-license}
+
 set -e
 set -x
 
@@ -8,7 +10,7 @@ deactivate() {
     echo "== Exiting =="
     rstudio-server stop
     echo "Deactivating license ..."
-    /usr/lib/rstudio-server/bin/license-manager deactivate >/dev/null 2>&1
+    ${LICENSE_MANAGER_PATH}/license-manager deactivate >/dev/null 2>&1
 
     echo "== Done =="
 }
@@ -18,7 +20,7 @@ verify_installation(){
    echo "==VERIFY INSTALLATION==";
    mkdir -p $DIAGNOSTIC_DIR
    chmod 777 $DIAGNOSTIC_DIR
-   rstudio-server verify-installation --verify-user=$RSW_TESTUSER | tee $DIAGNOSTIC_DIR/verify.log 
+   rstudio-server verify-installation --verify-user=$USER_NAME | tee $DIAGNOSTIC_DIR/verify.log
 }
 
 # Support RSP_ or RSW_ prefix
@@ -28,11 +30,11 @@ RSP_LICENSE_SERVER=${RSP_LICENSE_SERVER:-${RSW_LICENSE_SERVER}}
 # Activate License
 RSW_LICENSE_FILE_PATH=${RSW_LICENSE_FILE_PATH:-/etc/rstudio-server/license.lic}
 if [ -n "$RSP_LICENSE" ]; then
-    /usr/lib/rstudio-server/bin/license-manager activate $RSP_LICENSE
+    ${LICENSE_MANAGER_PATH}/license-manager activate $RSP_LICENSE || true
 elif [ -n "$RSP_LICENSE_SERVER" ]; then
-    /usr/lib/rstudio-server/bin/license-manager license-server $RSP_LICENSE_SERVER
+    ${LICENSE_MANAGER_PATH}/license-manager license-server $RSP_LICENSE_SERVER || true
 elif test -f "$RSW_LICENSE_FILE_PATH"; then
-    /usr/lib/rstudio-server/bin/license-manager activate-file $RSW_LICENSE_FILE_PATH
+    ${LICENSE_MANAGER_PATH}/license-manager activate-file $RSW_LICENSE_FILE_PATH || true
 fi
 
 # ensure these cannot be inherited by child processes
@@ -42,16 +44,19 @@ unset RSW_LICENSE
 unset RSW_LICENSE_SERVER
 
 # Create one user
-if [ $(getent passwd $RSW_TESTUSER_UID) ] ; then
-    echo "UID $RSW_TESTUSER_UID already exists, not creating $RSW_TESTUSER test user";
+if [ $(getent passwd $PUID) ] ; then
+    echo "UID $PUID already exists, not creating $USER_NAME test user";
 else
-    if [ -z "$RSW_TESTUSER" ]; then
-        echo "Empty 'RSW_TESTUSER' variables, not creating test user";
+    if [ -z "$USER_NAME" ]; then
+        echo "Empty 'USER_NAME' variables, not creating test user";
     else
-        groupadd -g $RSW_TESTUSER_GID $RSW_TESTUSER
-        useradd -m -s /bin/bash -N -u $RSW_TESTUSER_UID -g $RSW_TESTUSER_GID $RSW_TESTUSER
-        if [ -n "$RSW_TESTUSER_PASSWD" ] ; then
-            echo "$RSW_TESTUSER:$RSW_TESTUSER_PASSWD" | sudo chpasswd;
+        groupadd -g $PGID $USER_NAME
+        useradd -m -s /bin/bash -N -u $PUID -g $PGID $USER_NAME
+
+        # TODO: make sure that $USER_NAME is replaces azureuser in /etc/rstudio/nginx.site.conf
+
+        if [ -n "$USER_PASSWORD" ] ; then
+            echo "$USER_NAME:$USER_PASSWORD" | sudo chpasswd;
         fi
     fi
 fi
