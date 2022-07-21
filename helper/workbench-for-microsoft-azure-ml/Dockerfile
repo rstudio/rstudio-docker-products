@@ -161,9 +161,10 @@ RUN apt-get update --fix-missing \
 COPY --chmod=755 license-manager-shim /opt/rstudio-license/license-manager
 COPY --chmod=755 TurboActivate.dat /opt/rstudio-license/license-manager.conf
 
-# Install VSCode code-server --------------------------------------------------#
+# Install VSCode code-server, extensions, etc. --------------------------------------------------#
 
-RUN rstudio-server install-vs-code /opt/code-server/
+RUN rstudio-server install-vs-code /opt/code-server/ && \
+    ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
 
 # Install Azure CLI -----------------------------------------------------------#
 

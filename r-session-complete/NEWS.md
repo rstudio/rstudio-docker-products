@@ -1,3 +1,9 @@
+# 2022.07.0
+
+- Add a `/usr/local/bin/jupyter` symlink
+- Configure Workbench to preinstall R, Python, and Quarto extensions for users on session startup
+- Add workbench_jupyterlab python package for the jupyterlab extension
+
 # 2021.09.0
 
 - **BREAKING**: Rename `RSP_` variables to `RSW_`. Rename RStudio Server Pro to RStudio Workbench
