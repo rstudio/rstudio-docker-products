@@ -82,12 +82,6 @@ rsw: workbench
 workbench:  ## Build Workbench image
 	docker build -t rstudio/rstudio-workbench:$(RSW_TAG_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSW_VERSION=$(RSW_VERSION) workbench
 
-rsw-hook:  ## TODO: workbench/hooks is gone. Is this still needed?
-	cd ./workbench && \
-	DOCKERFILE_PATH=Dockerfile \
-	IMAGE_NAME=rstudio/rstudio-workbench:$(RSW_VERSION) \
-	./hooks/build
-
 test-rsw: test-workbench
 test-workbench:
 	cd ./workbench && IMAGE_NAME=rstudio/rstudio-workbench:$(RSW_TAG_VERSION) docker-compose -f docker-compose.test.yml run sut
