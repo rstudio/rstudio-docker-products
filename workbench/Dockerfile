@@ -140,8 +140,7 @@ RUN apt-get update --fix-missing \
 # Install VSCode code-server, extensions, etc. --------------------------------------------------#
 
 RUN rstudio-server install-vs-code /opt/code-server/ && \
-	curl -L -o /quarto.vsix https://github.com/quarto-dev/quarto-vscode/raw/main/visx/quarto-1.14.0.vsix && \
-	ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
+    ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
 
 # Copy config
 COPY conf/* /etc/rstudio/

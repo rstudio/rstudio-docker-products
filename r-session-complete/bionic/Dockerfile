@@ -91,10 +91,7 @@ RUN /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix -
 # Install VSCode code-server, extensions, etc. --------------------------------------------------#
 
 RUN rstudio-server install-vs-code /opt/code-server/ && \
-	curl -L -o /quarto.vsix https://github.com/quarto-dev/quarto-vscode/raw/main/visx/quarto-1.14.0.vsix && \
-	ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server && \
-	mkdir -p /opt/python/jupyter/bin && \
-	ln -s /opt/python/3.9.5/bin/jupyter /opt/python/jupyter/bin/jupyter
+    ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
 
 # Install RStudio Professional Drivers ----------------------------------------#
 
