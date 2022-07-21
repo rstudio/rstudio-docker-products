@@ -1,3 +1,19 @@
+# 2022-07-21
+
+- BREAKING: Set the default user to `rstudio-pm` instead of root. This may require permission changes for existing
+  environments.
+- BREAKING: Set the [`Server.DataDir`](https://docs.rstudio.com/rspm/admin/appendix/configuration/#Server.DataDir)
+  option to default `/var/lib/rstudio-pm`. To mirror old behavior, use the following configuration:
+  ```gcfg
+  ...
+  [Server]
+  DataDir = /data
+  ...
+  ```
+- The `Git.AllowUnsandboxedGitBuilds` has been set to `true` by default. This means that the container can be launched
+  without the `--privileged` flag, but comes with security tradeoffs. For information see the the `No Sandbox` option
+  documented [here](https://docs.rstudio.com/rspm/admin/process-management/#process-management-sandboxing).
+
 # 2022-06-23
 
 - Git building now works when running Package Manager as `root` with a persistent
