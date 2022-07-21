@@ -93,6 +93,8 @@ RUN /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix -
 RUN rstudio-server install-vs-code /opt/code-server/ && \
     ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
 
+COPY vscode.extensions.conf /etc/rstudio/vscode.extensions.conf
+
 # Install RStudio Professional Drivers ----------------------------------------#
 
 RUN apt-get update -y && \
