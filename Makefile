@@ -93,7 +93,7 @@ test-workbench-i:
 run-rsw: run-workbench
 run-workbench:  ## Run RSW container
 	docker rm -f rstudio-workbench
-	docker run -it --privileged \
+	docker run -it \
 		--name rstudio-workbench \
 		-p 8787:8787 \
 		-v $(PWD)/workbench/conf:/etc/rstudio/ \
@@ -142,7 +142,7 @@ test-package-manager-i:
 run-rspm: run-package-manager
 run-package-manager:  ## Run RSPM container
 	docker rm -f rstudio-package-manager
-	docker run -it --privileged \
+	docker run -it \
 		--name rstudio-package-manager \
 		-p 4242:4242 \
 		-v $(CURDIR)/data/rspm:/data \
