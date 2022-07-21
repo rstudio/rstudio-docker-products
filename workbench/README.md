@@ -29,7 +29,7 @@ To verify basic functionality as a first step:
 export RSW_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 
 # Run without persistent data using default configuration
-docker run --privileged -it \
+docker run -it \
     -p 8787:8787 \
     -e RSW_LICENSE=$RSW_LICENSE \
     rstudio/rstudio-workbench:latest
@@ -41,8 +41,7 @@ For a more "real" deployment, continue reading!
 
 ### Overview
 
-Note that running the RStudio Workbench Docker image requires the container to run using the `--privileged` flag and a
-valid RStudio Workbench license.
+Note that running the RStudio Workbench Docker image requires a valid RStudio Workbench license.
 
 This container includes:
 
@@ -106,7 +105,7 @@ Then:
 # sssd is picky about file permissions
 chmod 600 sssd.conf
 
-docker run --privileged -it \
+docker run -it \
     -p 8787:8787 -p 5559:5559 \
     -v $PWD/data/rsp:/home \
     -v $PWD/server-pro/conf/:/etc/rstudio \
@@ -147,14 +146,14 @@ more information.
 export RSW_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 
 # Run without persistent data and using an external configuration
-docker run --privileged -it \
+docker run -it \
     -p 8787:8787 -p 5559:5559 \
     -v $PWD/workbench/conf/:/etc/rstudio \
     -e RSW_LICENSE=$RSW_LICENSE \
     rstudio/rstudio-workbench:latest
 
 # Run with persistent data and using an external configuration
-docker run --privileged -it \
+docker run -it \
     -p 8787:8787 -p 5559:5559 \
     -v $PWD/data/rsw:/home \
     -v $PWD/workbench/conf/:/etc/rstudio \
