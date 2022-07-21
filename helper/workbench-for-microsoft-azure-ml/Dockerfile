@@ -61,7 +61,8 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.s
     rsconnect_jupyter \
     workbench_jupyterlab && \
     /opt/python/jupyter/bin/jupyter kernelspec remove python3 -f && \
-    /opt/python/jupyter/bin/pip uninstall -y ipykernel
+    /opt/python/jupyter/bin/pip uninstall -y ipykernel && \
+    ln -s /opt/python/jupyter/bin/jupyter /usr/local/bin/jupyter
 
 # Install RSW/RSC Notebook Extensions --------------------#
 
