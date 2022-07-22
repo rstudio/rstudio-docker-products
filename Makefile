@@ -82,18 +82,12 @@ rsw: workbench
 workbench:  ## Build Workbench image
 	docker build -t rstudio/rstudio-workbench:$(RSW_TAG_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSW_VERSION=$(RSW_VERSION) workbench
 
-rsw-hook:
-	cd ./workbench && \
-	DOCKERFILE_PATH=Dockerfile \
-	IMAGE_NAME=rstudio/rstudio-workbench$(RSW_VERSION) \
-	./hooks/build
-
 test-rsw: test-workbench
 test-workbench:
-	cd ./workbench && IMAGE_NAME=rstudio/rstudio-workbench$(RSW_VERSION) docker-compose -f docker-compose.test.yml run sut
+	cd ./workbench && IMAGE_NAME=rstudio/rstudio-workbench:$(RSW_TAG_VERSION) docker-compose -f docker-compose.test.yml run sut
 test-rsw-i: test-workbench-i
 test-workbench-i:
-	cd ./workbench && IMAGE_NAME=rstudio/rstudio-workbench:$(RSW_VERSION) docker-compose -f docker-compose.test.yml run sut bash
+	cd ./workbench && IMAGE_NAME=rstudio/rstudio-workbench:$(RSW_TAG_VERSION) docker-compose -f docker-compose.test.yml run sut bash
 
 
 run-rsw: run-workbench
@@ -105,7 +99,7 @@ run-workbench:  ## Run RSW container
 		-v $(PWD)/workbench/conf:/etc/rstudio/ \
 		-v /run \
 		-e RSW_LICENSE=$(RSW_LICENSE) \
-		rstudio/rstudio-workbench:$(RSW_VERSION) $(CMD)
+		rstudio/rstudio-workbench:$(RSW_TAG_VERSION) $(CMD)
 
 
 rsc: connect
@@ -157,7 +151,7 @@ run-package-manager:  ## Run RSPM container
 		rstudio/rstudio-package-manager:$(RSPM_VERSION) $(CMD)
 
 
-test-all: rspm test-rspm rsc test-rsc rsp test-rsw
+test-all: rspm test-rspm rsc test-rsc rsw test-rsw
 
 test-azure:
 	cd ./helper/workbench-for-microsoft-azure-ml && IMAGE_NAME=ghcr.io/rstudio/rstudio-workbench-for-microsoft-azure-ml:latest docker-compose -f docker-compose.test.yml run sut
