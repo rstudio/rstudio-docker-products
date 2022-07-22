@@ -20,13 +20,13 @@ RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/down
 ARG RSPM_VERSION=2022.07.0-9
 ARG RSPM_DOWNLOAD_URL=https://cdn.rstudio.com/package-manager/ubuntu/amd64
 RUN apt-get update --fix-missing \
-    && apt-get install -y --no-install-recommends gdebi-core dpkg-sig \
+    && apt-get install -y --no-install-recommends dpkg-sig libssl1.0.0 \
     && curl -O ${RSPM_DOWNLOAD_URL}/rstudio-pm_${RSPM_VERSION}_amd64.deb \
     && gpg --keyserver keyserver.ubuntu.com --recv-keys 3F32EE77E331692F \
     && dpkg-sig --verify rstudio-pm_${RSPM_VERSION}_amd64.deb \
-    && RSTUDIO_INSTALL_NO_LICENSE_INITIALIZATION=1 gdebi -n rstudio-pm_${RSPM_VERSION}_amd64.deb \
+    && RSTUDIO_INSTALL_NO_LICENSE_INITIALIZATION=1 apt-get install -y --no-install-recommends ./rstudio-pm_${RSPM_VERSION}_amd64.deb \
     && rm rstudio-pm_${RSPM_VERSION}_amd64.deb \
-    && apt-get purge -y gdebi-core dpkg-sig \
+    && apt-get purge -y dpkg-sig \
     && apt-get autoremove -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
