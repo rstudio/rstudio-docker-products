@@ -5,7 +5,7 @@ on:
       - dev
   pull_request:
 
-name: build/push RStudio Content Images
+name: build/push (content)
 jobs:
 
   matrix:
@@ -13,16 +13,24 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.9'
+          architecture: 'x64'
       - id: set-matrix
         run: |
           MATRIX=$(jq -Mcr < content/matrix.json)
-          echo "::set-output name=matrix::$MATRIX"
+          MATRIX_DIFF_FILTER=$(echo "$MATRIX" | ./get-diffs.py -i -t origin/main)
+          echo "Filtered Diff Matrix: $MATRIX_DIFF_FILTER"
+          echo "::set-output name=matrix::$MATRIX_DIFF_FILTER"
 
   build:
     runs-on: ubuntu-latest
-    needs: matrix
     name: r${{ matrix.config.r }} py${{ matrix.config.py }} ${{ matrix.config.os }} ${{ github.ref }}
+    needs: matrix
 
     strategy:
       fail-fast: false
@@ -31,7 +39,15 @@ jobs:
 
     steps:
       - name: Check Out Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
+      # setup python
+      - uses: actions/setup-python@v3
+        with:
+          python-version: '3.9'
+          architecture: 'x64'
+          cache: 'pip'
+      - run: pip install -r requirements.txt
 
       - name: Set up Docker Buildx
         id: buildx
