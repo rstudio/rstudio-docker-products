@@ -58,12 +58,14 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.s
     /opt/python/jupyter/bin/conda install -y python==${JUPYTER_VERSION} && \
     rm -rf Miniconda3-latest-Linux-x86_64.sh && \
     /opt/python/jupyter/bin/pip install \
-    jupyter==1.0.0 \
-    'jupyterlab<3.0.0' \
+    jupyter \
+    jupyterlab \
     rsp_jupyter \
-    rsconnect_jupyter && \
+    rsconnect_jupyter \
+    workbench_jupyterlab && \
     /opt/python/jupyter/bin/jupyter kernelspec remove python3 -f && \
-    /opt/python/jupyter/bin/pip uninstall -y ipykernel
+    /opt/python/jupyter/bin/pip uninstall -y ipykernel && \
+    ln -s /opt/python/jupyter/bin/jupyter /usr/local/bin/jupyter
 
 # Install RSW/RSC Notebook Extensions --------------------#
 
@@ -100,7 +102,7 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64
     /opt/python/${PYTHON_VERSION_ALT}/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}"
 
 # Runtime settings ------------------------------------------------------------#
-RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh && \
+RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh && \
     chmod +x /usr/local/bin/wait-for-it.sh
 
 # Set default env values
@@ -123,7 +125,7 @@ COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
 
 # Install RStudio Workbench --------------------------------------------------#
-ARG RSW_VERSION=2022.02.2+485.pro2
+ARG RSW_VERSION=2022.07.0+548.pro5
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 ARG RSW_NAME=rstudio-workbench
 RUN apt-get update --fix-missing \
@@ -135,9 +137,10 @@ RUN apt-get update --fix-missing \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/rstudio-server/r-versions
 
-# Install VSCode code-server --------------------------------------------------#
+# Install VSCode code-server, extensions, etc. --------------------------------------------------#
 
-RUN rstudio-server install-vs-code /opt/code-server/
+RUN rstudio-server install-vs-code /opt/code-server/ && \
+    ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
 
 # Copy config
 COPY conf/* /etc/rstudio/

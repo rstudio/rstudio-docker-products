@@ -19,7 +19,7 @@ RUN yum update -y && \
     rrdtool && \
     yum clean all
 
-ARG RSW_VERSION=2022.02.2+485.pro2
+ARG RSW_VERSION=2022.07.0+548.pro5
 ARG RSW_NAME=rstudio-workbench-rhel
 ARG RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x86_64
 RUN RSW_VERSION_URL=`echo -n "${RSW_VERSION}" | sed 's/+/-/g'` \
@@ -76,7 +76,9 @@ RUN /opt/python/${PYTHON_VERSION}/bin/pip install \
     jupyterlab \
     rsp_jupyter \
     rsconnect_jupyter \
-    rsconnect_python
+    rsconnect_python \
+    workbench_jupyterlab && \
+    ln -s /opt/python/${PYTHON_VERSION}/bin/jupyter /usr/local/bin/jupyter
 
 RUN /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter && \
     /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter && \
@@ -86,7 +88,10 @@ RUN /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix -
 
 # Install VSCode code-server --------------------------------------------------#
 
-RUN rstudio-server install-vs-code /opt/code-server/
+RUN rstudio-server install-vs-code /opt/code-server/ && \
+    ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
+
+COPY vscode.extensions.conf /etc/rstudio/vscode.extensions.conf
 
 # Install RStudio Professional Drivers ----------------------------------------#
 
@@ -94,7 +99,7 @@ RUN yum update -y && \
     yum install -y unixODBC unixODBC-devel && \
     yum clean all
 
-RUN curl -O https://drivers.rstudio.org/7C152C12/installer/rstudio-drivers-${DRIVERS_VERSION}.el7.x86_64.rpm && \
+RUN curl -O https://cdn.rstudio.com/drivers/7C152C12/installer/rstudio-drivers-${DRIVERS_VERSION}.el7.x86_64.rpm && \
     yum install -y rstudio-drivers-${DRIVERS_VERSION}.el7.x86_64.rpm && \
     yum clean all && \
     rm -f rstudio-drivers-${DRIVERS_VERSION}.el7.x86_64.rpm && \

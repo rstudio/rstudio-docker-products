@@ -4,6 +4,9 @@ Docker images for RStudio Professional Products
 
 **IMPORTANT:** There are a few things you need to know before using these images:
 
+1. This image may introduce **BREAKING** changes, as such we recommend:
+   - Avoid using the `latest` tag to avoid unexpected issues, and
+   - Always read through the [NEWS](./NEWS.md) to understand these changes before updating.
 1. These images are provided as a convenience to RStudio customers and are not formally supported by RStudio. If you
    have questions about these images, you can ask them in the issues in the repository or to your support
    representative, who will route them appropriately.
@@ -14,8 +17,13 @@ Docker images for RStudio Professional Products
    changes. We
    provide [instructions for building](https://github.com/rstudio/rstudio-docker-products#instructions-for-building) for
    these cases.
+1. The Package Manager image uses the `No Sandbox` option documented
+   [here](https://docs.rstudio.com/rspm/admin/process-management/#process-management-sandboxing) by default, if you need
+   a more secure option for configuring
+   [Git-related package builds](https://docs.rstudio.com/rspm/admin/building-packages/) we recommend [using a system with
+   sandboxing enabled](https://docs.rstudio.com/rspm/admin/process-management/#docker).
 
-#### Simple Example
+## Simple Example
 
 To verify basic functionality as a first step:
 
@@ -24,7 +32,7 @@ To verify basic functionality as a first step:
 export RSPM_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 
 # Run without persistent data and using default configuration
-docker run -it --privileged \
+docker run -it \
     -p 4242:4242 \
     -e RSPM_LICENSE=$RSPM_LICENSE \
     rstudio/rstudio-package-manager:latest
@@ -34,38 +42,46 @@ Open [http://localhost:4242](http://localhost:4242) to access RStudio Package Ma
 
 For a more "real" deployment, continue reading!
 
-#### Overview
+## Overview
 
-Note that running the RStudio Package Manager Docker image requires the container to run using the `--privileged` flag
-and a valid RStudio Package Manager license.
+Note that running the RStudio Package Manager Docker image requires a valid RStudio Package Manager license.
 
 This container includes:
 
-1. R 3.6.1
-1. RStudio Package Manager
+1. R 3.6.2
+2. RStudio Package Manager
 
 > NOTE: Package Manager is currently not very particular about R version. Changing the R version is rarely necessary.
 
-#### Configuration
+## Configuration
 
 RStudio Package Manager is configured via the`/etc/rstudio-pm/rstudio-pm.gcfg` file. You should mount this file as
 a volume from the host machine. Changes will take effect when the container is restarted.
 
-Be sure the config file has these fields:
+Be sure the config file has the `[HTTP].Listen` field configured. See a complete example of that file at
+[`package-manager/rstudio-pm.gcfg`](./rstudio-pm.gcfg).
 
-- `Server.DataDir` set to `/data/`
-- `HTTP.Listen`
+## Persistent Data
 
-See a complete example of that file at `package-manager/rstudio-pm.gcfg`.
-
-#### Persistent Data
-
-In order to persist Package Manager data between container restarts configure RSC `Server.DataDir` option to go to
+In order to persist Package Manager data between container restarts, configure the `Server.DataDir` option to go to
 a persistent volume. The included configuration file expects a persistent volume from the host machine or your docker
-orchestration system to be available at `/data`. Should you wish to move this to a different path, you can change the
+orchestration system to be available at `/var/lib/rstudio-pm`. Should you wish to move this to a different path, you can change the
 `Server.DataDir` option.
 
-#### Licensing
+When changing `Server.DataDir` to a custom location, we also recommend setting `Server.LauncherDir`
+to a consistent location within `Server.DataDir`, such as `{Server.DataDir}/launcher_internal`.
+The default location of `Server.LauncherDir` depends on the container's hostname, which may be
+different each time the container restarts.
+
+```ini
+[Server]
+DataDir = /mnt/rspm/data
+; Use a consistent location for the Launcher directory. The default location
+; is based on the hostname, and the hostname may be different in each container.
+LauncherDir = /mnt/rspm/data/launcher_internal
+```
+
+## Licensing
 
 Using the RStudio Package Manager docker image requires to have a valid License. You can set the RSC license in three ways:
 
@@ -76,34 +92,34 @@ Using the RStudio Package Manager docker image requires to have a valid License.
 **NOTE:** the "offline activation process" is not supported by this image today. Offline installations will need
 to explore using a license server, license file, or custom image with manual intervention.
 
-#### Environment variables
+## Environment variables
 
 | Variable | Description | Default |
 |-----|---|---|
 | `RSPM_LICENSE` | License key for RStudio Package Manager, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None |
 | `RSPM_LICENSE_SERVER` | Floating license server, format should be: `my.url.com:port` | None |
 
-#### Ports
+## Ports
 
 | Variable | Description |
 |-----|---|
 | `4242` | Default HTTP Port for RStudio Package Manager |
 
-#### Example usage
+## Example usage
 
 ```bash
 # Replace with valid license
 export RSPM_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 
 # Run without persistent data and using an external configuration
-docker run -it --privileged \
+docker run -it \
     -p 4242:4242 \
     -v $PWD/package-manager/rstudio-pm.gcfg:/etc/rstudio-pm/rstudio-pm.gcfg \
     -e RSPM_LICENSE=$RSPM_LICENSE \
     rstudio/rstudio-package-manager:latest
 
 # Run with persistent data and using an external configuration
-docker run -it --privileged \
+docker run -it \
     -p 4242:4242 \
     -v $PWD/data/rspm:/data \
     -v $PWD/package-manager/rstudio-pm.gcfg:/etc/rstudio-pm/rstudio-pm.gcfg \
@@ -116,7 +132,7 @@ Open [http://localhost:4242](http://localhost:4242) to access RStudio Package Ma
 To create repositories you need to access the container directly and execute some commands.
 To do this find the container ID for RSPM (using `docker ps`) and run:
 
-```
+```bash
 docker exec -it {container-id} /bin/bash
 ```
 
@@ -125,7 +141,8 @@ to [create and manage](https://docs.rstudio.com/rspm/admin/getting-started/confi
 
 # Licensing
 
-The license associated with the RStudio Docker Products repository is located [in LICENSE.md](https://github.com/rstudio/rstudio-docker-products/blob/main/LICENSE.md).
+The license associated with the RStudio Docker Products repository is located
+[in LICENSE.md](https://github.com/rstudio/rstudio-docker-products/blob/main/LICENSE.md).
 
 As is the case with all container images, the images themselves also contain other software which may be under other
 licenses (i.e. bash, linux, system libraries, etc., along with any other direct or indirect dependencies of the primary
