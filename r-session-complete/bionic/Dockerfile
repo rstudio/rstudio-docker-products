@@ -76,9 +76,11 @@ ENV PATH="/opt/python/${PYTHON_VERSION}/bin:${PATH}"
 RUN /opt/python/${PYTHON_VERSION}/bin/pip install \
     jupyter \
     jupyterlab \
+    workbench_jupyterlab \
     rsp_jupyter \
     rsconnect_jupyter \
-    rsconnect_python
+    rsconnect_python && \
+    ln -s /opt/python/${PYTHON_VERSION}/bin/jupyter /usr/local/bin/jupyter
 
 RUN /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter && \
     /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter && \
@@ -86,9 +88,12 @@ RUN /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix -
     /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter && \
     /opt/python/${PYTHON_VERSION}/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
 
-# Install VSCode code-server --------------------------------------------------#
+# Install VSCode code-server, extensions, etc. --------------------------------------------------#
 
-RUN rstudio-server install-vs-code /opt/code-server/
+RUN rstudio-server install-vs-code /opt/code-server/ && \
+    ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
+
+COPY vscode.extensions.conf /etc/rstudio/vscode.extensions.conf
 
 # Install RStudio Professional Drivers ----------------------------------------#
 
