@@ -1,3 +1,7 @@
+# 2022-07-25
+
+- Added `conf/launcher.local.conf` with `unprivileged=1` flag so the Local Launcher Plugin starts in unprivileged mode.
+
 # 2022-04-07
 
 - The Dockerfile now uses BuildKit features and must be built with
