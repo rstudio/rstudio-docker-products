@@ -8,6 +8,8 @@ RSW_VERSION ?= 2022.07.0+548.pro5
 RSC_VERSION ?= 2022.07.0
 RSPM_VERSION ?= 2022.07.0-9
 
+DRIVERS_VERSION ?= 2021.10.0
+
 RSW_LICENSE ?= ""
 RSC_LICENSE ?= ""
 RSPM_LICENSE ?= ""
@@ -77,6 +79,10 @@ update-versions:  ## Update the version files for all products
 	@sed $(SED_FLAGS) "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" r-session-complete/centos7/Dockerfile
 	@sed $(SED_FLAGS) "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" helper/workbench-for-microsoft-azure-ml/Dockerfile
 
+update-drivers:  ## Update the driver version
+	@sed $(SED_FLAGS) "s/^DRIVERS_VERSION=.*/DRIVERS_VERSION=${DRIVERS_VERSION}/g" content/pro/Makefile
+	@sed $(SED_FLAGS) "s/\"drivers\": \".[^\,\}]*\"/\"drivers\": \"${DRIVERS_VERSION}\"/g" content/matrix.json
+	@sed $(SED_FLAGS) "s/^ARG DRIVERS_VERSION=.*/ARG DRIVERS_VERSION=${DRIVERS_VERSION}/g" helper/workbench-for-microsoft-azure-ml/Dockerfile
 
 rsw: workbench
 workbench:  ## Build Workbench image
