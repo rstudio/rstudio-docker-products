@@ -5,7 +5,6 @@ services:
     image: $IMAGE_NAME
     command: /run_tests.sh
     entrypoint: []
-    privileged: true
     environment:
       # uses .env by default
       - RSC_VERSION

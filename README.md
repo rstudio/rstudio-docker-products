@@ -66,10 +66,9 @@ docker-compose up
 
 # Privileged Containers
 
-Each of these images uses the `--privileged`
-flag for user and code isolation and security. Each product differs in the exact reasons why, but we would love to hear
-from you if this is concerning in your infrastructure.
-See [RStudio Professional Product Root & Privileged Requirements](https://support.rstudio.com/hc/en-us/articles/1500005369282)
+As of July 2022, only the RStudio Connect container uses the `--privileged` flag for user and code isolation and 
+security and all other images can be run unprivileged. Please see 
+[RStudio Professional Product Root & Privileged Requirements](https://support.rstudio.com/hc/en-us/articles/1500005369282)
 for more information.
 
 If you have feedback on any of our professional products, please always feel free to reach
