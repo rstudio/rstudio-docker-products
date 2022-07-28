@@ -5,6 +5,12 @@ changed in each image.
 
 This file only captures pervasive, repository-wide changes.
 
+# 2022-07
+
+- All containers, with the exception of RStudio Connect, may now be run as unprivileged. Please see
+  [RStudio Professional Product Root & Privileged Requirements](https://support.rstudio.com/hc/en-us/articles/1500005369282)
+  for additional information.
+
 # 2021-10
 
 - *BREAKING*: Rstudio Server Pro has Been Renamed to `Rstudio Workbench`
