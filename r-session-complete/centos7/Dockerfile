@@ -76,7 +76,9 @@ RUN /opt/python/${PYTHON_VERSION}/bin/pip install \
     jupyterlab \
     rsp_jupyter \
     rsconnect_jupyter \
-    rsconnect_python
+    rsconnect_python \
+    workbench_jupyterlab && \
+    ln -s /opt/python/${PYTHON_VERSION}/bin/jupyter /usr/local/bin/jupyter
 
 RUN /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter && \
     /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter && \
@@ -86,7 +88,10 @@ RUN /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix -
 
 # Install VSCode code-server --------------------------------------------------#
 
-RUN rstudio-server install-vs-code /opt/code-server/
+RUN rstudio-server install-vs-code /opt/code-server/ && \
+    ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
+
+COPY vscode.extensions.conf /etc/rstudio/vscode.extensions.conf
 
 # Install RStudio Professional Drivers ----------------------------------------#
 

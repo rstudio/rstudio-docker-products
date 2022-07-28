@@ -58,12 +58,14 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.s
     /opt/python/jupyter/bin/conda install -y python==${JUPYTER_VERSION} && \
     rm -rf Miniconda3-latest-Linux-x86_64.sh && \
     /opt/python/jupyter/bin/pip install \
-    jupyter==1.0.0 \
-    'jupyterlab<3.0.0' \
+    jupyter \
+    jupyterlab \
     rsp_jupyter \
-    rsconnect_jupyter && \
+    rsconnect_jupyter \
+    workbench_jupyterlab && \
     /opt/python/jupyter/bin/jupyter kernelspec remove python3 -f && \
-    /opt/python/jupyter/bin/pip uninstall -y ipykernel
+    /opt/python/jupyter/bin/pip uninstall -y ipykernel && \
+    ln -s /opt/python/jupyter/bin/jupyter /usr/local/bin/jupyter
 
 # Install RSW/RSC Notebook Extensions --------------------#
 
@@ -135,9 +137,10 @@ RUN apt-get update --fix-missing \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/rstudio-server/r-versions
 
-# Install VSCode code-server --------------------------------------------------#
+# Install VSCode code-server, extensions, etc. --------------------------------------------------#
 
-RUN rstudio-server install-vs-code /opt/code-server/
+RUN rstudio-server install-vs-code /opt/code-server/ && \
+    ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
 
 # Copy config
 COPY conf/* /etc/rstudio/
