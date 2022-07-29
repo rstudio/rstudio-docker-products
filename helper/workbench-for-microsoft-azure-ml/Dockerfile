@@ -137,7 +137,7 @@ COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
 
 # Install RStudio Workbench --------------------------------------------------#
-ARG RSW_VERSION=2022.07.0+548.pro5
+ARG RSW_VERSION=2022.07.1+554.pro3
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 ARG RSW_NAME=rstudio-workbench
 RUN apt-get update --fix-missing \
@@ -239,5 +239,5 @@ LABEL \
      azure.ii.endpoints='[{"label":"connect","target":8787,"protocol":"http"}]' \
      org.opencontainers.image.description='A professional integrated development environment for data science teams using R and Python' \
      org.opencontainers.image.title='RStudio Workbench' \
-     org.opencontainers.image.version='2022.02.2+485.pro2' \
+     org.opencontainers.image.version='2022.07.1+554.pro3' \
      org.opencontainers.image.url='https://www.rstudio.com/products/workbench/'
