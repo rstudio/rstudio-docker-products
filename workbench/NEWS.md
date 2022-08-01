@@ -1,3 +1,7 @@
+# 2022-07-28
+
+- Added `conf/launcher.local.conf` with `unprivileged=1` flag so the Local Launcher Plugin starts in unprivileged mode.
+
 # 2022.07.0
 
 - Add a `/usr/local/bin/jupyter` symlink
