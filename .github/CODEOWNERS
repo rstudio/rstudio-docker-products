@@ -1,3 +1,10 @@
 # format per https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners#about-code-owners
 * @colearendt @atheriel
+
+/connect/* @rstudio/connect
+/connect-content/* @rstudio/connect
+/content/* @rstudio/connect
+
 /package-manager/* @rstudio/rspm-dev
+
+/workbench/* @rstudio/ide-team
