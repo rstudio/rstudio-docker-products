@@ -2,7 +2,7 @@
 * @colearendt @atheriel
 
 /connect/* @rstudio/connect
-/connect-content/* @rstudio/connect
+/connect-content-init/* @rstudio/connect
 /content/* @rstudio/connect
 
 /package-manager/* @rstudio/rspm-dev
