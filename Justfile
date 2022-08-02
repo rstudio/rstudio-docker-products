@@ -7,7 +7,7 @@ sed_vars := if os() == "macos" { "-i ''" } else { "-i" }
 RSW_VERSION := "2022.07.1+554.pro3"
 RSW_TAG_VERSION := replace(RSW_VERSION, "+", "-")
 RSC_VERSION := "2022.07.0"
-RSPM_VERSION := "2022.07.0-9"
+RSPM_VERSION := "2022.07.2-11"
 R_VERSION := "3.6.2"
 R_VERSION_ALT := "4.1.0"
 

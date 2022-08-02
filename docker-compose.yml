@@ -40,8 +40,8 @@ services:
     build:
       context: ./package-manager
       args:
-        RSPM_VERSION: 2022.07.0-9
-    image: rstudio/rstudio-package-manager:2022.07.0-9
+        RSPM_VERSION: 2022.07.2-11
+    image: rstudio/rstudio-package-manager:2022.07.2-11
     environment:
       RSPM_LICENSE: ${RSPM_LICENSE}
       LICENSE_SERVER: ${RSPM_LICENSE_SERVER}
