@@ -5,6 +5,20 @@ changed in each image.
 
 This file only captures pervasive, repository-wide changes.
 
+# 2022-08-01
+
+- We flatted the folder structure for more consistency and better organization
+  of various operating systems. For instance, instead of occasional
+  subdirectories for OS (i.e. `bionic` or `centos7`), we now have
+  `Dockerfile.bionic` and `Dockerfile.centos7`.  Apologies in advance for any
+  merge conflicts this might cause!
+
+# 2022-07
+
+- All containers, with the exception of RStudio Connect, may now be run as unprivileged. Please see
+  [RStudio Professional Product Root & Privileged Requirements](https://support.rstudio.com/hc/en-us/articles/1500005369282)
+  for additional information.
+
 # 2021-10
 
 - *BREAKING*: Rstudio Server Pro has Been Renamed to `Rstudio Workbench`

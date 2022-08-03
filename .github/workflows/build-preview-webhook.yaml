@@ -81,7 +81,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./${{ matrix.config.dir }}
-          file: ./${{ matrix.config.dir }}/Dockerfile
+          file: ./${{ matrix.config.dir }}/Dockerfile.${{ matrix.config.os }}
           builder: ${{ steps.buildx.outputs.name }}
           tags: |
             rstudio/${{ matrix.config.product }}:${{ steps.version.outputs.BRANCH_PREFIX }}${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
@@ -97,7 +97,7 @@ jobs:
             RSC_VERSION=${{ steps.version.outputs.VERSION }}
             RSPM_VERSION=${{ steps.version.outputs.VERSION }}
             # TODO: need a better way to handle pivoting DOWNLOAD_URL for OS
-            RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/${{ matrix.config.os }}
+            RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/${{ matrix.config.os }}/${{ matrix.config.arch }}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}

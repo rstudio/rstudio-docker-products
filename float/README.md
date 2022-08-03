@@ -35,7 +35,7 @@ export RSC_LICENSE_SERVER=rsc-float-lic:8999
 export RSPM_LICENSE_SERVER=rspm-float-lic:8969
 
 # RStudio Workbench
-docker run --privileged -it \
+docker run -it \
     -p 8787:8787 -p 5559:5559 \
     -v $PWD/data/rsw:/home \
     -v $PWD/workbench/conf/:/etc/rstudio \
@@ -53,7 +53,7 @@ docker run -it --privileged \
     rstudio/rstudio-connect:1.8.0.3-19
 
 # RStudio Package Manager
-docker run -it --privileged \
+docker run -it \
     -p 4242:4242 \
     -v $PWD/data/rspm:/data \
     -v $PWD/package-manager/rstudio-pm-float.gcfg:/etc/rstudio-pm/rstudio-pm.gcfg \

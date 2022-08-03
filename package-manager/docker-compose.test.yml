@@ -4,7 +4,6 @@ services:
   sut:
     image: $IMAGE_NAME
     command: /run_tests.sh
-    privileged: true
     entrypoint: []
     environment:
       # uses .env by default

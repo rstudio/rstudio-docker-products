@@ -24,7 +24,7 @@ RUN apt-get update -y && \
     rrdtool && \
     rm -rf /var/lib/apt/lists/*
 
-ARG RSW_VERSION=2022.07.0+548.pro5
+ARG RSW_VERSION=2022.07.1+554.pro3
 ARG RSW_NAME=rstudio-workbench
 ARG RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64
 RUN apt-get update --fix-missing \
@@ -76,9 +76,11 @@ ENV PATH="/opt/python/${PYTHON_VERSION}/bin:${PATH}"
 RUN /opt/python/${PYTHON_VERSION}/bin/pip install \
     jupyter \
     jupyterlab \
+    workbench_jupyterlab \
     rsp_jupyter \
     rsconnect_jupyter \
-    rsconnect_python
+    rsconnect_python && \
+    ln -s /opt/python/${PYTHON_VERSION}/bin/jupyter /usr/local/bin/jupyter
 
 RUN /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter && \
     /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter && \
@@ -86,9 +88,12 @@ RUN /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix -
     /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter && \
     /opt/python/${PYTHON_VERSION}/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
 
-# Install VSCode code-server --------------------------------------------------#
+# Install VSCode code-server, extensions, etc. --------------------------------------------------#
 
-RUN rstudio-server install-vs-code /opt/code-server/
+RUN rstudio-server install-vs-code /opt/code-server/ && \
+    ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
+
+COPY vscode.extensions.conf /etc/rstudio/vscode.extensions.conf
 
 # Install RStudio Professional Drivers ----------------------------------------#
 

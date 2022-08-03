@@ -55,12 +55,14 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.s
     /opt/python/jupyter/bin/conda install -y python==${JUPYTER_VERSION} && \
     rm -rf Miniconda3-latest-Linux-x86_64.sh && \
     /opt/python/jupyter/bin/pip install \
-    jupyter==1.0.0 \
-    'jupyterlab<3.0.0' \
+    jupyter \
+    jupyterlab \
     rsp_jupyter \
-    rsconnect_jupyter && \
+    rsconnect_jupyter \
+    workbench_jupyterlab && \
     /opt/python/jupyter/bin/jupyter kernelspec remove python3 -f && \
-    /opt/python/jupyter/bin/pip uninstall -y ipykernel
+    /opt/python/jupyter/bin/pip uninstall -y ipykernel && \
+    ln -s /opt/python/jupyter/bin/jupyter /usr/local/bin/jupyter
 
 # Install RSW/RSC Notebook Extensions --------------------#
 
@@ -135,7 +137,7 @@ COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
 
 # Install RStudio Workbench --------------------------------------------------#
-ARG RSW_VERSION=2022.07.0+548.pro5
+ARG RSW_VERSION=2022.07.1+554.pro3
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 ARG RSW_NAME=rstudio-workbench
 RUN apt-get update --fix-missing \
@@ -159,9 +161,10 @@ RUN apt-get update --fix-missing \
 COPY --chmod=755 license-manager-shim /opt/rstudio-license/license-manager
 COPY --chmod=755 TurboActivate.dat /opt/rstudio-license/license-manager.conf
 
-# Install VSCode code-server --------------------------------------------------#
+# Install VSCode code-server, extensions, etc. --------------------------------------------------#
 
-RUN rstudio-server install-vs-code /opt/code-server/
+RUN rstudio-server install-vs-code /opt/code-server/ && \
+    ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
 
 # Install Azure CLI -----------------------------------------------------------#
 
@@ -236,5 +239,5 @@ LABEL \
      azure.ii.endpoints='[{"label":"connect","target":8787,"protocol":"http"}]' \
      org.opencontainers.image.description='A professional integrated development environment for data science teams using R and Python' \
      org.opencontainers.image.title='RStudio Workbench' \
-     org.opencontainers.image.version='2022.02.2+485.pro2' \
+     org.opencontainers.image.version='2022.07.1+554.pro3' \
      org.opencontainers.image.url='https://www.rstudio.com/products/workbench/'

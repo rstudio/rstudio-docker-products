@@ -4,9 +4,11 @@ R_VERSION_ALT ?= 4.1.0
 PYTHON_VERSION ?= 3.9.5
 PYTHON_VERSION_ALT ?= 3.8.10
 
-RSW_VERSION ?= 2022.07.0+548.pro5
+RSW_VERSION ?= 2022.07.1+554.pro3
 RSC_VERSION ?= 2022.07.0
-RSPM_VERSION ?= 2022.07.0-9
+RSPM_VERSION ?= 2022.07.2-11
+
+DRIVERS_VERSION ?= 2021.10.0
 
 RSW_LICENSE ?= ""
 RSC_LICENSE ?= ""
@@ -53,30 +55,12 @@ images: workbench connect package-manager  ## Build all images
 
 
 update-versions:  ## Update the version files for all products
-	@sed $(SED_FLAGS) "s/^RSW_VERSION=.*/RSW_VERSION=${RSW_VERSION}/g" workbench/.env
-	@sed $(SED_FLAGS) "s/^RSW_VERSION=.*/RSW_VERSION=${RSW_VERSION}/g" r-session-complete/bionic/.env
-	@sed $(SED_FLAGS) "s/^RSW_VERSION=.*/RSW_VERSION=${RSW_VERSION}/g" r-session-complete/centos7/.env
-	@sed $(SED_FLAGS) "s/^RSC_VERSION=.*/RSC_VERSION=${RSC_VERSION}/g" connect/.env
-	@sed $(SED_FLAGS) "s/^RSPM_VERSION=.*/RSPM_VERSION=${RSPM_VERSION}/g" package-manager/.env
-	@sed $(SED_FLAGS) "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" workbench/Dockerfile
-	@sed $(SED_FLAGS) "s/^ARG RSC_VERSION=.*/ARG RSC_VERSION=${RSC_VERSION}/g" connect/Dockerfile
-	@sed $(SED_FLAGS) "s/^ARG RSC_VERSION=.*/ARG RSC_VERSION=${RSC_VERSION}/g" connect-content-init/Dockerfile
-	@sed $(SED_FLAGS) "s/^ARG RSPM_VERSION=.*/ARG RSPM_VERSION=${RSPM_VERSION}/g" package-manager/Dockerfile
-	@sed $(SED_FLAGS) "s/^RSPM_VERSION:.*/RSPM_VERSION: ${RSPM_VERSION}/g" docker-compose.yml
-	@sed $(SED_FLAGS) "s/RSPM_VERSION:.*/RSPM_VERSION: ${RSPM_VERSION}/g" docker-compose.yml
-	@sed $(SED_FLAGS) "s/rstudio\/rstudio-package-manager:.*/rstudio\/rstudio-package-manager:${RSPM_VERSION}/g" docker-compose.yml
-	@sed $(SED_FLAGS) "s/RSC_VERSION:.*/RSC_VERSION: ${RSC_VERSION}/g" docker-compose.yml
-	@sed $(SED_FLAGS) "s/rstudio\/rstudio-connect:.*/rstudio\/rstudio-connect:${RSC_VERSION}/g" docker-compose.yml
-	@sed $(SED_FLAGS) "s/RSW_VERSION:.*/RSW_VERSION: ${RSW_VERSION}/g" docker-compose.yml
-	@sed $(SED_FLAGS) "s/rstudio\/rstudio-workbench:.*/rstudio\/rstudio-workbench:${RSW_TAG_VERSION}/g" docker-compose.yml
-	@sed $(SED_FLAGS) "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" workbench/Dockerfile
-	@sed $(SED_FLAGS) "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" connect/Dockerfile
-	@sed $(SED_FLAGS) "s/^R_VERSION:.*/R_VERSION=${R_VERSION}/g" package-manager/Dockerfile
-	@sed $(SED_FLAGS) "s|^RVersion.*=.*|RVersion = /opt/R/${R_VERSION}/|g" package-manager/rstudio-pm.gcfg
-	@sed $(SED_FLAGS) "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" r-session-complete/bionic/Dockerfile
-	@sed $(SED_FLAGS) "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" r-session-complete/centos7/Dockerfile
-	@sed $(SED_FLAGS) "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION=${RSW_VERSION}/g" helper/workbench-for-microsoft-azure-ml/Dockerfile
+	just RSW_VERSION=${RSW_VERSION} RSC_VERSION=${RSC_VERSION} RSPM_VERSION=${RSPM_VERSION} R_VERSION=${R_VERSION} update-versions 
 
+update-drivers:  ## Update the driver version
+	@sed $(SED_FLAGS) "s/^DRIVERS_VERSION=.*/DRIVERS_VERSION=${DRIVERS_VERSION}/g" content/pro/Makefile
+	@sed $(SED_FLAGS) "s/\"drivers\": \".[^\,\}]*\"/\"drivers\": \"${DRIVERS_VERSION}\"/g" content/matrix.json
+	@sed $(SED_FLAGS) "s/^ARG DRIVERS_VERSION=.*/ARG DRIVERS_VERSION=${DRIVERS_VERSION}/g" helper/workbench-for-microsoft-azure-ml/Dockerfile
 
 rsw: workbench
 workbench:  ## Build Workbench image
@@ -93,7 +77,7 @@ test-workbench-i:
 run-rsw: run-workbench
 run-workbench:  ## Run RSW container
 	docker rm -f rstudio-workbench
-	docker run -it --privileged \
+	docker run -it \
 		--name rstudio-workbench \
 		-p 8787:8787 \
 		-v $(PWD)/workbench/conf:/etc/rstudio/ \
@@ -142,7 +126,7 @@ test-package-manager-i:
 run-rspm: run-package-manager
 run-package-manager:  ## Run RSPM container
 	docker rm -f rstudio-package-manager
-	docker run -it --privileged \
+	docker run -it \
 		--name rstudio-package-manager \
 		-p 4242:4242 \
 		-v $(CURDIR)/data/rspm:/data \
