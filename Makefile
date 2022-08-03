@@ -153,16 +153,28 @@ run-package-manager:  ## Run RSPM container
 
 test-all: rspm test-rspm rsc test-rsc rsw test-rsw
 
-test-azure:
-	cd ./helper/workbench-for-microsoft-azure-ml && IMAGE_NAME=ghcr.io/rstudio/rstudio-workbench-for-microsoft-azure-ml:latest docker-compose -f docker-compose.test.yml run sut
-test-azure-i:
-	cd ./helper/workbench-for-microsoft-azure-ml && IMAGE_NAME=ghcr.io/rstudio/rstudio-workbench-for-microsoft-azure-ml:latest docker-compose -f docker-compose.test.yml run sut bash
+test-azure: test-rsw-azure
+
+rsw-azure: workbench-azure
+workbench-azure:  ## Build Workbench for Microsoft Azure ML image
+	DOCKER_BUILDKIT=1 docker build \
+		-t rstudio/rstudio-workbench-for-microsoft-azure-ml:$(RSW_TAG_VERSION) \
+		--build-arg R_VERSION=$(R_VERSION) \
+		--build-arg RSW_VERSION=$(RSW_VERSION) \
+		helper/workbench-for-microsoft-azure-ml
+
+test-rsw-azure: test-workbench-azure
+test-workbench-azure:
+	cd ./helper/workbench-for-microsoft-azure-ml && IMAGE_NAME=rstudio/rstudio-workbench-for-microsoft-azure-ml:$(RSW_TAG_VERSION) docker-compose -f docker-compose.test.yml run sut
+test-rsw-azure-i: test-workbench-azure-i
+test-workbench-azure-i:
+	cd ./helper/workbench-for-microsoft-azure-ml && IMAGE_NAME=rstudio/rstudio-workbench-for-microsoft-azure-ml:$(RSW_TAG_VERSION) docker-compose -f docker-compose.test.yml run sut bash
 
 float:
 	docker-compose -f helper/float/docker-compose.yml build
 
 run-float: run-floating-lic-server
-run-floating-lic-server:  ## Run the floating license server for pro products
+run-floating-lic-server:  ## [DO NOT USE IN PRODUCTION] Run the floating license server for pro products
 	RSW_FLOAT_LICENSE=$(RSW_FLOAT_LICENSE) RSC_FLOAT_LICENSE=$(RSC_FLOAT_LICENSE) RSPM_FLOAT_LICENSE=$(RSPM_FLOAT_LICENSE) SSP_FLOAT_LICENSE=$(SSP_FLOAT_LICENSE) \
 	docker-compose -f helper/float/docker-compose.yml up
 
