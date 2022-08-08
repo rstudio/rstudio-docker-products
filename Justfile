@@ -87,7 +87,7 @@ build-preview $TYPE $PRODUCT $OS $VERSION="" $BRANCH=`git branch --show`:
   fi
 
   # set short name and tag version
-  if [[ $PRODUCT == "workbench" ]]; then
+  if [[ $PRODUCT == "workbench" || $PRODUCT == "r-session-complete" ]]; then
     SHORT_NAME="RSW"
     RSW_DOWNLOAD_URL=`just _rsw-download-url $TYPE $OS`
   elif [[ $PRODUCT == "connect" ]]; then
