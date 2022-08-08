@@ -4,6 +4,8 @@ vars := "-i ''"
 
 sed_vars := if os() == "macos" { "-i ''" } else { "-i" }
 
+BUILDX_PATH := ""
+
 RSW_VERSION := "2022.07.1+554.pro3"
 RSW_TAG_VERSION := replace(RSW_VERSION, "+", "-")
 RSC_VERSION := "2022.07.0"
@@ -63,3 +65,95 @@ update-r-versions:
   sed {{ sed_vars }} "s/^R_VERSION:.*/R_VERSION={{ R_VERSION }}/g" connect/Dockerfile.bionic
   sed {{ sed_vars }} "s/^R_VERSION:.*/R_VERSION={{ R_VERSION }}/g" package-manager/Dockerfile.bionic
   sed {{ sed_vars }} "s|^RVersion.*=.*|RVersion = /opt/R/{{ R_VERSION }}/|g" package-manager/rstudio-pm.gcfg
+
+# just BUILDX_PATH=~/.buildx build-preview preview workbench bionic
+build-preview $TYPE $PRODUCT $OS $VERSION="" $BRANCH=`git branch --show`:
+  #!/usr/bin/env bash
+  set -euxo pipefail
+
+  # variable placeholders
+  BRANCH_PREFIX=""
+  RSW_DOWNLOAD_URL=""
+  BUILDX_ARGS=""
+  SHORT_NAME=""
+  TAG_VERSION=`just get-safe-version $PRODUCT --type=$TYPE --local`
+  REAL_VERSION=`just get-version $PRODUCT --type=$TYPE --local`
+
+  # set branch prefix
+  if [[ $BRANCH == "dev" ]]; then
+    BRANCH_PREFIX="dev-"
+  elif [[ $BRANCH == "dev-rspm" ]]; then
+    BRANCH_PREFIX="dev-rspm-"
+  fi
+
+  # set short name and tag version
+  if [[ $PRODUCT == "workbench" ]]; then
+    SHORT_NAME="RSW"
+    RSW_DOWNLOAD_URL=`just _rsw-download-url $TYPE $OS`
+  elif [[ $PRODUCT == "connect" ]]; then
+    SHORT_NAME="RSC"
+  elif [[ $PRODUCT == "package-manager" ]]; then
+    SHORT_NAME="RSPM"
+  fi
+
+  # overwrite version if defined
+  if [[ $VERSION != "" ]]; then
+    REAL_VERSION=$VERSION
+    TAG_VERSION=`echo -n "$VERSION" | sed 's/+/-/g'`
+  fi
+
+  # set buildx args
+  if [[ "{{BUILDX_PATH}}" != "" ]]; then
+    BUILDX_ARGS="--cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache"
+  fi
+
+  docker buildx --builder="{{BUILDX_PATH}}" build --load $BUILDX_ARGS -t rstudio/rstudio-"$PRODUCT"-preview:"${BRANCH_PREFIX}${OS}"-"$TAG_VERSION" \
+        -t rstudio/rstudio-"$PRODUCT"-preview:"${BRANCH_PREFIX}${OS}"-"$TYPE" \
+        -t ghcr.io/rstudio/rstudio-"$PRODUCT"-preview:"${BRANCH_PREFIX}${OS}"-"$TAG_VERSION" \
+        -t ghcr.io/rstudio/rstudio-"$PRODUCT"-preview:"${BRANCH_PREFIX}${OS}"-"$TYPE" \
+        --build-arg "$SHORT_NAME"_VERSION=$REAL_VERSION \
+        --build-arg RSW_DOWNLOAD_URL=$RSW_DOWNLOAD_URL \
+        --file=./"$PRODUCT"/Dockerfile."$OS" "$PRODUCT"
+
+  echo rstudio/rstudio-"${PRODUCT}"-preview:"${BRANCH_PREFIX}${OS}"-"${TAG_VERSION}" \
+        rstudio/rstudio-"${PRODUCT}"-preview:"${BRANCH_PREFIX}""${OS}"-"${TYPE}" \
+        ghcr.io/rstudio/rstudio-"${PRODUCT}"-preview:"${BRANCH_PREFIX}${OS}"-"${TAG_VERSION}" \
+        ghcr.io/rstudio/rstudio-"${PRODUCT}"-preview:"${BRANCH_PREFIX}${OS}"-"${TYPE}"
+
+_rsw-download-url TYPE OS:
+  #!/usr/bin/env bash
+  if [[ "{{TYPE}}" == "release" ]]; then
+    echo "https://download2.rstudio.org/server/{{OS}}/{{ if OS == "centos7" { "x86_64"} else { "amd64" } }}"
+  else
+    echo "https://s3.amazonaws.com/rstudio-ide-build/server/{{OS}}/{{ if OS == "centos7" { "x86_64"} else { "amd64" } }}"
+  fi
+
+push-images +IMAGES:
+  #!/usr/bin/env bash
+  set -euxo pipefail
+  for IMAGE in {{IMAGES}}
+  do
+    docker push $IMAGE
+  done
+
+test-image $TYPE $PRODUCT +IMAGES:
+  #!/usr/bin/env bash
+  set -euxo pipefail
+
+  # variable placeholders
+  SHORT_NAME=""
+  REAL_VERSION=`just get-version $PRODUCT --type=$TYPE --local`
+
+  IMAGES="{{IMAGES}}"
+  read -ra IMAGE_ARRAY <<<"$IMAGES"
+  cd ./"$PRODUCT" && \
+    IMAGE_NAME="${IMAGE_ARRAY[0]}" RSW_VERSION="$REAL_VERSION" RSC_VERSION="$REAL_VERSION" RSPM_VERSION="$REAL_VERSION" \
+    docker-compose -f docker-compose.test.yml run sut
+
+get-version +NARGS:
+  ./get-version.py {{NARGS}}
+
+get-safe-version +NARGS:
+  #!/usr/bin/env bash
+  VERSION=`./get-version.py {{NARGS}}`
+  echo -n "$VERSION" | sed 's/+/-/g'
