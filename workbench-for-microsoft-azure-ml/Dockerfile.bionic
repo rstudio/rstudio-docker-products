@@ -211,13 +211,11 @@ RUN cat /etc/clamav/freshclam.conf | grep -v "DatabaseMirror" > /etc/clamav/fres
     mv /etc/clamav/freshclam.conf.new /etc/clamav/freshclam.conf
 
 # Update ClamAV
-RUN touch /clamupdate.log && \
-    chown clamav:clamav /clamupdate.log && \
-    freshclam --log=/clamupdate.log
+RUN freshclam --log="/var/log/clamav/clamupdate.log"
 
 # Scan all but /sys for viruses. If this fails, the Docker build will
 # fail.
-RUN clamscan --recursive --infected --log=/clamscan.log --exclude-dir="^/sys" /
+RUN clamscan --recursive --infected --exclude-dir="^/sys" --log "/var/log/clamav/clamscan.log" /
 
 
 # Ignore the intermediate 'clamav' multi-stage build step so we don't distribute
@@ -227,7 +225,7 @@ RUN clamscan --recursive --infected --log=/clamscan.log --exclude-dir="^/sys" /
 FROM workbench AS final
 
 # Copy ClamAV scan logs so the end user can see them.
-COPY --from=clamav /clamscan.log /clamupdate.log /
+COPY --from=clamav /var/log/clamav/clamscan.log /var/log/clamav/clamupdate.log /
 
 LABEL \
      azure.ii.language='en-US' \
