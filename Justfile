@@ -128,6 +128,7 @@ _rsw-download-url TYPE OS:
     echo "https://s3.amazonaws.com/rstudio-ide-build/server/{{OS}}/{{ if OS == "centos7" { "x86_64"} else { "amd64" } }}"
   fi
 
+# just push-images tag1 tag2 ...
 push-images +IMAGES:
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -136,6 +137,7 @@ push-images +IMAGES:
     docker push $IMAGE
   done
 
+# just test-image preview workbench tag1 tag2 tag3 ...
 test-image $TYPE $PRODUCT +IMAGES:
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -150,9 +152,11 @@ test-image $TYPE $PRODUCT +IMAGES:
     IMAGE_NAME="${IMAGE_ARRAY[0]}" RSW_VERSION="$REAL_VERSION" RSC_VERSION="$REAL_VERSION" RSPM_VERSION="$REAL_VERSION" \
     docker-compose -f docker-compose.test.yml run sut
 
+# just get-version workbench --type=preview --local
 get-version +NARGS:
   ./get-version.py {{NARGS}}
 
+# just get-safe-version workbench --type=preview --local
 get-safe-version +NARGS:
   #!/usr/bin/env bash
   VERSION=`./get-version.py {{NARGS}}`
