@@ -66,8 +66,8 @@ update-r-versions:
   sed {{ sed_vars }} "s/^R_VERSION:.*/R_VERSION={{ R_VERSION }}/g" package-manager/Dockerfile.bionic
   sed {{ sed_vars }} "s|^RVersion.*=.*|RVersion = /opt/R/{{ R_VERSION }}/|g" package-manager/rstudio-pm.gcfg
 
-# just BUILDX_PATH=~/.buildx build-preview preview workbench bionic
-build-preview $TYPE $PRODUCT $OS $VERSION="" $BRANCH=`git branch --show`:
+# just BUILDX_PATH=~/.buildx build-preview preview workbench bionic 12.0.11-11
+build-preview $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
   #!/usr/bin/env bash
   set -euxo pipefail
 
@@ -76,8 +76,7 @@ build-preview $TYPE $PRODUCT $OS $VERSION="" $BRANCH=`git branch --show`:
   RSW_DOWNLOAD_URL=""
   BUILDX_ARGS=""
   SHORT_NAME=""
-  TAG_VERSION=`just get-safe-version $PRODUCT --type=$TYPE --local`
-  REAL_VERSION=`just get-version $PRODUCT --type=$TYPE --local`
+  TAG_VERSION=`just _tag_safe_version $VERSION`
 
   # set branch prefix
   if [[ $BRANCH == "dev" ]]; then
@@ -96,12 +95,6 @@ build-preview $TYPE $PRODUCT $OS $VERSION="" $BRANCH=`git branch --show`:
     SHORT_NAME="RSPM"
   fi
 
-  # overwrite version if defined
-  if [[ $VERSION != "" ]]; then
-    REAL_VERSION=$VERSION
-    TAG_VERSION=`echo -n "$VERSION" | sed 's/+/-/g'`
-  fi
-
   # set buildx args
   if [[ "{{BUILDX_PATH}}" != "" ]]; then
     BUILDX_ARGS="--cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache"
@@ -111,7 +104,7 @@ build-preview $TYPE $PRODUCT $OS $VERSION="" $BRANCH=`git branch --show`:
         -t rstudio/rstudio-"$PRODUCT"-preview:"${BRANCH_PREFIX}${OS}"-"$TYPE" \
         -t ghcr.io/rstudio/rstudio-"$PRODUCT"-preview:"${BRANCH_PREFIX}${OS}"-"$TAG_VERSION" \
         -t ghcr.io/rstudio/rstudio-"$PRODUCT"-preview:"${BRANCH_PREFIX}${OS}"-"$TYPE" \
-        --build-arg "$SHORT_NAME"_VERSION=$REAL_VERSION \
+        --build-arg "$SHORT_NAME"_VERSION=$VERSION \
         --build-arg RSW_DOWNLOAD_URL=$RSW_DOWNLOAD_URL \
         --file=./"$PRODUCT"/Dockerfile."$OS" "$PRODUCT"
 
@@ -137,27 +130,20 @@ push-images +IMAGES:
     docker push $IMAGE
   done
 
-# just test-image preview workbench tag1 tag2 tag3 ...
-test-image $TYPE $PRODUCT +IMAGES:
+# just test-image preview workbench 12.0.11-8 tag1 tag2 tag3 ...
+test-image $TYPE $PRODUCT $VERSION +IMAGES:
   #!/usr/bin/env bash
   set -euxo pipefail
-
-  # variable placeholders
-  SHORT_NAME=""
-  REAL_VERSION=`just get-version $PRODUCT --type=$TYPE --local`
-
   IMAGES="{{IMAGES}}"
   read -ra IMAGE_ARRAY <<<"$IMAGES"
   cd ./"$PRODUCT" && \
-    IMAGE_NAME="${IMAGE_ARRAY[0]}" RSW_VERSION="$REAL_VERSION" RSC_VERSION="$REAL_VERSION" RSPM_VERSION="$REAL_VERSION" \
+    IMAGE_NAME="${IMAGE_ARRAY[0]}" RSW_VERSION="$VERSION" RSC_VERSION="$VERSION" RSPM_VERSION="$VERSION" \
     docker-compose -f docker-compose.test.yml run sut
 
 # just get-version workbench --type=preview --local
 get-version +NARGS:
   ./get-version.py {{NARGS}}
 
-# just get-safe-version workbench --type=preview --local
-get-safe-version +NARGS:
+_tag_safe_version $VERSION:
   #!/usr/bin/env bash
-  VERSION=`./get-version.py {{NARGS}}`
   echo -n "$VERSION" | sed 's/+/-/g'
