@@ -100,7 +100,8 @@ build-preview $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
     BUILDX_ARGS="--cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache"
   fi
 
-  docker buildx --builder="{{BUILDX_PATH}}" build --load $BUILDX_ARGS -t rstudio/rstudio-"$PRODUCT"-preview:"${BRANCH_PREFIX}${OS}"-"$TAG_VERSION" \
+  docker buildx --builder="{{BUILDX_PATH}}" build --load $BUILDX_ARGS \
+        -t rstudio/rstudio-"$PRODUCT"-preview:"${BRANCH_PREFIX}${OS}"-"$TAG_VERSION" \
         -t rstudio/rstudio-"$PRODUCT"-preview:"${BRANCH_PREFIX}${OS}"-"$TYPE" \
         -t ghcr.io/rstudio/rstudio-"$PRODUCT"-preview:"${BRANCH_PREFIX}${OS}"-"$TAG_VERSION" \
         -t ghcr.io/rstudio/rstudio-"$PRODUCT"-preview:"${BRANCH_PREFIX}${OS}"-"$TYPE" \
@@ -108,6 +109,7 @@ build-preview $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
         --build-arg RSW_DOWNLOAD_URL=$RSW_DOWNLOAD_URL \
         --file=./"$PRODUCT"/Dockerfile."$OS" "$PRODUCT"
 
+  # These tags are propogated forward to test-images and push-images in builds. It is important that these tags match the build tags above.
   echo rstudio/rstudio-"${PRODUCT}"-preview:"${BRANCH_PREFIX}${OS}"-"${TAG_VERSION}" \
         rstudio/rstudio-"${PRODUCT}"-preview:"${BRANCH_PREFIX}""${OS}"-"${TYPE}" \
         ghcr.io/rstudio/rstudio-"${PRODUCT}"-preview:"${BRANCH_PREFIX}${OS}"-"${TAG_VERSION}" \
