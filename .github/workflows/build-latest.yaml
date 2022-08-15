@@ -17,12 +17,12 @@ jobs:
       matrix:
         config:
           - {product: 'workbench', os: 'bionic'}
-          # - {product: 'connect', os: 'bionic'}
-          # - {product: 'connect-content-init', os: 'bionic'}
-          # - {product: 'package-manager', os: 'bionic'}
-          # - {product: 'r-session-complete', os: 'bionic'}
-          # - {product: 'r-session-complete', os: 'centos7'}
-          # - {product: 'workbench-for-microsoft-azure-ml', os: 'bionic'}
+          - {product: 'connect', os: 'bionic'}
+          - {product: 'connect-content-init', os: 'bionic'}
+          - {product: 'package-manager', os: 'bionic'}
+          - {product: 'r-session-complete', os: 'bionic'}
+          - {product: 'r-session-complete', os: 'centos7'}
+          - {product: 'workbench-for-microsoft-azure-ml', os: 'bionic'}
 
     steps:
       - name: Check Out Repo
