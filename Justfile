@@ -71,15 +71,14 @@ build-release $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`git 
   set -euxo pipefail
 
   # variable placeholders
-  RSW_DOWNLOAD_URL=""
+  RSW_DOWNLOAD_URL=`just _rsw-download-url release $OS`
   BUILDX_ARGS=""
   SHORT_NAME=""
   TAG_VERSION=`just _tag_safe_version $VERSION`
 
   # set short name
-  if [[ $PRODUCT == "workbench" || $PRODUCT == "r-session-complete" ]]; then
+  if [[ $PRODUCT == "workbench" || $PRODUCT == "r-session-complete" || $PRODUCT == "workbench-for-microsoft-azure-ml" ]]; then
     SHORT_NAME="RSW"
-    RSW_DOWNLOAD_URL=`just _rsw-download-url release $OS`
   elif [[ $PRODUCT == "connect" ]]; then
     SHORT_NAME="RSC"
   elif [[ $PRODUCT == "package-manager" ]]; then
@@ -116,7 +115,7 @@ build-preview $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
 
   # variable placeholders
   BRANCH_PREFIX=""
-  RSW_DOWNLOAD_URL=""
+  RSW_DOWNLOAD_URL=`just _rsw-download-url $TYPE $OS`
   BUILDX_ARGS=""
   SHORT_NAME=""
   TAG_VERSION=`just _tag_safe_version $VERSION`
@@ -129,9 +128,8 @@ build-preview $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
   fi
 
   # set short name
-  if [[ $PRODUCT == "workbench" || $PRODUCT == "r-session-complete" ]]; then
+  if [[ $PRODUCT == "workbench" || $PRODUCT == "r-session-complete" || $PRODUCT == "workbench-for-microsoft-azure-ml" ]]; then
     SHORT_NAME="RSW"
-    RSW_DOWNLOAD_URL=`just _rsw-download-url $TYPE $OS`
   elif [[ $PRODUCT == "connect" ]]; then
     SHORT_NAME="RSC"
   elif [[ $PRODUCT == "package-manager" ]]; then
