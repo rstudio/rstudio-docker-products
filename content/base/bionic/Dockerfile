@@ -122,7 +122,7 @@ RUN curl -fsSL -o miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-${
     && rm -rf /opt/miniconda
 
 # install quarto
-ARG QUARTO_VERSION=1.0.35
+ARG QUARTO_VERSION=1.0.37
 COPY maybe_install_quarto.sh /tmp/maybe_install_quarto.sh
 RUN /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.rstudio.com/cran/__linux__/bionic/latest")' && \
     /tmp/maybe_install_quarto.sh && \
