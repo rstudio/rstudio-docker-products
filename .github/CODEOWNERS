@@ -7,4 +7,4 @@
 
 /package-manager/* @rstudio/rspm-dev
 
-/workbench/* @rstudio/ide-team
+/workbench/* @cm421 @melissa-barca
