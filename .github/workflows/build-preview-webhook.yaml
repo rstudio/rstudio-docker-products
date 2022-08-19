@@ -25,7 +25,7 @@ name: build/test/push (adhoc preview)
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: build-${{ github.event.inputs.product }}:${{ github.event.inputs.type }}-${{ github.event.inputs.version }}
+    name: build-${{ github.event.inputs.product }}:${{ github.event.inputs.os }}-${{ github.event.inputs.type }}-${{ github.event.inputs.version }}
 
     steps:
       - name: Check Out Repo
