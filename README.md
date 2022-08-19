@@ -86,8 +86,8 @@ To build RStudio Package Manager:
 make package-manager
 ```
 
-You can alter what exactly is built by changing `workbench/Dockerfile`, `connect/Dockerfile`,
-and `package-manager/Dockerfile`.
+You can alter what exactly is built by changing `workbench/Dockerfile.$OS`, `connect/Dockerfile.$OS`,
+and `package-manager/Dockerfile.$OS`.
 
 You can then run what you've built to test out with the `run-` commands. For instance, to run the workbench container
 you have built:
