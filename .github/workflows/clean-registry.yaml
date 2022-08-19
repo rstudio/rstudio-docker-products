@@ -1,0 +1,26 @@
+on:
+  schedule:
+    - cron: 0 0 * * 6
+  push:
+    branches:
+      - main
+      - dev
+      - dev-rspm
+  pull_request:
+
+name: clean registries
+
+jobs:
+  cleanup:
+    env:
+      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
+      DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      DRY_RUN: 1
+    runs-on: ubuntu-latest
+    name: cleanup-dockerhub
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+
+      - name: Run Script
+        run: ./tools/dockerhub_clean.py
