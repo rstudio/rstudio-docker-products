@@ -11,7 +11,6 @@ ENDPOINTS = {
     "delete_images": "https://hub.docker.com/v2/namespaces/rstudio/delete-images"
 }
 REPOSITORIES = [
-    "content-base",
     "r-session-complete",
     "r-session-complete-preview",
     "rstudio-connect",
@@ -71,6 +70,8 @@ def delete_images(bearer_token, repository, image_list, active_from, dry_run=Tru
         "active_from": active_from,
         "manifests": [],
     }
+    total_images = 0
+    batch_count = 0
     for image in image_list:
         if image["status"] == "active":
             print(f"Skipping active image {image['repository']}@{image['digest']}", file=sys.stderr)
@@ -95,11 +96,24 @@ def delete_images(bearer_token, repository, image_list, active_from, dry_run=Tru
             "repository": image["repository"],
             "digest": image["digest"],
         })
-    r = requests.post(ENDPOINTS["delete_images"], headers=headers, json=data)
-    if r.status_code == 200:
-        print(f"Successfully deleted {len(data['manifests'])} from {repository}", file=sys.stderr)
-    else:
-        print(f"Failed to delete images for {repository}")
+        total_images += 1
+        batch_count += 1
+        if batch_count == 25:  # Docker Hub caps delete requests to 25 manifests
+            batch_count = 0
+            r = requests.post(ENDPOINTS["delete_images"], headers=headers, json=data)
+            if r.status_code == 200:
+                print(f"Successfully deleted batch of {len(data['manifests'])} images from {repository}",
+                      file=sys.stderr)
+            else:
+                print(f"{r.status_code} Failed to delete batch of images for {repository}", file=sys.stderr)
+            data["manifests"] = []
+
+    if data["manifests"]:
+        r = requests.post(ENDPOINTS["delete_images"], headers=headers, json=data)
+        if r.status_code == 200:
+            print(f"Successfully deleted {total_images} from {repository}", file=sys.stderr)
+        else:
+            print(f"{r.status_code} Failed to delete images for {repository}", file=sys.stderr)
 
 
 def main():
