@@ -64,7 +64,7 @@ update-drivers:  ## Update the driver version
 
 rsw: workbench
 workbench:  ## Build Workbench image
-	docker build -t rstudio/rstudio-workbench:$(RSW_TAG_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSW_VERSION=$(RSW_VERSION) workbench
+	DOCKER_BUILDKIT=1 docker build -t rstudio/rstudio-workbench:$(RSW_TAG_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSW_VERSION=$(RSW_VERSION) --file workbench/Dockerfile.bionic workbench
 
 test-rsw: test-workbench
 test-workbench:
@@ -88,7 +88,7 @@ run-workbench:  ## Run RSW container
 
 rsc: connect
 connect:  ## Build RSC image
-	docker build -t rstudio/rstudio-connect:$(RSC_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSC_VERSION=$(RSC_VERSION) connect
+	DOCKER_BUILDKIT=1 docker build -t rstudio/rstudio-connect:$(RSC_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSC_VERSION=$(RSC_VERSION) --file connect/Dockerfile.bionic connect
 
 test-rsc: test-connect
 test-connect:
@@ -112,7 +112,7 @@ run-connect:  ## Run RSC container
 
 rspm: package-manager
 package-manager:  ## Build RSPM image
-	docker build -t rstudio/rstudio-package-manager:$(RSPM_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSPM_VERSION=$(RSPM_VERSION) package-manager
+	DOCKER_BUILDKIT=1 docker build -t rstudio/rstudio-package-manager:$(RSPM_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSPM_VERSION=$(RSPM_VERSION) --file package-manager/Dockerfile.bionic package-manager
 
 
 test-rspm: test-package-manager
