@@ -116,7 +116,7 @@ def delete_images(bearer_token, repository, image_list, active_from, dry_run=Tru
             data["manifests"] = []
             print_image_list = []
 
-    if data["manifests"]:
+    if data["manifests"]:  # Runs if there are any remaining images queued for deletion after the last 25 image batch
         print("Deleting the following images:", file=sys.stderr)
         pprint(print_image_list, stream=sys.stderr)
         r = requests.post(ENDPOINTS["delete_images"], headers=headers, json=data)
@@ -133,7 +133,7 @@ def main():
     docker_hub_username = os.getenv("DOCKER_HUB_USERNAME")
     docker_hub_password = os.getenv("DOCKER_HUB_PASSWORD")  # Can be password or generated PAT
     bearer_token = create_token(docker_hub_username, docker_hub_password)
-    days_since_last_active = os.getenv("DAYS_SINCE_LAST_ACTIVE", 365)
+    days_since_last_active = os.getenv("DAYS_SINCE_LAST_ACTIVE", 548)
     active_from = (datetime.now(timezone.utc) - timedelta(days=days_since_last_active)).isoformat()
     for repository in REPOSITORIES:
         image_list = get_images(bearer_token, repository, active_from)
