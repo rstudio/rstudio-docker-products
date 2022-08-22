@@ -2,6 +2,7 @@
 import os
 import sys
 from datetime import datetime, timedelta, timezone
+from pprint import pprint
 
 import requests
 
@@ -70,6 +71,7 @@ def delete_images(bearer_token, repository, image_list, active_from, dry_run=Tru
         "active_from": active_from,
         "manifests": [],
     }
+    print_image_list = []
     total_images = 0
     batch_count = 0
     for image in image_list:
@@ -96,16 +98,27 @@ def delete_images(bearer_token, repository, image_list, active_from, dry_run=Tru
             "repository": image["repository"],
             "digest": image["digest"],
         })
+        print_image_list.append({
+            "repository": f"{image['namespace']}/{image['repository']}",
+            "digest": image["digest"],
+            "tags": [t["tag"] for t in image["tags"] if t["is_current"]],
+            "last_pulled": image["last_pulled"],
+        })
         total_images += 1
         batch_count += 1
         if batch_count == 25:  # Docker Hub caps delete requests to 25 manifests
             batch_count = 0
+            print("Deleting the following images:", file=sys.stderr)
+            pprint(print_image_list)
             r = requests.post(ENDPOINTS["delete_images"], headers=headers, json=data)
             if r.status_code != 200:
                 print(f"{r.status_code} Failed to delete batch of images for {repository}", file=sys.stderr)
             data["manifests"] = []
+            print_image_list = []
 
     if data["manifests"]:
+        print("Deleting the following images:", file=sys.stderr)
+        pprint(print_image_list)
         r = requests.post(ENDPOINTS["delete_images"], headers=headers, json=data)
         if r.status_code == 200:
             print(f"Successfully deleted {total_images} total images from {repository}", file=sys.stderr)
