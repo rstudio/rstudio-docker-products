@@ -109,7 +109,7 @@ def delete_images(bearer_token, repository, image_list, active_from, dry_run=Tru
         if batch_count == 25:  # Docker Hub caps delete requests to 25 manifests
             batch_count = 0
             print("Deleting the following images:", file=sys.stderr)
-            pprint(print_image_list)
+            pprint(print_image_list, stream=sys.stderr)
             r = requests.post(ENDPOINTS["delete_images"], headers=headers, json=data)
             if r.status_code != 200:
                 print(f"{r.status_code} Failed to delete batch of images for {repository}", file=sys.stderr)
@@ -118,7 +118,7 @@ def delete_images(bearer_token, repository, image_list, active_from, dry_run=Tru
 
     if data["manifests"]:
         print("Deleting the following images:", file=sys.stderr)
-        pprint(print_image_list)
+        pprint(print_image_list, stream=sys.stderr)
         r = requests.post(ENDPOINTS["delete_images"], headers=headers, json=data)
         if r.status_code == 200:
             print(f"Successfully deleted {total_images} total images from {repository}", file=sys.stderr)
