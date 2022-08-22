@@ -128,6 +128,8 @@ def delete_images(bearer_token, repository, image_list, active_from, dry_run=Tru
 
 def main():
     dry_run = bool(int(os.getenv("DRY_RUN", 1)))
+    if dry_run:
+        print("The DRY_RUN flag is enabled. No images will be deleted.", file=sys.stderr)
     docker_hub_username = os.getenv("DOCKER_HUB_USERNAME")
     docker_hub_password = os.getenv("DOCKER_HUB_PASSWORD")  # Can be password or generated PAT
     bearer_token = create_token(docker_hub_username, docker_hub_password)
