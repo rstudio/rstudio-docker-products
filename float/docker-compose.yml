@@ -6,7 +6,7 @@ services:
     image: rstudio/rstudio-workbench-float-lic
     build:
       context: ./
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.focal
       args:
         - "PRODUCT=rsp"
         - "PORT=8989"
@@ -22,7 +22,7 @@ services:
     image: rstudio/rstudio-connect-float-lic
     build:
       context: ./
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.focal
       args:
         - "PRODUCT=connect"
         - "PORT=8999"
@@ -38,7 +38,7 @@ services:
     image: rstudio/rstudio-package-manager-float-lic
     build:
       context: ./
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.focal
       args:
         - "PRODUCT=rspm"
         - "PORT=8969"
