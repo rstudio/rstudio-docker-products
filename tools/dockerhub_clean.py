@@ -139,6 +139,8 @@ def main():
         image_list = get_images(bearer_token, repository, active_from)
         if image_list:
             delete_images(bearer_token, repository, image_list, active_from, dry_run=dry_run)
+        else:
+            print(f"Skipping {repository}, no images matched the deletion criteria.", file=sys.stderr)
 
 
 if __name__ == "__main__":
