@@ -1,3 +1,5 @@
+IMAGE_OS ?= bionic
+
 R_VERSION ?= 3.6.2
 R_VERSION_ALT ?= 4.1.0
 
@@ -5,7 +7,7 @@ PYTHON_VERSION ?= 3.9.5
 PYTHON_VERSION_ALT ?= 3.8.10
 
 RSW_VERSION ?= 2022.07.1+554.pro3
-RSC_VERSION ?= 2022.07.0
+RSC_VERSION ?= 2022.08.0
 RSPM_VERSION ?= 2022.07.2-11
 
 DRIVERS_VERSION ?= 2021.10.0
@@ -51,7 +53,7 @@ all: help
 
 
 images: workbench connect package-manager  ## Build all images
-	docker-compose build
+	DOCKER_BUILDKIT=1 IMAGE_OS=$(IMAGE_OS) docker-compose build
 
 
 update-versions:  ## Update the version files for all products
@@ -64,7 +66,7 @@ update-drivers:  ## Update the driver version
 
 rsw: workbench
 workbench:  ## Build Workbench image
-	docker build -t rstudio/rstudio-workbench:$(RSW_TAG_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSW_VERSION=$(RSW_VERSION) workbench
+	DOCKER_BUILDKIT=1 docker build -t rstudio/rstudio-workbench:$(RSW_TAG_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSW_VERSION=$(RSW_VERSION) --file workbench/Dockerfile.$(IMAGE_OS) workbench
 
 test-rsw: test-workbench
 test-workbench:
@@ -88,7 +90,7 @@ run-workbench:  ## Run RSW container
 
 rsc: connect
 connect:  ## Build RSC image
-	docker build -t rstudio/rstudio-connect:$(RSC_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSC_VERSION=$(RSC_VERSION) connect
+	DOCKER_BUILDKIT=1 docker build -t rstudio/rstudio-connect:$(RSC_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSC_VERSION=$(RSC_VERSION) --file connect/Dockerfile.$(IMAGE_OS) connect
 
 test-rsc: test-connect
 test-connect:
@@ -112,7 +114,7 @@ run-connect:  ## Run RSC container
 
 rspm: package-manager
 package-manager:  ## Build RSPM image
-	docker build -t rstudio/rstudio-package-manager:$(RSPM_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSPM_VERSION=$(RSPM_VERSION) package-manager
+	DOCKER_BUILDKIT=1 docker build -t rstudio/rstudio-package-manager:$(RSPM_VERSION) --build-arg R_VERSION=$(R_VERSION) --build-arg RSPM_VERSION=$(RSPM_VERSION) --file package-manager/Dockerfile.$(IMAGE_OS) package-manager
 
 
 test-rspm: test-package-manager
@@ -137,16 +139,28 @@ run-package-manager:  ## Run RSPM container
 
 test-all: rspm test-rspm rsc test-rsc rsw test-rsw
 
-test-azure:
-	cd ./helper/workbench-for-microsoft-azure-ml && IMAGE_NAME=ghcr.io/rstudio/rstudio-workbench-for-microsoft-azure-ml:latest docker-compose -f docker-compose.test.yml run sut
-test-azure-i:
-	cd ./helper/workbench-for-microsoft-azure-ml && IMAGE_NAME=ghcr.io/rstudio/rstudio-workbench-for-microsoft-azure-ml:latest docker-compose -f docker-compose.test.yml run sut bash
+test-azure: test-rsw-azure
+
+rsw-azure: workbench-azure
+workbench-azure:  ## Build Workbench for Microsoft Azure ML image
+	DOCKER_BUILDKIT=1 docker build \
+		-t rstudio/rstudio-workbench-for-microsoft-azure-ml:$(RSW_TAG_VERSION) \
+		--build-arg R_VERSION=$(R_VERSION) \
+		--build-arg RSW_VERSION=$(RSW_VERSION) \
+		helper/workbench-for-microsoft-azure-ml
+
+test-rsw-azure: test-workbench-azure
+test-workbench-azure:
+	cd ./helper/workbench-for-microsoft-azure-ml && IMAGE_NAME=rstudio/rstudio-workbench-for-microsoft-azure-ml:$(RSW_TAG_VERSION) docker-compose -f docker-compose.test.yml run sut
+test-rsw-azure-i: test-workbench-azure-i
+test-workbench-azure-i:
+	cd ./helper/workbench-for-microsoft-azure-ml && IMAGE_NAME=rstudio/rstudio-workbench-for-microsoft-azure-ml:$(RSW_TAG_VERSION) docker-compose -f docker-compose.test.yml run sut bash
 
 float:
 	docker-compose -f helper/float/docker-compose.yml build
 
 run-float: run-floating-lic-server
-run-floating-lic-server:  ## Run the floating license server for pro products
+run-floating-lic-server:  ## [DO NOT USE IN PRODUCTION] Run the floating license server for pro products
 	RSW_FLOAT_LICENSE=$(RSW_FLOAT_LICENSE) RSC_FLOAT_LICENSE=$(RSC_FLOAT_LICENSE) RSPM_FLOAT_LICENSE=$(RSPM_FLOAT_LICENSE) SSP_FLOAT_LICENSE=$(SSP_FLOAT_LICENSE) \
 	docker-compose -f helper/float/docker-compose.yml up
 
