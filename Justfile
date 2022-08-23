@@ -91,10 +91,10 @@ build-release $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`git 
   fi
 
   docker buildx --builder="{{BUILDX_PATH}}" build --load $BUILDX_ARGS \
-        -t rstudio/rstudio-"$PRODUCT":"$OS"-latest \
+        -t rstudio/rstudio-"$PRODUCT":"$OS" \
         -t rstudio/rstudio-"$PRODUCT":"$OS"-"$TAG_VERSION" \
         -t rstudio/rstudio-"$PRODUCT":"$OS"-"$TAG_VERSION"--"$SHA_SHORT" \
-        -t ghcr.io/rstudio/rstudio-"$PRODUCT":"$OS"-latest \
+        -t ghcr.io/rstudio/rstudio-"$PRODUCT":"$OS" \
         -t ghcr.io/rstudio/rstudio-"$PRODUCT":"$OS"-"$TAG_VERSION" \
         -t ghcr.io/rstudio/rstudio-"$PRODUCT":"$OS"-"$TAG_VERSION"--"$SHA_SHORT" \
         --build-arg "$SHORT_NAME"_VERSION=$VERSION \
