@@ -101,10 +101,10 @@ build-release $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`git 
         --build-arg RSW_DOWNLOAD_URL=$RSW_DOWNLOAD_URL \
         --file=./"$PRODUCT"/Dockerfile."$OS" "$PRODUCT"
 
-  echo rstudio/rstudio-"$PRODUCT":"$OS"-latest \
+  echo rstudio/rstudio-"$PRODUCT":"$OS" \
         rstudio/rstudio-"$PRODUCT":"$OS"-"$TAG_VERSION" \
         rstudio/rstudio-"$PRODUCT":"$OS"-"$TAG_VERSION"--"$SHA_SHORT" \
-        ghcr.io/rstudio/rstudio-"$PRODUCT":"$OS"-latest \
+        ghcr.io/rstudio/rstudio-"$PRODUCT":"$OS" \
         ghcr.io/rstudio/rstudio-"$PRODUCT":"$OS"-"$TAG_VERSION" \
         ghcr.io/rstudio/rstudio-"$PRODUCT":"$OS"-"$TAG_VERSION"--"$SHA_SHORT"
 
