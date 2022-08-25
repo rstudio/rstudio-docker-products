@@ -1,72 +1,42 @@
 on:
   workflow_dispatch:
     inputs:
-      which:
-        description: "Which images to build. Default 'all'. Options: 'all','rstudio-workbench-preview','rstudio-connect-preview','rstudio-connect-content-init-preview','rstudio-package-manager-preview','r-session-complete-preview'. Can also use a prefix (i.e. 'rstudio-connect') to trigger multiple image builds."
+      product:
+        description: "Which image to build. Options: 'connect', 'connect-content-init', 'package-manager', 'r-session-complete', 'workbench', 'workbench-for-microsoft-azure-ml'."
         required: true
-        default: "all"
+        type: string
+      os:
+        description: "Which os to build. Default 'bionic'. Options: 'bionic', 'focal', 'centos7'"
+        required: true
+        default: "bionic"
+        type: string
+      type:
+        description: "Which build type. Default 'preview'. Options: 'preview', 'daily'"
+        required: false
+        default: "preview"
+        type: string
       version:
         description: "The version to build. Default 'auto'. Can use any string, but must have which != 'all' if using something other than 'auto'"
         required: false
         default: "auto"
+        type: string
 
 name: build/test/push (adhoc preview)
 jobs:
-
-  matrix:
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
-    steps:
-      - uses: actions/checkout@v2
-      - id: set-matrix
-        run: |
-          # filter the matrix configuration
-          MATRIX=$(jq -Mcr < matrix-preview.json)
-          echo "Raw Matrix: $MATRIX"
-          echo "Input - which: ${{ github.event.inputs.which }}"
-          # NOTE: blank which input here means that every product is selected
-          MATRIX_FILTER=$(echo "$MATRIX" | jq -Mcr 'map(select((.product | startswith("${{ github.event.inputs.which }}"))or("all"=="${{ github.event.inputs.which }}")))')
-          echo "Filtered Matrix: $MATRIX_FILTER"
-          echo "::set-output name=matrix::$MATRIX_FILTER"
-
   build:
     runs-on: ubuntu-latest
-    name: build-${{ matrix.config.tag_prefix }}${{ matrix.config.product }}:${{ matrix.config.version }}
-    needs: matrix
-    if: ${{ github.event.inputs.version == 'auto' || github.event.inputs.which != 'all' }}
-
-    strategy:
-      fail-fast: false
-      matrix:
-        config: ${{ fromJson(needs.matrix.outputs.matrix) }}
+    name: build-${{ github.event.inputs.product }}:${{ github.event.inputs.os }}-${{ github.event.inputs.type }}-${{ github.event.inputs.version }}
 
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v2
 
+      - name: Set up Just
+        uses: extractions/setup-just@v1
+
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v1
-
-      - name: Get version
-        id: version
-        run: |
-          # NOTE: --local ensures that "latest" builds use the version in our Makefile (instead of latest from the web)
-          VERSION=`./get-version.py ${{ matrix.config.product }} --type=${{ matrix.config.version }} --local --override=${{ github.event.inputs.version }}`
-          SAFE_VERSION=`echo -n "$VERSION" | sed 's/+/-/g'`
-          echo "::set-output name=VERSION::${VERSION}"
-          echo "::set-output name=SAFE_VERSION::${SAFE_VERSION}"
-          if [[ "true" == "${{ github.ref == 'refs/heads/dev' }}" ]]; then
-            BRANCH_PREFIX="dev-"
-            echo "Setting BRANCH_PREFIX=$BRANCH_PREFIX-"
-          elif [[ "true" == "${{ github.ref == 'refs/heads/dev-rspm' }}" ]]; then
-            BRANCH_PREFIX="dev-rspm-"
-            echo "Setting BRANCH_PREFIX=$BRANCH_PREFIX-"
-          else
-            BRANCH_PREFIX=""
-          fi
-          echo "::set-output name=BRANCH_PREFIX::${BRANCH_PREFIX}"
 
       - name: Cache Docker layers
         uses: actions/cache@v2
@@ -76,31 +46,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
-      - name: Build
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          context: ./${{ matrix.config.dir }}
-          file: ./${{ matrix.config.dir }}/Dockerfile.${{ matrix.config.os }}
-          builder: ${{ steps.buildx.outputs.name }}
-          tags: |
-            rstudio/${{ matrix.config.product }}:${{ steps.version.outputs.BRANCH_PREFIX }}${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-            rstudio/${{ matrix.config.product }}:${{ steps.version.outputs.BRANCH_PREFIX }}${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
-            ghcr.io/rstudio/${{ matrix.config.product }}:${{ steps.version.outputs.BRANCH_PREFIX }}${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-            ghcr.io/rstudio/${{ matrix.config.product }}:${{ steps.version.outputs.BRANCH_PREFIX }}${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-          load: true
-          push: false
-          build-args: |
-            RSW_VERSION=${{ steps.version.outputs.VERSION }}
-            RSC_VERSION=${{ steps.version.outputs.VERSION }}
-            RSPM_VERSION=${{ steps.version.outputs.VERSION }}
-            # TODO: need a better way to handle pivoting DOWNLOAD_URL for OS
-            RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/${{ matrix.config.os }}/${{ matrix.config.arch }}
+      - name: Get Version
+        id: get-version
+        run: |
+          VERSION=`just get-version ${{ github.event.inputs.product }} --type=${{ github.event.inputs.type }} --local --override=${{ github.event.inputs.version }}`
+          echo "::set-output name=VERSION::$VERSION"
 
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+      - name: Build Image
+        id: build-image
+        run: |
+          TAGS=`just BUILDX_PATH=${{ steps.buildx.outputs.name }} build-preview ${{ github.event.inputs.type }} ${{ github.event.inputs.product }} ${{ github.event.inputs.os }} ${{ steps.get-version.outputs.VERSION }}`
+          echo "::set-output name=TAGS::$TAGS"
 
       - name: Show image size
         run: |
@@ -108,16 +64,11 @@ jobs:
 
       - name: Test image
         env:
-          IMAGE_NAME: rstudio/${{ matrix.config.product }}:${{ steps.version.outputs.BRANCH_PREFIX }}${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-          # because we cannot dynamically set env var names... set them all...
-          RSW_VERSION: ${{ steps.version.outputs.VERSION }}
-          RSC_VERSION: ${{ steps.version.outputs.VERSION }}
-          RSPM_VERSION: ${{ steps.version.outputs.VERSION }}
           RSC_LICENSE: ${{ secrets.RSC_LICENSE }}
           RSPM_LICENSE: ${{ secrets.RSPM_LICENSE }}
           RSW_LICENSE: ${{ secrets.RSW_LICENSE }}
         run: |
-          docker-compose -f ./${{ matrix.config.dir }}/docker-compose.test.yml run sut
+          just test-image ${{ github.event.inputs.product }} ${{  steps.get-version.outputs.VERSION }} ${{ steps.build-image.outputs.TAGS }}
 
       - name: Login to Docker Hub
         if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
@@ -137,7 +88,4 @@ jobs:
       - name: Push image(s) to Docker Hub
         if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
         run: |
-          docker push rstudio/${{ matrix.config.product }}:${{ steps.version.outputs.BRANCH_PREFIX }}${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-          docker push rstudio/${{ matrix.config.product }}:${{ steps.version.outputs.BRANCH_PREFIX }}${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
-          docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ steps.version.outputs.BRANCH_PREFIX }}${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-          docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ steps.version.outputs.BRANCH_PREFIX }}${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
+          just push-images ${{ steps.build-image.outputs.TAGS }}
