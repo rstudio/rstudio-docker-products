@@ -5,6 +5,12 @@ changed in each image.
 
 This file only captures pervasive, repository-wide changes.
 
+# 2022-08-24
+- We removed the generic latest tag from all products (excluding content images).
+  Now `latest` variants of images are os-specific. When pulling the latest version of
+  a product replace the latest tag with the desired os. I.E. `rstudio/rstudio-connect:latest` is
+  now `rstudio/rstudio-connect:bionic`.
+
 # 2022-08-01
 
 - We flatted the folder structure for more consistency and better organization
