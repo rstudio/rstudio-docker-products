@@ -70,6 +70,16 @@ jobs:
         run: |
           docker image ls
 
+      - name: Run Snyk to check Docker image for vulnerabilities
+        continue-on-error: true
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
+          args: --file=./content/base/${{ matrix.config.os }}/Dockerfile
+          command: monitor
+
       - name: Login to Docker Hub
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: docker/login-action@v1
@@ -145,6 +155,16 @@ jobs:
         run: |
           docker image ls
 
+      - name: Run Snyk to check Docker image for vulnerabilities
+        continue-on-error: true
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
+          args: --file=./content/pro/${{ matrix.config.os }}/Dockerfile
+          command: monitor
+
       - name: Login to Docker Hub
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: docker/login-action@v1
@@ -165,3 +185,4 @@ jobs:
         run: |
           docker push rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
           docker push ghcr.io/rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
+
