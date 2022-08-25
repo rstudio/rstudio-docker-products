@@ -8,3 +8,4 @@
 /package-manager/* @rstudio/rspm-dev
 
 /workbench/* @cm421 @melissa-barca
+/r-session-complete/* @cm421 @melissa-barca
