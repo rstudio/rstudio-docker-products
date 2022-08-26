@@ -31,7 +31,7 @@ update-rsw-versions:
   sed {{ sed_vars }} "s/^RSW_VERSION=.*/RSW_VERSION={{ RSW_VERSION }}/g" r-session-complete/.env
   sed {{ sed_vars }} "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION={{ RSW_VERSION }}/g" r-session-complete/Dockerfile.bionic
   sed {{ sed_vars }} "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION={{ RSW_VERSION }}/g" r-session-complete/Dockerfile.centos7
-  sed {{ sed_vars }} "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION={{ RSW_VERSION }}/g" workbench/Dockerfile
+  sed {{ sed_vars }} "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION={{ RSW_VERSION }}/g" workbench/Dockerfile.bionic
   sed {{ sed_vars }} "s/RSW_VERSION:.*/RSW_VERSION: {{ RSW_VERSION }}/g" docker-compose.yml
   sed {{ sed_vars }} "s/rstudio\/rstudio-workbench:.*/rstudio\/rstudio-workbench:{{ RSW_TAG_VERSION }}/g" docker-compose.yml
   sed {{ sed_vars }} "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION={{ RSW_VERSION }}/g" workbench-for-microsoft-azure-ml/Dockerfile.bionic
