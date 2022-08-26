@@ -1,23 +1,25 @@
 # Tag from https://hub.docker.com/_/ubuntu/
 FROM ubuntu:focal
-MAINTAINER RStudio Connect <rsconnect@rstudio.com>
+LABEL maintainer="RStudio Connect <rsconnect@rstudio.com>"
+
 # Install required tools:
+# - ca-certificates installs necessary certificates to use cURL with HTTPS websites
 # - curl is used to download the runtime tar.gz
-RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get update && \
-    apt-get install -y \
-    curl \
-    && \
-    rm -rf /var/lib/apt/lists/*
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates curl && \
+    rm -rf /var/lib/apt/lists/* \
+
 ARG RSC_VERSION=2022.08.1
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN mkdir -p /rsc-staging && \
-    cd /rsc-staging && \
-    RSC_VERSION_URL=`echo -n "${RSC_VERSION}" | sed 's/+/%2B/g'` && \
-    curl -fsSL -o rstudio-connect-runtime.tar.gz https://cdn.rstudio.com/connect/$(echo $RSC_VERSION | sed -r 's/([0-9]+\.[0-9]+).*/\1/')/rstudio-connect-runtime-${RSC_VERSION_URL}.tar.gz && \
+    RSC_VERSION_URL=$(echo -n "${RSC_VERSION}" | sed 's/+/%2B/g') && \
+    RSC_VERSION_CLEAN=$(echo $RSC_VERSION | sed -r 's/([0-9]+\.[0-9]+).*/\1/') && \
+    curl -fsSL -o /rsc-staging/rstudio-connect-runtime.tar.gz "https://cdn.rstudio.com/connect/${RSC_VERSION_CLEAN}/rstudio-connect-runtime-${RSC_VERSION_URL}.tar.gz" && \
     mkdir -p /opt/rstudio-connect-runtime && \
-    tar -C /opt/rstudio-connect-runtime -xf rstudio-connect-runtime.tar.gz && \
-    chmod 755 /opt/rstudio-connect-runtime && \
-    cd / && \
-    rm -rf /rsc-staging
+    tar -C /opt/rstudio-connect-runtime -xf /rsc-staging/rstudio-connect-runtime.tar.gz && \
+    chmod -R 755 /opt/rstudio-connect-runtime && \
+    rm -rf /rsc-staging \
+
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 CMD ["/usr/local/bin/entrypoint.sh"]

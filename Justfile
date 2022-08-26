@@ -204,3 +204,7 @@ get-version +NARGS:
 _tag_safe_version $VERSION:
   #!/usr/bin/env bash
   echo -n "$VERSION" | sed 's/+/-/g'
+
+lint $PRODUCT $OS:
+  #!/usr/bin/env bash
+  docker run --rm -i -v $PWD/hadolint.yaml:/.config/hadolint.yaml ghcr.io/hadolint/hadolint < $PRODUCT/Dockerfile.$OS

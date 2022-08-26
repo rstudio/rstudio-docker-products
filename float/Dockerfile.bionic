@@ -1,11 +1,13 @@
 FROM ubuntu:18.04
+LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 # install deps
 RUN apt-get update && \
-	apt-get install -y \
-	gdebi-core \
-	curl \
-	wget
+	apt-get install --no-install-recommends -y \
+	  gdebi-core \
+	  curl \
+	  wget && \
+    rm -rf /var/lib/apt/lists/*
 
 # Runtime settings
 ARG TINI_VERSION=0.18.0
@@ -16,13 +18,13 @@ RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/down
 ARG PRODUCT=rsp
 ARG VERSION=1.1.1
 ARG PORT=8989
-RUN wget https://s3.amazonaws.com/rstudio-license-server/${PRODUCT}-license-server-${VERSION}-x86_64.deb \
-	-O ${PRODUCT}-license-server.deb && \
+RUN curl -L -o "${PRODUCT}-license-server.deb" "https://s3.amazonaws.com/rstudio-license-server/${PRODUCT}-license-server-${VERSION}-x86_64.deb" && \
 	gdebi -n ${PRODUCT}-license-server.deb && \
 	rm ${PRODUCT}-license-server.deb
 
 COPY startup.sh /usr/local/bin/startup.sh
 
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN echo '\n\
 <?xml version="1.0" encoding="utf-8"?>\n\
 <config>\n\
@@ -44,7 +46,7 @@ RUN echo '\n\
     <!-- use proxy -->\n\
     <!-- <proxy url="http://user:pass@127.0.0.1:8080/"/> -->\n\
 </config>\n\
-\n'\
+\n' \
 | sed -s "s/{{PORT}}/${PORT}/" > /etc/${PRODUCT}-license-server.conf && \
 sed -i "s/\${PRODUCT}/${PRODUCT}/" /usr/local/bin/startup.sh
 

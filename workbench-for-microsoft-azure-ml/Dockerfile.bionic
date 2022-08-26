@@ -8,8 +8,8 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
-# hadolint ignore=DL3008,DL3009
-RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
+RUN apt-get update --fix-missing  \
+    && apt-get install -y --no-install-recommends \
         bzip2 \
         ca-certificates \
         g++ \
@@ -106,7 +106,7 @@ RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/r
 
 ARG DRIVERS_VERSION=2021.10.0
 RUN apt-get update -y && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y unixodbc unixodbc-dev gdebi && \
+    apt-get install --no-install-recommends -y unixodbc unixodbc-dev gdebi && \
     rm -rf /var/lib/apt/lists/*
 
 RUN curl -O https://cdn.rstudio.com/drivers/7C152C12/installer/rstudio-drivers_${DRIVERS_VERSION}_amd64.deb && \
@@ -140,15 +140,16 @@ RUN chmod +x /usr/local/bin/startup.sh
 ARG RSW_VERSION=2022.07.1+554.pro3
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 ARG RSW_NAME=rstudio-workbench
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update --fix-missing \
-    && RSW_VERSION_URL=`echo -n "${RSW_VERSION}" | sed 's/+/-/g'` \
-    && curl -o rstudio-workbench.deb ${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-amd64.deb \
+    && RSW_VERSION_URL=$(echo -n "${RSW_VERSION}" | sed 's/+/-/g') \
+    && curl -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-amd64.deb" \
     && gdebi --non-interactive rstudio-workbench.deb \
     && rm rstudio-workbench.deb \
     # custom license manager \
     && mkdir -p /opt/rstudio-license/ \
     && mkdir -p /var/lib/rstudio-workbench/ \
-    && curl -sL https://s3.amazonaws.com/rstudio-ide-build/monitor/bionic/rsp-monitor-workbench-azureml-${RSW_VERSION_URL}.tar.gz |  \
+    && curl -sL "https://s3.amazonaws.com/rstudio-ide-build/monitor/bionic/rsp-monitor-workbench-azureml-${RSW_VERSION_URL}.tar.gz" |  \
        tar xzvf - --strip 2 -C /opt/rstudio-license/ \
     && chmod 0755 /opt/rstudio-license/license-manager \
     && mv /opt/rstudio-license/license-manager /opt/rstudio-license/license-manager-orig \
@@ -169,14 +170,14 @@ RUN rstudio-server install-vs-code /opt/code-server/ && \
 # Install Azure CLI -----------------------------------------------------------#
 
 RUN apt-get update --fix-missing \
-    && apt-get install -y ca-certificates curl apt-transport-https lsb-release gnupg \
+    && apt-get install --no-install-recommends -y ca-certificates curl apt-transport-https lsb-release gnupg \
     && curl -sL https://packages.microsoft.com/keys/microsoft.asc | \
         gpg --dearmor | \
         tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null \
     && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" | \
         tee /etc/apt/sources.list.d/azure-cli.list \
     && apt-get update --fix-missing \
-    && apt-get install -y azure-cli \
+    && apt-get install --no-install-recommends -y azure-cli \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -199,14 +200,15 @@ FROM workbench AS clamav
 
 # Set up ClamAV
 RUN apt-get update && \
-    apt-get install -y \
+    apt-get install --no-install-recommends -y \
         clamav \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Reconfigure freshclam to get database from our S3 location
 ARG CLAMAV_MIRROR=https://cdn.rstudio.com/platform/clamav
-RUN cat /etc/clamav/freshclam.conf | grep -v "DatabaseMirror" > /etc/clamav/freshclam.conf.new && \
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN grep -v "DatabaseMirror" /etc/clamav/freshclam.conf > /etc/clamav/freshclam.conf.new && \
     echo "DatabaseMirror ${CLAMAV_MIRROR}" >> /etc/clamav/freshclam.conf.new && \
     mv /etc/clamav/freshclam.conf.new /etc/clamav/freshclam.conf
 

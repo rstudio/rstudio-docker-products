@@ -1,0 +1,6 @@
+failure-threshold: warning
+ignored:
+  - DL3008  # Suppresses warning for version pinning on apt installs
+  - DL3033  # Suppresses warning for version pinning on yum installs
+label-schema:
+  maintainer: text
