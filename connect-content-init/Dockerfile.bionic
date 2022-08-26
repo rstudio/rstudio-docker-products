@@ -8,7 +8,7 @@ LABEL maintainer="RStudio Connect <rsconnect@rstudio.com>"
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ca-certificates curl && \
-    rm -rf /var/lib/apt/lists/* \
+    rm -rf /var/lib/apt/lists/*
 
 ARG RSC_VERSION=2022.08.1
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]

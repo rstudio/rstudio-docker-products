@@ -31,7 +31,7 @@ build:
 	docker build --build-arg R_VERSION=$(R_VERSION) \
 	--build-arg PYTHON_VERSION=$(PYTHON_VERSION) \
 	--build-arg DRIVERS_VERSION=$(DRIVERS_VERSION) \
-	--build-arg BASE_TAG="r$(R_VERSION)-py$(PYTHON_VERSION)-$(DISTRIBUTION)" \
+	--build-arg BASE_IMAGE="$(TAG_BASE):r$(R_VERSION)-py$(PYTHON_VERSION)-$(DISTRIBUTION)" \
 	-t $(TAG_PRO):r$(R_VERSION)-py$(PYTHON_VERSION)-$(DISTRIBUTION) $(DISTRIBUTION)
 .PHONY: build
 

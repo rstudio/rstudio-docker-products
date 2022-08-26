@@ -1,27 +1,29 @@
 # Using dated tags from https://hub.docker.com/_/ubuntu/
 FROM ubuntu:bionic
 
-LABEL maintainer="RStudio Docker <docker@rstudio.com>"
-
-ENV DEBIAN_FRONTEND=noninteractive
+MAINTAINER RStudio Docker <docker@rstudio.com>
 
 # Installation prerequisites --------------------------------------------------#
 
 # curl is used to download things.
 # libev-dev is required for most interactive Python applications.
-RUN apt-get update \
-    && apt-get install --no-install-recommends -y \
-        ca-certifactes \
+RUN export DEBIAN_FRONTEND=noninteractive && \
+        apt-get update \
+        && \
+        apt-get install -y \
         curl \
         libev-dev \
-    && rm -rf /var/lib/apt/lists/*
+        && \
+        rm -rf /var/lib/apt/lists/*
 
 # System dependencies needed by popular R packages
 # https://docs.rstudio.com/rsc/post-setup-tool/#install-system-dependencies
 
 # Now, install the system requirements for R packages.
-RUN apt-get update \
-    && apt-get install --no-install-recommends -y \
+RUN export DEBIAN_FRONTEND=noninteractive && \
+        apt-get update \
+        && \
+        apt-get install -y \
         default-jdk \
         gdal-bin \
         git \
@@ -69,9 +71,11 @@ RUN apt-get update \
 
 # From https://github.com/rstudio/r-docker/blob/master/base/bionic/Dockerfile
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN rm -rf /var/lib/apt/lists/* && \
-    curl -s -L "https://yihui.org/tinytex/install-bin-unix.sh" | sh && \
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get update && \
+    apt-get install -y wget && \
+    rm -rf /var/lib/apt/lists/* && \
+    wget -qO- "https://yihui.org/tinytex/install-bin-unix.sh" | sh && \
     /root/.TinyTeX/bin/*/tlmgr path remove && \
     mv /root/.TinyTeX/ /opt/TinyTeX && \
     /opt/TinyTeX/bin/*/tlmgr option sys_bin /usr/local/bin && \
@@ -89,6 +93,7 @@ ARG R_DISTRIBUTION=ubuntu-1804
 ARG R_VERSION=3.6.3
 ARG R_INSTALLER=r-${R_VERSION}_1_amd64.deb
 RUN curl -fsSL -O https://cdn.rstudio.com/r/${R_DISTRIBUTION}/pkgs/${R_INSTALLER} && \
+    export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get install -f -y ./${R_INSTALLER} && \
     rm ${R_INSTALLER} && \
