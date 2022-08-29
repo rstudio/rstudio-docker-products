@@ -2,12 +2,14 @@ ARG R_VERSION=3.6.2
 FROM rstudio/r-base:${R_VERSION}-centos7
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
+# Locale configuration --------------------------------------------------------#
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
+# hadolint ignore=DL3008,DL3009
 RUN yum update -y \
     && yum install -y \
         bzip2 \
@@ -57,7 +59,8 @@ RUN yum update -y \
         zlib1g-dev \
     && yum clean all
 
-# Add another R version
+# Add another R version -------------------------------------------------------#
+
 ARG R_VERSION_ALT=4.1.0
 RUN curl -O https://cdn.rstudio.com/r/centos-7/pkgs/R-${R_VERSION_ALT}-1-1.x86_64.rpm && \
     yum install -y R-${R_VERSION_ALT}-1-1.x86_64.rpm && \
@@ -67,8 +70,7 @@ RUN curl -O https://cdn.rstudio.com/r/centos-7/pkgs/R-${R_VERSION_ALT}-1-1.x86_6
 RUN ln -s /opt/R/${R_VERSION_ALT}/bin/R /usr/local/bin/R && \
     ln -s /opt/R/${R_VERSION_ALT}/bin/Rscript /usr/local/bin/Rscript
 
-# Install Python
-
+# Install Python  -------------------------------------------------------------#
 ARG PYTHON_VERSION=3.9.5
 RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
     bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION} && \
@@ -80,7 +82,7 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64
     rm -rf Miniconda3-*-Linux-x86_64.sh && \
     /opt/python/${PYTHON_VERSION}/bin/python -m ipykernel install --name py${PYTHON_VERSION} --display-name "Python ${PYTHON_VERSION}"
 
-# Install another Python
+# Install another Python --------------------------------------------------------------#
 ARG PYTHON_VERSION_ALT=3.8.10
 RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
     bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION_ALT} && \
@@ -99,6 +101,7 @@ RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/down
 
 COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
 
+# Download RStudio Connect -----------------------------------------------------#
 ARG RSC_VERSION=2022.08.0
 SHELL [ "/bin/bash", "-o", "pipefail", "-c"]
 RUN yum update -y \

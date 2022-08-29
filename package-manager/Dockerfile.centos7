@@ -15,7 +15,7 @@ ARG TINI_VERSION=0.18.0
 RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini && \
     chmod +x /usr/local/bin/tini
 
-# Download RSPM
+# Download RStudio Package Manager ---------------------------------------------#
 ARG RSPM_VERSION=2022.07.2-11
 ARG RSPM_DOWNLOAD_URL=https://cdn.rstudio.com/package-manager/centos/x86_64
 RUN yum update -y \

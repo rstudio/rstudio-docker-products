@@ -1,7 +1,10 @@
 FROM centos:7
 LABEL maintainer="RStudio Connect <rsconnect@rstudio.com>"
-
+# Install required tools:
+# - curl is used to download the runtime tar.gz
 RUN yum update -y \
+    && yum install -y \
+        curl \
     && yum clean all
 
 ARG RSC_VERSION=2022.08.0
