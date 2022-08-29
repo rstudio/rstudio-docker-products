@@ -40,7 +40,7 @@ RUN yum update -y \
 
 # Install R and R Packages
 COPY package-list.txt /tmp/package-list.txt
-COPY install-r.sh /tmp/install-r.sh
+COPY install-r-centos7.sh /tmp/install-r.sh
 RUN yum update -y \
 	&& /tmp/install-r.sh \
 	&& yum clean all
