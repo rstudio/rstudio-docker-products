@@ -19,7 +19,7 @@ RUN mkdir -p /rsc-staging && \
     mkdir -p /opt/rstudio-connect-runtime && \
     tar -C /opt/rstudio-connect-runtime -xf /rsc-staging/rstudio-connect-runtime.tar.gz && \
     chmod -R 755 /opt/rstudio-connect-runtime && \
-    rm -rf /rsc-staging \
+    rm -rf /rsc-staging
 
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY --chmod=755 entrypoint.sh /usr/local/bin/entrypoint.sh
 CMD ["/usr/local/bin/entrypoint.sh"]
