@@ -1,13 +1,12 @@
 user:
   rstudio-connect:
     exists: true
-    uid: 999
-    gid: 999
+    groups:
+      - rstudio-connect
 
 group:
   rstudio-connect:
     exists: true
-    gid: 999
 
 package:
   rstudio-connect:
