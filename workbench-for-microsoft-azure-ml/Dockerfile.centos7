@@ -36,7 +36,6 @@ RUN yum update -y \
         rrdtool \
         supervisor \
         wget \
-        dnf \
 	&& yum clean all
 
 # Install R and R Packages
@@ -177,7 +176,7 @@ RUN yum update -y \
     enabled=1 \
     gpgcheck=1 \
     gpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/azure-cli.repo \
-    && dnf install azure-cli \
+    && yum install azure-cli \
     && yum clean all
 
 # Install AzureML extension ---------------------------------------------------#
