@@ -25,7 +25,7 @@ jobs:
          - {product: "workbench", type: "daily", os: "bionic"}
          - {product: "workbench", type: "preview", os: "bionic"}
          - {product: "connect", type: "daily", os: "bionic"}
-         - {product: "connect-content-init", type: "daily", os: "bionic"}
+         - {product: "connect-content-init", type: "daily", os: "focal"}
          - {product: "package-manager", type: "daily", os: "bionic"}
          - {product: "r-session-complete", type: "daily", os: "bionic"}
          - {product: "r-session-complete", type: "daily", os: "centos7"}
