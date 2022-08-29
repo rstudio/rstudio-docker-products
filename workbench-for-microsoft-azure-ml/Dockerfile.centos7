@@ -36,6 +36,7 @@ RUN yum update -y \
         rrdtool \
         supervisor \
         wget \
+        dnf \
 	&& yum clean all
 
 # Install R and R Packages
