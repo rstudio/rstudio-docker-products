@@ -8,7 +8,7 @@ BUILDX_PATH := ""
 
 RSW_VERSION := "2022.07.1+554.pro3"
 RSW_TAG_VERSION := replace(RSW_VERSION, "+", "-")
-RSC_VERSION := "2022.07.0"
+RSC_VERSION := "2022.08.1"
 RSPM_VERSION := "2022.07.2-11"
 R_VERSION := "3.6.2"
 R_VERSION_ALT := "4.1.0"
@@ -56,6 +56,7 @@ update-rsc-versions:
   sed {{ sed_vars }} "s/^ARG RSC_VERSION=.*/ARG RSC_VERSION={{ RSC_VERSION }}/g" connect-content-init/Dockerfile.bionic
   sed {{ sed_vars }} "s/RSC_VERSION:.*/RSC_VERSION: {{ RSC_VERSION }}/g" docker-compose.yml
   sed {{ sed_vars }} "s/rstudio\/rstudio-connect:.*/rstudio\/rstudio-connect:{{ RSC_VERSION }}/g" docker-compose.yml
+  sed {{ sed_vars }} "s/^RSC_VERSION?=.*/RSC_VERSION?={{ RSC_VERSION }}/g" connect-content-init/Makefile
 
 # just R_VERSION=3.2.1 update-r-versions
 update-r-versions:
