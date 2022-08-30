@@ -6,7 +6,7 @@ changed in each image.
 This file only captures pervasive, repository-wide changes.
 
 # 2022-08-29
-- Added centos7 images to release builds.
+- Added rockylinux8 images to release builds.
 
 # 2022-08-24
 - We removed the generic latest tag from all products (excluding content images).
