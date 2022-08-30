@@ -7,7 +7,7 @@ RUN yum update -y \
         curl \
     && yum clean all
 
-ARG RSC_VERSION=2022.08.0
+ARG RSC_VERSION=2022.08.1
 RUN mkdir -p /rsc-staging \
     && cd /rsc-staging \
     && RSC_VERSION_URL=`echo -n "${RSC_VERSION}" | sed 's/+/%2B/g'` \
