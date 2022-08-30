@@ -10,14 +10,17 @@ ARG DRIVERS_VERSION=2021.10.0-1
 
 # Install RStudio Workbench session components -------------------------------#
 
-RUN yum update -y && \
-    yum install -y \
-    libcurl-devel \
-    libuser-devel \
-    openssl-devel \
-    postgresql-libs \
-    rrdtool && \
-    yum clean all
+RUN yum update -y \
+    && yum install -y epel-release \
+    && yum install -y --setopt=skip_missing_names_on_install=False  \
+        libcurl-devel \
+        libuser-devel \
+        openssl-devel \
+        postgresql-libs \
+        rrdtool \
+        bzip2 \
+        openblas-devel \
+    && yum clean all
 
 ARG RSW_VERSION=2022.07.1+554.pro3
 ARG RSW_NAME=rstudio-workbench-rhel
@@ -33,20 +36,16 @@ EXPOSE 8788/tcp
 
 # Install additional system packages ------------------------------------------#
 
-RUN yum update -y && \
-    yum install -y \
-    wget \
-    git \
-    libxml2-devel \
-    subversion \
-    which && \
-    yum clean all
+RUN yum update -y \
+    && yum install -y --setopt=skip_missing_names_on_install=False  \
+        wget \
+        git \
+        libxml2-devel \
+        subversion \
+        which \
+    && yum clean all
 
 # Install R -------------------------------------------------------------------#
-
-RUN yum update -y && \
-    yum install -y epel-release && \
-    yum clean all
 
 RUN curl -O https://cdn.rstudio.com/r/centos-7/pkgs/R-${R_VERSION}-1-1.x86_64.rpm && \
     yum install -y R-${R_VERSION}-1-1.x86_64.rpm && \
@@ -57,10 +56,6 @@ RUN ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R && \
     ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
 
 # Install Python --------------------------------------------------------------#
-
-RUN yum update -y && \
-    yum install -y bzip2 && \
-    yum clean all
 
 RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
     bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION} && \
@@ -96,7 +91,7 @@ COPY vscode.extensions.conf /etc/rstudio/vscode.extensions.conf
 # Install RStudio Professional Drivers ----------------------------------------#
 
 RUN yum update -y && \
-    yum install -y unixODBC unixODBC-devel && \
+    yum install -y --setopt=skip_missing_names_on_install=False unixODBC unixODBC-devel && \
     yum clean all
 
 RUN curl -O https://cdn.rstudio.com/drivers/7C152C12/installer/rstudio-drivers-${DRIVERS_VERSION}.el7.x86_64.rpm && \

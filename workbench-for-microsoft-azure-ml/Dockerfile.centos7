@@ -10,32 +10,19 @@ ENV LC_ALL en_US.UTF-8
 # hadolint ignore=DL3008,DL3009
 RUN yum update -y \
 	&& yum install -y epel-release \
-	&& yum install -y \
+	&& yum install -y --setopt=skip_missing_names_on_install=False \
         bzip2 \
         ca-certificates \
-        g++ \
-        gdal-bin \
-        gdebi-core \
         git \
-        libcap2 \
-        libgdal-dev \
-        libgeos-dev \
-        libglib2.0-0 \
-        libpq5 \
-        libproj-dev \
-        libsm6 \
-        libssl-dev \
-        libssl1.0.0 \
-        libudunits2-dev \
-        libuser \
-        libuser1-dev \
-        libxext6 \
-        libxrender1 \
-        openssh-client \
-        openssl \
+        libffi \
+        psmisc \
+        oddjob-mkhomedir \
         rrdtool \
+        sssd \
+        sudo \
         supervisor \
         wget \
+        openssl \
 	&& yum clean all
 
 # Install R and R Packages
@@ -104,7 +91,7 @@ RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/r
 
 ARG DRIVERS_VERSION=2021.10.0
 RUN yum update -y \
-	&& yum install -y \
+	&& yum install -y --setopt=skip_missing_names_on_install=False \
 		unixODBC \
 		unixODBC-devel \
 	&& yum clean all
@@ -175,7 +162,7 @@ RUN yum update -y \
     enabled=1 \
     gpgcheck=1 \
     gpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/azure-cli.repo \
-    && yum install azure-cli \
+    && yum install -y --setopt=skip_missing_names_on_install=False azure-cli \
     && yum clean all
 
 # Install AzureML extension ---------------------------------------------------#
