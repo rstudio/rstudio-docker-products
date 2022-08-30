@@ -3,7 +3,7 @@ LABEL maintainer="RStudio Connect <rsconnect@rstudio.com>"
 # Install required tools:
 # - curl is used to download the runtime tar.gz
 RUN yum update -y \
-    && yum install -y \
+    && yum install -y --setopt=skip_missing_names_on_install=False  \
         curl \
     && yum clean all
 

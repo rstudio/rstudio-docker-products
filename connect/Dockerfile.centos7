@@ -11,52 +11,52 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # hadolint ignore=DL3008,DL3009
 RUN yum update -y \
-    && yum install -y \
+    && yum install -y epel-release \
+    && yum-config-manager --enable powertools \
+    && yum install -y --setopt=skip_missing_names_on_install=False \
         bzip2 \
         ca-certificates \
-        gdal-bin \
-        gdebi-core \
         git \
-        gsfonts \
-        imagemagick \
-        libcairo2-dev \
-        libcurl4-openssl-dev \
-        libfontconfig1-dev \
-        libfreetype6-dev \
-        libfribidi-dev \
-        libgdal-dev \
-        libgeos-dev \
-        libgl1-mesa-dev \
-        libglib2.0-0 \
-        libglpk-dev \
-        libglu1-mesa-dev \
-        libgmp3-dev \
-        libharfbuzz-dev \
-        libicu-dev \
-        libjpeg-dev \
-        libmagick++-dev \
-        libmysqlclient-dev \
-        libpng-dev \
-        libproj-dev \
-        libsm6 \
-        libsodium-dev \
-        libssh2-1-dev \
-        libtiff-dev \
-        libudunits2-dev \
-        libv8-dev \
-        libxext6 \
-        libxml2-dev \
-        libxrender1 \
+        ImageMagick \
+    	libpng-devel \
+		java-1.8.0-openjdk-devel \
+		libxml2-devel \
+		openssl-devel \
+		libcurl-devel \
+		libjpeg-turbo-devel \
+		ImageMagick-c++ \
+		zlib-devel \
+		freetype-devel \
+		fribidi-devel \
+		harfbuzz-devel \
+		mariadb-devel \
+		geos-devel \
+		udunits2-devel \
+		fontconfig-devel \
+		cairo-devel \
+		libtiff-devel \
+		libgit2-devel \
+		libssh2 \
+		gdal-devel \
+		gdal \
+		sqlite-devel \
+		proj-devel \
+		perl \
+		cmake \
+		libsodium-devel \
+		libicu-devel \
+		mesa-libGLU-devel \
+		mesa-libGL-devel \
+		glpk-devel \
+		gmp-devel \
         make \
         perl \
         sudo \
         tcl \
         tk \
-        tk-dev \
-        tk-table \
-        unixodbc-dev \
+		tk-devel \
+        unixODBC-devel \
         wget \
-        zlib1g-dev \
     && yum clean all
 
 # Add another R version -------------------------------------------------------#

@@ -11,30 +11,19 @@ ENV LC_ALL en_US.UTF-8
 # hadolint ignore=DL3008,DL3009
 RUN yum update -y \
     && yum install -y epel-release \
-    && yum install -y \
+    && yum install -y --setopt=skip_missing_names_on_install=False \
         bzip2 \
         ca-certificates \
-        gdebi-core \
         git \
-        libcap2 \
-        libglib2.0-0 \
-        libpam-sss \
-        libpq5 \
-        libsm6 \
-        openssl \
-        libnss-sss \
-        libuser \
-        libuser1-dev \
-        libxext6 \
-        libxrender1 \
+        libffi \
+        psmisc \
         oddjob-mkhomedir \
-        openssh-client \
         rrdtool \
         sssd \
-        krb5-user \
         sudo \
         supervisor \
         wget \
+        openssl \
     && yum clean all
 
 # Add another R version -------------------------------------------------------#
