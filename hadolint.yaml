@@ -1,6 +1,6 @@
 failure-threshold: warning
 ignored:
-    # Suppresses warning for version pinning on apt installs. We currently do not practice this approac
+    # Suppresses warning for version pinning on apt installs. We currently do not practice this approach.
   - DL3008
     # Suppresses warning for version pinning on yum installs. We currently do not practice this approach.
   - DL3033
