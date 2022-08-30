@@ -41,7 +41,7 @@ RUN apt-get update --fix-missing  \
 
 # Install R and R Packages
 COPY package-list.txt /tmp/package-list.txt
-COPY install-r.sh /tmp/install-r.sh
+COPY install-r-bionic.sh /tmp/install-r.sh
 RUN apt-get update --fix-missing -qq && \
     /tmp/install-r.sh && \
     apt-get clean && \

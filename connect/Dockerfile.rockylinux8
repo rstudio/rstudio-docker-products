@@ -1,0 +1,128 @@
+ARG R_VERSION=3.6.2
+FROM rstudio/r-base:${R_VERSION}-rockylinux8
+LABEL maintainer="RStudio Docker <docker@rstudio.com>"
+
+# Locale configuration --------------------------------------------------------#
+
+# hadolint ignore=DL3008,DL3009
+RUN yum update -y \
+	&& yum install -y \
+		glibc-locale-source \
+		glibc-langpack-en \
+	&& yum clean all
+
+RUN localedef -i en_US -f UTF-8 en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+
+# hadolint ignore=DL3008,DL3009
+RUN yum update -y \
+	&& yum install -y epel-release \
+	&& yum config-manager --set-enabled powertools \
+    && yum install -y \
+        bzip2 \
+        ca-certificates \
+        git \
+        ImageMagick \
+    	libpng-devel \
+		java-1.8.0-openjdk-devel \
+		libxml2-devel \
+		openssl-devel \
+		libcurl-devel \
+		libjpeg-turbo-devel \
+		ImageMagick-c++ \
+		zlib-devel \
+		freetype-devel \
+		fribidi-devel \
+		harfbuzz-devel \
+		mariadb-devel \
+		geos-devel \
+		udunits2-devel \
+		fontconfig-devel \
+		cairo-devel \
+		libtiff-devel \
+		libgit2-devel \
+		libssh2 \
+		gdal-devel \
+		gdal \
+		sqlite-devel \
+		proj-devel \
+		perl \
+		cmake \
+		libsodium-devel \
+		libicu-devel \
+		mesa-libGLU-devel \
+		mesa-libGL-devel \
+		glpk-devel \
+		gmp-devel \
+        make \
+        perl \
+        sudo \
+        tcl \
+        tk \
+		tk-devel \
+        unixODBC-devel \
+        wget \
+    && yum clean all
+
+# Add another R version -------------------------------------------------------#
+
+ARG R_VERSION_ALT=4.1.0
+RUN curl -O https://cdn.rstudio.com/r/centos-8/pkgs/R-${R_VERSION_ALT}-1-1.x86_64.rpm && \
+    yum install -y R-${R_VERSION_ALT}-1-1.x86_64.rpm && \
+    yum clean all && \
+    rm -rf R-${R_VERSION_ALT}-1-1.x86_64.rpm
+
+RUN ln -s /opt/R/${R_VERSION_ALT}/bin/R /usr/local/bin/R && \
+    ln -s /opt/R/${R_VERSION_ALT}/bin/Rscript /usr/local/bin/Rscript
+
+# Install Python  -------------------------------------------------------------#
+ARG PYTHON_VERSION=3.9.5
+RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
+    bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION} && \
+    /opt/python/${PYTHON_VERSION}/bin/conda install -y python==${PYTHON_VERSION} && \
+    /opt/python/${PYTHON_VERSION}/bin/pip install \
+        ipykernel \
+        virtualenv \
+        && \
+    rm -rf Miniconda3-*-Linux-x86_64.sh && \
+    /opt/python/${PYTHON_VERSION}/bin/python -m ipykernel install --name py${PYTHON_VERSION} --display-name "Python ${PYTHON_VERSION}"
+
+# Install another Python --------------------------------------------------------------#
+ARG PYTHON_VERSION_ALT=3.8.10
+RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
+    bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION_ALT} && \
+    /opt/python/${PYTHON_VERSION_ALT}/bin/conda install -y python==${PYTHON_VERSION_ALT} && \
+    /opt/python/${PYTHON_VERSION_ALT}/bin/pip install \
+        ipykernel \
+        virtualenv \
+        && \
+    rm -rf Miniconda3-*-Linux-x86_64.sh && \
+    /opt/python/${PYTHON_VERSION_ALT}/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}"
+
+# Runtime settings ------------------------------------------------------------#
+ARG TINI_VERSION=0.18.0
+RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini && \
+    chmod +x /usr/local/bin/tini
+
+COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
+
+# Download RStudio Connect -----------------------------------------------------#
+ARG RSC_VERSION=2022.08.0
+SHELL [ "/bin/bash", "-o", "pipefail", "-c"]
+RUN yum update -y \
+    && RSC_VERSION_URL=`echo -n "${RSC_VERSION}" | sed 's/+/%2B/g'` \
+    && curl -L -o rstudio-connect.rpm https://cdn.rstudio.com/connect/$(echo $RSC_VERSION | sed -r 's/([0-9]+\.[0-9]+).*/\1/')/rstudio-connect-${RSC_VERSION_URL}.el8.x86_64.rpm \
+    && yum install -y rstudio-connect.rpm \
+    && rm rstudio-connect.rpm \
+    && yum clean all
+
+EXPOSE 3939/tcp
+ENV RSC_LICENSE ""
+ENV RSC_LICENSE_SERVER ""
+COPY rstudio-connect.gcfg /etc/rstudio-connect/rstudio-connect.gcfg
+VOLUME ["/data"]
+
+ENTRYPOINT ["tini", "--"]
+CMD ["/usr/local/bin/startup.sh"]

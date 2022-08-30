@@ -1,13 +1,12 @@
 user:
   rstudio-pm:
     exists: true
-    uid: 999
-    gid: 999
-
+    groups:
+      - rstudio-pm
+ 
 group:
   rstudio-pm:
     exists: true
-    gid: 999
 
 package:
   rstudio-pm:

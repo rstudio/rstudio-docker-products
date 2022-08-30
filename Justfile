@@ -171,12 +171,22 @@ build-preview $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
         ghcr.io/rstudio/${IMAGE_PREFIX}${PRODUCT}-preview:${BRANCH_PREFIX}${OS}-${TAG_VERSION} \
         ghcr.io/rstudio/${IMAGE_PREFIX}${PRODUCT}-preview:${BRANCH_PREFIX}${OS}-${TYPE}
 
-_rsw-download-url TYPE OS:
+_rsw-download-url TYPE $OS:
   #!/usr/bin/env bash
-  if [[ "{{TYPE}}" == "release" ]]; then
-    echo "https://download2.rstudio.org/server/{{OS}}/{{ if OS == "centos7" { "x86_64"} else { "amd64" } }}"
+  if [[ "$OS" == "rockylinux8" || "$OS" == "centos7" || "$OS" == "centos8" ]]; then
+    ARCH="x86_64"
   else
-    echo "https://s3.amazonaws.com/rstudio-ide-build/server/{{OS}}/{{ if OS == "centos7" { "x86_64"} else { "amd64" } }}"
+    ARCH="amd64"
+  fi
+
+  if [[ "$OS" == "rockylinux8" || "$OS" == "centos8" ]]; then
+    OS="rhel8"
+  fi
+
+  if [[ "{{TYPE}}" == "release" ]]; then
+    echo "https://download2.rstudio.org/server/$OS/$ARCH"
+  else
+    echo "https://s3.amazonaws.com/rstudio-ide-build/server/$OS/$ARCH"
   fi
 
 # just push-images tag1 tag2 ...

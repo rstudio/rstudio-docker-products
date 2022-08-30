@@ -1,4 +1,4 @@
-FROM centos:7
+FROM rockylinux:8
 
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
@@ -9,25 +9,27 @@ ARG PYTHON_VERSION=3.9.5
 ARG DRIVERS_VERSION=2021.10.0-1
 
 # Install RStudio Workbench session components -------------------------------#
+
 RUN yum update -y \
     && yum install -y epel-release \
-    && yum install -y --setopt=skip_missing_names_on_install=False  \
+	&& yum config-manager --set-enabled powertools \
+    && yum install -y \
         libcurl-devel \
         libuser-devel \
         openssl-devel \
         postgresql-libs \
         rrdtool \
         bzip2 \
-        openblas-devel \
+        glibc-locale-source \
+		glibc-langpack-en \
     && yum clean all
 
 ARG RSW_VERSION=2022.07.1+554.pro3
 ARG RSW_NAME=rstudio-workbench-rhel
-ARG RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x86_64
-
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN RSW_VERSION_URL=$(echo -n "${RSW_VERSION}" | sed 's/+/-/g') \
-    && curl -o rstudio-workbench.rpm "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-x86_64.rpm" \
+ARG RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/rhel8/x86_64
+RUN RSW_VERSION_URL=`echo -n "${RSW_VERSION}" | sed 's/+/-/g'` \
+    && echo ${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-x86_64.rpm \
+    && curl -o rstudio-workbench.rpm -O ${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-x86_64.rpm \
     && yum install -y rstudio-workbench.rpm \
     && rm rstudio-workbench.rpm \
     && yum clean all \
@@ -37,18 +39,18 @@ EXPOSE 8788/tcp
 
 # Install additional system packages ------------------------------------------#
 
-RUN yum update -y \
-    && yum install -y --setopt=skip_missing_names_on_install=False  \
-        wget \
-        git \
-        libxml2-devel \
-        subversion \
-        which \
-    && yum clean all
+RUN yum update -y && \
+    yum install -y \
+    wget \
+    git \
+    libxml2-devel \
+    subversion \
+    which && \
+    yum clean all
 
 # Install R -------------------------------------------------------------------#
 
-RUN curl -O https://cdn.rstudio.com/r/centos-7/pkgs/R-${R_VERSION}-1-1.x86_64.rpm && \
+RUN curl -O https://cdn.rstudio.com/r/centos-8/pkgs/R-${R_VERSION}-1-1.x86_64.rpm && \
     yum install -y R-${R_VERSION}-1-1.x86_64.rpm && \
     yum clean all && \
     rm -rf R-${R_VERSION}-1-1.x86_64.rpm
@@ -92,7 +94,7 @@ COPY vscode.extensions.conf /etc/rstudio/vscode.extensions.conf
 # Install RStudio Professional Drivers ----------------------------------------#
 
 RUN yum update -y && \
-    yum install -y --setopt=skip_missing_names_on_install=False unixODBC unixODBC-devel && \
+    yum install -y unixODBC unixODBC-devel && \
     yum clean all
 
 RUN curl -O https://cdn.rstudio.com/drivers/7C152C12/installer/rstudio-drivers-${DRIVERS_VERSION}.el7.x86_64.rpm && \
@@ -101,7 +103,7 @@ RUN curl -O https://cdn.rstudio.com/drivers/7C152C12/installer/rstudio-drivers-$
     rm -f rstudio-drivers-${DRIVERS_VERSION}.el7.x86_64.rpm && \
     cp /opt/rstudio-drivers/odbcinst.ini.sample /etc/odbcinst.ini
 
-RUN /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.rstudio.com/cran/__linux__/centos7/latest")'
+RUN /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.rstudio.com/cran/__linux__/rhel8/latest")'
 
 # Locale configuration --------------------------------------------------------#
 
