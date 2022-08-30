@@ -18,6 +18,7 @@ jobs:
         config:
           - {product: 'workbench', os: 'bionic'}
           - {product: 'workbench', os: 'centos7'}
+          - {product: 'workbench', os: 'rockylinux8'}
           - {product: 'connect', os: 'bionic'}
           - {product: 'connect', os: 'centos7'}
           - {product: 'connect-content-init', os: 'focal'}

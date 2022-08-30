@@ -1,4 +1,4 @@
-FROM rstudio/r-base:centos7 AS workbench
+FROM rstudio/r-base:rockylinux8 AS workbench
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 # Locale configuration --------------------------------------------------------#
