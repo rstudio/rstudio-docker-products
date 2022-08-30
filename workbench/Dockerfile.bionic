@@ -156,5 +156,6 @@ RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
 EXPOSE 8787/tcp
 EXPOSE 5559/tcp
 
+ENV DEBIAN_FRONTEND=dialog
 ENTRYPOINT []
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]

@@ -21,5 +21,6 @@ RUN mkdir -p /rsc-staging && \
     chmod -R 755 /opt/rstudio-connect-runtime && \
     rm -rf /rsc-staging
 
+ENV DEBIAN_FRONTEND=dialog
 COPY --chmod=755 entrypoint.sh /usr/local/bin/entrypoint.sh
 CMD ["/usr/local/bin/entrypoint.sh"]

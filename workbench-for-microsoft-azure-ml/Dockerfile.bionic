@@ -229,6 +229,8 @@ FROM workbench AS final
 # Copy ClamAV scan logs so the end user can see them.
 COPY --from=clamav /var/log/clamav/clamscan.log /var/log/clamav/clamupdate.log /
 
+ENV DEBIAN_FRONTEND=dialog
+
 LABEL \
      azure.ii.language='en-US' \
      azure.ii.support.stage='preview' \

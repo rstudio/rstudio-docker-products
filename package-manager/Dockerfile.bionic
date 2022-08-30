@@ -48,5 +48,6 @@ COPY rstudio-pm.gcfg /etc/rstudio-pm/rstudio-pm.gcfg
 # in which case we can ignore it anyway.
 RUN license-manager initialize --userspace || true
 
+ENV DEBIAN_FRONTEND=dialog
 ENTRYPOINT ["tini", "--"]
 CMD ["/usr/local/bin/startup.sh"]
