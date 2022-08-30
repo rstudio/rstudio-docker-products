@@ -26,6 +26,7 @@ jobs:
           - {product: 'package-manager', os: 'rockylinux8'}
           - {product: 'r-session-complete', os: 'bionic'}
           - {product: 'r-session-complete', os: 'rockylinux8'}
+          - {product: 'r-session-complete', os: 'centos7'}
           - {product: 'workbench-for-microsoft-azure-ml', os: 'bionic'}
 
     steps:
