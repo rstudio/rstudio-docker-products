@@ -6,7 +6,7 @@ RUN localedef -i en_US -f UTF-8 en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
-ENV DEBIAN_FRONTEND=noninteractive
+ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update --fix-missing  \
     && apt-get install -y --no-install-recommends \
@@ -228,8 +228,6 @@ FROM workbench AS final
 
 # Copy ClamAV scan logs so the end user can see them.
 COPY --from=clamav /var/log/clamav/clamscan.log /var/log/clamav/clamupdate.log /
-
-ENV DEBIAN_FRONTEND=dialog
 
 LABEL \
      azure.ii.language='en-US' \

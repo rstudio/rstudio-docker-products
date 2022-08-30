@@ -5,7 +5,7 @@ LABEL maintainer="RStudio Connect <rsconnect@rstudio.com>"
 # Install required tools:
 # - ca-certificates installs necessary certificates to use cURL with HTTPS websites
 # - curl is used to download the runtime tar.gz
-ENV DEBIAN_FRONTEND=noninteractive
+ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ca-certificates curl && \
     rm -rf /var/lib/apt/lists/*
@@ -21,6 +21,5 @@ RUN mkdir -p /rsc-staging && \
     chmod -R 755 /opt/rstudio-connect-runtime && \
     rm -rf /rsc-staging
 
-ENV DEBIAN_FRONTEND=dialog
 COPY --chmod=755 entrypoint.sh /usr/local/bin/entrypoint.sh
 CMD ["/usr/local/bin/entrypoint.sh"]

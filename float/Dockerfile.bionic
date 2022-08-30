@@ -1,5 +1,6 @@
 FROM ubuntu:18.04
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
+ARG DEBIAN_FRONTEND=noninteractive
 
 # install deps
 RUN apt-get update && \
@@ -50,7 +51,6 @@ RUN echo '\n\
 | sed -s "s/{{PORT}}/${PORT}/" > /etc/${PRODUCT}-license-server.conf && \
 sed -i "s/\${PRODUCT}/${PRODUCT}/" /usr/local/bin/startup.sh
 
-ENV DEBIAN_FRONTEND=dialog
 ENTRYPOINT [ "tini", "--" ]
 CMD [ "/usr/local/bin/startup.sh" ]
 EXPOSE ${PORT}

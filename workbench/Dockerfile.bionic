@@ -7,7 +7,7 @@ RUN localedef -i en_US -f UTF-8 en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
-ENV DEBIAN_FRONTEND=noninteractive
+ARG DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update --fix-missing \
     && apt-get install -y --no-install-recommends \
@@ -156,6 +156,5 @@ RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
 EXPOSE 8787/tcp
 EXPOSE 5559/tcp
 
-ENV DEBIAN_FRONTEND=dialog
 ENTRYPOINT []
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
