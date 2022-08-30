@@ -22,24 +22,12 @@ RUN yum update -y \
     && yum install -y \
         bzip2 \
         ca-certificates \
-        gdebi-core \
         git \
-        libcap2 \
-        libglib2.0-0 \
-        libpam-sss \
-        libpq5 \
-        libsm6 \
-        openssl \
-        libnss-sss \
-        libuser \
-        libuser1-dev \
-        libxext6 \
-        libxrender1 \
+        libffi \
+        psmisc \
         oddjob-mkhomedir \
-        openssh-client \
         rrdtool \
         sssd \
-        krb5-user \
         sudo \
         supervisor \
         wget \
@@ -48,7 +36,7 @@ RUN yum update -y \
 # Add another R version -------------------------------------------------------#
 
 ARG R_VERSION_ALT=4.1.0
-RUN curl -O https://cdn.rstudio.com/r/rhel8/pkgs/R-${R_VERSION_ALT}-1-1.x86_64.rpm && \
+RUN curl -O https://cdn.rstudio.com/r/centos-8/pkgs/R-${R_VERSION_ALT}-1-1.x86_64.rpm && \
     yum install -y R-${R_VERSION_ALT}-1-1.x86_64.rpm && \
     yum clean all && \
     rm -rf R-${R_VERSION_ALT}-1-1.x86_64.rpm

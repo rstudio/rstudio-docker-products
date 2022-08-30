@@ -19,13 +19,17 @@ RUN yum update -y \
         openssl-devel \
         postgresql-libs \
         rrdtool \
+        bzip2 \
+        glibc-locale-source \
+		glibc-langpack-en \
     && yum clean all
 
 ARG RSW_VERSION=2022.07.1+554.pro3
 ARG RSW_NAME=rstudio-workbench-rhel
 ARG RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/rhel8/x86_64
 RUN RSW_VERSION_URL=`echo -n "${RSW_VERSION}" | sed 's/+/-/g'` \
-    && curl -o rstudio-workbench.rpm ${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-x86_64.rpm \
+    && echo ${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-x86_64.rpm \
+    && curl -o rstudio-workbench.rpm -O ${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-x86_64.rpm \
     && yum install -y rstudio-workbench.rpm \
     && rm rstudio-workbench.rpm \
     && yum clean all \
@@ -46,11 +50,7 @@ RUN yum update -y && \
 
 # Install R -------------------------------------------------------------------#
 
-RUN yum update -y && \
-    yum install -y epel-release && \
-    yum clean all
-
-RUN curl -O https://cdn.rstudio.com/r/rhel8/pkgs/R-${R_VERSION}-1-1.x86_64.rpm && \
+RUN curl -O https://cdn.rstudio.com/r/centos-8/pkgs/R-${R_VERSION}-1-1.x86_64.rpm && \
     yum install -y R-${R_VERSION}-1-1.x86_64.rpm && \
     yum clean all && \
     rm -rf R-${R_VERSION}-1-1.x86_64.rpm
@@ -59,10 +59,6 @@ RUN ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R && \
     ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
 
 # Install Python --------------------------------------------------------------#
-
-RUN yum update -y && \
-    yum install -y bzip2 && \
-    yum clean all
 
 RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
     bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION} && \

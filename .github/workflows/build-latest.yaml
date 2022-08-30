@@ -16,19 +16,23 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {product: 'workbench', os: 'bionic'}
-          - {product: 'workbench', os: 'centos7'}
+          # - {product: 'workbench', os: 'bionic'}
+          # - {product: 'workbench', os: 'centos7'}
           - {product: 'workbench', os: 'rockylinux8'}
-          - {product: 'connect', os: 'bionic'}
-          - {product: 'connect', os: 'centos7'}
-          - {product: 'connect-content-init', os: 'focal'}
-          - {product: 'connect-content-init', os: 'centos7'}
-          - {product: 'package-manager', os: 'bionic'}
-          - {product: 'package-manager', os: 'centos7'}
-          - {product: 'r-session-complete', os: 'bionic'}
-          - {product: 'r-session-complete', os: 'centos7'}
-          - {product: 'workbench-for-microsoft-azure-ml', os: 'bionic'}
-          - {product: 'workbench-for-microsoft-azure-ml', os: 'centos7'}
+          # - {product: 'connect', os: 'bionic'}
+          # - {product: 'connect', os: 'centos7'}
+          - {product: 'connect', os: 'rockylinux8'}
+          # - {product: 'connect-content-init', os: 'focal'}
+          # - {product: 'connect-content-init', os: 'centos7'}
+          - {product: 'connect-content-init', os: 'rockylinux8'}
+          # - {product: 'package-manager', os: 'bionic'}
+          # - {product: 'package-manager', os: 'centos7'}
+          - {product: 'package-manager', os: 'rockylinux8'}
+          # - {product: 'r-session-complete', os: 'bionic'}
+          # - {product: 'r-session-complete', os: 'centos7'}
+          - {product: 'r-session-complete', os: 'rockylinux8'}
+          # - {product: 'workbench-for-microsoft-azure-ml', os: 'bionic'}
+          # - {product: 'workbench-for-microsoft-azure-ml', os: 'centos7'}
 
     steps:
       - name: Check Out Repo
