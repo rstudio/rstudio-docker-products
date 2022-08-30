@@ -9,7 +9,6 @@ ARG PYTHON_VERSION=3.9.5
 ARG DRIVERS_VERSION=2021.10.0-1
 
 # Install RStudio Workbench session components -------------------------------#
-
 RUN yum update -y && \
     yum install -y \
     libcurl-devel \
@@ -22,8 +21,10 @@ RUN yum update -y && \
 ARG RSW_VERSION=2022.07.1+554.pro3
 ARG RSW_NAME=rstudio-workbench-rhel
 ARG RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x86_64
-RUN RSW_VERSION_URL=`echo -n "${RSW_VERSION}" | sed 's/+/-/g'` \
-    && curl -o rstudio-workbench.rpm ${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-x86_64.rpm \
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN RSW_VERSION_URL=$(echo -n "${RSW_VERSION}" | sed 's/+/-/g') \
+    && curl -o rstudio-workbench.rpm "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-x86_64.rpm" \
     && yum install -y rstudio-workbench.rpm \
     && rm rstudio-workbench.rpm \
     && yum clean all \

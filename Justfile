@@ -8,7 +8,7 @@ BUILDX_PATH := ""
 
 RSW_VERSION := "2022.07.1+554.pro3"
 RSW_TAG_VERSION := replace(RSW_VERSION, "+", "-")
-RSC_VERSION := "2022.07.0"
+RSC_VERSION := "2022.08.1"
 RSPM_VERSION := "2022.07.2-11"
 R_VERSION := "3.6.2"
 R_VERSION_ALT := "4.1.0"
@@ -56,6 +56,7 @@ update-rsc-versions:
   sed {{ sed_vars }} "s/^ARG RSC_VERSION=.*/ARG RSC_VERSION={{ RSC_VERSION }}/g" connect-content-init/Dockerfile.bionic
   sed {{ sed_vars }} "s/RSC_VERSION:.*/RSC_VERSION: {{ RSC_VERSION }}/g" docker-compose.yml
   sed {{ sed_vars }} "s/rstudio\/rstudio-connect:.*/rstudio\/rstudio-connect:{{ RSC_VERSION }}/g" docker-compose.yml
+  sed {{ sed_vars }} "s/^RSC_VERSION?=.*/RSC_VERSION?={{ RSC_VERSION }}/g" connect-content-init/Makefile
 
 # just R_VERSION=3.2.1 update-r-versions
 update-r-versions:
@@ -137,7 +138,7 @@ build-preview $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
   # set short name
   if [[ $PRODUCT == "workbench" || $PRODUCT == "r-session-complete" || $PRODUCT == "workbench-for-microsoft-azure-ml" ]]; then
     SHORT_NAME="RSW"
-  elif [[ $PRODUCT == "connect" ]]; then
+  elif [[ $PRODUCT == "connect" || $PRODUCT == "connect-content-init" ]]; then
     SHORT_NAME="RSC"
   elif [[ $PRODUCT == "package-manager" ]]; then
     SHORT_NAME="RSPM"
@@ -204,3 +205,7 @@ get-version +NARGS:
 _tag_safe_version $VERSION:
   #!/usr/bin/env bash
   echo -n "$VERSION" | sed 's/+/-/g'
+
+lint $PRODUCT $OS:
+  #!/usr/bin/env bash
+  docker run --rm -i -v $PWD/hadolint.yaml:/.config/hadolint.yaml ghcr.io/hadolint/hadolint < $PRODUCT/Dockerfile.$OS
