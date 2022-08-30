@@ -122,8 +122,9 @@ COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
 ARG RSW_VERSION=2022.07.1+554.pro3
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/rhel8/x86_64
 ARG RSW_NAME=rstudio-workbench
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN yum update -y \
-    && RSW_VERSION_URL=`echo -n "${RSW_VERSION}" | sed 's/+/-/g'` \
+    && RSW_VERSION_URL=$(echo -n "${RSW_VERSION}" | sed 's/+/-/g') \
     && curl -o rstudio-workbench.rpm ${RSW_DOWNLOAD_URL}/${RSW_NAME}-rhel-${RSW_VERSION_URL}-x86_64.rpm \
     && yum install -y rstudio-workbench.rpm \
     && rm rstudio-workbench.rpm \
@@ -143,7 +144,7 @@ COPY --chmod=600 sssd.conf /etc/sssd/sssd.conf
 RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
     chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor && \
     mkdir -p /startup/custom/ && \
-    echo '\n# allow home directory creation\nsession required pam_mkhomedir.so skel=/etc/skel umask=0022' >> /etc/pam.d/common-session
+    printf '\n# allow home directory creation\nsession required pam_mkhomedir.so skel=/etc/skel umask=0022' >> /etc/pam.d/common-session
 
 EXPOSE 8787/tcp
 EXPOSE 5559/tcp
