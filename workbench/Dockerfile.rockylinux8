@@ -151,4 +151,3 @@ EXPOSE 5559/tcp
 
 ENTRYPOINT []
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
-
