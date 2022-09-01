@@ -7,10 +7,10 @@ RUN localedef -i en_US -f UTF-8 en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
-ENV DEBIAN_FRONTEND=noninteractive
+ARG DEBIAN_FRONTEND=noninteractive
 
-# hadolint ignore=DL3008,DL3009
-RUN apt-get update --fix-missing && apt-get install -y --no-install-recommends \
+RUN apt-get update --fix-missing \
+    && apt-get install -y --no-install-recommends \
         bzip2 \
         ca-certificates \
         gdebi-core \
@@ -128,9 +128,10 @@ COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
 ARG RSW_VERSION=2022.07.1+554.pro3
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 ARG RSW_NAME=rstudio-workbench
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update --fix-missing \
-    && RSW_VERSION_URL=`echo -n "${RSW_VERSION}" | sed 's/+/-/g'` \
-    && curl -o rstudio-workbench.deb ${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-amd64.deb \
+    && RSW_VERSION_URL=$(echo -n "${RSW_VERSION}" | sed 's/+/-/g') \
+    && curl -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-amd64.deb" \
     && gdebi --non-interactive rstudio-workbench.deb \
     && rm rstudio-workbench.deb \
     && apt-get clean \
@@ -150,7 +151,7 @@ COPY --chmod=600 sssd.conf /etc/sssd/sssd.conf
 RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
     chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor && \
     mkdir -p /startup/custom/ && \
-    echo '\n# allow home directory creation\nsession required pam_mkhomedir.so skel=/etc/skel umask=0022' >> /etc/pam.d/common-session
+    printf '\n# allow home directory creation\nsession required pam_mkhomedir.so skel=/etc/skel umask=0022' >> /etc/pam.d/common-session
 
 EXPOSE 8787/tcp
 EXPOSE 5559/tcp

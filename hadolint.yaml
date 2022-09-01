@@ -1,0 +1,11 @@
+failure-threshold: warning
+ignored:
+    # Suppresses warning for version pinning on apt installs. We currently do not practice this approach.
+  - DL3008
+    # Suppresses warning for version pinning on yum installs. We currently do not practice this approach.
+  - DL3033
+    # Suppresses info for too many consecutive RUN statements. Multiple consecutive RUN statements are often a conscious
+    # design choice in our Dockerfiles, but we could consider condensing them in the future.
+  - DL3059
+label-schema:
+  maintainer: text
