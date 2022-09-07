@@ -28,6 +28,7 @@ RUN apt-get update --fix-missing \
         libuser1-dev \
         libxext6 \
         libxrender1 \
+        oddjob \
         oddjob-mkhomedir \
         openssh-client \
         rrdtool \
