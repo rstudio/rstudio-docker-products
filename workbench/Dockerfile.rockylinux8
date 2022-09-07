@@ -3,8 +3,6 @@ FROM rstudio/r-base:${R_VERSION}-rockylinux8
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 # Locale configuration --------------------------------------------------------#
-
-# hadolint ignore=DL3008,DL3009
 RUN yum update -y \
 	&& yum install -y \
 		glibc-locale-source \
@@ -16,7 +14,6 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-# hadolint ignore=DL3008,DL3009
 RUN yum update -y \
     && yum install -y epel-release \
     && yum install -y \
@@ -34,9 +31,8 @@ RUN yum update -y \
     && yum clean all
 
 # Add another R version -------------------------------------------------------#
-
 ARG R_VERSION_ALT=4.1.0
-RUN curl -O https://cdn.rstudio.com/r/centos-8/pkgs/R-${R_VERSION_ALT}-1-1.x86_64.rpm && \
+RUN curl -O "https://cdn.rstudio.com/r/centos-8/pkgs/R-${R_VERSION_ALT}-1-1.x86_64.rpm" && \
     yum install -y R-${R_VERSION_ALT}-1-1.x86_64.rpm && \
     yum clean all && \
     rm -rf R-${R_VERSION_ALT}-1-1.x86_64.rpm
@@ -45,7 +41,6 @@ RUN ln -s /opt/R/${R_VERSION_ALT}/bin/R /usr/local/bin/R && \
     ln -s /opt/R/${R_VERSION_ALT}/bin/Rscript /usr/local/bin/Rscript
 
 # Install jupyter -------------------------------------------------------------#
-
 ARG JUPYTER_VERSION=3.8.10
 RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
     bash Miniconda3-latest-Linux-x86_64.sh -bp /opt/python/jupyter && \
@@ -62,7 +57,6 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.s
     ln -s /opt/python/jupyter/bin/jupyter /usr/local/bin/jupyter
 
 # Install RSW/RSC Notebook Extensions --------------------#
-
 RUN /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter && \
     /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter && \
     /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsconnect_jupyter && \
@@ -70,7 +64,6 @@ RUN /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsp_ju
     /opt/python/jupyter/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
 
 # Install Python --------------------------------------------------------------#
-
 ARG PYTHON_VERSION=3.9.5
 RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
     bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION} && \
@@ -83,7 +76,6 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64
     /opt/python/${PYTHON_VERSION}/bin/python -m ipykernel install --name py${PYTHON_VERSION} --display-name "Python ${PYTHON_VERSION}"
 
 # Install another Python --------------------------------------------------------------#
-
 ARG PYTHON_VERSION_ALT=3.8.10
 RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
     bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION_ALT} && \
@@ -93,7 +85,7 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64
     virtualenv \
     && \
     rm -rf Miniconda3-*-Linux-x86_64.sh && \
-    /opt/python/${PYTHON_VERSION_ALT}/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}"
+    /opt/python/${PYTHON_VERSION_ALT}/bin/python -m ipykernel install --name "py${PYTHON_VERSION_ALT}" --display-name "Python ${PYTHON_VERSION_ALT}"
 
 # Runtime settings ------------------------------------------------------------#
 RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh && \
@@ -125,14 +117,13 @@ ARG RSW_NAME=rstudio-workbench
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN yum update -y \
     && RSW_VERSION_URL=$(echo -n "${RSW_VERSION}" | sed 's/+/-/g') \
-    && curl -o rstudio-workbench.rpm ${RSW_DOWNLOAD_URL}/${RSW_NAME}-rhel-${RSW_VERSION_URL}-x86_64.rpm \
+    && curl -o rstudio-workbench.rpm "${RSW_DOWNLOAD_URL}/${RSW_NAME}-rhel-${RSW_VERSION_URL}-x86_64.rpm" \
     && yum install -y rstudio-workbench.rpm \
     && rm rstudio-workbench.rpm \
     && yum clean all \
     && rm -rf /var/lib/rstudio-server/r-versions
 
 # Install VSCode code-server, extensions, etc. --------------------------------------------------#
-
 RUN rstudio-server install-vs-code /opt/code-server/ && \
     ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
 

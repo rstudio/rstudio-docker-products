@@ -1,9 +1,8 @@
 FROM rockylinux:8
 LABEL maintainer="RStudio Connect <rsconnect@rstudio.com>"
+
 # Install required tools:
 # - curl is used to download the runtime tar.gz
-
-# hadolint ignore=DL3008,DL3009
 RUN yum update -y \
     && yum install -y \
         curl \

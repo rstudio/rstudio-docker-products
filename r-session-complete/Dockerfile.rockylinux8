@@ -9,7 +9,6 @@ ARG PYTHON_VERSION=3.9.5
 ARG DRIVERS_VERSION=2021.10.0-1
 
 # Install RStudio Workbench session components -------------------------------#
-
 RUN yum update -y \
     && yum install -y epel-release \
 	&& yum config-manager --set-enabled powertools \
@@ -29,8 +28,8 @@ ARG RSW_NAME=rstudio-workbench-rhel
 ARG RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/rhel8/x86_64
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN RSW_VERSION_URL=$(echo -n "${RSW_VERSION}" | sed 's/+/-/g') \
-    && echo ${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-x86_64.rpm \
-    && curl -o rstudio-workbench.rpm -O ${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-x86_64.rpm \
+    && echo "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-x86_64.rpm" \
+    && curl -o rstudio-workbench.rpm -O "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-x86_64.rpm" \
     && yum install -y rstudio-workbench.rpm \
     && rm rstudio-workbench.rpm \
     && yum clean all \
@@ -39,7 +38,6 @@ RUN RSW_VERSION_URL=$(echo -n "${RSW_VERSION}" | sed 's/+/-/g') \
 EXPOSE 8788/tcp
 
 # Install additional system packages ------------------------------------------#
-
 RUN yum update -y && \
     yum install -y \
     wget \
@@ -50,8 +48,7 @@ RUN yum update -y && \
     yum clean all
 
 # Install R -------------------------------------------------------------------#
-
-RUN curl -O https://cdn.rstudio.com/r/centos-8/pkgs/R-${R_VERSION}-1-1.x86_64.rpm && \
+RUN curl -O "https://cdn.rstudio.com/r/centos-8/pkgs/R-${R_VERSION}-1-1.x86_64.rpm" && \
     yum install -y R-${R_VERSION}-1-1.x86_64.rpm && \
     yum clean all && \
     rm -rf R-${R_VERSION}-1-1.x86_64.rpm
@@ -60,7 +57,6 @@ RUN ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R && \
     ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
 
 # Install Python --------------------------------------------------------------#
-
 RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
     bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION} && \
     /opt/python/${PYTHON_VERSION}/bin/conda install -y python==${PYTHON_VERSION} && \
@@ -69,7 +65,6 @@ RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64
 ENV PATH="/opt/python/${PYTHON_VERSION}/bin:${PATH}"
 
 # Install Jupyter Notebook and RSW/RSC Notebook Extensions and Packages -------#
-
 RUN /opt/python/${PYTHON_VERSION}/bin/pip install \
     jupyter \
     jupyterlab \
@@ -86,19 +81,17 @@ RUN /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix -
     /opt/python/${PYTHON_VERSION}/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
 
 # Install VSCode code-server --------------------------------------------------#
-
 RUN rstudio-server install-vs-code /opt/code-server/ && \
     ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
 
 COPY vscode.extensions.conf /etc/rstudio/vscode.extensions.conf
 
 # Install RStudio Professional Drivers ----------------------------------------#
-
 RUN yum update -y && \
     yum install -y unixODBC unixODBC-devel && \
     yum clean all
 
-RUN curl -O https://cdn.rstudio.com/drivers/7C152C12/installer/rstudio-drivers-${DRIVERS_VERSION}.el7.x86_64.rpm && \
+RUN curl -O "https://cdn.rstudio.com/drivers/7C152C12/installer/rstudio-drivers-${DRIVERS_VERSION}.el7.x86_64.rpm" && \
     yum install -y rstudio-drivers-${DRIVERS_VERSION}.el7.x86_64.rpm && \
     yum clean all && \
     rm -f rstudio-drivers-${DRIVERS_VERSION}.el7.x86_64.rpm && \
@@ -107,7 +100,6 @@ RUN curl -O https://cdn.rstudio.com/drivers/7C152C12/installer/rstudio-drivers-$
 RUN /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.rstudio.com/cran/__linux__/rhel8/latest")'
 
 # Locale configuration --------------------------------------------------------#
-
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
