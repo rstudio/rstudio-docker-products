@@ -1,12 +1,6 @@
 on:
   schedule:
-    - cron: 0 0 * * 6
-  push:
-    branches:
-      - main
-      - dev
-      - dev-rspm
-  pull_request:
+    - cron: 0 0 * * 2
 
 name: clean registries
 
