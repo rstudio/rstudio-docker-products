@@ -25,6 +25,9 @@ ARG RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN RSW_VERSION_URL=$(echo -n "${RSW_VERSION}" | sed 's/+/-/g') \
     && curl -o rstudio-workbench.rpm "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-x86_64.rpm" \
+    && gpg --export --armor 3F32EE77E331692F > rstudio-signing.key \
+    && rpm --import rstudio-signing.key \
+    && rpm -K rstudio-workbench.rpm \
     && yum install -y rstudio-workbench.rpm \
     && rm rstudio-workbench.rpm \
     && yum clean all \
