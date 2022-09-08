@@ -12,6 +12,7 @@ RUN apt-get update --fix-missing  \
     && apt-get install -y --no-install-recommends \
         bzip2 \
         ca-certificates \
+        dpkg-sig \
         g++ \
         gdal-bin \
         gdebi-core \

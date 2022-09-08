@@ -15,6 +15,7 @@ RUN apt-get update -y && \
     apt-get install --no-install-recommends -y \
     ca-certificates \
     curl \
+    dpkg-sig \
     wget \
     krb5-user \
     libcurl4-gnutls-dev \
