@@ -49,7 +49,7 @@ else
         echo "Empty 'RSW_TESTUSER' variables, not creating test user";
     else
         useradd -m -s /bin/bash -N -u $RSW_TESTUSER_UID $RSW_TESTUSER
-        echo "$RSW_TESTUSER:$RSW_TESTUSER_PASSWD" | sudo chpasswd
+        echo "$RSW_TESTUSER:$RSW_TESTUSER_PASSWD" | chroot $DIAGNOSTIC_DIR /usr/sbin/chpasswd
     fi
 fi
 
