@@ -1,3 +1,7 @@
+# 2022.09
+
+- Change session installation order. This should make the "core analytics packages" more reproducible
+
 # 2022.07.0
 
 - Add a `/usr/local/bin/jupyter` symlink

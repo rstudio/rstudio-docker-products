@@ -8,30 +8,6 @@ ARG MINICONDA_VERSION=py37_4.8.3
 ARG PYTHON_VERSION=3.9.5
 ARG DRIVERS_VERSION=2021.10.0-1
 
-# Install RStudio Workbench session components -------------------------------#
-RUN yum update -y && \
-    yum install -y \
-    libcurl-devel \
-    libuser-devel \
-    openssl-devel \
-    postgresql-libs \
-    rrdtool && \
-    yum clean all
-
-ARG RSW_VERSION=2022.07.1+554.pro3
-ARG RSW_NAME=rstudio-workbench-rhel
-ARG RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x86_64
-
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN RSW_VERSION_URL=$(echo -n "${RSW_VERSION}" | sed 's/+/-/g') \
-    && curl -o rstudio-workbench.rpm "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-x86_64.rpm" \
-    && yum install -y rstudio-workbench.rpm \
-    && rm rstudio-workbench.rpm \
-    && yum clean all \
-    && rm -rf /var/lib/rstudio-server/r-versions
-
-EXPOSE 8788/tcp
-
 # Install additional system packages ------------------------------------------#
 
 RUN yum update -y && \
@@ -107,6 +83,31 @@ RUN curl -O https://cdn.rstudio.com/drivers/7C152C12/installer/rstudio-drivers-$
     cp /opt/rstudio-drivers/odbcinst.ini.sample /etc/odbcinst.ini
 
 RUN /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.rstudio.com/cran/__linux__/centos7/latest")'
+
+# Install RStudio Workbench session components -------------------------------#
+RUN yum update -y && \
+    yum install -y \
+    libcurl-devel \
+    libuser-devel \
+    openssl-devel \
+    postgresql-libs \
+    rrdtool && \
+    yum clean all
+
+ARG RSW_VERSION=2022.07.1+554.pro3
+ARG RSW_NAME=rstudio-workbench-rhel
+ARG RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x86_64
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN RSW_VERSION_URL=$(echo -n "${RSW_VERSION}" | sed 's/+/-/g') \
+    && curl -o rstudio-workbench.rpm "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-x86_64.rpm" \
+    && yum install -y rstudio-workbench.rpm \
+    && rm rstudio-workbench.rpm \
+    && yum clean all \
+    && rm -rf /var/lib/rstudio-server/r-versions
+
+EXPOSE 8788/tcp
+
 
 # Locale configuration --------------------------------------------------------#
 
