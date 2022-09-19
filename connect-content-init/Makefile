@@ -8,7 +8,7 @@
 #     make RSC_VERSION=<version string>
 
 TAG_BASE?=rstudio/rstudio-connect-content-init-preview
-RSC_VERSION?=2022.08.1
+RSC_VERSION?=2022.09.0
 
 all: build
 .PHONY: all
