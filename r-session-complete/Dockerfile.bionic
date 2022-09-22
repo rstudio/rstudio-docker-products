@@ -27,7 +27,7 @@ RUN apt-get update -y && \
     rrdtool && \
     rm -rf /var/lib/apt/lists/*
 
-ARG RSW_VERSION=2022.07.1+554.pro3
+ARG RSW_VERSION=2022.07.2+576.pro12
 ARG RSW_NAME=rstudio-workbench
 ARG RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
