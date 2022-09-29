@@ -1,6 +1,6 @@
 IMAGE_OS ?= bionic
 
-RSC_VERSION ?= 2022.08.1
+RSC_VERSION ?= 2022.09.0
 RSPM_VERSION ?= 2022.07.2-11
 RSW_VERSION ?= 2022.07.2+576.pro12
 RSW_TAG_VERSION=`echo "$(RSW_VERSION)" | sed -e 's/\+/-/'`
@@ -52,31 +52,168 @@ else ifeq ($(UNAME_S),Darwin)
 	SED_FLAGS="-i ''"
 endif
 
+# Git settings
 SHA_SHORT=`git rev-parse --short HEAD`
+BRANCH=`git branch --show`
 
-# Docker build settings
+BRANCH_PREFIX ?=
+ifeq ($(BRANCH),dev)
+	BRANCH_PREFIX ?= dev-
+else ifeq ($(BRANCH),dev-rspm)
+	BRANCH_PREFIX ?= dev-rspm-
+endif
+
+# Docker build kit build settings
 BUILDX_PATH ?=
 BUILDX_ARGS =
 ifneq ($(strip $(BUILDX_PATH)),)
 	BUILDX_ARGS = --cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache
 endif
 
+# Product-based variable setup for build
+PREVIEW_TYPE ?= preview
+PRODUCT ?=
+ifneq ($(filter $(PRODUCT),workbench r-session-complete workbench-for-microsoft-azure-ml),)
+	SHORT_NAME=RSW
+	VERSION=$(RSW_TAG_VERSION)
+else ifeq ($(PRODUCT),connect)
+	SHORT_NAME=RSC
+	VERSION=$(RSC_VERSION)
+else ifeq ($(PRODUCT),package-manager)
+	SHORT_NAME=RSPM
+	VERSION=$(RSPM_VERSION)
+endif
 
-### Generics/Defaults ###
-all: help
+IMAGE_PREFIX=
+ifneq ($(PRODUCT),r-session-complete)
+	IMAGE_PREFIX=rstudio-
+endif
 
-images: build
-build: rsc rspm rsw  ## Build primary images
-build-azure: rsw-azure  ## Build Azure images
-build-all: rsc rspm rsw r-session-complete rsw-azure  ## Build all images
+ARCHITECTURE=amd64
+ifeq ($(IMAGE_OS),centos7)
+	ARCHITECTURE=x86_64
+endif
+RSW_DOWNLOAD_URL_RELEASE="https://download2.rstudio.org/server/$(IMAGE_OS)/$(ARCHITECTURE)"
+RSW_DOWNLOAD_URL_PREVIEW="https://s3.amazonaws.com/rstudio-ide-build/server/$(IMAGE_OS)/$(ARCHITECTURE)"
 
-lint: lint-rsc lint-rspm lint-rsw  ## Lint primary images
-lint-azure: lint-rsw-azure  ## Lint Azure images
-lint-all: lint-rsc lint-rspm lint-rsw lint-r-session-complete lint-rsw-azure  ## Lint all images
 
-test: test-rsc test-rspm test-rsw
-test-azure: test-rsw-azure
-test-all: test-rsc test-rspm test-rsw test-r-session-complete test-rsw-azure
+# Precheck targets
+_check-env-on-build:
+ifndef PRODUCT
+	$(error PRODUCT is undefined)
+endif
+
+_check-env-on-lint:
+ifndef PRODUCT
+	$(error PRODUCT is undefined)
+endif
+ifndef IMAGE_OS
+	$(error IMAGE_OS is undefined)
+endif
+
+_check-env-on-test:
+ifndef PRODUCT
+	$(error PRODUCT is undefined)
+endif
+ifndef IMAGE_OS
+	$(error IMAGE_OS is undefined)
+endif
+
+
+### Release build targets ###
+build: _check-env-on-build
+	docker buildx --builder="$(BUILDX_PATH)" build --load $(BUILDX_ARGS) \
+		-t rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS) \
+		-t rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS)-$(VERSION) \
+		-t rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS)-$(VERSION)--$(SHA_SHORT) \
+		-t ghcr.io/rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS) \
+		-t ghcr.io/rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS)-$(VERSION) \
+		-t ghcr.io/rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS)-$(VERSION)--$(SHA_SHORT) \
+		--build-arg $(SHORT_NAME)_VERSION="$(VERSION)" \
+		--build-arg RSW_DOWNLOAD_URL="$(RSW_DOWNLOAD_URL_RELEASE)" \
+		--build-arg R_VERSION=$(R_VERSION) \
+		--build-arg R_VERSION_ALT=$(R_VERSION_ALT) \
+		--build-arg PYTHON_VERSION=$(PYTHON_VERSION) \
+		--build-arg PYTHON_VERSION_ALT=$(PYTHON_VERSION_ALT) \
+		--file=./$(PRODUCT)/Dockerfile.$(IMAGE_OS) $(PRODUCT)
+build-default:
+	$(MAKE) PRODUCT=connect IMAGE_OS=$(IMAGE_OS) build
+	$(MAKE) PRODUCT=package-manager IMAGE_OS=$(IMAGE_OS) build
+	$(MAKE) PRODUCT=workbench IMAGE_OS=$(IMAGE_OS) build
+build-azure:
+	$(MAKE) PRODUCT=workbench-for-microsoft-azure-ml IMAGE_OS=$(IMAGE_OS) build
+build-all:
+	$(MAKE) PRODUCT=connect IMAGE_OS=$(IMAGE_OS) build
+	$(MAKE) PRODUCT=package-manager IMAGE_OS=$(IMAGE_OS) build
+	$(MAKE) PRODUCT=r-session-complete IMAGE_OS=$(IMAGE_OS) build
+	$(MAKE) PRODUCT=workbench IMAGE_OS=$(IMAGE_OS) build
+	$(MAKE) PRODUCT=workbench-for-microsoft-azure-ml IMAGE_OS=$(IMAGE_OS) build
+
+
+### Preview build targets ###
+build-preview: _check-env-on-build
+	docker buildx --builder="$(BUILDX_PATH)" build --load $(BUILDX_ARGS) \
+        -t rstudio/$(IMAGE_PREFIX)$(PRODUCT)-preview:$(BRANCH_PREFIX)$(IMAGE_OS)-$(VERSION) \
+        -t rstudio/$(IMAGE_PREFIX)$(PRODUCT)-preview:$(BRANCH_PREFIX)$(IMAGE_OS)-$(PREVIEW_TYPE) \
+        -t ghcr.io/rstudio/$(IMAGE_PREFIX)$(PRODUCT)-preview:$(BRANCH_PREFIX)$(IMAGE_OS)-$(VERSION) \
+        -t ghcr.io/rstudio/$(IMAGE_PREFIX)$(PRODUCT)-preview:$(BRANCH_PREFIX)$(IMAGE_OS)-$(PREVIEW_TYPE) \
+        --build-arg $(SHORT_NAME)_VERSION=$(VERSION) \
+        --build-arg RSW_DOWNLOAD_URL=$(RSW_DOWNLOAD_URL_PREVIEW) \
+		--build-arg R_VERSION=$(R_VERSION) \
+		--build-arg R_VERSION_ALT=$(R_VERSION_ALT) \
+		--build-arg PYTHON_VERSION=$(PYTHON_VERSION) \
+		--build-arg PYTHON_VERSION_ALT=$(PYTHON_VERSION_ALT) \
+        --file=./$(PRODUCT)/Dockerfile.$(IMAGE_OS) $(PRODUCT)
+build-preview-default:
+	$(MAKE) PRODUCT=connect IMAGE_OS=$(IMAGE_OS) build-preview
+	$(MAKE) PRODUCT=package-manager IMAGE_OS=$(IMAGE_OS) build-preview
+	$(MAKE) PRODUCT=workbench IMAGE_OS=$(IMAGE_OS) build-preview
+build-preview-azure:
+	$(MAKE) PRODUCT=workbench-for-microsoft-azure-ml IMAGE_OS=$(IMAGE_OS) build-preview
+build-preview-all:
+	$(MAKE) PRODUCT=connect IMAGE_OS=$(IMAGE_OS) build-preview
+	$(MAKE) PRODUCT=package-manager IMAGE_OS=$(IMAGE_OS) build-preview
+	$(MAKE) PRODUCT=r-session-complete IMAGE_OS=$(IMAGE_OS) build-preview
+	$(MAKE) PRODUCT=workbench IMAGE_OS=$(IMAGE_OS) build-preview
+	$(MAKE) PRODUCT=workbench-for-microsoft-azure-ml IMAGE_OS=$(IMAGE_OS) build-preview
+
+
+### Lint product ###
+lint: _check-env-on-lint
+	just lint $(PRODUCT) $(IMAGE_OS)
+lint-default:
+	$(MAKE) PRODUCT=connect IMAGE_OS=$(IMAGE_OS) lint
+	$(MAKE) PRODUCT=package-manager IMAGE_OS=$(IMAGE_OS) lint
+	$(MAKE) PRODUCT=workbench IMAGE_OS=$(IMAGE_OS) lint
+lint-azure:
+	$(MAKE) PRODUCT=workbench-for-microsoft-azure-ml IMAGE_OS=$(IMAGE_OS) lint
+lint-all:
+	$(MAKE) PRODUCT=connect IMAGE_OS=$(IMAGE_OS) lint
+	$(MAKE) PRODUCT=package-manager IMAGE_OS=$(IMAGE_OS) lint
+	$(MAKE) PRODUCT=r-session-complete IMAGE_OS=$(IMAGE_OS) lint
+	$(MAKE) PRODUCT=workbench IMAGE_OS=$(IMAGE_OS) lint
+	$(MAKE) PRODUCT=workbench-for-microsoft-azure-ml IMAGE_OS=$(IMAGE_OS) lint
+
+
+### Test product ###
+test: _check-env-on-test
+	IMAGE_NAME=rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS)-$(VERSION) \
+	docker-compose -f ./$(PRODUCT)/docker-compose.test.yml run sut
+test-i: _check-env-on-test
+	IMAGE_NAME=rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS)-$(VERSION) \
+	docker-compose -f ./$(PRODUCT)/docker-compose.test.yml run sut bash
+test-default:
+	$(MAKE) PRODUCT=connect IMAGE_OS=$(IMAGE_OS) test
+	$(MAKE) PRODUCT=package-manager IMAGE_OS=$(IMAGE_OS) test
+	$(MAKE) PRODUCT=workbench IMAGE_OS=$(IMAGE_OS) test
+test-azure:
+	$(MAKE) PRODUCT=workbench-for-microsoft-azure-ml IMAGE_OS=$(IMAGE_OS) test
+test-all:
+	$(MAKE) PRODUCT=connect IMAGE_OS=$(IMAGE_OS) test
+	$(MAKE) PRODUCT=package-manager IMAGE_OS=$(IMAGE_OS) test
+	$(MAKE) PRODUCT=r-session-complete IMAGE_OS=$(IMAGE_OS) test
+	$(MAKE) PRODUCT=workbench IMAGE_OS=$(IMAGE_OS) test
+	$(MAKE) PRODUCT=workbench-for-microsoft-azure-ml IMAGE_OS=$(IMAGE_OS) test
 
 
 ### Update versions shortcuts ###
@@ -94,53 +231,8 @@ update-versions:  ## Update the versions for all products
 
 
 ### RStudio Connect ###
-rsc: connect
-connect:  ## Build RSC image
-	docker buildx --builder="$(BUILDX_PATH)" build \
-		--load $(BUILDX_ARGS) \
-		--build-arg R_VERSION=$(R_VERSION) \
-		--build-arg R_VERSION_ALT=$(R_VERSION_ALT) \
-		--build-arg PYTHON_VERSION=$(PYTHON_VERSION) \
-		--build-arg PYTHON_VERSION_ALT=$(PYTHON_VERSION_ALT) \
- 		--build-arg RSC_VERSION=$(RSC_VERSION) \
- 		--file connect/Dockerfile.$(IMAGE_OS) \
-        -t rstudio/rstudio-connect:$(IMAGE_OS) \
-        -t rstudio/rstudio-connect:$(IMAGE_OS)-$(RSC_VERSION) \
-        -t rstudio/rstudio-connect:$(IMAGE_OS)-$(RSC_VERSION)--$(SHA_SHORT) \
-        -t ghcr.io/rstudio/rstudio-connect:$(IMAGE_OS) \
-        -t ghcr.io/rstudio/rstudio-connect:$(IMAGE_OS)-$(RSC_VERSION) \
-        -t ghcr.io/rstudio/rstudio-connect:$(IMAGE_OS)-$(RSC_VERSION)--$(SHA_SHORT) \
- 		connect
-rsc-preview: connect-preview
-connect-preview:  ## Build RSC preview image
-	echo $(BRANCH)
-	echo $(PREVIEW_TAG_PREFIX)
-	docker buildx --builder="$(BUILDX_PATH)" build \
-		--load $(BUILDX_ARGS) \
-		--build-arg R_VERSION=$(R_VERSION) \
-		--build-arg R_VERSION_ALT=$(R_VERSION_ALT) \
-		--build-arg PYTHON_VERSION=$(PYTHON_VERSION) \
-		--build-arg PYTHON_VERSION_ALT=$(PYTHON_VERSION_ALT) \
- 		--build-arg RSC_VERSION=$(RSC_VERSION) \
- 		--file connect/Dockerfile.$(IMAGE_OS) \
-        -t rstudio/rstudio-connect$(PREVIEW_IMAGE_SUFFIX):$(PREVIEW_TAG_PREFIX)$(IMAGE_OS)-$(PREVIEW_TYPE) \
-        -t rstudio/rstudio-connect$(PREVIEW_IMAGE_SUFFIX):$(PREVIEW_TAG_PREFIX)$(IMAGE_OS)-$(RSC_VERSION) \
-        -t ghcr.io/rstudio/rstudio-connect$(PREVIEW_IMAGE_SUFFIX):$(PREVIEW_TAG_PREFIX)$(IMAGE_OS)-$(PREVIEW_TYPE) \
-        -t ghcr.io/rstudio/rstudio-connect$(PREVIEW_IMAGE_SUFFIX):$(PREVIEW_TAG_PREFIX)$(IMAGE_OS)-$(RSC_VERSION) \
- 		connect
-lint-rsc: lint-connect
-lint-connect:
-	just lint connect $(IMAGE_OS)
-test-rsc: test-connect
-test-connect: rsc
-	IMAGE_NAME=rstudio/rstudio-connect:$(IMAGE_OS)-$(RSC_VERSION) \
-	docker-compose -f ./connect/docker-compose.test.yml run sut
-test-rsc-i: test-connect-i
-test-connect-i: rsc
-	IMAGE_NAME=rstudio/rstudio-connect:$(IMAGE_OS)-$(RSC_VERSION) \
-	docker-compose -f ./connect/docker-compose.test.yml run sut bash
 run-rsc: run-connect
-run-connect: rsc  ## Run RSC container
+run-connect:  ## Run RSC container
 	docker rm -f rstudio-connect
 	docker run -it --privileged \
 		--name rstudio-connect \
@@ -152,47 +244,8 @@ run-connect: rsc  ## Run RSC container
 
 
 ### RStudio Package Manager ###
-rspm: package-manager
-package-manager:  ## Build RSPM image
-	docker buildx --builder="$(BUILDX_PATH)" build \
-		--load $(BUILDX_ARGS) \
-		-t rstudio/rstudio-package-manager:$(RSPM_VERSION) \
-		--build-arg R_VERSION=$(R_VERSION) \
-		--build-arg RSPM_VERSION=$(RSPM_VERSION) \
-		--file package-manager/Dockerfile.$(IMAGE_OS) \
-        -t rstudio/rstudio-package-manager:$(IMAGE_OS) \
-        -t rstudio/rstudio-package-manager:$(IMAGE_OS)-$(RSPM_VERSION) \
-        -t rstudio/rstudio-package-manager:$(IMAGE_OS)-$(RSPM_VERSION)--$(SHA_SHORT) \
-        -t ghcr.io/rstudio/rstudio-package-manager:$(IMAGE_OS) \
-        -t ghcr.io/rstudio/rstudio-package-manager:$(IMAGE_OS)-$(RSPM_VERSION) \
-        -t ghcr.io/rstudio/rstudio-package-manager:$(IMAGE_OS)-$(RSPM_VERSION)--$(SHA_SHORT) \
-		package-manager
-rspm-preview: package-manager
-package-manager-preview:  ## Build RSPM preview image
-	docker buildx --builder="$(BUILDX_PATH)" build \
-		--load $(BUILDX_ARGS) \
-		-t rstudio/rstudio-package-manager:$(RSPM_VERSION) \
-		--build-arg R_VERSION=$(R_VERSION) \
-		--build-arg RSPM_VERSION=$(RSPM_VERSION) \
-		--file package-manager/Dockerfile.$(IMAGE_OS) \
-        -t rstudio/rstudio-package-manager$(PREVIEW_IMAGE_SUFFIX):$(PREVIEW_TAG_PREFIX)$(IMAGE_OS)-$(PREVIEW_TYPE) \
-        -t rstudio/rstudio-package-manager$(PREVIEW_IMAGE_SUFFIX):$(PREVIEW_TAG_PREFIX)$(IMAGE_OS)-$(RSPM_VERSION) \
-        -t ghcr.io/rstudio/rstudio-package-manager$(PREVIEW_IMAGE_SUFFIX):$(PREVIEW_TAG_PREFIX)$(IMAGE_OS)-$(PREVIEW_TYPE) \
-        -t ghcr.io/rstudio/rstudio-package-manager$(PREVIEW_IMAGE_SUFFIX):$(PREVIEW_TAG_PREFIX)$(IMAGE_OS)-$(RSPM_VERSION) \
-		package-manager
-lint-rspm: lint-package-manager
-lint-package-manager:
-	just lint package-manager $(IMAGE_OS)
-test-rspm: test-package-manager
-test-package-manager: rspm
-	IMAGE_NAME=rstudio/rstudio-package-manager:$(RSPM_VERSION) \
-	docker-compose -f ./package-manager/docker-compose.test.yml run sut
-test-rspm-i: test-package-manager-i
-test-package-manager-i: rspm
-	IMAGE_NAME=rstudio/rstudio-package-manager:$(RSPM_VERSION) \
-	docker-compose -f ./package-manager/docker-compose.test.yml run sut bash
 run-rspm: run-package-manager
-run-package-manager: rspm  ## Run RSPM container
+run-package-manager:  ## Run RSPM container
 	docker rm -f rstudio-package-manager
 	docker run -it \
 		--name rstudio-package-manager \
@@ -204,43 +257,7 @@ run-package-manager: rspm  ## Run RSPM container
 
 
 ### r-session-complete ###
-r-session-complete:  ## Build r-session-complete image
-	docker buildx --builder="$(BUILDX_PATH)" build \
-		--load $(BUILDX_ARGS) \
-		--build-arg R_VERSION=$(R_VERSION_ALT) \  # FIXME(ianpittwood): Make this successfully use `R_VERSION` instead of `R_VERSION_ALT`, currently fails tests
-		--build-arg PYTHON_VERSION=$(PYTHON_VERSION) \
-		--build-arg RSW_VERSION=$(RSW_VERSION) \
-		--build-arg RSW_DOWNLOAD_URL=`just _rsw-download-url release $(IMAGE_OS)` \
-		--file r-session-complete/Dockerfile.$(IMAGE_OS) \
-        -t rstudio/r-session-complete:$(IMAGE_OS) \
-        -t rstudio/r-session-complete:$(IMAGE_OS)-$(RSW_TAG_VERSION) \
-        -t rstudio/r-session-complete:$(IMAGE_OS)-$(RSW_TAG_VERSION)--$(SHA_SHORT) \
-        -t ghcr.io/rstudio/r-session-complete:$(IMAGE_OS) \
-        -t ghcr.io/rstudio/r-session-complete:$(IMAGE_OS)-$(RSW_TAG_VERSION) \
-        -t ghcr.io/rstudio/r-session-complete:$(IMAGE_OS)-$(RSW_TAG_VERSION)--$(SHA_SHORT) \
-		r-session-complete
-r-session-complete-preview:  ## Build r-session-complete preview image
-	docker buildx --builder="$(BUILDX_PATH)" build \
-		--load $(BUILDX_ARGS) \
-		--build-arg R_VERSION=$(R_VERSION_ALT) \  # FIXME(ianpittwood): Make this successfully use `R_VERSION` instead of `R_VERSION_ALT`, currently fails tests
-		--build-arg PYTHON_VERSION=$(PYTHON_VERSION) \
-		--build-arg RSW_VERSION=$(RSW_VERSION) \
-		--build-arg RSW_DOWNLOAD_URL=`just _rsw-download-url $(PREVIEW_TYPE) $(IMAGE_OS)` \
-		--file r-session-complete/Dockerfile.$(IMAGE_OS) \
-        -t rstudio/r-session-complete$(PREVIEW_IMAGE_SUFFIX):$(PREVIEW_TAG_PREFIX)$(IMAGE_OS)-$(PREVIEW_TYPE) \
-        -t rstudio/r-session-complete$(PREVIEW_IMAGE_SUFFIX):$(PREVIEW_TAG_PREFIX)$(IMAGE_OS)-$(RSW_TAG_VERSION) \
-        -t ghcr.io/rstudio/r-session-complete$(PREVIEW_IMAGE_SUFFIX):$(PREVIEW_TAG_PREFIX)$(IMAGE_OS)-$(PREVIEW_TYPE) \
-        -t ghcr.io/rstudio/r-session-complete$(PREVIEW_IMAGE_SUFFIX):$(PREVIEW_TAG_PREFIX)$(IMAGE_OS)-$(RSW_TAG_VERSION) \
-		r-session-complete
-lint-r-session-complete:
-	just lint r-session-complete $(IMAGE_OS)
-test-r-session-complete: r-session-complete
-	IMAGE_NAME=rstudio/r-session-complete:$(IMAGE_OS)-$(RSW_TAG_VERSION) \
-	docker-compose -f ./r-session-complete/docker-compose.test.yml run sut
-test-r-session-complete-i: r-session-complete
-	IMAGE_NAME=rstudio/r-session-complete:$(IMAGE_OS)-$(RSW_TAG_VERSION) \
-	docker-compose -f ./r-session-complete/docker-compose.test.yml run sut bash
-run-r-session-complete: rsw  ## Run RSW container
+run-r-session-complete:  ## Run RSW container
 	docker rm -f r-session-complete
 	docker run -it \
 		--name r-session-complete \
@@ -251,51 +268,6 @@ run-r-session-complete: rsw  ## Run RSW container
 
 
 ### RStudio Workbench ###
-rsw: workbench
-workbench:  ## Build Workbench image
-	docker buildx --builder="$(BUILDX_PATH)" build \
-		--load $(BUILDX_ARGS) \
-		--build-arg R_VERSION=$(R_VERSION) \
-		--build-arg R_VERSION_ALT=$(R_VERSION_ALT) \
-		--build-arg PYTHON_VERSION=$(PYTHON_VERSION) \
-		--build-arg PYTHON_VERSION_ALT=$(PYTHON_VERSION_ALT) \
-		--build-arg RSW_VERSION=$(RSW_VERSION) \
-		--build-arg RSW_DOWNLOAD_URL=`just _rsw-download-url release $(IMAGE_OS)` \
-		--file workbench/Dockerfile.$(IMAGE_OS) \
-        -t rstudio/rstudio-workbench:$(IMAGE_OS) \
-        -t rstudio/rstudio-workbench:$(IMAGE_OS)-$(RSW_TAG_VERSION) \
-        -t rstudio/rstudio-workbench:$(IMAGE_OS)-$(RSW_TAG_VERSION)--$(SHA_SHORT) \
-        -t ghcr.io/rstudio/rstudio-workbench:$(IMAGE_OS) \
-        -t ghcr.io/rstudio/rstudio-workbench:$(IMAGE_OS)-$(RSW_TAG_VERSION) \
-        -t ghcr.io/rstudio/rstudio-workbench:$(IMAGE_OS)-$(RSW_TAG_VERSION)--$(SHA_SHORT) \
-		workbench
-rsw-preview: workbench
-workbench-preview:  ## Build Workbench preview image
-	docker buildx --builder="$(BUILDX_PATH)" build \
-		--load $(BUILDX_ARGS) \
-		--build-arg R_VERSION=$(R_VERSION) \
-		--build-arg R_VERSION_ALT=$(R_VERSION_ALT) \
-		--build-arg PYTHON_VERSION=$(PYTHON_VERSION) \
-		--build-arg PYTHON_VERSION_ALT=$(PYTHON_VERSION_ALT) \
-		--build-arg RSW_VERSION=$(RSW_VERSION) \
-		--build-arg RSW_DOWNLOAD_URL=`just _rsw-download-url $(PREVIEW_TYPE) $(IMAGE_OS)` \
-		--file workbench/Dockerfile.$(IMAGE_OS) \
-        -t rstudio/rstudio-workbench$(PREVIEW_IMAGE_SUFFIX):$(PREVIEW_TAG_PREFIX)$(IMAGE_OS)-$(PREVIEW_TYPE) \
-        -t rstudio/rstudio-workbench$(PREVIEW_IMAGE_SUFFIX):$(PREVIEW_TAG_PREFIX)$(IMAGE_OS)-$(RSW_TAG_VERSION) \
-        -t ghcr.io/rstudio/rstudio-workbench$(PREVIEW_IMAGE_SUFFIX):$(PREVIEW_TAG_PREFIX)$(IMAGE_OS)-$(PREVIEW_TYPE) \
-        -t ghcr.io/rstudio/rstudio-workbench$(PREVIEW_IMAGE_SUFFIX):$(PREVIEW_TAG_PREFIX)$(IMAGE_OS)-$(RSW_TAG_VERSION) \
-		workbench
-lint-rsw: lint-workbench
-lint-workbench:
-	just lint workbench $(IMAGE_OS)
-test-rsw: test-workbench
-test-workbench: rsw
-	IMAGE_NAME=rstudio/rstudio-workbench:$(IMAGE_OS)-$(RSW_TAG_VERSION) \
-	docker-compose -f ./workbench/docker-compose.test.yml run sut
-test-rsw-i: test-workbench-i
-test-workbench-i: rsw
-	IMAGE_NAME=rstudio/rstudio-workbench:$(IMAGE_OS)-$(RSW_TAG_VERSION) \
- 	docker-compose -f docker-compose.test.yml run sut bash
 run-rsw: run-workbench
 run-workbench: rsw  ## Run RSW container
 	docker rm -f rstudio-workbench
@@ -308,54 +280,6 @@ run-workbench: rsw  ## Run RSW container
 		rstudio/rstudio-workbench:$(IMAGE_OS)-$(RSW_TAG_VERSION) $(CMD)
 
 
-### RStudio Workbench for Azure ###
-rsw-azure: workbench-azure
-workbench-azure:  ## Build Workbench for Microsoft Azure ML image
-	docker buildx --builder="$(BUILDX_PATH)" build \
-		--load $(BUILDX_ARGS) \
-		--build-arg R_VERSION=$(R_VERSION) \
-		--build-arg R_VERSION_ALT=$(R_VERSION_ALT) \
-		--build-arg PYTHON_VERSION=$(PYTHON_VERSION) \
-		--build-arg PYTHON_VERSION_ALT=$(PYTHON_VERSION_ALT) \
-		--build-arg RSW_VERSION=$(RSW_VERSION) \
-		--build-arg RSW_DOWNLOAD_URL=`just _rsw-download-url release $(IMAGE_OS)` \
-		--file workbench-for-microsoft-azure-ml/Dockerfile.$(IMAGE_OS) \
-        -t rstudio/rstudio-workbench-for-microsoft-azure-ml:$(IMAGE_OS) \
-        -t rstudio/rstudio-workbench-for-microsoft-azure-ml:$(IMAGE_OS)-$(RSW_TAG_VERSION) \
-        -t rstudio/rstudio-workbench-for-microsoft-azure-ml:$(IMAGE_OS)-$(RSW_TAG_VERSION)--$(SHA_SHORT) \
-        -t ghcr.io/rstudio/rstudio-workbench-for-microsoft-azure-ml:$(IMAGE_OS) \
-        -t ghcr.io/rstudio/rstudio-workbench-for-microsoft-azure-ml:$(IMAGE_OS)-$(RSW_TAG_VERSION) \
-        -t ghcr.io/rstudio/rstudio-workbench-for-microsoft-azure-ml:$(IMAGE_OS)-$(RSW_TAG_VERSION)--$(SHA_SHORT) \
-		workbench-for-microsoft-azure-ml
-rsw-azure-preview: workbench-azure
-workbench-azure-preview:  ## Build Workbench for Microsoft Azure ML image
-	docker buildx --builder="$(BUILDX_PATH)" build \
-		--load $(BUILDX_ARGS) \
-		--build-arg R_VERSION=$(R_VERSION) \
-		--build-arg R_VERSION_ALT=$(R_VERSION_ALT) \
-		--build-arg PYTHON_VERSION=$(PYTHON_VERSION) \
-		--build-arg PYTHON_VERSION_ALT=$(PYTHON_VERSION_ALT) \
-		--build-arg RSW_VERSION=$(RSW_VERSION) \
-		--build-arg RSW_DOWNLOAD_URL=`just _rsw-download-url $(PREVIEW_TYPE) $(IMAGE_OS)` \
-		--file workbench-for-microsoft-azure-ml/Dockerfile.$(IMAGE_OS) \
-        -t rstudio/rstudio-workbench-for-microsoft-azure-ml$(PREVIEW_IMAGE_SUFFIX):$(PREVIEW_TAG_PREFIX)$(IMAGE_OS)-$(PREVIEW_TYPE) \
-        -t rstudio/rstudio-workbench-for-microsoft-azure-ml$(PREVIEW_IMAGE_SUFFIX):$(PREVIEW_TAG_PREFIX)$(IMAGE_OS)-$(RSW_TAG_VERSION) \
-        -t ghcr.io/rstudio/rstudio-workbench-for-microsoft-azure-ml$(PREVIEW_IMAGE_SUFFIX):$(PREVIEW_TAG_PREFIX)$(IMAGE_OS)-$(PREVIEW_TYPE) \
-        -t ghcr.io/rstudio/rstudio-workbench-for-microsoft-azure-ml$(PREVIEW_IMAGE_SUFFIX):$(PREVIEW_TAG_PREFIX)$(IMAGE_OS)-$(RSW_TAG_VERSION) \
-		workbench-for-microsoft-azure-ml
-lint-rsw-azure: lint-workbench-azure
-lint-workbench-azure:
-	just lint workbench-for-microsoft-azure-ml $(IMAGE_OS)
-test-rsw-azure: test-workbench-azure
-test-workbench-azure: rsw-azure
-	IMAGE_NAME=rstudio/rstudio-workbench-for-microsoft-azure-ml:$(IMAGE_OS)-$(RSW_TAG_VERSION) \
-	docker-compose -f ./workbench-for-microsoft-azure-mldocker-compose.test.yml run sut
-test-rsw-azure-i: test-workbench-azure-i
-test-workbench-azure-i: rsw-azure
-	IMAGE_NAME=rstudio/rstudio-workbench-for-microsoft-azure-ml:$(IMAGE_OS)-$(RSW_TAG_VERSION) \
-	docker-compose -f ./workbench-for-microsoft-azure-mldocker-compose.test.yml run sut bash
-
-
 ### Floating License Server ###
 float:
 	docker-compose -f helper/float/docker-compose.yml build
@@ -366,12 +290,11 @@ run-floating-lic-server:  ## [DO NOT USE IN PRODUCTION] Run the floating license
 
 
 ### Help menu ###
+all: help
 help:  ## Show this help menu
 	@grep -E '^[0-9a-zA-Z_-]+:.*?##.*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?##"; OFS="\t\t"}; {printf "\033[36m%-30s\033[0m %s\n", $$1, ($$2==""?"":$$2)}'
 
 
-.PHONY: workbench \
-		connect \
-		package-manager \
-		r-session-complete \
+.PHONY: build \
+		test \
 		float

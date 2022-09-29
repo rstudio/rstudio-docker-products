@@ -38,6 +38,7 @@ update-rsw-versions:
   set -euxo pipefail
   sed {{ sed_vars }} "s/^RSW_VERSION=.*/RSW_VERSION={{ RSW_VERSION }}/g" workbench/.env
   sed {{ sed_vars }} "s/^RSW_VERSION=.*/RSW_VERSION={{ RSW_VERSION }}/g" r-session-complete/.env
+  sed {{ sed_vars }} "s/^RSW_VERSION=.*/RSW_VERSION={{ RSW_VERSION }}/g" workbench-for-microsoft-azure-ml/.env
   sed {{ sed_vars }} "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION={{ RSW_VERSION }}/g" r-session-complete/Dockerfile.bionic
   sed {{ sed_vars }} "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION={{ RSW_VERSION }}/g" r-session-complete/Dockerfile.centos7
   sed {{ sed_vars }} "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION={{ RSW_VERSION }}/g" workbench/Dockerfile.bionic
@@ -130,26 +131,12 @@ update-drivers-versions:
 
 build-release $PRODUCT $OS:
   #!/usr/bin/env bash
-  IMAGE_OS=${OS} make ${PRODUCT}
+  make PRODUCT=${PRODUCT} IMAGE_OS=${OS} build
 
-# just BUILDX_PATH=~/.buildx build-preview preview workbench bionic 12.0.11-11
-build-preview $TYPE $PRODUCT $OS $BRANCH=`git branch --show`:
+# just BUILDX_PATH=~/.buildx build-preview preview workbench bionic
+build-preview $TYPE $PRODUCT $OS:
   #!/usr/bin/env bash
-  # set branch prefix
-  if [[ $BRANCH == "dev" ]]; then
-    BRANCH_PREFIX="dev-"
-  elif [[ $BRANCH == "dev-rspm" ]]; then
-    BRANCH_PREFIX="dev-rspm-"
-  fi
-  IMAGE_OS=${OS} PREVIEW_TYPE=${TYPE} PREVIEW_TAG_PREFIX=${BRANCH_PREFIX} make ${PRODUCT}-preview
-
-_rsw-download-url TYPE OS:
-  #!/usr/bin/env bash
-  if [[ "{{TYPE}}" == "release" ]]; then
-    echo "https://download2.rstudio.org/server/{{OS}}/{{ if OS == "centos7" { "x86_64"} else { "amd64" } }}"
-  else
-    echo "https://s3.amazonaws.com/rstudio-ide-build/server/{{OS}}/{{ if OS == "centos7" { "x86_64"} else { "amd64" } }}"
-  fi
+  make PRODUCT=${PRODUCT} IMAGE_OS=${OS} PREVIEW_TYPE=${TYPE}  build-preview
 
 # just push-images tag1 tag2 ...
 push-images +IMAGES:
@@ -163,15 +150,11 @@ push-images +IMAGES:
 # just test-image workbench
 test $PRODUCT $OS:
   #!/usr/bin/env bash
-  IMAGE_OS=${OS} make test-${PRODUCT}
+  make PRODUCT=${PRODUCT} IMAGE_OS=${OS} test
 
 # just get-version workbench --type=preview --local
 get-version +NARGS:
   ./get-version.py {{NARGS}}
-
-_tag_safe_version $VERSION:
-  #!/usr/bin/env bash
-  echo -n "$VERSION" | sed 's/+/-/g'
 
 lint $PRODUCT $OS:
   #!/usr/bin/env bash
