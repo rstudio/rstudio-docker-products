@@ -88,8 +88,8 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          image: rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
-          args: --file=./content/pro/${{ matrix.config.os }}/Dockerfile
+          image: rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
+          args: --file=./content/base/${{ matrix.config.os }}/Dockerfile
           command: test
 
       - name: Login to Docker Hub
