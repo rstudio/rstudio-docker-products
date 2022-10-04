@@ -210,9 +210,17 @@ lint-all:
 ### Test product ###
 test: _check-env-on-test
 	IMAGE_NAME=$(TEST_IMAGE_NAME) \
+	R_VERSION=$(R_VERSION) \
+	R_VERSION_ALT=$(R_VERSION_ALT) \
+	PYTHON_VERSION=$(PYTHON_VERSION) \
+	PYTHON_VERSION_ALT=$(PYTHON_VERSION_ALT) \
 	docker-compose -f ./$(PRODUCT)/docker-compose.test.yml run sut
 test-i: _check-env-on-test
 	IMAGE_NAME=$(TEST_IMAGE_NAME) \
+	R_VERSION=$(R_VERSION) \
+	R_VERSION_ALT=$(R_VERSION_ALT) \
+	PYTHON_VERSION=$(PYTHON_VERSION) \
+	PYTHON_VERSION_ALT=$(PYTHON_VERSION_ALT) \
 	docker-compose -f ./$(PRODUCT)/docker-compose.test.yml run sut bash
 test-default:
 	$(MAKE) PRODUCT=connect IMAGE_OS=$(IMAGE_OS) test
