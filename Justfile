@@ -158,7 +158,7 @@ test-image $PRODUCT $VERSION +IMAGES:
   set -euxo pipefail
   IMAGES="{{IMAGES}}"
   read -ra IMAGE_ARRAY <<<"$IMAGES"
-  make PRODUCT={{PRODUCT}} TEST_IMAGE_NAME="${IMAGE_ARRAY[0]}" VERSION={{VERSION}} test
+  make PRODUCT={{PRODUCT}} TEST_IMAGE_NAME="${IMAGE_ARRAY[0]}" RSC_VERSION={{VERSION}} RSPM_VERSION={{VERSION}} RSW_VERSION={{VERSION}} test
 
 # just get-version workbench --type=preview --local
 get-version +NARGS:
