@@ -52,7 +52,7 @@ jobs:
       - name: Build Image
         id: build-image
         run: |
-          TAGS=`just BUILDX_PATH=${{ steps.buildx.outputs.name }} build-release ${{ matrix.config.product }} ${{ matrix.config.os }} ${{ steps.get-version.outputs.VERSION }}`
+          TAGS=`make BUILDX_PATH=${{ steps.buildx.outputs.name }} PRODUCT=${{ matrix.config.product }} IMAGE_OS=${{ matrix.config.os }} VERSION=${{ steps.get-version.outputs.VERSION }} build`
           echo "::set-output name=TAGS::$TAGS"
 
       - name: Show image size

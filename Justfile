@@ -147,10 +147,18 @@ push-images +IMAGES:
     docker push $IMAGE
   done
 
-# just test-image workbench
+# just test workbench bionic
 test $PRODUCT $OS:
   #!/usr/bin/env bash
   make PRODUCT=${PRODUCT} IMAGE_OS=${OS} test
+
+# just test-image workbench 12.0.11-8 tag1 tag2 tag3 ...
+test-image $PRODUCT $VERSION +IMAGES:
+  #!/usr/bin/env bash
+  set -euxo pipefail
+  IMAGES="{{IMAGES}}"
+  read -ra IMAGE_ARRAY <<<"$IMAGES"
+  make PRODUCT={{PRODUCT}} TEST_IMAGE_NAME="${IMAGE_ARRAY[0]}" VERSION={{VERSION}} test
 
 # just get-version workbench --type=preview --local
 get-version +NARGS:

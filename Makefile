@@ -3,7 +3,6 @@ IMAGE_OS ?= bionic
 RSC_VERSION ?= 2022.09.0
 RSPM_VERSION ?= 2022.07.2-11
 RSW_VERSION ?= 2022.07.2+576.pro12
-RSW_TAG_VERSION=`echo "$(RSW_VERSION)" | sed -e 's/\+/-/'`
 
 PREVIEW_TYPE ?= preview
 PREVIEW_IMAGE_SUFFIX ?= -preview
@@ -75,19 +74,22 @@ PREVIEW_TYPE ?= preview
 PRODUCT ?=
 ifneq ($(filter $(PRODUCT),workbench r-session-complete workbench-for-microsoft-azure-ml),)
 	SHORT_NAME=RSW
-	VERSION=$(RSW_TAG_VERSION)
+	VERSION?=$(RSW_VERSION)
 else ifeq ($(PRODUCT),connect)
 	SHORT_NAME=RSC
-	VERSION=$(RSC_VERSION)
+	VERSION?=$(RSC_VERSION)
 else ifeq ($(PRODUCT),package-manager)
 	SHORT_NAME=RSPM
-	VERSION=$(RSPM_VERSION)
+	VERSION?=$(RSPM_VERSION)
 endif
+TAG_SAFE_VERSION=`echo "$(VERSION)" | sed -e 's/\+/-/'`
 
 IMAGE_PREFIX=
 ifneq ($(PRODUCT),r-session-complete)
 	IMAGE_PREFIX=rstudio-
 endif
+
+TEST_IMAGE_NAME?=rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS)-$(TAG_SAFE_VERSION)
 
 ARCHITECTURE=amd64
 ifeq ($(IMAGE_OS),centos7)
@@ -124,11 +126,11 @@ endif
 build: _check-env-on-build
 	docker buildx --builder="$(BUILDX_PATH)" build --load $(BUILDX_ARGS) \
 		-t rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS) \
-		-t rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS)-$(VERSION) \
-		-t rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS)-$(VERSION)--$(SHA_SHORT) \
+		-t rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS)-$(TAG_SAFE_VERSION) \
+		-t rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS)-$(TAG_SAFE_VERSION)--$(SHA_SHORT) \
 		-t ghcr.io/rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS) \
-		-t ghcr.io/rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS)-$(VERSION) \
-		-t ghcr.io/rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS)-$(VERSION)--$(SHA_SHORT) \
+		-t ghcr.io/rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS)-$(TAG_SAFE_VERSION) \
+		-t ghcr.io/rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS)-$(TAG_SAFE_VERSION)--$(SHA_SHORT) \
 		--build-arg $(SHORT_NAME)_VERSION="$(VERSION)" \
 		--build-arg RSW_DOWNLOAD_URL="$(RSW_DOWNLOAD_URL_RELEASE)" \
 		--build-arg R_VERSION=$(R_VERSION) \
@@ -136,6 +138,12 @@ build: _check-env-on-build
 		--build-arg PYTHON_VERSION=$(PYTHON_VERSION) \
 		--build-arg PYTHON_VERSION_ALT=$(PYTHON_VERSION_ALT) \
 		--file=./$(PRODUCT)/Dockerfile.$(IMAGE_OS) $(PRODUCT)
+	echo rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS) \
+		rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS)-$(TAG_SAFE_VERSION) \
+		rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS)-$(TAG_SAFE_VERSION)--$(SHA_SHORT) \
+		ghcr.io/rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS) \
+		ghcr.io/rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS)-$(TAG_SAFE_VERSION) \
+		ghcr.io/rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS)-$(TAG_SAFE_VERSION)--$(SHA_SHORT)
 build-default:
 	$(MAKE) PRODUCT=connect IMAGE_OS=$(IMAGE_OS) build
 	$(MAKE) PRODUCT=package-manager IMAGE_OS=$(IMAGE_OS) build
@@ -153,9 +161,9 @@ build-all:
 ### Preview build targets ###
 build-preview: _check-env-on-build
 	docker buildx --builder="$(BUILDX_PATH)" build --load $(BUILDX_ARGS) \
-        -t rstudio/$(IMAGE_PREFIX)$(PRODUCT)-preview:$(BRANCH_PREFIX)$(IMAGE_OS)-$(VERSION) \
+        -t rstudio/$(IMAGE_PREFIX)$(PRODUCT)-preview:$(BRANCH_PREFIX)$(IMAGE_OS)-$(TAG_SAFE_VERSION) \
         -t rstudio/$(IMAGE_PREFIX)$(PRODUCT)-preview:$(BRANCH_PREFIX)$(IMAGE_OS)-$(PREVIEW_TYPE) \
-        -t ghcr.io/rstudio/$(IMAGE_PREFIX)$(PRODUCT)-preview:$(BRANCH_PREFIX)$(IMAGE_OS)-$(VERSION) \
+        -t ghcr.io/rstudio/$(IMAGE_PREFIX)$(PRODUCT)-preview:$(BRANCH_PREFIX)$(IMAGE_OS)-$(TAG_SAFE_VERSION) \
         -t ghcr.io/rstudio/$(IMAGE_PREFIX)$(PRODUCT)-preview:$(BRANCH_PREFIX)$(IMAGE_OS)-$(PREVIEW_TYPE) \
         --build-arg $(SHORT_NAME)_VERSION=$(VERSION) \
         --build-arg RSW_DOWNLOAD_URL=$(RSW_DOWNLOAD_URL_PREVIEW) \
@@ -164,6 +172,10 @@ build-preview: _check-env-on-build
 		--build-arg PYTHON_VERSION=$(PYTHON_VERSION) \
 		--build-arg PYTHON_VERSION_ALT=$(PYTHON_VERSION_ALT) \
         --file=./$(PRODUCT)/Dockerfile.$(IMAGE_OS) $(PRODUCT)
+	echo rstudio/$(IMAGE_PREFIX)$(PRODUCT)-preview:$(BRANCH_PREFIX)$(IMAGE_OS)-$(TAG_SAFE_VERSION) \
+		rstudio/$(IMAGE_PREFIX)$(PRODUCT)-preview:$(BRANCH_PREFIX)$(IMAGE_OS)-$(PREVIEW_TYPE) \
+		ghcr.io/rstudio/$(IMAGE_PREFIX)$(PRODUCT)-preview:$(BRANCH_PREFIX)$(IMAGE_OS)-$(TAG_SAFE_VERSION) \
+		ghcr.io/rstudio/$(IMAGE_PREFIX)$(PRODUCT)-preview:$(BRANCH_PREFIX)$(IMAGE_OS)-$(PREVIEW_TYPE)
 build-preview-default:
 	$(MAKE) PRODUCT=connect IMAGE_OS=$(IMAGE_OS) build-preview
 	$(MAKE) PRODUCT=package-manager IMAGE_OS=$(IMAGE_OS) build-preview
@@ -197,10 +209,10 @@ lint-all:
 
 ### Test product ###
 test: _check-env-on-test
-	IMAGE_NAME=rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS)-$(VERSION) \
+	IMAGE_NAME=$(TEST_IMAGE_NAME) \
 	docker-compose -f ./$(PRODUCT)/docker-compose.test.yml run sut
 test-i: _check-env-on-test
-	IMAGE_NAME=rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS)-$(VERSION) \
+	IMAGE_NAME=$(TEST_IMAGE_NAME) \
 	docker-compose -f ./$(PRODUCT)/docker-compose.test.yml run sut bash
 test-default:
 	$(MAKE) PRODUCT=connect IMAGE_OS=$(IMAGE_OS) test

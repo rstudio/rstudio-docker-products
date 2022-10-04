@@ -60,7 +60,7 @@ jobs:
       - name: Build Image
         id: build-image
         run: |
-          TAGS=`just BUILDX_PATH=${{ steps.buildx.outputs.name }} build-preview ${{ matrix.config.type }} ${{ matrix.config.product }} ${{ matrix.config.os }} ${{ steps.get-version.outputs.VERSION }}`
+          TAGS=`make BUILDX_PATH=${{ steps.buildx.outputs.name }} PREVIEW_TYPE=${{ matrix.config.type }} PRODUCT=${{ matrix.config.product }} IMAGE_OS=${{ matrix.config.os }} VERSION=${{ steps.get-version.outputs.VERSION }} build-preview`
           echo "::set-output name=TAGS::$TAGS"
 
       - name: Show image size
@@ -73,7 +73,7 @@ jobs:
           RSPM_LICENSE: ${{ secrets.RSPM_LICENSE }}
           RSW_LICENSE: ${{ secrets.RSW_LICENSE }}
         run: |
-          just test-image ${{ matrix.config.product }} ${{  steps.get-version.outputs.VERSION }} ${{ steps.build-image.outputs.TAGS }}
+          just test-image ${{ matrix.config.product }} ${{ steps.get-version.outputs.VERSION }} ${{ steps.build-image.outputs.TAGS }}
 
       - name: Login to Docker Hub
         if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
