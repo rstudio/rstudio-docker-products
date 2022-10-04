@@ -124,7 +124,7 @@ endif
 
 ### Release build targets ###
 build: _check-env-on-build
-	docker buildx --builder="$(BUILDX_PATH)" build --load $(BUILDX_ARGS) \
+	@docker buildx --builder="$(BUILDX_PATH)" build --load $(BUILDX_ARGS) \
 		-t rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS) \
 		-t rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS)-$(TAG_SAFE_VERSION) \
 		-t rstudio/$(IMAGE_PREFIX)$(PRODUCT):$(IMAGE_OS)-$(TAG_SAFE_VERSION)--$(SHA_SHORT) \
@@ -160,7 +160,7 @@ build-all:
 
 ### Preview build targets ###
 build-preview: _check-env-on-build
-	docker buildx --builder="$(BUILDX_PATH)" build --load $(BUILDX_ARGS) \
+	@docker buildx --builder="$(BUILDX_PATH)" build --load $(BUILDX_ARGS) \
         -t rstudio/$(IMAGE_PREFIX)$(PRODUCT)-preview:$(BRANCH_PREFIX)$(IMAGE_OS)-$(TAG_SAFE_VERSION) \
         -t rstudio/$(IMAGE_PREFIX)$(PRODUCT)-preview:$(BRANCH_PREFIX)$(IMAGE_OS)-$(PREVIEW_TYPE) \
         -t ghcr.io/rstudio/$(IMAGE_PREFIX)$(PRODUCT)-preview:$(BRANCH_PREFIX)$(IMAGE_OS)-$(TAG_SAFE_VERSION) \
