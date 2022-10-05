@@ -1,0 +1,57 @@
+FROM centos:7
+LABEL maintainer="RStudio Docker <docker@rstudio.com>"
+
+### ARG declarations ###
+ARG R_VERSION=4.2.0
+ARG R_VERSION_ALT=3.6.2
+ARG PYTHON_VERSION=3.9.5
+ARG PYTHON_VERSION_ALT=3.8.10
+
+### Update/upgrade system packages ###
+RUN yum upgrade -y -q
+
+### Install universal system dependencies ###
+RUN yum install -y -q \
+      bzip2 \
+      epel-release \
+      git \
+      libcurl-devel \
+      libuser-devel \
+      libxml2-devel \
+      openssl-devel \
+      postgresql-libs \
+      rrdtool \
+      unixODBC \
+      unixODBC-devel \
+      wget
+
+### Install R versions ###
+RUN curl -O https://cdn.rstudio.com/r/centos-7/pkgs/R-${R_VERSION}-1-1.x86_64.rpm \
+    && curl -O https://cdn.rstudio.com/r/centos-7/pkgs/R-${R_VERSION_ALT}-1-1.x86_64.rpm \
+    && yum install -y R-${R_VERSION}-1-1.x86_64.rpm \
+    && yum install -y R-${R_VERSION_ALT}-1-1.x86_64.rpm \
+    && rm -rf R-${R_VERSION}-1-1.x86_64.rpm \
+    && rm -rf R-${R_VERSION_ALT}-1-1.x86_64.rpm \
+    && ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R \
+    && ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
+
+### Install Python versions ###
+RUN curl -O https://cdn.rstudio.com/python/centos-7/pkgs/python-${PYTHON_VERSION}-1-1.x86_64.rpm \
+    && curl -O https://cdn.rstudio.com/python/centos-7/pkgs/python-${PYTHON_VERSION_ALT}-1-1.x86_64.rpm \
+    && yum install -y python-${PYTHON_VERSION}-1-1.x86_64.rpm \
+    && yum install -y python-${PYTHON_VERSION_ALT}-1-1.x86_64.rpm \
+    && rm -rf python-${PYTHON_VERSION}-1-1.x86_64.rpm \
+    && rm -rf python-${PYTHON_VERSION_ALT}-1-1.x86_64.rpm \
+    && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install 'virtualenv<20' \
+    && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install --upgrade setuptools \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install 'virtualenv<20' \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install --upgrade setuptools
+
+### Locale configuration ###
+RUN localedef -i en_US -f UTF-8 en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+
+### Clean up ###
+RUN yum clean all
