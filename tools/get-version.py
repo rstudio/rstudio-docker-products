@@ -127,7 +127,7 @@ def get_local_release_version(product):
     else:
         raise ValueError(f'Invalid product {product}')
 
-    with open('Makefile', 'r') as f:
+    with open('../Makefile', 'r') as f:
         content = f.read()
 
     vers = re.compile(f'{prefix}_VERSION \?= (.*)')
