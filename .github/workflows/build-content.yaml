@@ -70,7 +70,8 @@ jobs:
         run: |
           docker image ls
 
-      - name: Run Snyk to check Docker image for vulnerabilities
+      - name: Run Snyk to check Docker image for vulnerabilities (main)
+        if: ${{ github.ref == 'refs/heads/main' }}
         continue-on-error: true
         uses: snyk/actions/docker@master
         env:
@@ -79,6 +80,17 @@ jobs:
           image: rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
           args: --file=./content/base/${{ matrix.config.os }}/Dockerfile
           command: monitor
+
+      - name: Run Snyk to check Docker image for vulnerabilities (branch)
+        if: ${{ github.ref != 'refs/heads/main' }}
+        continue-on-error: true
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
+          args: --file=./content/base/${{ matrix.config.os }}/Dockerfile
+          command: test
 
       - name: Login to Docker Hub
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -155,7 +167,8 @@ jobs:
         run: |
           docker image ls
 
-      - name: Run Snyk to check Docker image for vulnerabilities
+      - name: Run Snyk to check Docker image for vulnerabilities (main)
+        if: ${{ github.ref == 'refs/heads/main' }}
         continue-on-error: true
         uses: snyk/actions/docker@master
         env:
@@ -164,6 +177,17 @@ jobs:
           image: rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
           args: --file=./content/pro/${{ matrix.config.os }}/Dockerfile
           command: monitor
+
+      - name: Run Snyk to check Docker image for vulnerabilities (branch)
+        if: ${{ github.ref != 'refs/heads/main' }}
+        continue-on-error: true
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
+          args: --file=./content/pro/${{ matrix.config.os }}/Dockerfile
+          command: test
 
       - name: Login to Docker Hub
         if: ${{ github.ref == 'refs/heads/main' }}

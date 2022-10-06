@@ -72,7 +72,8 @@ jobs:
         run: |
           just test-image ${{ matrix.config.product }} ${{  steps.get-version.outputs.VERSION }} ${{ steps.build-image.outputs.TAGS }}
 
-      - name: Run Snyk to check Docker image for vulnerabilities
+      - name: Run Snyk to check Docker image for vulnerabilities (main)
+        if: ${{ github.ref == 'refs/heads/main' }}
         continue-on-error: true
         uses: snyk/actions/docker@master
         env:
@@ -81,6 +82,17 @@ jobs:
           image: ${{ steps.build-image.outputs.TAGS }}
           args: --file=./${{ matrix.config.product }}/Dockerfile.${{ matrix.config.os }}
           command: monitor
+
+      - name: Run Snyk to check Docker image for vulnerabilities (branch)
+        if: ${{ github.ref != 'refs/heads/main' }}
+        continue-on-error: true
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: ${{ steps.build-image.outputs.TAGS }}
+          args: --file=./${{ matrix.config.product }}/Dockerfile.${{ matrix.config.os }}
+          command: test
 
       - name: Login to Docker Hub
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -101,3 +113,4 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           just push-images ${{ steps.build-image.outputs.TAGS }}
+
