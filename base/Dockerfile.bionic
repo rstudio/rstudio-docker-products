@@ -7,6 +7,8 @@ ARG R_VERSION=4.2.0
 ARG R_VERSION_ALT=3.6.2
 ARG PYTHON_VERSION=3.9.5
 ARG PYTHON_VERSION_ALT=3.8.10
+ARG TINI_VERSION=0.19.0
+ARG QUARTO_VERSION=1.1.251
 
 ### Update/upgrade system packages ###
 RUN apt-get update --fix-missing  \
@@ -18,12 +20,16 @@ RUN apt-get install -yq --no-install-recommends \
         cmake \
         curl \
         default-jdk \
+        dirmngr \
         gdal-bin \
         git \
+        gpg \
+        gpg-agent \
         gsfonts \
         imagemagick \
         libcairo2-dev \
         libcurl4-openssl-dev \
+        libev-dev \
         libfontconfig1-dev \
         libfreetype6-dev \
         libfribidi-dev \
@@ -49,8 +55,10 @@ RUN apt-get install -yq --no-install-recommends \
         libxml2-dev \
         locales \
         make \
+        pandoc \
         perl \
         tcl \
+        sudo \
         tk \
         tk-dev \
         tk-table \
@@ -58,6 +66,27 @@ RUN apt-get install -yq --no-install-recommends \
         unixodbc-dev \
         wget \
         zlib1g-dev
+
+### Install tini ###
+ADD https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini-amd64 /tini
+ADD https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini-amd64.asc /tini.asc
+RUN gpg --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7 \
+    && gpg --batch --verify /tini.asc /tini \
+    && chmod +x /tini
+
+### Install TinyTeX ###
+RUN curl -sL "https://yihui.org/tinytex/install-bin-unix.sh" | sh && \
+    /root/.TinyTeX/bin/*/tlmgr path remove && \
+    mv /root/.TinyTeX/ /opt/TinyTeX && \
+    /opt/TinyTeX/bin/*/tlmgr option sys_bin /usr/local/bin && \
+    /opt/TinyTeX/bin/*/tlmgr path add
+
+### Install Quarto ###
+RUN curl -o quarto.tar.gz -L https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.tar.gz \
+    && mkdir -p /opt/quarto/${QUARTO_VERSION} \
+    && tar -zxvf quarto.tar.gz -C "/opt/quarto/${QUARTO_VERSION}" --strip-components=1 \
+    && rm -f quarto.tar.gz \
+    && sudo ln -s /opt/quarto/${QUARTO_VERSION}/bin/quarto /usr/local/bin/quarto
 
 ### Install R versions ###
 RUN curl -O https://cdn.rstudio.com/r/ubuntu-1804/pkgs/r-${R_VERSION}_1_amd64.deb \
@@ -92,3 +121,6 @@ RUN apt-get install -f \
     && apt-get autoremove \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+
+ENTRYPOINT ["/tini", "--"]

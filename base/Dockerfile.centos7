@@ -6,6 +6,8 @@ ARG R_VERSION=4.2.0
 ARG R_VERSION_ALT=3.6.2
 ARG PYTHON_VERSION=3.9.5
 ARG PYTHON_VERSION_ALT=3.8.10
+ARG TINI_VERSION=0.19.0
+ARG QUARTO_VERSION=1.1.251
 
 ### Update/upgrade system packages ###
 RUN yum upgrade -y -q
@@ -15,15 +17,41 @@ RUN yum install -y -q \
       bzip2 \
       epel-release \
       git \
+      gpg \
+      gpg-agent \
       libcurl-devel \
       libuser-devel \
       libxml2-devel \
       openssl-devel \
+      perl-Digest-MD5 \
       postgresql-libs \
       rrdtool \
+      sudo \
       unixODBC \
       unixODBC-devel \
-      wget
+      wget \
+      which
+
+### Install tini ###
+ADD https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini-amd64 /tini
+ADD https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini-amd64.asc /tini.asc
+RUN gpg --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7 \
+    && gpg --batch --verify /tini.asc /tini \
+    && chmod +x /tini
+
+### Install TinyTeX ###
+RUN wget -qO- "https://yihui.org/tinytex/install-bin-unix.sh" | sh && \
+    /root/.TinyTeX/bin/*/tlmgr path remove && \
+    mv /root/.TinyTeX/ /opt/TinyTeX && \
+    /opt/TinyTeX/bin/*/tlmgr option sys_bin /usr/local/bin && \
+    /opt/TinyTeX/bin/*/tlmgr path add
+
+### Install Quarto ###
+RUN curl -o quarto.tar.gz -L https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.tar.gz \
+    && mkdir -p /opt/quarto/${QUARTO_VERSION} \
+    && tar -zxvf quarto.tar.gz -C "/opt/quarto/${QUARTO_VERSION}" --strip-components=1 \
+    && rm -f quarto.tar.gz \
+    && sudo ln -s /opt/quarto/${QUARTO_VERSION}/bin/quarto /usr/local/bin/quarto
 
 ### Install R versions ###
 RUN curl -O https://cdn.rstudio.com/r/centos-7/pkgs/R-${R_VERSION}-1-1.x86_64.rpm \
@@ -55,3 +83,6 @@ ENV LC_ALL en_US.UTF-8
 
 ### Clean up ###
 RUN yum clean all
+
+
+ENTRYPOINT ["/tini", "--"]
