@@ -46,13 +46,13 @@ jobs:
       - name: Get Version
         id: get-version
         run: |
-          VERSION=`just get-version ${{ matrix.config.product }} --type=release --local`
+          VERSION=`just -f ci.Justfile get-version ${{ matrix.config.product }} --type=release --local`
           echo "::set-output name=VERSION::$VERSION"
 
       - name: Build Image
         id: build-image
         run: |
-          TAGS=`just BUILDX_PATH=${{ steps.buildx.outputs.name }} build-release ${{ matrix.config.product }} ${{ matrix.config.os }} ${{ steps.get-version.outputs.VERSION }}`
+          TAGS=`just -f ci.Justfile BUILDX_PATH=${{ steps.buildx.outputs.name }} build-release ${{ matrix.config.product }} ${{ matrix.config.os }} ${{ steps.get-version.outputs.VERSION }}`
           echo "::set-output name=TAGS::$TAGS"
 
       - name: Show image size

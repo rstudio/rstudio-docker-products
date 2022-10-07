@@ -144,17 +144,7 @@ test-image $PRODUCT $VERSION +IMAGES:
   set -euxo pipefail
   IMAGES="{{IMAGES}}"
   read -ra IMAGE_ARRAY <<<"$IMAGES"
-  cd ./"$PRODUCT" && \
-    IMAGE_NAME="${IMAGE_ARRAY[0]}" RSW_VERSION="$VERSION" RSC_VERSION="$VERSION" RSPM_VERSION="$VERSION" \
-    docker-compose -f docker-compose.test.yml run sut
-
-# just get-version workbench --type=preview --local
-get-version +NARGS:
-  ./get-version.py {{NARGS}}
-
-_tag_safe_version $VERSION:
-  #!/usr/bin/env bash
-  echo -n "$VERSION" | sed 's/+/-/g'
+  just $PRODUCT/test "${IMAGE_ARRAY[0]}" "$VERSION"
 
 lint $PRODUCT $OS:
   #!/usr/bin/env bash

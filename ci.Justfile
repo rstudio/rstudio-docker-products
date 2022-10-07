@@ -1,14 +1,16 @@
 set positional-arguments
 
+BUILDX_PATH := ""
+
 build-release $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`git rev-parse --short HEAD`:
   #!/usr/bin/env bash
   set -euxo pipefail
 
   # variable placeholders
-  RSW_DOWNLOAD_URL=`just _rsw-download-url release $OS`
+  RSW_DOWNLOAD_URL=`just -f ci.Justfile _rsw-download-url release $OS`
   BUILDX_ARGS=""
   SHORT_NAME=""
-  TAG_VERSION=`just _tag_safe_version $VERSION`
+  TAG_VERSION=`just -f ci.Justfile _tag_safe_version $VERSION`
 
   # set short name
   if [[ $PRODUCT == "workbench" || $PRODUCT == "r-session-complete" || $PRODUCT == "workbench-for-microsoft-azure-ml" ]]; then
@@ -56,10 +58,10 @@ build-preview $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
 
   # variable placeholders
   BRANCH_PREFIX=""
-  RSW_DOWNLOAD_URL=`just _rsw-download-url $TYPE $OS`
+  RSW_DOWNLOAD_URL=`just -f ci.Justfile _rsw-download-url $TYPE $OS`
   BUILDX_ARGS=""
   SHORT_NAME=""
-  TAG_VERSION=`just _tag_safe_version $VERSION`
+  TAG_VERSION=`just -f ci.Justfile _tag_safe_version $VERSION`
 
   # set branch prefix
   if [[ $BRANCH == "dev" ]]; then
@@ -111,3 +113,11 @@ _rsw-download-url TYPE OS:
   else
     echo "https://s3.amazonaws.com/rstudio-ide-build/server/{{OS}}/{{ if OS == "centos7" { "x86_64"} else { "amd64" } }}"
   fi
+
+_tag_safe_version $VERSION:
+  #!/usr/bin/env bash
+  echo -n "$VERSION" | sed 's/+/-/g'
+
+# just get-version workbench --type=preview --local
+get-version +NARGS:
+  ./tools/get-version.py {{NARGS}}
