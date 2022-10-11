@@ -1,0 +1,53 @@
+set positional-arguments
+
+BUILDX_PATH := ""
+
+IMAGE_PREFIX := "rstudio-"
+PRODUCT := "connect-content-init"
+IMAGE_OS := "bionic"
+
+RSC_VERSION := "2022.09.0"
+RSC_TAG_SAFE_VERSION := replace(RSC_VERSION, "+", "-")
+RSC_LICENSE := ""
+
+DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":" + IMAGE_OS + "-" + RSC_TAG_SAFE_VERSION
+
+build OS=IMAGE_OS VERSION=RSC_VERSION +TAGS=DEFAULT_TAG:
+  #!/usr/bin/env bash
+  set -euxo pipefail
+  BUILDX_ARGS=""
+  if [[ "{{BUILDX_PATH}}" != "" ]]; then
+    BUILDX_ARGS="--cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache"
+  fi
+  tag_array=()
+  for TAG in {{TAGS}}
+  do
+    tag_array+=("-t" $TAG)
+  done
+
+  docker buildx --builder="{{ BUILDX_PATH }}" build --load ${BUILDX_ARGS} \
+    ${tag_array[@]} \
+    --build-arg RSC_VERSION="{{ VERSION }}" \
+    --file=./Dockerfile."{{ OS }}" .
+
+test TAG=DEFAULT_TAG VERSION=RSC_VERSION CMD="":
+  #!/usr/bin/env bash
+  set -euxo pipefail
+  IMAGE_NAME="{{ TAG }}" \
+  RSC_VERSION="{{ VERSION }}" \
+  docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
+
+test-i TAG=DEFAULT_TAG VERSION=RSC_VERSION:
+  just test {{ TAG }} {{ VERSION }} bash
+
+run TAG=DEFAULT_TAG CMD="":
+  #!/usr/bin/env bash
+  set -euxo pipefail
+  if [ -z "{{ RSC_LICENSE }}" ]; then
+    echo "Please set RSC_LICENSE to a valid RStudio Connect license before running."
+    exit 1
+  fi
+  docker run -it --privileged \
+    -p 3939:3939 \
+    -e RSC_LICENSE="{{ RSC_LICENSE }}" \
+    "{{ TAG }}" {{ CMD }}
