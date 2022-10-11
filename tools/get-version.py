@@ -26,18 +26,18 @@ import argparse
 import sys
 
 
-def clean_product_version(version: str) -> str:
+def clean_product_version(_version: str) -> str:
     """
     Replace / alias "latest" with "release"
 
-    :type version: str
+    :type _version: str
     :rtype: str
-    :param version: The current version being used
+    :param _version: The current version being used
     :return: The cleaned/replaced version
     """
-    if version == 'latest':
-        version = 'release'
-    return version
+    if _version == 'latest':
+        _version = 'release'
+    return _version
 
 
 def clean_product_selection(product: str) -> str:
@@ -127,7 +127,7 @@ def get_local_release_version(product):
     else:
         raise ValueError(f'Invalid product {product}')
 
-    with open('../Makefile', 'r') as f:
+    with open('../Justfile', 'r') as f:
         content = f.read()
 
     vers = re.compile(f'{prefix}_VERSION \?= (.*)')
@@ -185,7 +185,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--local", "-l",
         action="store_true",
-        help="Whether to use the 'local' version for 'release'. Parsed from the local Makefile",
+        help="Whether to use the 'local' version for 'release'. Parsed from the local Justfile.",
     )
     parser.add_argument(
         "--override", "-o",
