@@ -127,10 +127,10 @@ def get_local_release_version(product):
     else:
         raise ValueError(f'Invalid product {product}')
 
-    with open('../Justfile', 'r') as f:
+    with open('Justfile', 'r') as f:
         content = f.read()
 
-    vers = re.compile(f'{prefix}_VERSION \?= (.*)')
+    vers = re.compile(f'{prefix}_VERSION := (.*)')
     res = vers.search(content)
     # from the first capture group
     output_version = res[1]
