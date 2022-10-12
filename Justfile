@@ -46,7 +46,9 @@ update-rsw-versions:
   sed {{ sed_vars }} "s/rstudio\/rstudio-workbench:.*/rstudio\/rstudio-workbench:{{ RSW_TAG_VERSION }}/g" docker-compose.yml
   sed {{ sed_vars }} "s/^ARG RSW_VERSION=.*/ARG RSW_VERSION={{ RSW_VERSION }}/g" workbench-for-microsoft-azure-ml/Dockerfile.bionic
   sed {{ sed_vars }} "s/org.opencontainers.image.version='.*'/org.opencontainers.image.version='{{ RSW_VERSION }}'/g" workbench-for-microsoft-azure-ml/Dockerfile.bionic
-  sed {{ sed_vars }} "s/^RSW_VERSION ?= .*/RSW_VERSION ?= {{ RSW_VERSION }}/g" Makefile
+  sed {{ sed_vars }} "s/^RSW_VERSION := .*/RSW_VERSION := \"{{ RSW_VERSION }}\"/g" r-session-complete/Justfile
+  sed {{ sed_vars }} "s/^RSW_VERSION := .*/RSW_VERSION := \"{{ RSW_VERSION }}\"/g" workbench/Justfile
+  sed {{ sed_vars }} "s/^RSW_VERSION := .*/RSW_VERSION := \"{{ RSW_VERSION }}\"/g" workbench-for-microsoft-azure-ml/Justfile
   sed {{ sed_vars }} "s/^RSW_VERSION := .*/RSW_VERSION := \"{{ RSW_VERSION }}\"/g" Justfile
 
 # just RSPM_VERSION=1.2.3 update-rspm-versions
@@ -58,7 +60,7 @@ update-rspm-versions:
   sed {{ sed_vars }} "s/^RSPM_VERSION:.*/RSPM_VERSION: {{ RSPM_VERSION }}/g" docker-compose.yml
   sed {{ sed_vars }} "s/RSPM_VERSION:.*/RSPM_VERSION: {{ RSPM_VERSION }}/g" docker-compose.yml
   sed {{ sed_vars }} "s/rstudio\/rstudio-package-manager:.*/rstudio\/rstudio-package-manager:{{ RSPM_VERSION }}/g" docker-compose.yml
-  sed {{ sed_vars }} "s/^RSPM_VERSION ?= .*/RSPM_VERSION ?= {{ RSPM_VERSION }}/g" Makefile
+  sed {{ sed_vars }} "s/^RSPM_VERSION := .*/RSPM_VERSION := \"{{ RSPM_VERSION }}\"/g" package-manager/Justfile
   sed {{ sed_vars }} "s/^RSPM_VERSION := .*/RSPM_VERSION := \"{{ RSPM_VERSION }}\"/g" Justfile
 
 # just RSC_VERSION=1.2.3 update-rsc-versions
@@ -70,8 +72,7 @@ update-rsc-versions:
   sed {{ sed_vars }} "s/^ARG RSC_VERSION=.*/ARG RSC_VERSION={{ RSC_VERSION }}/g" connect-content-init/Dockerfile.bionic
   sed {{ sed_vars }} "s/RSC_VERSION:.*/RSC_VERSION: {{ RSC_VERSION }}/g" docker-compose.yml
   sed {{ sed_vars }} "s/rstudio\/rstudio-connect:.*/rstudio\/rstudio-connect:{{ RSC_VERSION }}/g" docker-compose.yml
-  sed {{ sed_vars }} "s/^RSC_VERSION?=.*/RSC_VERSION?={{ RSC_VERSION }}/g" connect-content-init/Makefile
-  sed {{ sed_vars }} "s/^RSC_VERSION ?= .*/RSC_VERSION ?= {{ RSC_VERSION }}/g" Makefile
+  sed {{ sed_vars }} "s/^RSC_VERSION := .*/RSC_VERSION := \"{{ RSC_VERSION }}\"/g" connect/Justfile
   sed {{ sed_vars }} "s/^RSC_VERSION := .*/RSC_VERSION := \"{{ RSC_VERSION }}\"/g" Justfile
 
 # just R_VERSION=3.2.1 update-r-versions
@@ -86,7 +87,10 @@ update-r-versions:
   sed {{ sed_vars }} "s/^R_VERSION:.*/R_VERSION={{ R_VERSION }}/g" package-manager/Dockerfile.bionic
   sed {{ sed_vars }} "s/^R_VERSION=.*/R_VERSION={{ R_VERSION }}/g" package-manager/.env
   sed {{ sed_vars }} "s|^RVersion.*=.*|RVersion = /opt/R/{{ R_VERSION }}/|g" package-manager/rstudio-pm.gcfg
-  sed {{ sed_vars }} "s/^R_VERSION ?= .*/R_VERSION ?= {{ R_VERSION }}/g" Makefile
+  sed {{ sed_vars }} "s/^R_VERSION := .*/R_VERSION := \"{{ R_VERSION }}\"/g" workbench/Justfile
+  sed {{ sed_vars }} "s/^R_VERSION := .*/R_VERSION := \"{{ R_VERSION }}\"/g" workbench-for-microsoft-azure-ml/Justfile
+  sed {{ sed_vars }} "s/^R_VERSION := .*/R_VERSION := \"{{ R_VERSION }}\"/g" connect/Justfile
+  sed {{ sed_vars }} "s/^R_VERSION := .*/R_VERSION := \"{{ R_VERSION }}\"/g" package-manager/Justfile
   sed {{ sed_vars }} "s/^R_VERSION := .*/R_VERSION := \"{{ R_VERSION }}\"/g" Justfile
 
   # Update alt R versions
@@ -94,7 +98,9 @@ update-r-versions:
   sed {{ sed_vars }} "s/^R_VERSION_ALT=.*/R_VERSION_ALT={{ R_VERSION_ALT }}/g" workbench/.env
   sed {{ sed_vars }} "s/^R_VERSION_ALT:.*/R_VERSION_ALT={{ R_VERSION_ALT }}/g" connect/Dockerfile.bionic
   sed {{ sed_vars }} "s/^R_VERSION_ALT=.*/R_VERSION_ALT={{ R_VERSION_ALT }}/g" connect/.env
-  sed {{ sed_vars }} "s/^R_VERSION_ALT ?= .*/R_VERSION_ALT ?= {{ R_VERSION_ALT }}/g" Makefile
+  sed {{ sed_vars }} "s/^R_VERSION_ALT := .*/R_VERSION_ALT := \"{{ R_VERSION_ALT }}\"/g" workbench/Justfile
+  sed {{ sed_vars }} "s/^R_VERSION_ALT := .*/R_VERSION_ALT := \"{{ R_VERSION_ALT }}\"/g" workbench-for-microsoft-azure-ml/Justfile
+  sed {{ sed_vars }} "s/^R_VERSION_ALT := .*/R_VERSION_ALT := \"{{ R_VERSION_ALT }}\"/g" connect/Justfile
   sed {{ sed_vars }} "s/^R_VERSION_ALT := .*/R_VERSION_ALT := \"{{ R_VERSION_ALT }}\"/g" Justfile
 
 # just PYTHON_VERSION=3.9.5 PYTHON_VERSION_ALT=3.8.10 update-py-versions
@@ -108,7 +114,9 @@ update-py-versions:
   sed {{ sed_vars }} "s/^PYTHON_VERSION=.*/PYTHON_VERSION={{ PYTHON_VERSION }}/g" connect/.env
   sed {{ sed_vars }} "s/^PYTHON_VERSION:.*/PYTHON_VERSION={{ PYTHON_VERSION }}/g" package-manager/Dockerfile.bionic
   sed {{ sed_vars }} "s/^PYTHON_VERSION=.*/PYTHON_VERSION={{ PYTHON_VERSION }}/g" package-manager/.env
-  sed {{ sed_vars }} "s/^PYTHON_VERSION ?= .*/PYTHON_VERSION ?= {{ PYTHON_VERSION }}/g" Makefile
+  sed {{ sed_vars }} "s/^PYTHON_VERSION := .*/PYTHON_VERSION := \"{{ PYTHON_VERSION }}\"/g" workbench/Justfile
+  sed {{ sed_vars }} "s/^PYTHON_VERSION := .*/PYTHON_VERSION := \"{{ PYTHON_VERSION }}\"/g" workbench-for-microsoft-azure-ml/Justfile
+  sed {{ sed_vars }} "s/^PYTHON_VERSION := .*/PYTHON_VERSION := \"{{ PYTHON_VERSION }}\"/g" connect/Justfile
   sed {{ sed_vars }} "s/^PYTHON_VERSION := .*/PYTHON_VERSION := \"{{ PYTHON_VERSION }}\"/g" Justfile
 
   # Update alt Python versions
@@ -116,17 +124,18 @@ update-py-versions:
   sed {{ sed_vars }} "s/^PYTHON_VERSION_ALT=.*/PYTHON_VERSION_ALT={{ PYTHON_VERSION_ALT }}/g" workbench/.env
   sed {{ sed_vars }} "s/^PYTHON_VERSION_ALT:.*/PYTHON_VERSION_ALT={{ PYTHON_VERSION_ALT }}/g" connect/Dockerfile.bionic
   sed {{ sed_vars }} "s/^PYTHON_VERSION_ALT=.*/PYTHON_VERSION_ALT={{ PYTHON_VERSION_ALT }}/g" connect/.env
-  sed {{ sed_vars }} "s/^PYTHON_VERSION_ALT ?= .*/PYTHON_VERSION_ALT ?= {{ PYTHON_VERSION_ALT }}/g" Makefile
+  sed {{ sed_vars }} "s/^PYTHON_VERSION_ALT := .*/PYTHON_VERSION_ALT := \"{{ PYTHON_VERSION_ALT }}\"/g" workbench/Justfile
+  sed {{ sed_vars }} "s/^PYTHON_VERSION_ALT := .*/PYTHON_VERSION_ALT := \"{{ PYTHON_VERSION_ALT }}\"/g" workbench-for-microsoft-azure-ml/Justfile
+  sed {{ sed_vars }} "s/^PYTHON_VERSION_ALT := .*/PYTHON_VERSION_ALT := \"{{ PYTHON_VERSION_ALT }}\"/g" connect/Justfile
   sed {{ sed_vars }} "s/^PYTHON_VERSION_ALT := .*/PYTHON_VERSION_ALT := \"{{ PYTHON_VERSION_ALT }}\"/g" Justfile
 
 # just DRIVERS_VERSION=2021.10.0 update-driver-versions
 update-drivers-versions:
   #!/usr/bin/env bash
   set -euxo pipefail
-  sed {{ sed_vars }} "s/^DRIVERS_VERSION=.*/DRIVERS_VERSION={{ DRIVERS_VERSION }}/g" content/pro/Makefile
   sed {{ sed_vars }} "s/\"drivers\": \".[^\,\}]*\"/\"drivers\": \"{{ DRIVERS_VERSION }}\"/g" content/matrix.json
   sed {{ sed_vars }} "s/^ARG DRIVERS_VERSION=.*/ARG DRIVERS_VERSION={{ DRIVERS_VERSION }}/g" helper/workbench-for-microsoft-azure-ml/Dockerfile
-  sed {{ sed_vars }} "s/^DRIVERS_VERSION ?= .*/DRIVERS_VERSION ?= {{ DRIVERS_VERSION }}/g" Makefile
+  sed {{ sed_vars }} "s/^DRIVERS_VERSION := .*/DRIVERS_VERSION := \"{{ DRIVERS_VERSION }}\"/g" content/pro/Justfile
   sed {{ sed_vars }} "s/^DRIVERS_VERSION := .*/DRIVERS_VERSION := \"{{ DRIVERS_VERSION }}\"/g" Justfile
 
 # just push-images tag1 tag2 ...
