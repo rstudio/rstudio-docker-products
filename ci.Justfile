@@ -106,6 +106,15 @@ build-preview $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
         ghcr.io/rstudio/${IMAGE_PREFIX}${PRODUCT}-preview:${BRANCH_PREFIX}${OS}-${TAG_VERSION} \
         ghcr.io/rstudio/${IMAGE_PREFIX}${PRODUCT}-preview:${BRANCH_PREFIX}${OS}-${TYPE}
 
+# just push-images tag1 tag2 ...
+push-images +IMAGES:
+  #!/usr/bin/env bash
+  set -euxo pipefail
+  for IMAGE in {{IMAGES}}
+  do
+    docker push $IMAGE
+  done
+
 _rsw-download-url TYPE OS:
   #!/usr/bin/env bash
   if [[ "{{TYPE}}" == "release" ]]; then

@@ -12,7 +12,7 @@ Launcher to build/run content.
 
 ## building
 
-Make will build an image using a default Connect distribution.
+Just will build an image using a default Connect distribution.
 
 ```console
 just build

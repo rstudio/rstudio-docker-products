@@ -6,7 +6,7 @@ Hub](https://hub.docker.com/u/rstudio) in the RStudio organization.
 ## Updating Product Versions
 
 To update the version for the `rstudio/rstudio-connect` image, for instance:
-- update the `RSC_VERSION` number in the [`Makefile`](./Makefile)
+- update the `RSC_VERSION` number in the [`Justfile`](./Justfile)
 - run `just update-versions`
 - submit a PR
 - the next build on `main` will tag the image with the appropriate version

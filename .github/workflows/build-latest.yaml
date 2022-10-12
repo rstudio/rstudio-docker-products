@@ -107,5 +107,5 @@ jobs:
       - name: Push image(s) to Docker Hub
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
-          just push-images ${{ steps.build-image.outputs.TAGS }}
+          just -f ci.Justfile push-images ${{ steps.build-image.outputs.TAGS }}
 

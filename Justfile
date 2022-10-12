@@ -138,15 +138,6 @@ update-drivers-versions:
   sed {{ sed_vars }} "s/^DRIVERS_VERSION := .*/DRIVERS_VERSION := \"{{ DRIVERS_VERSION }}\"/g" content/pro/Justfile
   sed {{ sed_vars }} "s/^DRIVERS_VERSION := .*/DRIVERS_VERSION := \"{{ DRIVERS_VERSION }}\"/g" Justfile
 
-# just push-images tag1 tag2 ...
-push-images +IMAGES:
-  #!/usr/bin/env bash
-  set -euxo pipefail
-  for IMAGE in {{IMAGES}}
-  do
-    docker push $IMAGE
-  done
-
 # just test-image preview workbench 12.0.11-8 tag1 tag2 tag3 ...
 test-image $PRODUCT $VERSION +IMAGES:
   #!/usr/bin/env bash
