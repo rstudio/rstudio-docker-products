@@ -36,7 +36,7 @@ Launcher, refer to the RStudio support article on [Using Docker images with
 RStudio Workbench, Launcher, and
 Kubernetes](https://support.rstudio.com/hc/en-us/articles/360019253393-Using-Docker-images-with-RStudio-Server-Pro-Launcher-and-Kubernetes).
 
-We provide simple ways to extend and build off of the Dockerfiles. After you have cloned the repo, you can create your own containers fairly simply with the provided Makefile.
+We provide simple ways to extend and build the Dockerfiles. After you have cloned the repo, you can create your own containers fairly simply with the provided Justfile.
 
 ## Docker Images on Docker Hub
 

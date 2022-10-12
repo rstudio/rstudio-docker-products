@@ -18,7 +18,7 @@ export RSW_FLOAT_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 export RSC_FLOAT_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 export RSPM_FLOAT_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 
-make run-floating-lic-server
+just run
 ```
 
 This will build and run 3 containers that are accessible in the `rstudio-docker-products` network at these hostnames:

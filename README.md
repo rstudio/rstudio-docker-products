@@ -71,31 +71,31 @@ sales@rstudio.com.
 # Instructions for building
 
 After you have cloned [rstudio-docker-products](https://github.com/rstudio/rstudio-docker-products), you can create your
-own containers fairly simply with the provided Makefile.
+own containers fairly simply with the provided Justfiles.
 
 To build RStudio Workbench:
 ```
-make workbench
+just workbench/build
 ```
 To build RStudio Connect:
 ```
-make connect
+just connect/build
 ```
 To build RStudio Package Manager:
 ```
-make package-manager
+just package-manager/build
 ```
 
 You can alter what exactly is built by changing `workbench/Dockerfile.$OS`, `connect/Dockerfile.$OS`,
 and `package-manager/Dockerfile.$OS`.
 
-You can then run what you've built to test out with the `run-` commands. For instance, to run the workbench container
+You can then run what you've built to test out with the `run` commands. For instance, to run the workbench container
 you have built:
 ```
-make run-workbench
+just workbench/run
 ```
 
-Note you must have a license in place, and all of the other instructions in separate sections are still relevant.
+Note you must have a license in place, and all other instructions in separate sections are still relevant.
 
 If you have created an image you want to use yourself, you can push to your own image repository system. The images are
 named `rstudio-workbench`, `rstudio-connect`, and `rstudio-package-manager`.
