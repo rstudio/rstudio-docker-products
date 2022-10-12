@@ -1,5 +1,6 @@
-ARG BASE_IMAGE
-FROM ${BASE_IMAGE}
+ARG PYTHON_VERSION
+ARG R_VERSION
+FROM rstudio/content-pro:r${R_VERSION}-py${PYTHON_VERSION}-bionic
 
 MAINTAINER RStudio Docker <docker@rstudio.com>
 

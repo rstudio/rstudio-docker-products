@@ -1,0 +1,38 @@
+set positional-arguments
+
+BUILDX_PATH := ""
+
+IMAGE_PREFIX := "rstudio/"
+PRODUCT := "content-base"
+IMAGE_OS := "bionic"
+
+R_VERSION := "3.6.3"
+
+PYTHON_VERSION := "3.9.5"
+
+MINICONDA_VERSION := "4.7.12.1"
+
+QUARTO_VERSION := "1.0.37"
+
+DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":r" + R_VERSION + "-py" + PYTHON_VERSION + "-" + IMAGE_OS
+
+build OS=IMAGE_OS _R_VERSION=R_VERSION _PYTHON_VERSION=PYTHON_VERSION +TAGS=DEFAULT_TAG:
+  #!/usr/bin/env bash
+  set -euxo pipefail
+  BUILDX_ARGS=""
+  if [[ "{{BUILDX_PATH}}" != "" ]]; then
+    BUILDX_ARGS="--cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache"
+  fi
+  tag_array=()
+  for TAG in {{TAGS}}
+  do
+    tag_array+=("-t" $TAG)
+  done
+
+  docker buildx --builder="{{ BUILDX_PATH }}" build --load ${BUILDX_ARGS} \
+    ${tag_array[@]} \
+    --build-arg R_VERSION="{{ _R_VERSION }}" \
+    --build-arg PYTHON_VERSION="{{ _PYTHON_VERSION }}" \
+    --build-arg MINICONDA_VERSION="{{ MINICONDA_VERSION }}" \
+    --build-arg QUARTO_VERSION="{{ QUARTO_VERSION }}" \
+    --file="{{ OS }}/Dockerfile" "{{ OS }}"
