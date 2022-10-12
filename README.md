@@ -71,7 +71,10 @@ sales@rstudio.com.
 # Instructions for building
 
 After you have cloned [rstudio-docker-products](https://github.com/rstudio/rstudio-docker-products), you can create your
-own containers fairly simply with the provided Justfiles.
+own containers fairly simply with the provided Justfiles. If you're unfamiliar with `just`, please check out 
+[their documentation](https://just.systems/man/en/chapter_1.html). If you are unable to use `just` in your organization,
+most targets in each Justfile can be copy/pasted into your shell and ran there with variables replaced where 
+appropriate. 
 
 To build RStudio Workbench:
 ```
