@@ -7,7 +7,7 @@ PRODUCT := "workbench"
 IMAGE_OS := "bionic"
 
 RSW_VERSION := "2022.07.2+576.pro12"
-RSW_TAG_SAFE_VERSION := replace(RSW_VERSION, "+", "-")
+RSW_get-tag-safe-version := replace(RSW_VERSION, "+", "-")
 RSW_LICENSE := ""
 
 R_VERSION := "3.6.2"
@@ -16,8 +16,9 @@ R_VERSION_ALT := "4.1.0"
 PYTHON_VERSION := "3.9.5"
 PYTHON_VERSION_ALT := "3.8.10"
 
-DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":" + IMAGE_OS + "-" + RSW_TAG_SAFE_VERSION
+DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":" + IMAGE_OS + "-" + RSW_get-tag-safe-version
 
+# Build Workbench for Azure ML image - just build bionic 2022.07.2+576.pro12 rstudio/rstudio-workbench:bionic-2022.07.2-576.pro12
 build OS=IMAGE_OS VERSION=RSW_VERSION +TAGS=DEFAULT_TAG:
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -40,6 +41,7 @@ build OS=IMAGE_OS VERSION=RSW_VERSION +TAGS=DEFAULT_TAG:
     --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
     --file=./Dockerfile."{{ OS }}" .
 
+# Test Workbench for Azure ML image - just test rstudio/rstudio-workbench:bionic-2022.07.2-576.pro12 2022.07.2+576.pro12
 test TAG=DEFAULT_TAG VERSION=RSW_VERSION CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -51,9 +53,11 @@ test TAG=DEFAULT_TAG VERSION=RSW_VERSION CMD="":
   PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
   docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
 
+# Test Workbench for Azure ML image interactively - just test-i rstudio/rstudio-workbench:bionic-2022.07.2-576.pro12 2022.07.2+576.pro12
 test-i TAG=DEFAULT_TAG VERSION=RSW_VERSION:
   just test {{ TAG }} {{ VERSION }} bash
 
+# Run Workbench for Azure ML - just RSW_LICENSE="<RSW license>" run rstudio/r-session-complete:bionic-2022.07.2-576.pro12
 run TAG=DEFAULT_TAG CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail

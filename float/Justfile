@@ -2,11 +2,13 @@ RSC_FLOAT_LICENSE := ""
 RSPM_FLOAT_LICENSE := ""
 RSW_FLOAT_LICENSE := ""
 
+# Build floating license server - just build
 build:
   docker-compose build
 
+# Run floating license server - just RSW_FLOAT_LICENSE="<RSW license>" RSC_FLOAT_LICENSE="<RSC license>" RSPM_FLOAT_LICENSE="<RSPM license>" run
 run:
-  RSW_FLOAT_LICENSE=$(RSW_FLOAT_LICENSE) \
-  RSC_FLOAT_LICENSE=$(RSC_FLOAT_LICENSE) \
-  RSPM_FLOAT_LICENSE=$(RSPM_FLOAT_LICENSE) \
+  RSW_FLOAT_LICENSE="{{ RSW_FLOAT_LICENSE }}" \
+  RSC_FLOAT_LICENSE="{{ RSC_FLOAT_LICENSE }}" \
+  RSPM_FLOAT_LICENSE="{{ RSPM_FLOAT_LICENSE }}" \
   docker-compose -f helper/float/docker-compose.yml up

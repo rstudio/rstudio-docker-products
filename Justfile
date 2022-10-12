@@ -19,7 +19,7 @@ R_VERSION_ALT := "4.1.0"
 PYTHON_VERSION := "3.9.5"
 PYTHON_VERSION_ALT := "3.8.10"
 
-# just RSW_VERSION=1.2.3 update-versions
+# just RSW_VERSION=1.2.3 R_VERSION=4.1.0 update-versions
 update-versions:
   just \
     RSW_VERSION={{RSW_VERSION}} \
@@ -75,7 +75,7 @@ update-rsc-versions:
   sed {{ sed_vars }} "s/^RSC_VERSION := .*/RSC_VERSION := \"{{ RSC_VERSION }}\"/g" connect/Justfile
   sed {{ sed_vars }} "s/^RSC_VERSION := .*/RSC_VERSION := \"{{ RSC_VERSION }}\"/g" Justfile
 
-# just R_VERSION=3.2.1 update-r-versions
+# just R_VERSION=3.2.1 R_VERSION_ALT=4.1.0 update-r-versions
 update-r-versions:
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -146,6 +146,7 @@ test-image $PRODUCT $VERSION +IMAGES:
   read -ra IMAGE_ARRAY <<<"$IMAGES"
   just $PRODUCT/test "${IMAGE_ARRAY[0]}" "$VERSION"
 
+# just lint workbench bionic
 lint $PRODUCT $OS:
   #!/usr/bin/env bash
   docker run --rm -i -v $PWD/hadolint.yaml:/.config/hadolint.yaml ghcr.io/hadolint/hadolint < $PRODUCT/Dockerfile.$OS

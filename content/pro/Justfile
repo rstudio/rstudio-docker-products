@@ -14,6 +14,7 @@ DRIVERS_VERSION := "2021.10.0"
 
 DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":r" + R_VERSION + "-py" + PYTHON_VERSION + "-" + IMAGE_OS
 
+# Build content pro image - just build bionic 3.6.3 3.9.5 rstudio/content-pro:r3.6.3-py3.9.5-bionic
 build OS=IMAGE_OS _R_VERSION=R_VERSION _PYTHON_VERSION=PYTHON_VERSION +TAGS=DEFAULT_TAG:
   #!/usr/bin/env bash
   set -euxo pipefail

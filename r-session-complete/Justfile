@@ -7,7 +7,7 @@ PRODUCT := "r-session-complete"
 IMAGE_OS := "bionic"
 
 RSW_VERSION := "2022.07.2+576.pro12"
-RSW_TAG_SAFE_VERSION := replace(RSW_VERSION, "+", "-")
+RSW_get-tag-safe-version := replace(RSW_VERSION, "+", "-")
 RSW_LICENSE := ""
 
 DRIVERS_VERSION := "2021.10.0"
@@ -18,8 +18,9 @@ R_VERSION_ALT := "3.6.2"
 PYTHON_VERSION := "3.9.5"
 PYTHON_VERSION_ALT := "3.8.10"
 
-DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":" + IMAGE_OS + "-" + RSW_TAG_SAFE_VERSION
+DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":" + IMAGE_OS + "-" + RSW_get-tag-safe-version
 
+# Build r-session-complete image - just build bionic 2022.07.2+576.pro12 rstudio/r-session-complete:bionic-2022.07.2-576.pro12
 build OS=IMAGE_OS VERSION=RSW_VERSION +TAGS=DEFAULT_TAG:
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -43,6 +44,7 @@ build OS=IMAGE_OS VERSION=RSW_VERSION +TAGS=DEFAULT_TAG:
     --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
     --file=./Dockerfile."{{ OS }}" .
 
+# Test r-session-complete image - just test rstudio/r-session-complete:bionic-2022.07.2-576.pro12 2022.07.2+576.pro12
 test TAG=DEFAULT_TAG VERSION=RSW_VERSION CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -54,9 +56,11 @@ test TAG=DEFAULT_TAG VERSION=RSW_VERSION CMD="":
   PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
   docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
 
+# Test r-session-complete image interactively - just test-i rstudio/r-session-complete:bionic-2022.07.2-576.pro12 2022.07.2+576.pro12
 test-i TAG=DEFAULT_TAG VERSION=RSW_VERSION:
   just test {{ TAG }} {{ VERSION }} bash
 
+# Run r-session-complete - just run rstudio/r-session-complete:bionic-2022.07.2-576.pro12
 run TAG=DEFAULT_TAG CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
