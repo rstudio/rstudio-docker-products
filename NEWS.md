@@ -6,7 +6,7 @@ changed in each image.
 This file only captures pervasive, repository-wide changes.
 
 # 2022-10-12
-- We replaced all `make` definitions with `just` for ease of use.
+- We replaced all `make` definitions with [`just`](https://just.systems/man/en) for ease of use.
 
 # 2022-08-24
 - We removed the generic latest tag from all products (excluding content images).
