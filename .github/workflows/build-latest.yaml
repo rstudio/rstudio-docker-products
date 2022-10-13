@@ -17,11 +17,16 @@ jobs:
       matrix:
         config:
           - {product: 'workbench', os: 'bionic'}
+          - {product: 'workbench', os: 'jammy'}
           - {product: 'connect', os: 'bionic'}
+          - {product: 'connect', os: 'jammy'}
           - {product: 'connect-content-init', os: 'bionic'}
+          - {product: 'connect-content-init', os: 'jammy'}
           - {product: 'package-manager', os: 'bionic'}
+          - {product: 'package-manager', os: 'jammy'}
           - {product: 'r-session-complete', os: 'bionic'}
           - {product: 'r-session-complete', os: 'centos7'}
+          - {product: 'r-session-complete', os: 'jammy'}
           - {product: 'workbench-for-microsoft-azure-ml', os: 'bionic'}
 
     steps:
