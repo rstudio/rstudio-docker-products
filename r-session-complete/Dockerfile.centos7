@@ -93,8 +93,7 @@ RUN /opt/python/${PYTHON_VERSION}/bin/jupyter-nbextension install --sys-prefix -
 
 # Install VSCode code-server --------------------------------------------------#
 
-RUN rstudio-server install-vs-code /opt/code-server/ && \
-    ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
+RUN ln -s /usr/lib/rstudio-server/bin/code-server/bin/code-server /usr/local/bin/code-server
 
 COPY vscode.extensions.conf /etc/rstudio/vscode.extensions.conf
 

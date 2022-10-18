@@ -139,12 +139,8 @@ RUN apt-get update --fix-missing \
     && rm rstudio-workbench.deb \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /var/lib/rstudio-server/r-versions
-
-# Install VSCode code-server, extensions, etc. --------------------------------------------------#
-
-RUN rstudio-server install-vs-code /opt/code-server/ && \
-    ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
+    && rm -rf /var/lib/rstudio-server/r-versions \
+    && ln -s /usr/lib/rstudio-server/bin/code-server/bin/code-server /usr/local/bin/code-server
 
 # Copy config
 COPY conf/* /etc/rstudio/
