@@ -1,0 +1,36 @@
+ARG R_VERSION=4.2.0
+ARG R_VERSION_ALT=3.6.2
+ARG PYTHON_VERSION=3.9.5
+ARG PYTHON_VERSION_ALT=3.8.10
+FROM rstudio/base:ubuntu-22.04-r${R_VERSION}_${R_VERSION_ALT}-py${PYTHON_VERSION}_${PYTHON_VERSION_ALT}
+
+ENV PATH /opt/rstudio-pm/bin:$PATH
+ARG RSPM_VERSION=2022.07.2-11
+ARG RSPM_DOWNLOAD_URL=https://cdn.rstudio.com/package-manager/ubuntu22/amd64
+COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
+RUN apt-get update --fix-missing \
+    && curl -O ${RSPM_DOWNLOAD_URL}/rstudio-pm_${RSPM_VERSION}_amd64.deb \
+    && gpg --keyserver keyserver.ubuntu.com --recv-keys 3F32EE77E331692F \
+    && dpkg-sig --verify ./rstudio-pm_${RSPM_VERSION}_amd64.deb \
+    && RSTUDIO_INSTALL_NO_LICENSE_INITIALIZATION=1 apt-get install -yq ./rstudio-pm_${RSPM_VERSION}_amd64.deb \
+    && rm ./rstudio-pm_${RSPM_VERSION}_amd64.deb \
+    && apt-get autoremove -y \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && ln -s /opt/rstudio-pm/bin/rspm /usr/local/bin/rspm \
+    && mkdir -p /var/run/rstudio-pm \
+    && chmod +x /usr/local/bin/startup.sh \
+    && chown rstudio-pm:rstudio-pm /usr/local/bin/startup.sh \
+    && chown -R rstudio-pm:rstudio-pm /var/run/rstudio-pm
+
+USER rstudio-pm
+COPY rstudio-pm.gcfg /etc/rstudio-pm/rstudio-pm.gcfg
+
+# Set up licensing to work in userspace mode. This will not prevent activating a
+# license as root, but it is required to activate one as the non-root user at
+# runtime. It's possible for this to fail and the trail will be considered over,
+# in which case we can ignore it anyway.
+RUN license-manager initialize --userspace || true
+
+ENTRYPOINT ["tini", "--"]
+CMD ["/usr/local/bin/startup.sh"]

@@ -17,6 +17,7 @@ RUN apt-get update --fix-missing  \
 ### Install universal system dependencies ###
 RUN apt-get install -yq --no-install-recommends \
         apt-transport-https \
+        ca-certificates \
         cmake \
         curl \
         default-jdk \
