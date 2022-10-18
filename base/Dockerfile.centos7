@@ -85,4 +85,11 @@ ENV LC_ALL en_US.UTF-8
 RUN yum clean all
 
 
+LABEL r.version="${R_VERSION}" \
+      r.version_alt="${R_VERSION_ALT}" \
+      python.version="${PYTHON_VERSION}" \
+      python.version_alt="${PYTHON_VERSION_ALT}" \
+      tini.version="${TINI_VERSION}" \
+      quarto.version="${QUARTO_VERSION}"
+
 ENTRYPOINT ["/tini", "--"]

@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:22.04
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 ### ARG declarations ###
@@ -21,6 +21,7 @@ RUN apt-get install -yq --no-install-recommends \
         curl \
         default-jdk \
         dirmngr \
+        dpkg-sig \
         gdal-bin \
         git \
         gpg \
@@ -89,8 +90,8 @@ RUN curl -o quarto.tar.gz -L https://github.com/quarto-dev/quarto-cli/releases/d
     && sudo ln -s /opt/quarto/${QUARTO_VERSION}/bin/quarto /usr/local/bin/quarto
 
 ### Install R versions ###
-RUN curl -O https://cdn.rstudio.com/r/ubuntu-1804/pkgs/r-${R_VERSION}_1_amd64.deb \
-    && curl -O https://cdn.rstudio.com/r/ubuntu-1804/pkgs/r-${R_VERSION_ALT}_1_amd64.deb \
+RUN curl -O https://cdn.rstudio.com/r/ubuntu-2204/pkgs/r-${R_VERSION}_1_amd64.deb \
+    && curl -O https://cdn.rstudio.com/r/ubuntu-2204/pkgs/r-${R_VERSION_ALT}_1_amd64.deb \
     && apt-get install -yq ./r-${R_VERSION}_1_amd64.deb \
     && apt-get install -yq ./r-${R_VERSION_ALT}_1_amd64.deb \
     && rm -f ./r-${R_VERSION}_1_amd64.deb \
@@ -99,8 +100,8 @@ RUN curl -O https://cdn.rstudio.com/r/ubuntu-1804/pkgs/r-${R_VERSION}_1_amd64.de
     && ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
 
 ### Install Python versions ###
-RUN curl -O https://cdn.rstudio.com/python/ubuntu-1804/pkgs/python-${PYTHON_VERSION}_1_amd64.deb \
-    && curl -O https://cdn.rstudio.com/python/ubuntu-1804/pkgs/python-${PYTHON_VERSION_ALT}_1_amd64.deb \
+RUN curl -O https://cdn.rstudio.com/python/ubuntu-2204/pkgs/python-${PYTHON_VERSION}_1_amd64.deb \
+    && curl -O https://cdn.rstudio.com/python/ubuntu-2204/pkgs/python-${PYTHON_VERSION_ALT}_1_amd64.deb \
     && apt-get install -yq ./python-${PYTHON_VERSION}_1_amd64.deb \
     && apt-get install -yq ./python-${PYTHON_VERSION_ALT}_1_amd64.deb \
     && rm -rf python-${PYTHON_VERSION}_1_amd64.deb \
@@ -122,5 +123,12 @@ RUN apt-get install -f \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+
+LABEL r.version="${R_VERSION}" \
+      r.version_alt="${R_VERSION_ALT}" \
+      python.version="${PYTHON_VERSION}" \
+      python.version_alt="${PYTHON_VERSION_ALT}" \
+      tini.version="${TINI_VERSION}" \
+      quarto.version="${QUARTO_VERSION}"
 
 ENTRYPOINT ["/tini", "--"]
