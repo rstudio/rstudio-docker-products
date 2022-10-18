@@ -36,6 +36,9 @@ docker run -it \
     -p 4242:4242 \
     -e RSPM_LICENSE=$RSPM_LICENSE \
     rstudio/rstudio-package-manager:latest
+    
+# Alternatively, the above can be ran using a single just command
+just RSPM_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX run
 ```
 
 Open [http://localhost:4242](http://localhost:4242) to access RStudio Package Manager UI.

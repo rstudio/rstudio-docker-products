@@ -61,13 +61,13 @@ jobs:
       - name: Get Version
         id: get-version
         run: |
-          VERSION=`just get-version ${{ matrix.config.product }} --type=${{ matrix.config.type }} --local`
+          VERSION=`just -f ci.Justfile get-version ${{ matrix.config.product }} --type=${{ matrix.config.type }} --local`
           echo "::set-output name=VERSION::$VERSION"
 
       - name: Build Image
         id: build-image
         run: |
-          TAGS=`just BUILDX_PATH=${{ steps.buildx.outputs.name }} build-preview ${{ matrix.config.type }} ${{ matrix.config.product }} ${{ matrix.config.os }} ${{ steps.get-version.outputs.VERSION }}`
+          TAGS=`just -f ci.Justfile BUILDX_PATH=${{ steps.buildx.outputs.name }} build-preview ${{ matrix.config.type }} ${{ matrix.config.product }} ${{ matrix.config.os }} ${{ steps.get-version.outputs.VERSION }}`
           echo "::set-output name=TAGS::$TAGS"
 
       - name: Show image size
@@ -100,4 +100,4 @@ jobs:
       - name: Push image(s) to Docker Hub
         if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
         run: |
-          just push-images ${{ steps.build-image.outputs.TAGS }}
+          just -f ci.Justfile push-images ${{ steps.build-image.outputs.TAGS }}
