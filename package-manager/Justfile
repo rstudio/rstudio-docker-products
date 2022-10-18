@@ -7,12 +7,12 @@ PRODUCT := "package-manager"
 IMAGE_OS := "bionic"
 
 RSPM_VERSION := "2022.07.2-11"
-RSPM_get-tag-safe-version := replace(RSPM_VERSION, "+", "-")
+RSPM_TAG_SAFE_VERSION := replace(RSPM_VERSION, "+", "-")
 RSPM_LICENSE := ""
 
 R_VERSION := "3.6.2"
 
-DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":" + IMAGE_OS + "-" + RSPM_get-tag-safe-version
+DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":" + IMAGE_OS + "-" + RSPM_TAG_SAFE_VERSION
 
 # Build Package Manager image - just build bionic 2022.07.2-11 rstudio/rstudio-connect:bionic-2022.07.2-11
 build OS=IMAGE_OS VERSION=RSPM_VERSION +TAGS=DEFAULT_TAG:

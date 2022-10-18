@@ -7,7 +7,7 @@ PRODUCT := "workbench"
 IMAGE_OS := "bionic"
 
 RSW_VERSION := "2022.07.2+576.pro12"
-RSW_get-tag-safe-version := replace(RSW_VERSION, "+", "-")
+RSW_TAG_SAFE_VERSION := replace(RSW_VERSION, "+", "-")
 RSW_LICENSE := ""
 
 R_VERSION := "3.6.2"
@@ -16,7 +16,7 @@ R_VERSION_ALT := "4.1.0"
 PYTHON_VERSION := "3.9.5"
 PYTHON_VERSION_ALT := "3.8.10"
 
-DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":" + IMAGE_OS + "-" + RSW_get-tag-safe-version
+DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":" + IMAGE_OS + "-" + RSW_TAG_SAFE_VERSION
 
 # Build Workbench for Azure ML image - just build bionic 2022.07.2+576.pro12 rstudio/rstudio-workbench:bionic-2022.07.2-576.pro12
 build OS=IMAGE_OS VERSION=RSW_VERSION +TAGS=DEFAULT_TAG:

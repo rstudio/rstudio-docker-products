@@ -7,10 +7,10 @@ PRODUCT := "connect-content-init"
 IMAGE_OS := "bionic"
 
 RSC_VERSION := "2022.09.0"
-RSC_get-tag-safe-version := replace(RSC_VERSION, "+", "-")
+RSC_TAG_SAFE_VERSION := replace(RSC_VERSION, "+", "-")
 RSC_LICENSE := ""
 
-DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":" + IMAGE_OS + "-" + RSC_get-tag-safe-version
+DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":" + IMAGE_OS + "-" + RSC_TAG_SAFE_VERSION
 
 # Build Connect content init image - just build bionic 2022.09.0 rstudio/rstudio-connect-content-init:bionic-2022.09.0
 build OS=IMAGE_OS VERSION=RSC_VERSION +TAGS=DEFAULT_TAG:
