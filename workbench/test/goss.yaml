@@ -69,12 +69,12 @@ file:
     exists: true
     owner: rstudio-server
     group: rstudio-server
-  /opt/code-server/bin/code-server:
+  /usr/lib/rstudio-server/bin/code-server/bin/code-server:
     exists: true
   /etc/rstudio/vscode.conf:
     exists: true
     contains:
-    - "/opt/code-server/bin/code-server"
+    - "/usr/lib/rstudio-server/bin/code-server/bin/code-server"
   /tmp/startup.log:
     exists: true
     contains:
