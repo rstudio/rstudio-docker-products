@@ -13,13 +13,14 @@ PYTHON_VERSION_ALT := "3.8.10"
 
 TINI_VERSION := "0.19.0"
 QUARTO_VERSION := "1.1.251"
-PRO_DRIVERS_VERSION := "2021.10.0"
+DRIVERS_VERSION := "2021.10.0"
+DRIVERS_VERSION_RHEL := "2021.10.0-1"
 
 DEFAULT_BASE_TAG := IMAGE_REGISTRY + "/base:" + IMAGE_OS + "-r" + R_VERSION + "_" + R_VERSION_ALT + "-py" + PYTHON_VERSION + "_" + PYTHON_VERSION_ALT
 DEFAULT_BASE_PRO_TAG := IMAGE_REGISTRY + "/base-pro:" + IMAGE_OS + "-r" + R_VERSION + "_" + R_VERSION_ALT + "-py" + PYTHON_VERSION + "_" + PYTHON_VERSION_ALT
 
 # Build base image - just build ubuntu1804 rstudio/base:ubuntu1804
-build OS=IMAGE_OS +TAGS=DEFAULT_BASE_TAG:
+build +TAGS=DEFAULT_BASE_TAG:
   #!/usr/bin/env bash
   set -euxo pipefail
   BUILDX_ARGS=""
@@ -40,16 +41,22 @@ build OS=IMAGE_OS +TAGS=DEFAULT_BASE_TAG:
     --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
     --build-arg TINI_VERSION="{{ TINI_VERSION }}" \
     --build-arg QUARTO_VERSION="{{ QUARTO_VERSION }}" \
-    --file=./Dockerfile."{{ OS }}" .
+    --file=./Dockerfile."{{ IMAGE_OS }}" .
 
 # Build base pro image - just build ubuntu1804 rstudio/base-pro:ubuntu1804
-build-pro OS=IMAGE_OS +TAGS=DEFAULT_BASE_PRO_TAG:
+build-pro +TAGS=DEFAULT_BASE_PRO_TAG:
   #!/usr/bin/env bash
   set -euxo pipefail
   BUILDX_ARGS=""
   if [[ "{{BUILDX_PATH}}" != "" ]]; then
     BUILDX_ARGS="--cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache"
   fi
+  if [[ "{{ IMAGE_OS }}" == "centos7" ]]; then
+    _DRIVERS_VERSION="{{ DRIVERS_VERSION_RHEL }}"
+  else
+    _DRIVERS_VERSION="{{ DRIVERS_VERSION }}"
+  fi
+
   tag_array=()
   for TAG in {{TAGS}}
   do
@@ -62,8 +69,8 @@ build-pro OS=IMAGE_OS +TAGS=DEFAULT_BASE_PRO_TAG:
     --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
     --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
     --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
-    --build-arg PRO_DRIVERS_VERSION="{{ PRO_DRIVERS_VERSION }}" \
-    --file=./pro/Dockerfile."{{ OS }}" .
+    --build-arg DRIVERS_VERSION="${_DRIVERS_VERSION}" \
+    --file=./pro/Dockerfile."{{ IMAGE_OS }}" .
 
 # Test base image - just test rstudio/base-pro:ubuntu1804
 test TAG=DEFAULT_BASE_TAG CMD="":
@@ -86,6 +93,12 @@ test-i TAG=DEFAULT_BASE_TAG:
 test-pro TAG=DEFAULT_BASE_PRO_TAG CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
+  if [[ "{{ TAG }}" =~ .*"centos7".* ]]; then
+    _DRIVERS_VERSION="{{ DRIVERS_VERSION_RHEL }}"
+  else
+    _DRIVERS_VERSION="{{ DRIVERS_VERSION }}"
+  fi
+
   IMAGE_NAME="{{ TAG }}" \
   R_VERSION="{{ R_VERSION }}" \
   R_VERSION_ALT="{{ R_VERSION_ALT }}" \
@@ -93,7 +106,7 @@ test-pro TAG=DEFAULT_BASE_PRO_TAG CMD="":
   PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
   QUARTO_VERSION="{{ QUARTO_VERSION }}" \
   TINI_VERSION="{{ TINI_VERSION }}" \
-  PRO_DRIVERS_VERSION="{{ PRO_DRIVERS_VERSION }}" \
+  DRIVERS_VERSION="${_DRIVERS_VERSION}" \
   docker-compose -f ./pro/docker-compose.test.yml run sut {{ CMD }}
 
 # Test base image interactively - just test-i rstudio/base-pro:ubuntu1804

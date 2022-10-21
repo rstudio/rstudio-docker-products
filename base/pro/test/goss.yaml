@@ -10,7 +10,7 @@ package:
   rstudio-drivers:
     installed: true
     versions:
-      - "{{ .Env.PRO_DRIVERS_VERSION }}"
+      - "{{ .Env.DRIVERS_VERSION }}"
 
 file:
   /opt/R/{{.Env.R_VERSION}}/bin/R:

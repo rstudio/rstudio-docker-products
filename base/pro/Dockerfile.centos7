@@ -4,7 +4,11 @@ ARG PYTHON_VERSION=3.9.5
 ARG PYTHON_VERSION_ALT=3.8.10
 FROM rstudio/base:centos7-r${R_VERSION}_${R_VERSION_ALT}-py${PYTHON_VERSION}_${PYTHON_VERSION_ALT}
 
-ARG PRO_DRIVERS_VERSION=2021.10.0-1
+ARG R_VERSION=4.2.0
+ARG R_VERSION_ALT=3.6.2
+ARG PYTHON_VERSION=3.9.5
+ARG PYTHON_VERSION_ALT=3.8.10
+ARG DRIVERS_VERSION=2021.10.0-1
 
 RUN yum update -y && \
     yum install -y unixODBC unixODBC-devel && \
@@ -13,8 +17,8 @@ RUN yum update -y && \
     yum clean all && \
     rm -f rstudio-drivers-${DRIVERS_VERSION}.el7.x86_64.rpm && \
     cp /opt/rstudio-drivers/odbcinst.ini.sample /etc/odbcinst.ini && \
-    /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.rstudio.com/cran/__linux__/centos7/latest")'
+    "/opt/R/${R_VERSION}/bin/R" -e 'install.packages("odbc", repos="https://packagemanager.rstudio.com/cran/__linux__/centos7/latest")'
 
-LABEL pro-drivers.version="${PRO_DRIVERS_VERSION}"
+LABEL pro-drivers.version="${DRIVERS_VERSION}"
 
 ENTRYPOINT ["/tini", "--"]
