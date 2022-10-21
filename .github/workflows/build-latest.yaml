@@ -9,7 +9,7 @@ name: build/test/push (latest)
 jobs:
   build-base:
     runs-on: ubuntu-latest
-    name: build-${{ matrix.config.os }}
+    name: build-${{ matrix.os }}
 
     strategy:
       fail-fast: false
