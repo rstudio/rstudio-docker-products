@@ -12,7 +12,7 @@ ARG PYTHON_VERSION=3.9.5
 ARG PYTHON_VERSION_ALT=3.8.10
 ARG DRIVERS_VERSION=2021.10.0
 
-RUN apt-get update && \
+RUN apt-get update \
     && apt-get install -yq --no-install-recommends unixodbc unixodbc-dev \
     && curl -O https://cdn.rstudio.com/drivers/7C152C12/installer/rstudio-drivers_${DRIVERS_VERSION}_amd64.deb \
     && apt-get update \
