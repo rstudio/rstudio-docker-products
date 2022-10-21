@@ -75,16 +75,16 @@ RUN /opt/python/"${PYTHON_VERSION}"/bin/pip install \
     && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter \
     && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
 
-RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh && \
-    chmod +x /usr/local/bin/wait-for-it.sh
+RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh \
+    && chmod +x /usr/local/bin/wait-for-it.sh
 
-RUN rstudio-server install-vs-code /opt/code-server/ && \
-    ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
+RUN rstudio-server install-vs-code /opt/code-server/ \
+    && ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
 
-RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
-    chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor && \
-    mkdir -p /startup/custom/ && \
-    printf '\n# allow home directory creation\nsession required pam_mkhomedir.so skel=/etc/skel umask=0022' >> /etc/pam.d/common-session
+RUN mkdir -p /var/lib/rstudio-server/monitor/log \
+    && chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor \
+    && mkdir -p /startup/custom/ \
+    && printf '\n# allow home directory creation\nsession required pam_mkhomedir.so skel=/etc/skel umask=0022' >> /etc/pam.d/common-session
 
 EXPOSE 8787/tcp
 EXPOSE 5559/tcp

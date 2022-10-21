@@ -125,7 +125,8 @@ update-r-versions:
     workbench/Justfile \
     workbench-for-microsoft-azure-ml/Justfile \
     connect/Justfile package-manager/Justfile \
-    Justfile
+    Justfile \
+    ci.Justfile
 
   # Update alt R versions
   sed {{ sed_vars }} "s/^R_VERSION_ALT=.*/R_VERSION_ALT={{ R_VERSION_ALT }}/g" \
@@ -139,7 +140,8 @@ update-r-versions:
     workbench/Justfile \
     workbench-for-microsoft-azure-ml/Justfile \
     connect/Justfile \
-    Justfile
+    Justfile \
+    ci.Justfile
 
 # just PYTHON_VERSION=3.9.5 PYTHON_VERSION_ALT=3.8.10 update-py-versions
 update-py-versions:
@@ -160,7 +162,8 @@ update-py-versions:
     workbench/Justfile \
     workbench-for-microsoft-azure-ml/Justfile \
     connect/Justfile \
-    Justfile
+    Justfile \
+    ci.Justfile
 
   # Update alt Python versions
   sed {{ sed_vars }} "s/^PYTHON_VERSION_ALT=.*/PYTHON_VERSION_ALT={{ PYTHON_VERSION_ALT }}/g" \
@@ -174,7 +177,8 @@ update-py-versions:
     workbench/Justfile \
     workbench-for-microsoft-azure-ml/Justfile \
     connect/Justfile \
-    Justfile
+    Justfile \
+    ci.Justfile
 
 # just DRIVERS_VERSION=2022.11.0 update-driver-versions
 update-drivers-versions:
@@ -190,6 +194,12 @@ update-drivers-versions:
   sed {{ sed_vars }} "s/^DRIVERS_VERSION := .*/DRIVERS_VERSION := \"{{ DRIVERS_VERSION }}\"/g" \
     content/pro/Justfile \
     r-session-complete/Justfile \
+    base/Justfile \
+    Justfile
+  sed {{ sed_vars }} "s/^DRIVERS_VERSION_RHEL := .*/DRIVERS_VERSION_RHEL := \"{{ DRIVERS_VERSION_RHEL }}\"/g" \
+    content/pro/Justfile \
+    r-session-complete/Justfile \
+    base/Justfile \
     Justfile
 
 # just test-image preview workbench 12.0.11-8 tag1 tag2 tag3 ...
