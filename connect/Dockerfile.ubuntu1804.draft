@@ -4,6 +4,8 @@ ARG PYTHON_VERSION=3.9.5
 ARG PYTHON_VERSION_ALT=3.8.10
 FROM rstudio/base:ubuntu1804-r${R_VERSION}_${R_VERSION_ALT}-py${PYTHON_VERSION}_${PYTHON_VERSION_ALT}
 
+COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
+
 ARG RSC_VERSION=2022.09.0
 SHELL [ "/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update --fix-missing \

@@ -44,7 +44,7 @@ jobs:
       - name: Build Image
         id: build-image
         run: |
-          TAGS=`just BUILDX_PATH=${{ steps.buildx.outputs.name }} build-base ${{ matrix.config.os }}`
+          TAGS=`just -f ci.Justfile BUILDX_PATH=${{ steps.buildx.outputs.name }} build-base ${{ matrix.config.os }} ${{ matrix.config.type }}`
           echo "::set-output name=TAGS::$TAGS"
 
       - name: Show image size
@@ -53,7 +53,7 @@ jobs:
 
       - name: Test image
         run: |
-          just test-image ${{ matrix.config.product }} ${{  steps.get-version.outputs.VERSION }} ${{ steps.build-image.outputs.TAGS }}
+          just -f ci.Justfile test-base ${{ matrix.config.os }} ${{ matrix.config.type }}
 
       - name: Run Snyk to check Docker image for vulnerabilities (main)
         if: ${{ github.ref == 'refs/heads/main' }}

@@ -74,7 +74,8 @@ ADD https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini-amd6
 ADD https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini-amd64.asc /tini.asc
 RUN gpg --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7 \
     && gpg --batch --verify /tini.asc /tini \
-    && chmod +x /tini
+    && chmod +x /tini \
+    && ln -s /tini /usr/local/bin/tini
 
 ### Install TinyTeX ###
 RUN curl -sL "https://yihui.org/tinytex/install-bin-unix.sh" | sh && \
@@ -88,7 +89,7 @@ RUN curl -o quarto.tar.gz -L https://github.com/quarto-dev/quarto-cli/releases/d
     && mkdir -p /opt/quarto/${QUARTO_VERSION} \
     && tar -zxvf quarto.tar.gz -C "/opt/quarto/${QUARTO_VERSION}" --strip-components=1 \
     && rm -f quarto.tar.gz \
-    && sudo ln -s /opt/quarto/${QUARTO_VERSION}/bin/quarto /usr/local/bin/quarto
+    && ln -s /opt/quarto/${QUARTO_VERSION}/bin/quarto /usr/local/bin/quarto
 
 ### Install R versions ###
 RUN curl -O https://cdn.rstudio.com/r/ubuntu-2204/pkgs/r-${R_VERSION}_1_amd64.deb \
