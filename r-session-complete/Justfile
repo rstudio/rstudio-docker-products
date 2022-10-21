@@ -11,6 +11,7 @@ RSW_TAG_SAFE_VERSION := replace(RSW_VERSION, "+", "-")
 RSW_LICENSE := ""
 
 DRIVERS_VERSION := "2021.10.0"
+DRIVERS_VERSION_RHEL := "2021.10.0-1"
 
 R_VERSION := "4.1.0"
 R_VERSION_ALT := "3.6.2"
@@ -28,6 +29,12 @@ build OS=IMAGE_OS VERSION=RSW_VERSION +TAGS=DEFAULT_TAG:
   if [[ "{{BUILDX_PATH}}" != "" ]]; then
     BUILDX_ARGS="--cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache"
   fi
+  if [[ "{{ OS }}" == "centos7" ]]; then
+    _DRIVERS_VERSION="{{ DRIVERS_VERSION_RHEL }}"
+  else
+    _DRIVERS_VERSION="{{ DRIVERS_VERSION }}"
+  fi
+
   tag_array=()
   for TAG in {{TAGS}}
   do
@@ -37,7 +44,7 @@ build OS=IMAGE_OS VERSION=RSW_VERSION +TAGS=DEFAULT_TAG:
   docker buildx --builder="{{ BUILDX_PATH }}" build --load ${BUILDX_ARGS} \
     ${tag_array[@]} \
     --build-arg RSW_VERSION="{{ VERSION }}" \
-    --build-arg DRIVERS_VERSION="{{ DRIVERS_VERSION }}" \
+    --build-arg DRIVERS_VERSION="${_DRIVERS_VERSION}" \
     --build-arg R_VERSION="{{ R_VERSION }}" \
     --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
     --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \

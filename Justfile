@@ -12,6 +12,7 @@ RSW_VERSION := "2022.07.2+576.pro12"
 RSC_TAG_SAFE_VERSION := replace(RSW_VERSION, "+", "-")
 
 DRIVERS_VERSION := "2021.10.0"
+DRIVERS_VERSION_RHEL := "2021.10.0-1"
 
 R_VERSION := "3.6.2"
 R_VERSION_ALT := "4.1.0"
@@ -146,6 +147,7 @@ update-drivers-versions:
   set -euxo pipefail
   sed {{ sed_vars }} "s/\"drivers\": \".[^\,\}]*\"/\"drivers\": \"{{ DRIVERS_VERSION }}\"/g" content/matrix.json
   sed {{ sed_vars }} "s/DRIVERS_VERSION=.*/DRIVERS_VERSION={{ DRIVERS_VERSION }}/g" workbench-for-microsoft-azure-ml/Dockerfile.bionic
+  sed {{ sed_vars }} "s/DRIVERS_VERSION=.*/DRIVERS_VERSION={{ DRIVERS_VERSION_RHEL }}/g" r-session-complete/Dockerfile.centos7
   sed {{ sed_vars }} "s/^DRIVERS_VERSION := .*/DRIVERS_VERSION := \"{{ DRIVERS_VERSION }}\"/g" \
     content/pro/Justfile \
     Justfile
