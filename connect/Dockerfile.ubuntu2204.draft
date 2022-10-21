@@ -3,6 +3,7 @@ ARG R_VERSION_ALT=3.6.2
 ARG PYTHON_VERSION=3.9.5
 ARG PYTHON_VERSION_ALT=3.8.10
 FROM rstudio/base:ubuntu2204-r${R_VERSION}_${R_VERSION_ALT}-py${PYTHON_VERSION}_${PYTHON_VERSION_ALT}
+LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
 
@@ -13,7 +14,7 @@ RUN apt-get update --fix-missing \
     && curl -L -o rstudio-connect.deb "https://cdn.rstudio.com/connect/$(echo $RSC_VERSION | sed -r 's/([0-9]+\.[0-9]+).*/\1/')/rstudio-connect_${RSC_VERSION_URL}~ubuntu22_amd64.deb" \
     && gpg --keyserver keyserver.ubuntu.com --recv-keys 3F32EE77E331692F \
     && dpkg-sig --verify rstudio-connect.deb \
-    && apt-get install -yq ./rstudio-connect.deb \
+    && apt-get install -yq --no-install-recommends ./rstudio-connect.deb \
     && rm -rf ./rstudio-connect.deb \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
