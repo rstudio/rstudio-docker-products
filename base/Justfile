@@ -83,6 +83,7 @@ test TAG=DEFAULT_BASE_TAG CMD="":
   PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
   QUARTO_VERSION="{{ QUARTO_VERSION }}" \
   TINI_VERSION="{{ TINI_VERSION }}" \
+  OS="{{ IMAGE_OS }}" \
   docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
 
 # Test base image interactively - just test-i rstudio/base-pro:ubuntu1804

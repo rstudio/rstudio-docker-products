@@ -9,18 +9,12 @@ name: build/test/push (latest)
 jobs:
   build-base:
     runs-on: ubuntu-latest
-    name: build-${{ matrix.config.type }}-${{ matrix.config.os }}
+    name: build-${{ matrix.config.os }}
 
     strategy:
       fail-fast: false
       matrix:
-        config:
-          - {os: 'ubuntu1804', type: 'base'}
-          - {os: 'ubuntu2204', type: 'base'}
-          - {os: 'centos7', type: 'base'}
-          - {os: 'ubuntu1804', type: 'pro'}
-          - {os: 'ubuntu2204', type: 'pro'}
-          - {os: 'centos7', type: 'pro'}
+        os: ['ubuntu1804', 'ubuntu2204', 'centos7']
 
     steps:
       - name: Check Out Repo
@@ -41,10 +35,16 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
-      - name: Build Image
-        id: build-image
+      - name: Build base image
+        id: build-base-image
         run: |
-          TAGS=`just -f ci.Justfile BUILDX_PATH=${{ steps.buildx.outputs.name }} build-base ${{ matrix.config.os }} ${{ matrix.config.type }}`
+          TAGS=`just -f ci.Justfile BUILDX_PATH=${{ steps.buildx.outputs.name }} build-base ${{ matrix.os }} base`
+          echo "::set-output name=TAGS::$TAGS"
+
+      - name: Build pro drivers image
+        id: build-pro-image
+        run: |
+          TAGS=`just -f ci.Justfile BUILDX_PATH=${{ steps.buildx.outputs.name }} build-base ${{ matrix.os }} pro`
           echo "::set-output name=TAGS::$TAGS"
 
       - name: Show image size
@@ -53,7 +53,8 @@ jobs:
 
       - name: Test image
         run: |
-          just -f ci.Justfile test-base ${{ matrix.config.os }} ${{ matrix.config.type }}
+          just -f ci.Justfile test-base ${{ matrix.os }} base
+          just -f ci.Justfile test-base ${{ matrix.os }} pro
 
       - name: Run Snyk to check Docker image for vulnerabilities (main)
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -62,8 +63,8 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          image: ${{ steps.build-image.outputs.TAGS }}
-          args: --file=./${{ matrix.config.product }}/Dockerfile.${{ matrix.config.os }}
+          image: ${{ steps.build-base-image.outputs.TAGS }}
+          args: --file=./base/Dockerfile.${{ matrix.os }}
           command: monitor
 
       - name: Run Snyk to check Docker image for vulnerabilities (branch)
@@ -73,8 +74,30 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          image: ${{ steps.build-image.outputs.TAGS }}
-          args: --file=./${{ matrix.config.product }}/Dockerfile.${{ matrix.config.os }}
+          image: ${{ steps.build-base-image.outputs.TAGS }}
+          args: --file=./base/Dockerfile.${{ matrix.os }}
+          command: test
+
+      - name: Run Snyk to check Docker image for vulnerabilities (main)
+        if: ${{ github.ref == 'refs/heads/main' }}
+        continue-on-error: true
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: ${{ steps.build-pro-image.outputs.TAGS }}
+          args: --file=./base/pro/Dockerfile.${{ matrix.os }}
+          command: monitor
+
+      - name: Run Snyk to check Docker image for vulnerabilities (branch)
+        if: ${{ github.ref != 'refs/heads/main' }}
+        continue-on-error: true
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: ${{ steps.build-pro-image.outputs.TAGS }}
+          args: --file=./base/pro/Dockerfile.${{ matrix.os }}
           command: test
 
       - name: Login to Docker Hub
@@ -95,7 +118,8 @@ jobs:
       - name: Push image(s) to Docker Hub
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
-          just -f ci.Justfile push-images ${{ steps.build-image.outputs.TAGS }}
+          just -f ci.Justfile push-images ${{ steps.build-base-image.outputs.TAGS }}
+          just -f ci.Justfile push-images ${{ steps.build-pro-image.outputs.TAGS }}
 
 
   build-products:
