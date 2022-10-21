@@ -70,6 +70,13 @@ build-base $OS $TYPE="base":
     --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
     --file "${FILE_PATH}" "${CTX_PATH}"
 
+  echo rstudio/${IMAGE_NAME}:${OS} \
+    rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}-py{{PYTHON_VERSION}} \
+    rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}} \
+    ghcr.io/rstudio/${IMAGE_NAME}:${OS} \
+    ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}-py{{PYTHON_VERSION}} \
+    ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}
+
 # just BUILDX_PATH=~/.buildx test-base ubuntu1804 base
 test-base $OS $TYPE="base":
   #!/usr/bin/env bash

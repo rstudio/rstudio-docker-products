@@ -21,7 +21,10 @@ RUN apt-get update --fix-missing  \
         default-jdk \
         dirmngr \
         dpkg-sig \
+        g++ \
+        gcc \
         gdal-bin \
+        gfortran \
         git \
         gpg \
         gpg-agent \
@@ -44,6 +47,9 @@ RUN apt-get update --fix-missing  \
         libjpeg-dev \
         libmagick++-dev \
         libmysqlclient-dev \
+        libopenblas-dev \
+        libpaper-utils \
+        libpcre2-dev \
         libpng-dev \
         libproj-dev \
         libsodium-dev \
@@ -57,14 +63,16 @@ RUN apt-get update --fix-missing  \
         make \
         pandoc \
         perl \
-        tcl \
         sudo \
+        tcl \
         tk \
         tk-dev \
         tk-table \
         tzdata \
         unixodbc-dev \
+        unzip \
         wget \
+        zip \
         zlib1g-dev \
     && rm -rf /var/lib/apt/lists/*
 
