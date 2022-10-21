@@ -3,6 +3,7 @@ ARG R_VERSION_ALT=3.6.2
 ARG PYTHON_VERSION=3.9.5
 ARG PYTHON_VERSION_ALT=3.8.10
 FROM rstudio/base:ubuntu2204-r${R_VERSION}_${R_VERSION_ALT}-py${PYTHON_VERSION}_${PYTHON_VERSION_ALT}
+LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG R_VERSION=4.2.0
@@ -12,14 +13,15 @@ ARG PYTHON_VERSION_ALT=3.8.10
 ARG DRIVERS_VERSION=2021.10.0
 
 RUN apt-get update && \
-    apt-get install -yq unixodbc unixodbc-dev && \
+    apt-get install -yq --no-install-recommends unixodbc unixodbc-dev && \
     curl -O https://cdn.rstudio.com/drivers/7C152C12/installer/rstudio-drivers_${DRIVERS_VERSION}_amd64.deb && \
     apt-get update && \
-    apt install -yq ./rstudio-drivers_${DRIVERS_VERSION}_amd64.deb && \
+    apt-get install -yq --no-install-recommends ./rstudio-drivers_${DRIVERS_VERSION}_amd64.deb && \
     rm -f ./rstudio-drivers_${DRIVERS_VERSION}_amd64.deb && \
     rm -rf /var/lib/apt/lists/* && \
-    cp /opt/rstudio-drivers/odbcinst.ini.sample /etc/odbcinst.ini
+    cp /opt/rstudio-drivers/odbcinst.ini.sample /etc/odbcinst.ini && \
+    /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.rstudio.com/cran/__linux__/jammy/latest")'
 
-LABEL pro-drivers.version="${DRIVERS_VERSION}"
+LABEL rstudio.pro-drivers.version="${DRIVERS_VERSION}"
 
 ENTRYPOINT ["/tini", "--"]

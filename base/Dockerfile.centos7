@@ -10,12 +10,10 @@ ARG TINI_VERSION=0.19.0
 ARG QUARTO_VERSION=1.1.251
 
 ### Update/upgrade system packages ###
-RUN yum upgrade -y -q
-
-### Install universal system dependencies ###
-RUN yum install -y -q \
-      epel-release && \
-    yum install -y -q \
+RUN yum upgrade -y -q \
+    && yum install -y -q \
+      epel-release \
+    && yum install -y -q \
       bzip2 \
       git \
       gpg \
@@ -32,7 +30,8 @@ RUN yum install -y -q \
       unixODBC \
       unixODBC-devel \
       wget \
-      which
+      which \
+    && yum clean all
 
 ### Install tini ###
 ADD https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini-amd64 /tini
@@ -43,7 +42,8 @@ RUN gpg --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 595E85A6B1
     && ln -s /tini /usr/local/bin/tini
 
 ### Install TinyTeX ###
-RUN wget -qO- "https://yihui.org/tinytex/install-bin-unix.sh" | sh && \
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN curl -sL "https://yihui.org/tinytex/install-bin-unix.sh" | sh && \
     /root/.TinyTeX/bin/*/tlmgr path remove && \
     mv /root/.TinyTeX/ /opt/TinyTeX && \
     /opt/TinyTeX/bin/*/tlmgr option sys_bin /usr/local/bin && \
@@ -54,13 +54,14 @@ RUN curl -o quarto.tar.gz -L https://github.com/quarto-dev/quarto-cli/releases/d
     && mkdir -p /opt/quarto/${QUARTO_VERSION} \
     && tar -zxvf quarto.tar.gz -C "/opt/quarto/${QUARTO_VERSION}" --strip-components=1 \
     && rm -f quarto.tar.gz \
-    && sudo ln -s /opt/quarto/${QUARTO_VERSION}/bin/quarto /usr/local/bin/quarto
+    && ln -s /opt/quarto/${QUARTO_VERSION}/bin/quarto /usr/local/bin/quarto
 
 ### Install R versions ###
 RUN curl -O https://cdn.rstudio.com/r/centos-7/pkgs/R-${R_VERSION}-1-1.x86_64.rpm \
     && curl -O https://cdn.rstudio.com/r/centos-7/pkgs/R-${R_VERSION_ALT}-1-1.x86_64.rpm \
     && yum install -y R-${R_VERSION}-1-1.x86_64.rpm \
     && yum install -y R-${R_VERSION_ALT}-1-1.x86_64.rpm \
+    && yum clean all \
     && rm -rf R-${R_VERSION}-1-1.x86_64.rpm \
     && rm -rf R-${R_VERSION_ALT}-1-1.x86_64.rpm \
     && ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R \
@@ -71,6 +72,7 @@ RUN curl -O https://cdn.rstudio.com/python/centos-7/pkgs/python-${PYTHON_VERSION
     && curl -O https://cdn.rstudio.com/python/centos-7/pkgs/python-${PYTHON_VERSION_ALT}-1-1.x86_64.rpm \
     && yum install -y python-${PYTHON_VERSION}-1-1.x86_64.rpm \
     && yum install -y python-${PYTHON_VERSION_ALT}-1-1.x86_64.rpm \
+    && yum clean all \
     && rm -rf python-${PYTHON_VERSION}-1-1.x86_64.rpm \
     && rm -rf python-${PYTHON_VERSION_ALT}-1-1.x86_64.rpm \
     && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install 'virtualenv<20' \
@@ -84,15 +86,12 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-### Clean up ###
-RUN yum clean all
 
-
-LABEL r.version="${R_VERSION}" \
-      r.version_alt="${R_VERSION_ALT}" \
-      python.version="${PYTHON_VERSION}" \
-      python.version_alt="${PYTHON_VERSION_ALT}" \
-      tini.version="${TINI_VERSION}" \
-      quarto.version="${QUARTO_VERSION}"
+LABEL rstudio.r.version="${R_VERSION}" \
+      rstudio.r.version_alt="${R_VERSION_ALT}" \
+      rstudio.python.version="${PYTHON_VERSION}" \
+      rstudio.python.version_alt="${PYTHON_VERSION_ALT}" \
+      rstudio.tini.version="${TINI_VERSION}" \
+      rstudio.quarto.version="${QUARTO_VERSION}"
 
 ENTRYPOINT ["/tini", "--"]

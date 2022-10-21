@@ -12,10 +12,8 @@ ARG QUARTO_VERSION=1.1.251
 
 ### Update/upgrade system packages ###
 RUN apt-get update --fix-missing  \
-    && apt-get upgrade -yq
-
-### Install universal system dependencies ###
-RUN apt-get install -yq --no-install-recommends \
+    && apt-get upgrade -yq \
+    && apt-get install -yq --no-install-recommends \
         apt-transport-https \
         ca-certificates \
         cmake \
@@ -67,7 +65,8 @@ RUN apt-get install -yq --no-install-recommends \
         tzdata \
         unixodbc-dev \
         wget \
-        zlib1g-dev
+        zlib1g-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 ### Install tini ###
 ADD https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini-amd64 /tini
@@ -78,6 +77,7 @@ RUN gpg --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 595E85A6B1
     && ln -s /tini /usr/local/bin/tini
 
 ### Install TinyTeX ###
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN curl -sL "https://yihui.org/tinytex/install-bin-unix.sh" | sh && \
     /root/.TinyTeX/bin/*/tlmgr path remove && \
     mv /root/.TinyTeX/ /opt/TinyTeX && \
@@ -94,8 +94,8 @@ RUN curl -o quarto.tar.gz -L https://github.com/quarto-dev/quarto-cli/releases/d
 ### Install R versions ###
 RUN curl -O https://cdn.rstudio.com/r/ubuntu-2204/pkgs/r-${R_VERSION}_1_amd64.deb \
     && curl -O https://cdn.rstudio.com/r/ubuntu-2204/pkgs/r-${R_VERSION_ALT}_1_amd64.deb \
-    && apt-get install -yq ./r-${R_VERSION}_1_amd64.deb \
-    && apt-get install -yq ./r-${R_VERSION_ALT}_1_amd64.deb \
+    && apt-get install -yq --no-install-recommends ./r-${R_VERSION}_1_amd64.deb \
+    && apt-get install -yq --no-install-recommends ./r-${R_VERSION_ALT}_1_amd64.deb \
     && rm -f ./r-${R_VERSION}_1_amd64.deb \
     && rm -f ./r-${R_VERSION_ALT}_1_amd64.deb \
     && ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R \
@@ -104,8 +104,8 @@ RUN curl -O https://cdn.rstudio.com/r/ubuntu-2204/pkgs/r-${R_VERSION}_1_amd64.de
 ### Install Python versions ###
 RUN curl -O https://cdn.rstudio.com/python/ubuntu-2204/pkgs/python-${PYTHON_VERSION}_1_amd64.deb \
     && curl -O https://cdn.rstudio.com/python/ubuntu-2204/pkgs/python-${PYTHON_VERSION_ALT}_1_amd64.deb \
-    && apt-get install -yq ./python-${PYTHON_VERSION}_1_amd64.deb \
-    && apt-get install -yq ./python-${PYTHON_VERSION_ALT}_1_amd64.deb \
+    && apt-get install -yq --no-install-recommends ./python-${PYTHON_VERSION}_1_amd64.deb \
+    && apt-get install -yq --no-install-recommends ./python-${PYTHON_VERSION_ALT}_1_amd64.deb \
     && rm -rf python-${PYTHON_VERSION}_1_amd64.deb \
     && rm -rf python-${PYTHON_VERSION_ALT}_1_amd64.deb \
     && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install 'virtualenv<20' \
@@ -120,17 +120,17 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
 ### Clean up ###
-RUN apt-get install -f \
+RUN apt-get install -yqf --no-install-recommends \
     && apt-get autoremove \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 
-LABEL r.version="${R_VERSION}" \
-      r.version_alt="${R_VERSION_ALT}" \
-      python.version="${PYTHON_VERSION}" \
-      python.version_alt="${PYTHON_VERSION_ALT}" \
-      tini.version="${TINI_VERSION}" \
-      quarto.version="${QUARTO_VERSION}"
+LABEL rstudio.r.version="${R_VERSION}" \
+      rstudio.r.version_alt="${R_VERSION_ALT}" \
+      rstudio.python.version="${PYTHON_VERSION}" \
+      rstudio.python.version_alt="${PYTHON_VERSION_ALT}" \
+      rstudio.tini.version="${TINI_VERSION}" \
+      rstudio.quarto.version="${QUARTO_VERSION}"
 
 ENTRYPOINT ["/tini", "--"]
