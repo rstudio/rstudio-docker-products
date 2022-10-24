@@ -49,13 +49,13 @@ jobs:
       - name: Get Version
         id: get-version
         run: |
-          VERSION=`just get-version ${{ github.event.inputs.product }} --type=${{ github.event.inputs.type }} --local --override=${{ github.event.inputs.version }}`
+          VERSION=`just -f ci.Justfile get-version ${{ github.event.inputs.product }} --type=${{ github.event.inputs.type }} --local --override=${{ github.event.inputs.version }}`
           echo "::set-output name=VERSION::$VERSION"
 
       - name: Build Image
         id: build-image
         run: |
-          TAGS=`just BUILDX_PATH=${{ steps.buildx.outputs.name }} build-preview ${{ github.event.inputs.type }} ${{ github.event.inputs.product }} ${{ github.event.inputs.os }} ${{ steps.get-version.outputs.VERSION }}`
+          TAGS=`just -f ci.Justfile BUILDX_PATH=${{ steps.buildx.outputs.name }} build-preview ${{ github.event.inputs.type }} ${{ github.event.inputs.product }} ${{ github.event.inputs.os }} ${{ steps.get-version.outputs.VERSION }}`
           echo "::set-output name=TAGS::$TAGS"
 
       - name: Show image size
@@ -88,4 +88,4 @@ jobs:
       - name: Push image(s) to Docker Hub
         if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
         run: |
-          just push-images ${{ steps.build-image.outputs.TAGS }}
+          just -f ci.Justfile push-images ${{ steps.build-image.outputs.TAGS }}
