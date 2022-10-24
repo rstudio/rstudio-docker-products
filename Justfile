@@ -1,3 +1,4 @@
+
 set positional-arguments
 
 vars := "-i ''"
@@ -9,7 +10,8 @@ BUILDX_PATH := ""
 RSC_VERSION := "2022.09.0"
 RSPM_VERSION := "2022.07.2-11"
 RSW_VERSION := "2022.07.2+576.pro12"
-RSC_TAG_SAFE_VERSION := replace(RSW_VERSION, "+", "-")
+RSW_TAG_SAFE_VERSION := replace(RSW_VERSION, "+.*$", "")
+
 
 DRIVERS_VERSION := "2021.10.0"
 DRIVERS_VERSION_RHEL := "2021.10.0-1"
@@ -29,7 +31,7 @@ update-versions:
     R_VERSION={{R_VERSION}} \
     R_VERSION_ALT={{R_VERSION_ALT}} \
     PYTHON_VERSION={{PYTHON_VERSION}} \
-    PYTHON_VERSION_ALT={{PYTHON_VERSION_ALT}} \
+    PYTHON_VERSION_ALT=3.8.10
     DRIVERS_VERSION={{DRIVERS_VERSION}} \
     update-rsw-versions update-rspm-versions update-rsc-versions update-r-versions update-py-versions update-drivers-versions
 
@@ -46,7 +48,7 @@ update-rsw-versions:
     workbench/Dockerfile.bionic \
     workbench-for-microsoft-azure-ml/Dockerfile.bionic
   sed {{ sed_vars }} "s/RSW_VERSION:.*/RSW_VERSION: {{ RSW_VERSION }}/g" docker-compose.yml
-  sed {{ sed_vars }} "s/rstudio\/rstudio-workbench:.*/rstudio\/rstudio-workbench:{{ RSC_TAG_SAFE_VERSION }}/g" docker-compose.yml
+  sed {{ sed_vars }} "s/rstudio\/rstudio-workbench:.*/rstudio\/rstudio-workbench:{{ RSW_TAG_SAFE_VERSION }}/g" docker-compose.yml
   sed {{ sed_vars }} "s/org.opencontainers.image.version='.*'/org.opencontainers.image.version='{{ RSW_VERSION }}'/g" workbench-for-microsoft-azure-ml/Dockerfile.bionic
   sed {{ sed_vars }} "s/^RSW_VERSION := .*/RSW_VERSION := \"{{ RSW_VERSION }}\"/g" \
     r-session-complete/Justfile \
@@ -112,7 +114,7 @@ update-r-versions:
     connect/Justfile \
     Justfile
 
-# just PYTHON_VERSION=3.9.5 PYTHON_VERSION_ALT=3.8.10 update-py-versions
+# just PYTHON_VERSION=3.9.5 PYTHON_VERSION_ALT=3.8.10
 update-py-versions:
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -131,7 +133,7 @@ update-py-versions:
     Justfile
 
   # Update alt Python versions
-  sed {{ sed_vars }} "s/PYTHON_VERSION_ALT=.*/PYTHON_VERSION_ALT={{ PYTHON_VERSION_ALT }}/g" \
+  sed {{ sed_vars }} "s/PYTHON_VERSION_ALT=3.8.10
     workbench/Dockerfile.bionic \
     workbench/.env \
     connect/Dockerfile.bionic \
@@ -164,3 +166,4 @@ test-image $PRODUCT $VERSION +IMAGES:
 lint $PRODUCT $OS:
   #!/usr/bin/env bash
   docker run --rm -i -v $PWD/hadolint.yaml:/.config/hadolint.yaml ghcr.io/hadolint/hadolint < $PRODUCT/Dockerfile.$OS
+
