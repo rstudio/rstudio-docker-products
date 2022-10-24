@@ -9,7 +9,7 @@ BUILDX_PATH := ""
 RSC_VERSION := "2022.09.0"
 RSPM_VERSION := "2022.07.2-11"
 RSW_VERSION := "2022.07.2+576.pro12"
-RSC_TAG_SAFE_VERSION := replace(RSW_VERSION, "+.*$", "")
+RSW_TAG_SAFE_VERSION := replace(RSW_VERSION, "+.*$", "")
 
 DRIVERS_VERSION := "2021.10.0"
 DRIVERS_VERSION_RHEL := "2021.10.0-1"
@@ -46,7 +46,7 @@ update-rsw-versions:
     workbench/Dockerfile.bionic \
     workbench-for-microsoft-azure-ml/Dockerfile.bionic
   sed {{ sed_vars }} "s/RSW_VERSION:.*/RSW_VERSION: {{ RSW_VERSION }}/g" docker-compose.yml
-  sed {{ sed_vars }} "s/rstudio\/rstudio-workbench:.*/rstudio\/rstudio-workbench:{{ RSC_TAG_SAFE_VERSION }}/g" docker-compose.yml
+  sed {{ sed_vars }} "s/rstudio\/rstudio-workbench:.*/rstudio\/rstudio-workbench:{{ RSW_TAG_SAFE_VERSION }}/g" docker-compose.yml
   sed {{ sed_vars }} "s/org.opencontainers.image.version='.*'/org.opencontainers.image.version='{{ RSW_VERSION }}'/g" workbench-for-microsoft-azure-ml/Dockerfile.bionic
   sed {{ sed_vars }} "s/^RSW_VERSION := .*/RSW_VERSION := \"{{ RSW_VERSION }}\"/g" \
     r-session-complete/Justfile \
