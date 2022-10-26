@@ -45,19 +45,8 @@ jobs:
         run: |
           docker image ls
 
-      - name: Build pro drivers image
-        id: build-pro-image
-        run: |
-          TAGS=`just -f ci.Justfile BUILDX_PATH=${{ steps.buildx.outputs.name }} build-base ${{ matrix.os }} pro`
-          echo "::set-output name=TAGS::$TAGS"
-
-      - name: Show image size
-        run: |
-          docker image ls
-
       - name: Test image
         run: |
-          just -f ci.Justfile test-base ${{ matrix.os }} base
           just -f ci.Justfile test-base ${{ matrix.os }} pro
 
       - name: Run Snyk to check Docker image for vulnerabilities (main)
@@ -81,6 +70,69 @@ jobs:
           image: ${{ steps.build-base-image.outputs.TAGS }}
           args: --file=./base/Dockerfile.${{ matrix.os }}
           command: test
+
+      - name: Login to Docker Hub
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Login to ghcr.io
+        #if: ${{ github.ref == 'refs/heads/main' }}
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.BUILD_PAT }}
+
+      - name: Push image(s) to Docker Hub
+        #if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          just -f ci.Justfile push-images ${{ steps.build-base-image.outputs.TAGS }}
+
+
+  build-pro:
+    runs-on: ubuntu-latest
+    name: build-pro-${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu1804', 'ubuntu2204', 'centos7']
+
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+
+      - name: Set up Just
+        uses: extractions/setup-just@v1
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Build pro drivers image
+        id: build-pro-image
+        run: |
+          TAGS=`just -f ci.Justfile BUILDX_PATH=${{ steps.buildx.outputs.name }} build-base ${{ matrix.os }} pro`
+          echo "::set-output name=TAGS::$TAGS"
+
+      - name: Show image size
+        run: |
+          docker image ls
+
+      - name: Test image
+        run: |
+          just -f ci.Justfile test-base ${{ matrix.os }} pro
 
       - name: Run Snyk to check Docker image for vulnerabilities (main)
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -112,7 +164,7 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Login to ghcr.io
-        if: ${{ github.ref == 'refs/heads/main' }}
+        #if: ${{ github.ref == 'refs/heads/main' }}
         uses: docker/login-action@v1
         with:
           registry: ghcr.io
@@ -120,9 +172,8 @@ jobs:
           password: ${{ secrets.BUILD_PAT }}
 
       - name: Push image(s) to Docker Hub
-        if: ${{ github.ref == 'refs/heads/main' }}
+        #if: ${{ github.ref == 'refs/heads/main' }}
         run: |
-          just -f ci.Justfile push-images ${{ steps.build-base-image.outputs.TAGS }}
           just -f ci.Justfile push-images ${{ steps.build-pro-image.outputs.TAGS }}
 
 
