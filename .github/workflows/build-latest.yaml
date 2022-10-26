@@ -41,6 +41,10 @@ jobs:
           TAGS=`just -f ci.Justfile BUILDX_PATH=${{ steps.buildx.outputs.name }} build-base ${{ matrix.os }} base`
           echo "::set-output name=TAGS::$TAGS"
 
+      - name: Show image size
+        run: |
+          docker image ls
+
       - name: Build pro drivers image
         id: build-pro-image
         run: |
