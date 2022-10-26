@@ -93,6 +93,7 @@ jobs:
 
 
   build-pro:
+    needs: build-base
     runs-on: ubuntu-latest
     name: build-pro-${{ matrix.os }}
 
@@ -178,7 +179,7 @@ jobs:
 
 
   build-products:
-    needs: build-base
+    needs: [build-base, build-pro]
     runs-on: ubuntu-latest
     name: build-${{ matrix.config.product }}-${{ matrix.config.os }}-latest
 
