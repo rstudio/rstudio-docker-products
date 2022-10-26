@@ -47,7 +47,7 @@ jobs:
 
       - name: Test image
         run: |
-          just -f ci.Justfile test-base ${{ matrix.os }} pro
+          just -f ci.Justfile test-base ${{ matrix.os }} base
 
       - name: Run Snyk to check Docker image for vulnerabilities (main)
         if: ${{ github.ref == 'refs/heads/main' }}
