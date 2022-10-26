@@ -86,7 +86,7 @@ LauncherDir = /mnt/rspm/data/launcher_internal
 
 ## Licensing
 
-Using the RStudio Package Manager docker image requires to have a valid License. You can set the RSC license in three ways:
+Using the RStudio Package Manager Docker image requires a valid license for Package Manager. You can set the license in three ways:
 
 1. Setting the `RSPM_LICENSE` environment variable to a valid license key inside the container
 2. Setting the `RSPM_LICENSE_SERVER` environment variable to a valid license server / port inside the container

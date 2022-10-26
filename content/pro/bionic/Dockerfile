@@ -1,6 +1,6 @@
 ARG PYTHON_VERSION
 ARG R_VERSION
-FROM rstudio/content-pro:r${R_VERSION}-py${PYTHON_VERSION}-bionic
+FROM rstudio/content-base:r${R_VERSION}-py${PYTHON_VERSION}-bionic
 
 MAINTAINER RStudio Docker <docker@rstudio.com>
 
