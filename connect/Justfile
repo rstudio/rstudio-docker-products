@@ -6,7 +6,7 @@ IMAGE_PREFIX := "rstudio-"
 PRODUCT := "connect"
 IMAGE_OS := "bionic"
 
-RSC_VERSION := "2022.09.0"
+RSC_VERSION := "2022.10.0"
 RSC_TAG_SAFE_VERSION := replace(RSC_VERSION, "+", "-")
 RSC_LICENSE := ""
 
@@ -18,7 +18,7 @@ PYTHON_VERSION_ALT := "3.8.10"
 
 DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":" + IMAGE_OS + "-" + RSC_TAG_SAFE_VERSION
 
-# Build Connect image - just build bionic 2022.09.0 rstudio/rstudio-connect:bionic-2022.09.0
+# Build Connect image - just build bionic 2022.10.0 rstudio/rstudio-connect:bionic-2022.10.0
 build OS=IMAGE_OS VERSION=RSC_VERSION +TAGS=DEFAULT_TAG:
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -41,7 +41,7 @@ build OS=IMAGE_OS VERSION=RSC_VERSION +TAGS=DEFAULT_TAG:
     --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
     --file=./Dockerfile."{{ OS }}" .
 
-# Test Connect image - just test rstudio/rstudio-connect:bionic-2022.09.0 2022.09.0
+# Test Connect image - just test rstudio/rstudio-connect:bionic-2022.10.0 2022.10.0
 test TAG=DEFAULT_TAG VERSION=RSC_VERSION CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -53,11 +53,11 @@ test TAG=DEFAULT_TAG VERSION=RSC_VERSION CMD="":
   PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
   docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
 
-# Test Connect image interactively - just test-i rstudio/rstudio-connect:bionic-2022.09.0 2022.09.0
+# Test Connect image interactively - just test-i rstudio/rstudio-connect:bionic-2022.10.0 2022.10.0
 test-i TAG=DEFAULT_TAG VERSION=RSC_VERSION:
   just test {{ TAG }} {{ VERSION }} bash
 
-# Run Connect - just RSC_LICENSE="<RSC license>" run rstudio/rstudio-connect:bionic-2022.09.0
+# Run Connect - just RSC_LICENSE="<RSC license>" run rstudio/rstudio-connect:bionic-2022.10.0
 run TAG=DEFAULT_TAG CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
