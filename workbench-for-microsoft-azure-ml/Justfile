@@ -4,7 +4,7 @@ BUILDX_PATH := ""
 
 IMAGE_PREFIX := "rstudio-"
 PRODUCT := "workbench"
-IMAGE_OS := "bionic"
+IMAGE_OS := "ubuntu1804"
 
 RSW_VERSION := "2022.07.2+576.pro12"
 RSW_LICENSE := ""
@@ -18,7 +18,7 @@ PYTHON_VERSION_ALT := "3.8.10"
 _make-default-tag OS=IMAGE_OS:
   echo "{{IMAGE_PREFIX}}{{PRODUCT}}:{{OS}}-$(just -f ../Justfile _get-tag-safe-version {{RSW_VERSION}})"
 
-# Build Workbench for Azure ML image - just build bionic 2022.07.2+576.pro12 rstudio/rstudio-workbench:bionic-2022.07.2-576.pro12
+# Build Workbench for Azure ML image - just build ubuntu1804 2022.07.2+576.pro12 rstudio/rstudio-workbench:ubuntu1804-2022.07.2-576.pro12
 build OS=IMAGE_OS VERSION=RSW_VERSION *TAGS="":
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -46,9 +46,9 @@ build OS=IMAGE_OS VERSION=RSW_VERSION *TAGS="":
     --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
     --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
     --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
-    --file=./Dockerfile."{{ OS }}" .
+    --file=./Dockerfile.$(just -f ../Justfile _parse-os {{OS}}) .
 
-# Test Workbench for Azure ML image - just test rstudio/rstudio-workbench:bionic-2022.07.2-576.pro12 2022.07.2+576.pro12
+# Test Workbench for Azure ML image - just test rstudio/rstudio-workbench:ubuntu1804-2022.07.2-576.pro12 2022.07.2+576.pro12
 test TAG=`just _make-default-tag` VERSION=RSW_VERSION CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -60,11 +60,11 @@ test TAG=`just _make-default-tag` VERSION=RSW_VERSION CMD="":
   PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
   docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
 
-# Test Workbench for Azure ML image interactively - just test-i rstudio/rstudio-workbench:bionic-2022.07.2-576.pro12 2022.07.2+576.pro12
+# Test Workbench for Azure ML image interactively - just test-i rstudio/rstudio-workbench:ubuntu1804-2022.07.2-576.pro12 2022.07.2+576.pro12
 test-i TAG=`just _make-default-tag` VERSION=RSW_VERSION:
   just test {{ TAG }} {{ VERSION }} bash
 
-# Run Workbench for Azure ML - just RSW_LICENSE="<RSW license>" run rstudio/r-session-complete:bionic-2022.07.2-576.pro12
+# Run Workbench for Azure ML - just RSW_LICENSE="<RSW license>" run rstudio/r-session-complete:ubuntu1804-2022.07.2-576.pro12
 run TAG=`just _make-default-tag` CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail

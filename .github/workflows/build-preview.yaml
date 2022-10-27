@@ -22,21 +22,21 @@ jobs:
       fail-fast: false
       matrix:
         config:
-         - {product: "workbench", type: "daily", os: "bionic"}
-         - {product: "workbench", type: "daily", os: "jammy"}
-         - {product: "workbench", type: "preview", os: "bionic"}
-         - {product: "workbench", type: "preview", os: "jammy"}
-         - {product: "connect", type: "daily", os: "bionic"}
-         - {product: "connect", type: "daily", os: "jammy"}
-         - {product: "connect-content-init", type: "daily", os: "bionic"}
-         - {product: "connect-content-init", type: "daily", os: "jammy"}
-         - {product: "package-manager", type: "daily", os: "bionic"}
-         - {product: "package-manager", type: "daily", os: "jammy"}
-         - {product: "r-session-complete", type: "daily", os: "bionic"}
-         - {product: "r-session-complete", type: "daily", os: "jammy"}
+         - {product: "workbench", type: "daily", os: "ubuntu1804"}
+         - {product: "workbench", type: "daily", os: "ubuntu2204"}
+         - {product: "workbench", type: "preview", os: "ubuntu1804"}
+         - {product: "workbench", type: "preview", os: "ubuntu2204"}
+         - {product: "connect", type: "daily", os: "ubuntu1804"}
+         - {product: "connect", type: "daily", os: "ubuntu2204"}
+         - {product: "connect-content-init", type: "daily", os: "ubuntu1804"}
+         - {product: "connect-content-init", type: "daily", os: "ubuntu2204"}
+         - {product: "package-manager", type: "daily", os: "ubuntu1804"}
+         - {product: "package-manager", type: "daily", os: "ubuntu2204"}
+         - {product: "r-session-complete", type: "daily", os: "ubuntu1804"}
+         - {product: "r-session-complete", type: "daily", os: "ubuntu2204"}
          - {product: "r-session-complete", type: "daily", os: "centos7"}
-         - {product: "r-session-complete", type: "preview", os: "bionic"}
-         - {product: "r-session-complete", type: "preview", os: "jammy"}
+         - {product: "r-session-complete", type: "preview", os: "ubuntu1804"}
+         - {product: "r-session-complete", type: "preview", os: "ubuntu2204"}
          - {product: "r-session-complete", type: "preview", os: "centos7"}
 
     steps:
