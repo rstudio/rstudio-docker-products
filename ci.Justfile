@@ -139,10 +139,17 @@ push-images +IMAGES:
 # just _get-rsw-download-url release ubuntu1804
 _get-rsw-download-url TYPE OS:
   #!/usr/bin/env bash
+  URL_OS="{{OS}}"
+  if [[ "{{OS}}" == "ubuntu1804" ]]; then
+    echo "bionic"
+  elif [[ "{{OS}}" == "ubuntu2204" ]]; then
+    URL_OS="jammy"
+  fi
+
   if [[ "{{TYPE}}" == "release" ]]; then
-    echo "https://download2.rstudio.org/server/{{OS}}/{{ if OS == "centos7" { "x86_64"} else { "amd64" } }}"
+    echo "https://download2.rstudio.org/server/${URL_OS}/{{ if OS == "centos7" { "x86_64"} else { "amd64" } }}"
   else
-    echo "https://s3.amazonaws.com/rstudio-ide-build/server/{{OS}}/{{ if OS == "centos7" { "x86_64"} else { "amd64" } }}"
+    echo "https://s3.amazonaws.com/rstudio-ide-build/server/${URL_OS}/{{ if OS == "centos7" { "x86_64"} else { "amd64" } }}"
   fi
 
 # just get-version workbench --type=preview --local
