@@ -11,7 +11,7 @@ build-release $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`git 
   RSW_DOWNLOAD_URL=`just -f ci.Justfile _get-rsw-download-url release $OS`
   BUILDX_ARGS=""
   SHORT_NAME=""
-  TAG_VERSION=`just -f ci.Justfile _get-tag-safe-version $VERSION`
+  TAG_VERSION=`just _get-tag-safe-version $VERSION`
 
   # set short name
   if [[ $PRODUCT == "workbench" || $PRODUCT == "r-session-complete" || $PRODUCT == "workbench-for-microsoft-azure-ml" ]]; then
@@ -62,7 +62,7 @@ build-preview $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
   RSW_DOWNLOAD_URL=`just -f ci.Justfile _get-rsw-download-url $TYPE $OS`
   BUILDX_ARGS=""
   SHORT_NAME=""
-  TAG_VERSION=`just -f ci.Justfile _get-tag-safe-version $VERSION`
+  TAG_VERSION=`just _get-tag-safe-version $VERSION`
 
   # set branch prefix
   if [[ $BRANCH == "dev" ]]; then
@@ -124,11 +124,6 @@ _get-rsw-download-url TYPE OS:
   else
     echo "https://s3.amazonaws.com/rstudio-ide-build/server/{{OS}}/{{ if OS == "centos7" { "x86_64"} else { "amd64" } }}"
   fi
-
-# just _get-tag-safe-version 2022.07.2+576.pro12
-_get-tag-safe-version $VERSION:
-  #!/usr/bin/env bash
-  echo -n "$VERSION" | sed 's/+/-/g'
 
 # just get-version workbench --type=preview --local
 get-version +NARGS:
