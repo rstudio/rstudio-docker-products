@@ -141,7 +141,7 @@ _get-rsw-download-url TYPE OS:
   #!/usr/bin/env bash
   URL_OS="{{OS}}"
   if [[ "{{OS}}" == "ubuntu1804" ]]; then
-    echo "bionic"
+    URL_OS="bionic"
   elif [[ "{{OS}}" == "ubuntu2204" ]]; then
     URL_OS="jammy"
   fi
