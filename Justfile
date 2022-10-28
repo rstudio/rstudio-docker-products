@@ -22,7 +22,7 @@ PYTHON_VERSION_ALT := "3.8.10"
 # just _get-tag-safe-version 2022.07.2+576.pro12
 _get-tag-safe-version $VERSION:
   #!/usr/bin/env bash
-  echo -n "$VERSION" | sed 's/+.*//g'
+  echo -n "$VERSION" | sed 's/[+|-].*//g'
 
 # just RSW_VERSION=1.2.3 R_VERSION=4.1.0 update-versions
 update-versions:
@@ -66,7 +66,7 @@ update-rspm-versions:
     package-manager/.env \
     package-manager/Dockerfile.bionic
   sed {{ sed_vars }} "s/RSPM_VERSION:.*/RSPM_VERSION: {{ RSPM_VERSION }}/g" docker-compose.yml
-  sed {{ sed_vars }} "s/rstudio\/rstudio-package-manager:.*/rstudio\/rstudio-package-manager:{{ RSPM_VERSION }}/g" docker-compose.yml
+  sed {{ sed_vars }} "s/rstudio\/rstudio-package-manager:.*/rstudio\/rstudio-package-manager:$(just _get-tag-safe-version {{ RSPM_VERSION }})/g" docker-compose.yml
   sed {{ sed_vars }} "s/^RSPM_VERSION := .*/RSPM_VERSION := \"{{ RSPM_VERSION }}\"/g" \
     package-manager/Justfile \
     Justfile
