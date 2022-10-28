@@ -7,7 +7,6 @@ PRODUCT := "workbench"
 IMAGE_OS := "bionic"
 
 RSW_VERSION := "2022.07.2+576.pro12"
-RSW_TAG_SAFE_VERSION := replace(RSW_VERSION, "+", "-")
 RSW_LICENSE := ""
 
 R_VERSION := "3.6.2"
@@ -15,8 +14,6 @@ R_VERSION_ALT := "4.1.0"
 
 PYTHON_VERSION := "3.9.5"
 PYTHON_VERSION_ALT := "3.8.10"
-
-DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":" + IMAGE_OS + "-" + RSW_TAG_SAFE_VERSION
 
 _make-default-tag OS=IMAGE_OS:
   echo "{{IMAGE_PREFIX}}{{PRODUCT}}:{{OS}}-$(just -f ../Justfile _get-tag-safe-version {{RSW_VERSION}})"
