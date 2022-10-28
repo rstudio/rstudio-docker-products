@@ -57,7 +57,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           image: ${{ steps.build-base-image.outputs.TAGS }}
-          args: --file=./base/Dockerfile.${{ matrix.os }}
+          args: --file=./product/Dockerfile.${{ matrix.os }}
           command: monitor
 
       - name: Run Snyk to check Docker image for vulnerabilities (branch)
@@ -68,7 +68,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           image: ${{ steps.build-base-image.outputs.TAGS }}
-          args: --file=./base/Dockerfile.${{ matrix.os }}
+          args: --file=./product/Dockerfile.${{ matrix.os }}
           command: test
 
       - name: Login to Docker Hub
@@ -151,7 +151,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           image: ${{ steps.build-pro-image.outputs.TAGS }}
-          args: --file=./base/pro/Dockerfile.${{ matrix.os }}
+          args: --file=./product/pro/Dockerfile.${{ matrix.os }}
           command: monitor
 
       - name: Run Snyk to check Docker image for vulnerabilities (branch)
@@ -162,7 +162,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           image: ${{ steps.build-pro-image.outputs.TAGS }}
-          args: --file=./base/pro/Dockerfile.${{ matrix.os }}
+          args: --file=./product/pro/Dockerfile.${{ matrix.os }}
           command: test
 
       - name: Login to Docker Hub
@@ -179,7 +179,7 @@ jobs:
 
 
   build-products:
-    needs: [build-base, build-pro]
+    needs: [build-product, build-pro]
     runs-on: ubuntu-latest
     name: build-${{ matrix.config.product }}-${{ matrix.config.os }}-latest
 

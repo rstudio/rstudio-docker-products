@@ -16,12 +16,12 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {product: 'base', os: 'ubuntu1804'}
-          - {product: 'base', os: 'ubuntu2204'}
-          - {product: 'base', os: 'centos7'}
-          - {product: 'base/pro', os: 'ubuntu1804'}
-          - {product: 'base/pro', os: 'ubuntu2204'}
-          - {product: 'base/pro', os: 'centos7'}
+          - {product: 'product/base', os: 'ubuntu1804'}
+          - {product: 'product/base', os: 'ubuntu2204'}
+          - {product: 'product/base', os: 'centos7'}
+          - {product: 'product/pro', os: 'ubuntu1804'}
+          - {product: 'product/pro', os: 'ubuntu2204'}
+          - {product: 'product/pro', os: 'centos7'}
           - {product: 'workbench', os: 'ubuntu1804'}
           - {product: 'workbench', os: 'ubuntu2204'}
           - {product: 'connect', os: 'ubuntu1804'}

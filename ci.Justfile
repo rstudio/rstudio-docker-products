@@ -42,14 +42,14 @@ build-base $OS $TYPE="base":
   BUILDX_ARGS=""
 
   # set short name
-  if [[ $TYPE == "base" ]]; then
-    IMAGE_NAME="base"
-    CTX_PATH="./base"
-    FILE_PATH="./base/Dockerfile.${OS}"
-  elif [[ $TYPE == "base-pro" || $TYPE == "pro" ]]; then
-    IMAGE_NAME="base-pro"
-    CTX_PATH="./base/pro"
-    FILE_PATH="./base/pro/Dockerfile.${OS}"
+  if [[ $TYPE == "base" || $TYPE == "product-base" ]]; then
+    IMAGE_NAME="product-base"
+    CTX_PATH="./product/base"
+    FILE_PATH="./product/base/Dockerfile.${OS}"
+  elif [[ $TYPE == "base-pro" || $TYPE == "pro" || $TYPE == "product-base-pro" ]]; then
+    IMAGE_NAME="product-base-pro"
+    CTX_PATH="./product/pro"
+    FILE_PATH="./product/pro/Dockerfile.${OS}"
   fi
 
   # set buildx args
@@ -89,10 +89,10 @@ test-base $OS $TYPE="base":
   # set short name
   if [[ $TYPE == "base" ]]; then
     IMAGE_NAME="base"
-    just IMAGE_OS="${OS}" base/test rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}
+    just IMAGE_OS="${OS}" product/base/test rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}
   elif [[ $TYPE == "base-pro" || $TYPE == "pro" ]]; then
     IMAGE_NAME="base-pro"
-    just IMAGE_OS="${OS}" base/test rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}
+    just IMAGE_OS="${OS}" product/pro/test rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}
   fi
 
 # just BUILDX_PATH=~/.buildx build-release workbench ubuntu1804 12.0.11-11

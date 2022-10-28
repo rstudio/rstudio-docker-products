@@ -1,0 +1,59 @@
+set positional-arguments
+
+BUILDX_PATH := ""
+IMAGE_OS := "ubuntu1804"
+
+IMAGE_REGISTRY := "rstudio"
+
+R_VERSION := "4.1.0"
+R_VERSION_ALT := "3.6.2"
+
+PYTHON_VERSION := "3.9.5"
+PYTHON_VERSION_ALT := "3.8.10"
+
+TINI_VERSION := "0.19.0"
+QUARTO_VERSION := "1.1.251"
+
+DEFAULT_BASE_TAG := IMAGE_REGISTRY + "/product-base:" + IMAGE_OS + "-r" + R_VERSION + "_" + R_VERSION_ALT + "-py" + PYTHON_VERSION + "_" + PYTHON_VERSION_ALT
+
+# Build base image - just build ubuntu1804 rstudio/base:ubuntu1804
+build +TAGS=DEFAULT_BASE_TAG:
+  #!/usr/bin/env bash
+  set -euxo pipefail
+  BUILDX_ARGS=""
+  if [[ "{{BUILDX_PATH}}" != "" ]]; then
+    BUILDX_ARGS="--cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache"
+  fi
+  tag_array=()
+  for TAG in {{TAGS}}
+  do
+    tag_array+=("-t" $TAG)
+  done
+
+  docker buildx --builder="{{ BUILDX_PATH }}" build --load ${BUILDX_ARGS} \
+    ${tag_array[@]} \
+    --build-arg R_VERSION="{{ R_VERSION }}" \
+    --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
+    --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
+    --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
+    --build-arg TINI_VERSION="{{ TINI_VERSION }}" \
+    --build-arg QUARTO_VERSION="{{ QUARTO_VERSION }}" \
+    --file=./Dockerfile."{{ IMAGE_OS }}" .
+
+# Test base image - just test rstudio/base-pro:ubuntu1804
+test TAG=DEFAULT_BASE_TAG CMD="":
+  #!/usr/bin/env bash
+  set -euxo pipefail
+  IMAGE_NAME="{{ TAG }}" \
+  R_VERSION="{{ R_VERSION }}" \
+  R_VERSION_ALT="{{ R_VERSION_ALT }}" \
+  PYTHON_VERSION="{{ PYTHON_VERSION }}" \
+  PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
+  QUARTO_VERSION="{{ QUARTO_VERSION }}" \
+  TINI_VERSION="{{ TINI_VERSION }}" \
+  OS="{{ IMAGE_OS }}" \
+  docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
+
+# Test base image interactively - just test-i rstudio/base-pro:ubuntu1804
+test-i TAG=DEFAULT_BASE_TAG:
+  just test {{ TAG }} bash

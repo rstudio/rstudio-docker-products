@@ -190,16 +190,17 @@ update-drivers-versions:
     r-session-complete/Dockerfile.ubuntu*
   sed {{ sed_vars }} "s/DRIVERS_VERSION=.*/DRIVERS_VERSION={{ DRIVERS_VERSION_RHEL }}/g" \
     r-session-complete/.env \
-    r-session-complete/Dockerfile.centos7
+    r-session-complete/Dockerfile.centos7 \
+    product/pro/Dockerfile.centos7
   sed {{ sed_vars }} "s/^DRIVERS_VERSION := .*/DRIVERS_VERSION := \"{{ DRIVERS_VERSION }}\"/g" \
     content/pro/Justfile \
     r-session-complete/Justfile \
-    base/Justfile \
+    product/pro/Justfile \
     Justfile
   sed {{ sed_vars }} "s/^DRIVERS_VERSION_RHEL := .*/DRIVERS_VERSION_RHEL := \"{{ DRIVERS_VERSION_RHEL }}\"/g" \
     content/pro/Justfile \
     r-session-complete/Justfile \
-    base/Justfile \
+    product/pro/Justfile \
     Justfile
 
 # just test-image preview workbench 12.0.11-8 tag1 tag2 tag3 ...
