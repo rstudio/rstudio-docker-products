@@ -33,7 +33,8 @@ Docker images for RStudio Professional Products
 *IMPORTANT:* Do not use these images. They are in preparation for a future release
 
 - RStudio Connect Session Images (requires the launcher)
-    - [Content Base Image](./content-base/)
+    - [Content Base Image](./content/base/)
+    - [Content Base + Pro Driver Image](./content/pro/)
     - [Content Init Container](./connect-content-init/)
 
 # RStudio Team
