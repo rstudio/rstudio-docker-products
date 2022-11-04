@@ -55,6 +55,8 @@ jobs:
           tags: |
             rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
             ghcr.io/rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
+            rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
+            ghcr.io/rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           load: true
@@ -112,6 +114,8 @@ jobs:
         run: |
           docker push rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
           docker push ghcr.io/rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
+          docker push rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
+          docker push ghcr.io/rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
 
 
 
@@ -150,6 +154,8 @@ jobs:
           tags: |
             rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
             ghcr.io/rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
+            rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
+            ghcr.io/rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           load: true
@@ -209,4 +215,6 @@ jobs:
         run: |
           docker push rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
           docker push ghcr.io/rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
+          docker push rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
+          docker push ghcr.io/rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
 
