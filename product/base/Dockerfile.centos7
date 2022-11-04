@@ -1,5 +1,5 @@
 FROM centos:7
-LABEL maintainer="RStudio Docker <docker@rstudio.com>"
+LABEL maintainer="Posit Docker <docker@posit.co>"
 
 ### ARG declarations ###
 ARG R_VERSION=4.2.0
@@ -87,11 +87,11 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
 
-LABEL rstudio.r.version="${R_VERSION}" \
-      rstudio.r.version_alt="${R_VERSION_ALT}" \
-      rstudio.python.version="${PYTHON_VERSION}" \
-      rstudio.python.version_alt="${PYTHON_VERSION_ALT}" \
-      rstudio.tini.version="${TINI_VERSION}" \
-      rstudio.quarto.version="${QUARTO_VERSION}"
+LABEL posit.r.version="${R_VERSION}" \
+      posit.r.version_alt="${R_VERSION_ALT}" \
+      posit.python.version="${PYTHON_VERSION}" \
+      posit.python.version_alt="${PYTHON_VERSION_ALT}" \
+      posit.tini.version="${TINI_VERSION}" \
+      posit.quarto.version="${QUARTO_VERSION}"
 
 ENTRYPOINT ["/tini", "--"]
