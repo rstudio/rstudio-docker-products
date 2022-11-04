@@ -28,6 +28,8 @@ jobs:
           - {product: 'r-session-complete', os: 'centos7'}
           - {product: 'r-session-complete', os: 'jammy'}
           - {product: 'workbench-for-microsoft-azure-ml', os: 'bionic'}
+          - {product: 'content/base', os: 'bionic'}
+          - {product: 'content/pro', os: 'bionic'}
 
     steps:
       - name: Check Out Repo

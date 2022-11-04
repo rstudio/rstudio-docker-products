@@ -36,4 +36,4 @@ build OS=IMAGE_OS _R_VERSION=R_VERSION _PYTHON_VERSION=PYTHON_VERSION +TAGS=DEFA
     --build-arg PYTHON_VERSION="{{ _PYTHON_VERSION }}" \
     --build-arg MINICONDA_VERSION="{{ MINICONDA_VERSION }}" \
     --build-arg QUARTO_VERSION="{{ QUARTO_VERSION }}" \
-    --file="{{ OS }}/Dockerfile" "{{ OS }}"
+    --file="Dockerfile.{{ OS }}" {{ justfile_directory() }}
