@@ -7,5 +7,7 @@ ignored:
     # Suppresses info for too many consecutive RUN statements. Multiple consecutive RUN statements are often a conscious
     # design choice in our Dockerfiles, but we could consider condensing them in the future.
   - DL3059
+    # Suppresses warning for using a "glob" command name (we use globs to refer to tlmgr in the TeXLive install)
+  - SC2211
 label-schema:
   maintainer: text
