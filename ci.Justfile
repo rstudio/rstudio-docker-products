@@ -88,11 +88,11 @@ test-base $OS $TYPE="base":
 
   # set short name
   if [[ $TYPE == "base" ]]; then
-    IMAGE_NAME="base"
-    just IMAGE_OS="${OS}" product/base/test rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}
+    IMAGE_NAME="product-base"
+    just IMAGE_OS="${OS}" product/base/test ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}
   elif [[ $TYPE == "base-pro" || $TYPE == "pro" ]]; then
-    IMAGE_NAME="base-pro"
-    just IMAGE_OS="${OS}" product/pro/test rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}
+    IMAGE_NAME="product-base-pro"
+    just IMAGE_OS="${OS}" product/pro/test ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}
   fi
 
 # just BUILDX_PATH=~/.buildx build-release workbench ubuntu1804 12.0.11-11
