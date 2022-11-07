@@ -65,7 +65,7 @@ test TAG=DEFAULT_BASE_PRO_TAG CMD="":
   QUARTO_VERSION="{{ QUARTO_VERSION }}" \
   TINI_VERSION="{{ TINI_VERSION }}" \
   DRIVERS_VERSION="${_DRIVERS_VERSION}" \
-  docker-compose -f ./pro/docker-compose.test.yml run sut {{ CMD }}
+  docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
 
 # Test base image interactively - just test-i rstudio/base-pro:ubuntu1804
 test-i TAG=DEFAULT_BASE_PRO_TAG:
