@@ -7,7 +7,6 @@ PRODUCT := "workbench"
 IMAGE_OS := "bionic"
 
 RSW_VERSION := "2022.07.2+576.pro12"
-RSW_TAG_SAFE_VERSION := replace(RSW_VERSION, "+", "-")
 RSW_LICENSE := ""
 
 R_VERSION := "3.6.2"
@@ -16,20 +15,28 @@ R_VERSION_ALT := "4.1.0"
 PYTHON_VERSION := "3.9.5"
 PYTHON_VERSION_ALT := "3.8.10"
 
-DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":" + IMAGE_OS + "-" + RSW_TAG_SAFE_VERSION
+_make-default-tag OS=IMAGE_OS:
+  echo "{{IMAGE_PREFIX}}{{PRODUCT}}:{{OS}}-$(just -f ../Justfile _get-tag-safe-version {{RSW_VERSION}})"
 
 # Build Workbench for Azure ML image - just build bionic 2022.07.2+576.pro12 rstudio/rstudio-workbench:bionic-2022.07.2-576.pro12
-build OS=IMAGE_OS VERSION=RSW_VERSION +TAGS=DEFAULT_TAG:
+build OS=IMAGE_OS VERSION=RSW_VERSION *TAGS="":
   #!/usr/bin/env bash
   set -euxo pipefail
   BUILDX_ARGS=""
   if [[ "{{BUILDX_PATH}}" != "" ]]; then
     BUILDX_ARGS="--cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache"
   fi
+
+  if [[ "{{TAGS}}" == "" ]]; then
+    raw_tag_array=($(just _make-default-tag {{OS}}))
+  else
+    raw_tag_array=("{{TAGS}}")
+  fi
+
   tag_array=()
-  for TAG in {{TAGS}}
+  for tag in $raw_tag_array
   do
-    tag_array+=("-t" $TAG)
+    tag_array+=("-t" $tag)
   done
 
   docker buildx --builder="{{ BUILDX_PATH }}" build --load ${BUILDX_ARGS} \
@@ -42,7 +49,7 @@ build OS=IMAGE_OS VERSION=RSW_VERSION +TAGS=DEFAULT_TAG:
     --file=./Dockerfile."{{ OS }}" .
 
 # Test Workbench for Azure ML image - just test rstudio/rstudio-workbench:bionic-2022.07.2-576.pro12 2022.07.2+576.pro12
-test TAG=DEFAULT_TAG VERSION=RSW_VERSION CMD="":
+test TAG=`just _make-default-tag` VERSION=RSW_VERSION CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
   IMAGE_NAME="{{ TAG }}" \
@@ -54,11 +61,11 @@ test TAG=DEFAULT_TAG VERSION=RSW_VERSION CMD="":
   docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
 
 # Test Workbench for Azure ML image interactively - just test-i rstudio/rstudio-workbench:bionic-2022.07.2-576.pro12 2022.07.2+576.pro12
-test-i TAG=DEFAULT_TAG VERSION=RSW_VERSION:
+test-i TAG=`just _make-default-tag` VERSION=RSW_VERSION:
   just test {{ TAG }} {{ VERSION }} bash
 
 # Run Workbench for Azure ML - just RSW_LICENSE="<RSW license>" run rstudio/r-session-complete:bionic-2022.07.2-576.pro12
-run TAG=DEFAULT_TAG CMD="":
+run TAG=`just _make-default-tag` CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
   if [ -z "{{ RSW_LICENSE }}" ]; then

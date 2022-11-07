@@ -9,7 +9,6 @@ BUILDX_PATH := ""
 RSC_VERSION := "2022.10.0"
 RSPM_VERSION := "2022.07.2-11"
 RSW_VERSION := "2022.07.2+576.pro12"
-RSC_TAG_SAFE_VERSION := replace(RSW_VERSION, "+", "-")
 
 DRIVERS_VERSION := "2021.10.0"
 DRIVERS_VERSION_RHEL := "2021.10.0-1"
@@ -19,6 +18,11 @@ R_VERSION_ALT := "4.1.0"
 
 PYTHON_VERSION := "3.9.5"
 PYTHON_VERSION_ALT := "3.8.10"
+
+# just _get-tag-safe-version 2022.07.2+576.pro12
+_get-tag-safe-version $VERSION:
+  #!/usr/bin/env bash
+  echo -n "$VERSION" | sed 's/[+|-].*//g'
 
 # just RSW_VERSION=1.2.3 R_VERSION=4.1.0 update-versions
 update-versions:
@@ -46,7 +50,7 @@ update-rsw-versions:
     workbench/Dockerfile.bionic \
     workbench-for-microsoft-azure-ml/Dockerfile.bionic
   sed {{ sed_vars }} "s/RSW_VERSION:.*/RSW_VERSION: {{ RSW_VERSION }}/g" docker-compose.yml
-  sed {{ sed_vars }} "s/rstudio\/rstudio-workbench:.*/rstudio\/rstudio-workbench:{{ RSC_TAG_SAFE_VERSION }}/g" docker-compose.yml
+  sed {{ sed_vars }} "s/rstudio\/rstudio-workbench:.*/rstudio\/rstudio-workbench:$(just _get-tag-safe-version {{ RSW_VERSION }})/g" docker-compose.yml
   sed {{ sed_vars }} "s/org.opencontainers.image.version='.*'/org.opencontainers.image.version='{{ RSW_VERSION }}'/g" workbench-for-microsoft-azure-ml/Dockerfile.bionic
   sed {{ sed_vars }} "s/^RSW_VERSION := .*/RSW_VERSION := \"{{ RSW_VERSION }}\"/g" \
     r-session-complete/Justfile \
@@ -62,7 +66,7 @@ update-rspm-versions:
     package-manager/.env \
     package-manager/Dockerfile.bionic
   sed {{ sed_vars }} "s/RSPM_VERSION:.*/RSPM_VERSION: {{ RSPM_VERSION }}/g" docker-compose.yml
-  sed {{ sed_vars }} "s/rstudio\/rstudio-package-manager:.*/rstudio\/rstudio-package-manager:{{ RSPM_VERSION }}/g" docker-compose.yml
+  sed {{ sed_vars }} "s/rstudio\/rstudio-package-manager:.*/rstudio\/rstudio-package-manager:$(just _get-tag-safe-version {{ RSPM_VERSION }})/g" docker-compose.yml
   sed {{ sed_vars }} "s/^RSPM_VERSION := .*/RSPM_VERSION := \"{{ RSPM_VERSION }}\"/g" \
     package-manager/Justfile \
     Justfile
