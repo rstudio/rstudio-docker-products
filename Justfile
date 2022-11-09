@@ -78,7 +78,9 @@ update-rsc-versions:
   sed {{ sed_vars }} "s/RSC_VERSION=.*/RSC_VERSION={{ RSC_VERSION }}/g" \
     connect/.env \
     connect/Dockerfile.bionic \
-    connect-content-init/Dockerfile.bionic
+    connect/Dockerfile.jammy \
+    connect-content-init/Dockerfile.bionic \
+    connect-content-init/Dockerfile.jammy
   sed {{ sed_vars }} "s/RSC_VERSION:.*/RSC_VERSION: {{ RSC_VERSION }}/g" docker-compose.yml
   sed {{ sed_vars }} "s/rstudio\/rstudio-connect:.*/rstudio\/rstudio-connect:{{ RSC_VERSION }}/g" docker-compose.yml
   sed {{ sed_vars }} "s/^RSC_VERSION := .*/RSC_VERSION := \"{{ RSC_VERSION }}\"/g" \
@@ -96,6 +98,7 @@ update-r-versions:
     package-manager/.env \
     workbench/Dockerfile.bionic \
     connect/Dockerfile.bionic \
+    connect/Dockerfile.jammy \
     package-manager/Dockerfile.bionic
   sed {{ sed_vars }} "s|^RVersion.*=.*|RVersion = /opt/R/{{ R_VERSION }}/|g" package-manager/rstudio-pm.gcfg
   sed {{ sed_vars }} "s/^R_VERSION := .*/R_VERSION := \"{{ R_VERSION }}\"/g" \
@@ -109,7 +112,8 @@ update-r-versions:
     workbench/.env \
     connect/.env \
     workbench/Dockerfile.bionic \
-    connect/Dockerfile.bionic
+    connect/Dockerfile.bionic \
+    connect/Dockerfile.jammy
   sed {{ sed_vars }} "s/^R_VERSION_ALT := .*/R_VERSION_ALT := \"{{ R_VERSION_ALT }}\"/g" \
     workbench/Justfile \
     workbench-for-microsoft-azure-ml/Justfile \
@@ -125,6 +129,7 @@ update-py-versions:
     workbench/Dockerfile.bionic \
     workbench/.env \
     connect/Dockerfile.bionic \
+    connect/Dockerfile.jammy \
     connect/.env \
     package-manager/Dockerfile.bionic \
     package-manager/.env
@@ -139,6 +144,7 @@ update-py-versions:
     workbench/Dockerfile.bionic \
     workbench/.env \
     connect/Dockerfile.bionic \
+    connect/Dockerfile.jammy \
     connect/.env \
     workbench/Justfile \
     workbench-for-microsoft-azure-ml/Justfile \
