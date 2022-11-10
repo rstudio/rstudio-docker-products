@@ -25,6 +25,9 @@
 #
 # Informational messages are printed to STDERR.
 #
+# Skip PATH lookups by setting the NO_PATH_LOOKUPS environment variable:
+# docker run -e NO_PATH_LOOKUPS=1 --rm -v $(pwd)/scripts:/scripts rstudio/connect-content-images:kitchen-sink-ubuntu1604 /scripts/examine-image.sh > runtime.yaml
+#
 # Run with additional debug tracing by setting the DEBUG environment variable:
 # docker run -e DEBUG=yes --rm -v $(pwd)/scripts:/scripts rstudio/connect-content-images:kitchen-sink-ubuntu1604 /scripts/examine-image.sh > runtime.yaml
 
@@ -109,10 +112,14 @@ done
 
 # Probe R in PATH only when no other R available.
 if [ ${R_FOUND} = 0 ] ; then
-    R_EXE=$(which R 2>/dev/null)
-    status=$?
-    if [ ${status} = 0 ] ; then
-        r_exe_probe "PATH" "${R_EXE}"
+    if [ -z "${NO_PATH_LOOKUPS}" ] ; then
+        R_EXE=$(which R 2>/dev/null)
+        status=$?
+        if [ ${status} = 0 ] ; then
+            r_exe_probe "PATH" "${R_EXE}"
+        fi
+    else
+        log "Ignoring PATH for R discovery."
     fi
 fi
 
@@ -160,20 +167,24 @@ done
 
 # Probe Python in PATH only when no other Python available.
 if [ ${PYTHON_FOUND} = 0 ] ; then
-    PYTHON_EXE=$(which python 2>/dev/null)
-    status=$?
-    if [ ${status} = 0 ] ; then
-        python_exe_probe "PATH" "${PYTHON_EXE}"
-    fi
-    PYTHON_EXE=$(which python2 2>/dev/null)
-    status=$?
-    if [ ${status} = 0 ] ; then
-        python_exe_probe "PATH" "${PYTHON_EXE}"
-    fi
-    PYTHON_EXE=$(which python3 2>/dev/null)
-    status=$?
-    if [ ${status} = 0 ] ; then
-        python_exe_probe "PATH" "${PYTHON_EXE}"
+    if [ -z "${NO_PATH_LOOKUPS}" ] ; then
+        PYTHON_EXE=$(which python 2>/dev/null)
+        status=$?
+        if [ ${status} = 0 ] ; then
+            python_exe_probe "PATH" "${PYTHON_EXE}"
+        fi
+        PYTHON_EXE=$(which python2 2>/dev/null)
+        status=$?
+        if [ ${status} = 0 ] ; then
+            python_exe_probe "PATH" "${PYTHON_EXE}"
+        fi
+        PYTHON_EXE=$(which python3 2>/dev/null)
+        status=$?
+        if [ ${status} = 0 ] ; then
+            python_exe_probe "PATH" "${PYTHON_EXE}"
+        fi
+    else
+        log "Ignoring PATH for Python discovery."
     fi
 fi
 
@@ -234,10 +245,14 @@ done
 
 # Probe Quarto in PATH only when no other quarto available.
 if [ ${QUARTO_FOUND} = 0 ] ; then
-    QUARTO_EXE=$(which quarto 2>/dev/null)
-    status=$?
-    if [ ${status} = 0 ] ; then
-        quarto_exe_probe "PATH" "${QUARTO_EXE}"
+    if [ -z "${NO_PATH_LOOKUPS}" ] ; then
+        QUARTO_EXE=$(which quarto 2>/dev/null)
+        status=$?
+        if [ ${status} = 0 ] ; then
+            quarto_exe_probe "PATH" "${QUARTO_EXE}"
+        fi
+    else
+        log "Ignoring PATH for R discovery."
     fi
 fi
 
