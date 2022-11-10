@@ -1,0 +1,40 @@
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+name: Update READMEs on Docker Hub
+jobs:
+
+  update-main:
+    runs-on: ubuntu-latest
+    name: update-readme_${{ matrix.config.repository }}
+    env:
+      REGISTRY_NAMESPACE: rstudio
+      
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {prefix: 'rstudio-', repository: 'workbench', readme_path: './workbench/README.md'}
+          - {prefix: 'rstudio-', repository: 'connect', readme_path: './connect/README.md'}
+          - {prefix: 'rstudio-', repository: 'connect-content-init', readme_path: './connect-content-init/README.md'}
+          - {prefix: 'rstudio-', repository: 'content-base', readme_path: './content/base/README.md'}
+          - {prefix: 'rstudio-', repository: 'content-pro', readme_path: './content/pro/README.md'}
+          - {prefix: 'rstudio-', repository: 'package-manager', readme_path: './package-manager/README.md'}
+          - {prefix: '', repository: 'r-session-complete', readme_path: './r-session-complete/README.md'}
+          - {prefix: 'rstudio-', repository: 'workbench-for-microsoft-azure-ml', readme_path: './workbench-for-microsoft-azure-ml/README.md'}
+
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+
+      - name: Docker Hub Description
+        uses: peter-evans/dockerhub-description@v3.1.2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          repository: ${{ env.REGISTRY_NAMESPACE }}/${{ matrix.config.prefix }}${{ matrix.config.repository }}
+          readme-filepath: ${{ matrix.config.readme_path }}
