@@ -16,20 +16,20 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {product: 'workbench', os: 'bionic'}
-          - {product: 'workbench', os: 'jammy'}
-          - {product: 'connect', os: 'bionic'}
-          - {product: 'connect', os: 'jammy'}
-          - {product: 'connect-content-init', os: 'bionic'}
-          - {product: 'connect-content-init', os: 'jammy'}
-          - {product: 'package-manager', os: 'bionic'}
-          - {product: 'package-manager', os: 'jammy'}
-          - {product: 'r-session-complete', os: 'bionic'}
+          - {product: 'workbench', os: 'ubuntu1804'}
+          - {product: 'workbench', os: 'ubuntu2204'}
+          - {product: 'connect', os: 'ubuntu1804'}
+          - {product: 'connect', os: 'ubuntu2204'}
+          - {product: 'connect-content-init', os: 'ubuntu1804'}
+          - {product: 'connect-content-init', os: 'ubuntu2204'}
+          - {product: 'package-manager', os: 'ubuntu1804'}
+          - {product: 'package-manager', os: 'ubuntu2204'}
+          - {product: 'r-session-complete', os: 'ubuntu1804'}
           - {product: 'r-session-complete', os: 'centos7'}
-          - {product: 'r-session-complete', os: 'jammy'}
-          - {product: 'workbench-for-microsoft-azure-ml', os: 'bionic'}
-          - {product: 'content/base', os: 'bionic'}
-          - {product: 'content/pro', os: 'bionic'}
+          - {product: 'r-session-complete', os: 'ubuntu2204'}
+          - {product: 'workbench-for-microsoft-azure-ml', os: 'ubuntu1804'}
+          - {product: 'content/base', os: 'ubuntu1804'}
+          - {product: 'content/pro', os: 'ubuntu1804'}
 
     steps:
       - name: Check Out Repo

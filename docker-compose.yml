@@ -5,7 +5,7 @@ services:
     container_name: rstudio-workbench
     build:
       context: ./workbench
-      dockerfile: "Dockerfile.${IMAGE_OS:-bionic}"
+      dockerfile: "Dockerfile.${IMAGE_OS:-ubuntu1804}"
       args:
         RSW_VERSION: 2022.07.2+576.pro12
     image: rstudio/rstudio-workbench:2022.07.2-576.pro12
@@ -23,7 +23,7 @@ services:
     container_name: rstudio-connect
     build:
       context: ./connect
-      dockerfile: "Dockerfile.${IMAGE_OS:-bionic}"
+      dockerfile: "Dockerfile.${IMAGE_OS:-ubuntu1804}"
       args:
         RSC_VERSION: 2022.10.0
     image: rstudio/rstudio-connect:2022.10.0
@@ -41,7 +41,7 @@ services:
     container_name: rstudio-package-manager
     build:
       context: ./package-manager
-      dockerfile: "Dockerfile.${IMAGE_OS:-bionic}"
+      dockerfile: "Dockerfile.${IMAGE_OS:-ubuntu1804}"
       args:
         RSPM_VERSION: 2022.07.2-11
     image: rstudio/rstudio-package-manager:2022.07.2-11
