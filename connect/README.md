@@ -1,10 +1,20 @@
+# Quick reference
+
+* Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
+* Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues)
+
+# Supported tags and respective Dockerfile links
+
+* [`latest`, `bionic`, `2022.10.0`, `bionic-2022.10.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.bionic)
+* [`jammy`, `jammy-2022.10.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.jammy)
+
 # RStudio Connect
 
-Docker images for RStudio Professional Products
+Docker images for [RStudio Connect](https://docs.rstudio.com/connect/user/)
 
 **IMPORTANT:** There are a few things you need to know before using these images:
 
-1. These images are provided as a convenience to RStudio customers and are not formally supported by RStudio. If you
+1. These images are provided as a convenience to RStudio customers and are not yet formally supported by RStudio. If you
    have questions about these images, you can ask them in the issues in the repository or to your support
    representative, who will route them appropriately.
 1. Outdated images will be removed periodically from DockerHub as product version updates are made. Please make plans to
@@ -29,13 +39,13 @@ docker run -it --privileged \
     -e RSC_LICENSE=$RSC_LICENSE \
     rstudio/rstudio-connect:latest
     
-# Alternatively, the above can be ran using a single just command
+# Alternatively, the above can be ran using a single just command from within the connect/ directory of this repo
 just RSC_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX run
 ```
 
 Open [http://localhost:3939](http://localhost:3939) to access RStudio Connect.
 
-For a more "real" deployment, continue reading!
+For a more practical deployment, continue reading!
 
 #### Overview
 

@@ -104,6 +104,9 @@ update-rsc-versions:
   sed {{ sed_vars }} "s/^RSC_VERSION := .*/RSC_VERSION := \"{{ RSC_VERSION }}\"/g" \
     connect/Justfile \
     Justfile
+  sed {{ sed_vars }} "s/\`\d+\.\d+\.\d+\`/\`{{ RSC_VERSION }}\`/g" connect/README.md
+  sed {{ sed_vars }} "s/\`bionic-.*\`/\`bionic-{{ RSC_VERSION }}\`/g" connect/README.md
+  sed {{ sed_vars }} "s/\`jammy-.*\`/\`jammy-{{ RSC_VERSION }}\`/g" connect/README.md
 
 # just R_VERSION=3.2.1 R_VERSION_ALT=4.1.0 update-r-versions
 update-r-versions:
