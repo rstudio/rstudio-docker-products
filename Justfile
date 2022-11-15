@@ -141,7 +141,7 @@ update-py-versions:
   #!/usr/bin/env bash
   set -euxo pipefail
   # Update primary Python versions
-  sed {{ sed_vars }} "s/PYTHON_VERSION=.*/PYTHON_VERSION={{ PYTHON_VERSION }}/g" \
+  sed {{ sed_vars }} "s/^PYTHON_VERSION=.*/PYTHON_VERSION={{ PYTHON_VERSION }}/g" \
     workbench/Dockerfile.ubuntu1804 \
     workbench/Dockerfile.ubuntu2204 \
     workbench/.env \
@@ -158,13 +158,14 @@ update-py-versions:
     Justfile
 
   # Update alt Python versions
-  sed {{ sed_vars }} "s/PYTHON_VERSION_ALT=.*/PYTHON_VERSION_ALT={{ PYTHON_VERSION_ALT }}/g" \
+  sed {{ sed_vars }} "s/^PYTHON_VERSION_ALT=.*/PYTHON_VERSION_ALT={{ PYTHON_VERSION_ALT }}/g" \
     workbench/Dockerfile.ubuntu1804 \
     workbench/Dockerfile.ubuntu2204 \
     workbench/.env \
     connect/Dockerfile.ubuntu1804 \
     connect/Dockerfile.ubuntu2204 \
-    connect/.env \
+    connect/.env
+  sed {{ sed_vars }} "s/^PYTHON_VERSION_ALT := .*/PYTHON_VERSION_ALT := \"{{ PYTHON_VERSION_ALT }}\"/g" \
     workbench/Justfile \
     workbench-for-microsoft-azure-ml/Justfile \
     connect/Justfile \

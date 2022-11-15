@@ -1,4 +1,4 @@
-ARG R_VERSION=3.6
+ARG R_VERSION=3.6.2
 FROM rstudio/r-base:${R_VERSION}-jammy
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
@@ -50,7 +50,7 @@ RUN apt-get update -qq && \
 
 # Install jupyter -------------------------------------------------------------#
 
-ARG JUPYTER_VERSION=3.8.10
+ARG JUPYTER_VERSION=3.6.2
 RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
     bash Miniconda3-latest-Linux-x86_64.sh -bp /opt/python/jupyter && \
     /opt/python/jupyter/bin/conda install -y python==${JUPYTER_VERSION} && \
@@ -123,7 +123,7 @@ COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
 
 # Install RStudio Workbench --------------------------------------------------#
-ARG RSW_VERSION=2022.07.1+554.pro3
+ARG RSW_VERSION=2022.07.2+576.pro12
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/jammy/amd64
 ARG RSW_NAME=rstudio-workbench
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
