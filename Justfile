@@ -105,7 +105,7 @@ update-r-versions:
   #!/usr/bin/env bash
   set -euxo pipefail
   # Update primary R versions
-  sed {{ sed_vars }} "s/R_VERSION=.*/R_VERSION={{ R_VERSION }}/g" \
+  sed {{ sed_vars }} "s/^R_VERSION=.*/R_VERSION={{ R_VERSION }}/g" \
     workbench/.env \
     connect/.env \
     package-manager/.env \
@@ -123,7 +123,7 @@ update-r-versions:
     Justfile
 
   # Update alt R versions
-  sed {{ sed_vars }} "s/R_VERSION_ALT=.*/R_VERSION_ALT={{ R_VERSION_ALT }}/g" \
+  sed {{ sed_vars }} "s/^R_VERSION_ALT=.*/R_VERSION_ALT={{ R_VERSION_ALT }}/g" \
     workbench/.env \
     connect/.env \
     workbench/Dockerfile.ubuntu1804 \
