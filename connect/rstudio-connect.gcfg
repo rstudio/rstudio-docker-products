@@ -40,7 +40,6 @@ URL = https://packagemanager.rstudio.com/cran/__linux__/bionic/latest
 URL = https://packagemanager.rstudio.com/cran/__linux__/bionic/latest
 
 [Logging]
-Enabled = true
 ServiceLog = STDOUT
 ServiceLogFormat = TEXT    ; TEXT or JSON
 ServiceLogLevel = INFO     ; INFO, WARNING or ERROR
