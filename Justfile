@@ -22,6 +22,11 @@ PYTHON_VERSION_ALT := "3.8.10"
 # just _get-tag-safe-version 2022.07.2+576.pro12
 _get-tag-safe-version $VERSION:
   #!/usr/bin/env bash
+  echo -n "$VERSION" | sed 's/+/-/g'
+
+# just _get-clean-version 2022.07.2+576.pro12
+_get-clean-version $VERSION:
+  #!/usr/bin/env bash
   echo -n "$VERSION" | sed 's/[+|-].*//g'
 
 _parse-os OS:
