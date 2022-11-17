@@ -21,7 +21,7 @@ build-release $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`git 
   RSW_DOWNLOAD_URL=`just -f ci.Justfile _get-rsw-download-url release $OS`
   BUILDX_ARGS=""
   SHORT_NAME=""
-  TAG_VERSION=`just _get-tag-safe-version $VERSION`
+  TAG_CLEAN_VERSION=`just _get-clean-version $VERSION`
 
   # set short name
   if [[ $PRODUCT == "workbench" || $PRODUCT == "r-session-complete" || $PRODUCT == "workbench-for-microsoft-azure-ml" ]]; then
@@ -45,11 +45,11 @@ build-release $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`git 
   do
     tag_array+=(
       "-t" "rstudio/${IMAGE_PREFIX}${PRODUCT}:${os_name}"
-      "-t" "rstudio/${IMAGE_PREFIX}${PRODUCT}:${os_name}-${TAG_VERSION}"
-      "-t" "rstudio/${IMAGE_PREFIX}${PRODUCT}:${os_name}-${TAG_VERSION}--${SHA_SHORT}"
+      "-t" "rstudio/${IMAGE_PREFIX}${PRODUCT}:${os_name}-${TAG_CLEAN_VERSION}"
+      "-t" "rstudio/${IMAGE_PREFIX}${PRODUCT}:${os_name}-${TAG_CLEAN_VERSION}--${SHA_SHORT}"
       "-t" "ghcr.io/rstudio/${IMAGE_PREFIX}${PRODUCT}:${os_name}"
-      "-t" "ghcr.io/rstudio/${IMAGE_PREFIX}${PRODUCT}:${os_name}-${TAG_VERSION}"
-      "-t" "ghcr.io/rstudio/${IMAGE_PREFIX}${PRODUCT}:${os_name}-${TAG_VERSION}--${SHA_SHORT}"
+      "-t" "ghcr.io/rstudio/${IMAGE_PREFIX}${PRODUCT}:${os_name}-${TAG_CLEAN_VERSION}"
+      "-t" "ghcr.io/rstudio/${IMAGE_PREFIX}${PRODUCT}:${os_name}-${TAG_CLEAN_VERSION}--${SHA_SHORT}"
     )
   done
 
@@ -76,6 +76,7 @@ build-preview $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
   RSW_DOWNLOAD_URL=`just -f ci.Justfile _get-rsw-download-url $TYPE $OS`
   BUILDX_ARGS=""
   SHORT_NAME=""
+  TAG_CLEAN_VERSION=`just _get-clean-version $VERSION`
   TAG_VERSION=`just _get-tag-safe-version $VERSION`
 
   # set branch prefix
@@ -107,8 +108,10 @@ build-preview $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
   do
     tag_array+=(
       "-t" "rstudio/${IMAGE_PREFIX}${PRODUCT}-preview:${BRANCH_PREFIX}${os_name}-${TAG_VERSION}"
+      "-t" "rstudio/${IMAGE_PREFIX}${PRODUCT}-preview:${BRANCH_PREFIX}${os_name}-${TAG_CLEAN_VERSION}"
       "-t" "rstudio/${IMAGE_PREFIX}${PRODUCT}-preview:${BRANCH_PREFIX}${os_name}-${TYPE}"
       "-t" "ghcr.io/rstudio/${IMAGE_PREFIX}${PRODUCT}-preview:${BRANCH_PREFIX}${os_name}-${TAG_VERSION}"
+      "-t" "ghcr.io/rstudio/${IMAGE_PREFIX}${PRODUCT}-preview:${BRANCH_PREFIX}${os_name}-${TAG_CLEAN_VERSION}"
       "-t" "ghcr.io/rstudio/${IMAGE_PREFIX}${PRODUCT}-preview:${BRANCH_PREFIX}${os_name}-${TYPE}"
     )
   done
