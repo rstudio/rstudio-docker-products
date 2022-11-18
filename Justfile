@@ -123,6 +123,7 @@ update-rsc-versions:
   sed {{ sed_vars }} "s/rstudio\/rstudio-connect:.*/rstudio\/rstudio-connect:{{ RSC_VERSION }}/g" docker-compose.yml
   sed {{ sed_vars }} "s/^RSC_VERSION := .*/RSC_VERSION := \"{{ RSC_VERSION }}\"/g" \
     connect/Justfile \
+    connect-content-init/Justfile \
     Justfile
   sed {{ sed_vars }} "s/\`[\.0-9]+\`/\``just _get-clean-version {{ RSC_VERSION }}`\`/g" connect/README.md
   sed {{ sed_vars }} "s/\`bionic-[\.0-9]+\`/\`bionic-`just _get-clean-version {{ RSC_VERSION }}`\`/g" connect/README.md
