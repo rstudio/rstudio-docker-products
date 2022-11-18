@@ -1,6 +1,15 @@
-> PRE-RELEASE. DO NOT USE
+**PRE-RELEASE - DO NOT USE**
 
-# [RStudio Connect is located here](../connect)
+# Quick reference
+
+* Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
+* Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues)
+* RStudio Connect image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-connect)
+
+# Supported tags and respective Dockerfile links
+
+* [`latest`, `2022.10.0`, `bionic`, `ubuntu1804`, `bionic-2022.10.0`, `ubuntu1804-2022.10.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.bionic)
+* [`jammy`, `ubuntu2204`, `jammy-2022.10.0`, `ubuntu2204-2022.10.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.jammy)
 
 # RStudio Connect Content Init Container
 
@@ -10,7 +19,7 @@ mount directory. This container can be used as an "init container" to pull the
 runtime components into another image, which can then be used with Connect and
 Launcher to build/run content.
 
-## building
+## Building
 
 Just will build an image using a default Connect distribution.
 
@@ -22,10 +31,10 @@ The version of the release package to use can be overridden with the
 `RSC_VERSION` build arg.
 
 ```console
-just build bionic 1.8.8.3-dev236
+just build ubuntu1804 1.8.8.3-dev236
 ```
 
-## testing
+## Testing
 
 You can observe what gets copied by the container:
 
@@ -42,7 +51,7 @@ just test
 ```
 
 
-## inspection
+## Inspection
 
 You can see the different layers that make up the image:
 

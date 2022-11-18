@@ -1,8 +1,24 @@
-# RStudio Package Manager
+# Quick reference
 
-Docker images for RStudio Professional Products
+* Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
+* Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues)
 
-**IMPORTANT:** There are a few things you need to know before using these images:
+# Supported tags and respective Dockerfile links
+
+* [`latest`, `2022.07.2`, `bionic`, `ubuntu1804`, `bionic-2022.07.2`, `ubuntu1804-2022.07.2`](https://github.com/rstudio/rstudio-docker-products/blob/main/package-manager/Dockerfile.ubuntu1804)
+* [`jammy`, `ubuntu2204`, `jammy-2022.07.2`, `ubuntu2204-22022.07.2`](hhttps://github.com/rstudio/rstudio-docker-products/blob/main/package-manager/Dockerfile.ubuntu2204)
+
+# What is RStudio Package Manager?
+
+Posit Package Manager, formerly RStudio Package Manager, is a repository management server to organize and centralize 
+R packages across your team, department, or entire organization. Get offline access to CRAN, automate CRAN syncs, 
+share local packages, restrict package access, find packages across repositories, and more. Experience reliable and 
+consistent package management, optimized for teams who use R.
+
+The following documentation helps an administrator install and configure Package Manager. It provides information for 
+installing the product on different operating systems, upgrading, and configuring Package Manager.
+
+# Notice for support
 
 1. This image may introduce **BREAKING** changes, as such we recommend:
    - Avoid using the `latest` tag to avoid unexpected issues, and
@@ -23,10 +39,9 @@ Docker images for RStudio Professional Products
    [Git-related package builds](https://docs.rstudio.com/rspm/admin/building-packages/) we recommend [using a system with
    sandboxing enabled](https://docs.rstudio.com/rspm/admin/process-management/#docker).
 
-## Simple Example
+# How to use this image
 
 To verify basic functionality as a first step:
-
 ```bash
 # Replace with valid license
 export RSPM_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
@@ -36,14 +51,8 @@ docker run -it \
     -p 4242:4242 \
     -e RSPM_LICENSE=$RSPM_LICENSE \
     rstudio/rstudio-package-manager:latest
-    
-# Alternatively, the above can be ran using a single just command
-just RSPM_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX run
 ```
-
 Open [http://localhost:4242](http://localhost:4242) to access RStudio Package Manager UI.
-
-For a more "real" deployment, continue reading!
 
 ## Overview
 
@@ -51,7 +60,7 @@ Note that running the RStudio Package Manager Docker image requires a valid RStu
 
 This container includes:
 
-1. R 3.6.2
+1. One version of R
 2. RStudio Package Manager
 
 > NOTE: Package Manager is currently not very particular about R version. Changing the R version is rarely necessary.
@@ -64,7 +73,7 @@ a volume from the host machine. Changes will take effect when the container is r
 Be sure the config file has the `[HTTP].Listen` field configured. See a complete example of that file at
 [`package-manager/rstudio-pm.gcfg`](./rstudio-pm.gcfg).
 
-## Persistent Data
+### Persistent Data
 
 In order to persist Package Manager data between container restarts, configure the `Server.DataDir` option to go to
 a persistent volume. The included configuration file expects a persistent volume from the host machine or your docker
@@ -84,7 +93,7 @@ DataDir = /mnt/rspm/data
 LauncherDir = /mnt/rspm/data/launcher_internal
 ```
 
-## Licensing
+### Licensing
 
 Using the RStudio Package Manager Docker image requires a valid license for Package Manager. You can set the license in three ways:
 
@@ -95,20 +104,20 @@ Using the RStudio Package Manager Docker image requires a valid license for Pack
 **NOTE:** the "offline activation process" is not supported by this image today. Offline installations will need
 to explore using a license server, license file, or custom image with manual intervention.
 
-## Environment variables
+### Environment variables
 
 | Variable | Description | Default |
 |-----|---|---|
 | `RSPM_LICENSE` | License key for RStudio Package Manager, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None |
 | `RSPM_LICENSE_SERVER` | Floating license server, format should be: `my.url.com:port` | None |
 
-## Ports
+### Ports
 
 | Variable | Description |
 |-----|---|
 | `4242` | Default HTTP Port for RStudio Package Manager |
 
-## Example usage
+### Example usage
 
 ```bash
 # Replace with valid license
@@ -141,6 +150,14 @@ docker exec -it {container-id} /bin/bash
 
 Then please refer to the [RSPM guide](https://docs.rstudio.com/rspm/admin/) on how
 to [create and manage](https://docs.rstudio.com/rspm/admin/getting-started/configuration/) your repositories.
+
+## Avoid hard termination of containers
+
+There is currently a known licensing bug when using our products in containers. If the container is not stopped
+gracefully, license deactivation may not work properly. To avoid "leaking" licenses, we encourage users not to force
+kill containers and to use `--stop-timeout 120` and `--time 120` for `docker run` and `docker stop` commands
+respectively. This helps ensure the deactivation script has time to run properly. We are still investigating a
+long-term solution.
 
 # Licensing
 

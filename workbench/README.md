@@ -1,9 +1,41 @@
-# RStudio Workbench
+# Quick reference
 
-Docker images for RStudio Professional Products
+* Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
+* Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues)
 
-**IMPORTANT:** There are a few things you need to know before using these images:
+# Supported tags and respective Dockerfile links
 
+* [`latest`, `2022.07.2`, `bionic`, `ubuntu1804`, `bionic-2022.07.2`, `ubuntu1804-2022.07.2`](https://github.com/rstudio/rstudio-docker-products/blob/main/package-manager/Dockerfile.ubuntu1804)
+* [`jammy`, `ubuntu2204`, `jammy-2022.07.2`, `ubuntu2204-22022.07.2`](hhttps://github.com/rstudio/rstudio-docker-products/blob/main/package-manager/Dockerfile.ubuntu2204)
+
+# What is RStudio Workbench?
+
+Posit Workbench, formerly RStudio Workbench, is the preferred data analysis and integrated development experience for 
+professional R users and data science teams who use R and Python. Posit Workbench enables the collaboration, 
+centralized management, metrics, security, and commercial support that professional data science teams need to operate 
+at scale.
+
+Some of the functionality that Workbench provides is:
+
+* The ability to develop in Workbench and Jupyter
+* Load balancing
+* Tutorial API
+* Data connectivity and Posit Professional Drivers (formerly RStudio Professional Drivers)
+* Collaboration and project sharing
+* Scale with Kubernetes and SLURM
+* Authentication, access, & security
+* Run multiple concurrent R and Python sessions
+* Remote execution with Launcher
+* Auditing and monitoring
+* Advanced R and Python session management
+
+For more information on running RStudio Workbench in your organization please visit https://www.rstudio.com/products/workbench/.
+
+# Notice for support
+
+1. This image may introduce **BREAKING** changes, as such we recommend:
+   - Avoid using the `latest` tag to avoid unexpected issues, and
+   - Always read through the [NEWS](./NEWS.md) to understand these changes before updating.
 1. These images are provided as a convenience to RStudio customers and are not formally supported by RStudio. If you
    have questions about these images, you can ask them in the issues in the repository or to your support
    representative, who will route them appropriately.
@@ -15,7 +47,7 @@ Docker images for RStudio Professional Products
    provide [instructions for building](https://github.com/rstudio/rstudio-docker-products#instructions-for-building) for
    these cases.
 
-### Simple Example
+# How to use this image
 
 To verify basic functionality as a first step:
 
@@ -28,28 +60,23 @@ docker run -it \
     -p 8787:8787 \
     -e RSW_LICENSE=$RSW_LICENSE \
     rstudio/rstudio-workbench:latest
-    
-# Alternatively, the above can be ran using a single just command
-just RSW_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX run
 ```
 
-Open http://localhost:8787 to access RStudio Workbench. The default username and password are `rstudio`.
 
-For a more "real" deployment, continue reading!
+Open [http://localhost:8787](http://localhost:8787) to access RStudio Workbench. The default username and password are 
+`rstudio`.
 
-### Overview
+## Overview
 
 Note that running the RStudio Workbench Docker image requires a valid RStudio Workbench license.
 
 This container includes:
 
-1. R 3.6
-2. R 4.1
-3. Python 3.8.10
-4. Python 3.9.5
-5. RStudio Workbench
+1. Two versions of R
+2. Two versions of Python
+3. RStudio Connect
 
-### Configuration
+## Configuration
 
 RStudio Workbench is configured via config files in the `/etc/rstudio` directory. Mount this directory as
 a volume from the host machine. Changes will take effect when the container is restarted.
