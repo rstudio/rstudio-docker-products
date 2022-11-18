@@ -2,7 +2,7 @@ set positional-arguments
 
 vars := "-i ''"
 
-sed_vars := if os() == "macos" { "-i ''" } else { "-i -E" }
+sed_vars := if os() == "macos" { "-i ''" } else { "-i" }
 
 BUILDX_PATH := ""
 
