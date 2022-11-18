@@ -2,7 +2,7 @@ set positional-arguments
 
 vars := "-i ''"
 
-sed_vars := if os() == "macos" { "-i ''" } else { "-i" }
+sed_vars := if os() == "macos" { "-i ''" } else { "-i -E" }
 
 BUILDX_PATH := ""
 
@@ -74,6 +74,21 @@ update-rsw-versions:
     workbench/Justfile \
     workbench-for-microsoft-azure-ml/Justfile \
     Justfile
+  sed {{ sed_vars }} "s/\`[\.0-9]+\`/\``just _get-clean-version {{ RSW_VERSION }}`\`/g" \
+    workbench/README.md \
+    r-session-complete/README.md
+  sed {{ sed_vars }} "s/\`bionic-[\.0-9]+\`/\`bionic-`just _get-clean-version {{ RSW_VERSION }}`\`/g" \
+    workbench/README.md \
+    r-session-complete/README.md
+  sed {{ sed_vars }} "s/\`ubuntu1804-[\.0-9]+\`/\`ubuntu1804-`just _get-clean-version {{ RSW_VERSION }}`\`/g" \
+    workbench/README.md \
+    r-session-complete/README.md
+  sed {{ sed_vars }} "s/\`jammy-[\.0-9]+\`/\`jammy-`just _get-clean-version {{ RSW_VERSION }}`\`/g" \
+    workbench/README.md \
+    r-session-complete/README.md
+  sed {{ sed_vars }} "s/\`ubuntu2204-[\.0-9]+\`/\`ubuntu2204-`just _get-clean-version {{ RSW_VERSION }}`\`/g" \
+    workbench/README.md \
+    r-session-complete/README.md
 
 # just RSPM_VERSION=1.2.3 update-rspm-versions
 update-rspm-versions:
@@ -88,6 +103,11 @@ update-rspm-versions:
   sed {{ sed_vars }} "s/^RSPM_VERSION := .*/RSPM_VERSION := \"{{ RSPM_VERSION }}\"/g" \
     package-manager/Justfile \
     Justfile
+  sed {{ sed_vars }} "s/\`[\.0-9]+\`/\``just _get-clean-version {{ RSPM_VERSION }}`\`/g" package-manager/README.md
+  sed {{ sed_vars }} "s/\`bionic-[\.0-9]+\`/\`bionic-`just _get-clean-version {{ RSPM_VERSION }}`\`/g" package-manager/README.md
+  sed {{ sed_vars }} "s/\`ubuntu1804-[\.0-9]+\`/\`ubuntu1804-`just _get-clean-version {{ RSPM_VERSION }}`\`/g" package-manager/README.md
+  sed {{ sed_vars }} "s/\`jammy-[\.0-9]+\`/\`jammy-`just _get-clean-version {{ RSPM_VERSION }}`\`/g" package-manager/README.md
+  sed {{ sed_vars }} "s/\`ubuntu2204-[\.0-9]+\`/\`ubuntu2204-`just _get-clean-version {{ RSPM_VERSION }}`\`/g" package-manager/README.md
 
 # just RSC_VERSION=1.2.3 update-rsc-versions
 update-rsc-versions:
@@ -104,9 +124,11 @@ update-rsc-versions:
   sed {{ sed_vars }} "s/^RSC_VERSION := .*/RSC_VERSION := \"{{ RSC_VERSION }}\"/g" \
     connect/Justfile \
     Justfile
-  sed {{ sed_vars }} "s/\`\d+\.\d+\.\d+\`/\`{{ RSC_VERSION }}\`/g" connect/README.md
-  sed {{ sed_vars }} "s/\`bionic-.*\`/\`bionic-{{ RSC_VERSION }}\`/g" connect/README.md
-  sed {{ sed_vars }} "s/\`jammy-.*\`/\`jammy-{{ RSC_VERSION }}\`/g" connect/README.md
+  sed {{ sed_vars }} "s/\`[\.0-9]+\`/\`{{ RSC_VERSION }}\`/g" connect/README.md
+  sed {{ sed_vars }} "s/\`bionic-[\.0-9]+\`/\`bionic-{{ RSC_VERSION }}\`/g" connect/README.md
+  sed {{ sed_vars }} "s/\`ubuntu1804-[\.0-9]+\`/\`ubuntu1804-{{ RSC_VERSION }}\`/g" connect/README.md
+  sed {{ sed_vars }} "s/\`jammy-[\.0-9]+\`/\`jammy-{{ RSC_VERSION }}\`/g" connect/README.md
+  sed {{ sed_vars }} "s/\`ubuntu2204-[\.0-9]+\`/\`ubuntu2204-{{ RSC_VERSION }}\`/g" connect/README.md
 
 # just R_VERSION=3.2.1 R_VERSION_ALT=4.1.0 update-r-versions
 update-r-versions:

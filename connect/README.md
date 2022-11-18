@@ -5,8 +5,8 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`latest`, `2022.10.0`, `bionic`, `ubuntu1804`, `bionic-2022.10.0`, `ubuntu1804-2022.10.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.bionic)
-* [`jammy`, `ubuntu2204`, `jammy-2022.10.0`, `ubuntu2204-2022.10.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.jammy)
+* [`latest`, `2022.11.0`, `bionic`, `ubuntu1804`, `bionic-2022.11.0`, `ubuntu1804-2022.11.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.bionic)
+* [`jammy`, `ubuntu2204`, `jammy-2022.11.0`, `ubuntu2204-2022.11.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.jammy)
 
 # What is RStudio Connect?
 
@@ -122,7 +122,7 @@ to explore using a license server, license file, or custom image with manual int
 
 | Variable | Description |
 |-----|---|
-| `3939` | Default HTTP Port for RStudio Connect |
+| `2022.11.0` | Default HTTP Port for RStudio Connect |
 
 ### Example usage
 

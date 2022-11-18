@@ -6,7 +6,7 @@
 # Supported tags and respective Dockerfile links
 
 * [`latest`, `2022.07.2`, `bionic`, `ubuntu1804`, `bionic-2022.07.2`, `ubuntu1804-2022.07.2`](https://github.com/rstudio/rstudio-docker-products/blob/main/package-manager/Dockerfile.ubuntu1804)
-* [`jammy`, `ubuntu2204`, `jammy-2022.07.2`, `ubuntu2204-22022.07.2`](hhttps://github.com/rstudio/rstudio-docker-products/blob/main/package-manager/Dockerfile.ubuntu2204)
+* [`jammy`, `ubuntu2204`, `jammy-2022.07.2`, `ubuntu2204-2022.07.2`](hhttps://github.com/rstudio/rstudio-docker-products/blob/main/package-manager/Dockerfile.ubuntu2204)
 
 # What is RStudio Workbench?
 
@@ -153,7 +153,7 @@ more information.
 |-----|---|---|
 | `RSW_TESTUSER` | Test user to be created in the container, turn off with an empty value | `rstudio` |
 | `RSW_TESTUSER_PASSWD` | Test user password | `rstudio` |
-| `RSW_TESTUSER_UID` | Test user UID | `10000` |
+| `RSW_TESTUSER_UID` | Test user UID | `2022.07.2` |
 | `RSW_LICENSE` | License key for RStudio Workbench, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None |
 | `RSW_LICENSE_SERVER` | Floating license server, format should be: `my.url.com:port` | None |
 | `RSW_LAUNCHER` | Whether or not to use launcher locally / start the launcher process | true |
@@ -163,8 +163,8 @@ more information.
 
 | Variable | Description |
 |-----|---|
-| `8787` | Default HTTP Port for RStudio Connect |
-| `5559` | Port for RStudio Launcher server |
+| `2022.07.2` | Default HTTP Port for RStudio Connect |
+| `2022.07.2` | Port for RStudio Launcher server |
 
 ### Example usage:
 
