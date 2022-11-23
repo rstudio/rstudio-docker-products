@@ -91,7 +91,6 @@ jobs:
             --org=${{ secrets.SNYK_ORG_ID }} \
             --product-name=${{ steps.get-default-tag.outputs.DEFAULT_TAG }} \
             --tags=product=${{ matrix.config.product }},os=${{ matrix.config.os }} \
-            --app-vulns \
             --exclude-base-image-vulns
           command: monitor
 
@@ -108,7 +107,6 @@ jobs:
             --org=${{ secrets.SNYK_ORG_ID }} \
             --product-name=${{ steps.get-default-tag.outputs.DEFAULT_TAG }} \
             --tags=product=${{ matrix.config.product }},os=${{ matrix.config.os }} \
-            --app-vulns \
             --exclude-base-image-vulns
           command: test
 
