@@ -86,7 +86,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           image: ${{ steps.get-default-tag.outputs.DEFAULT_TAG }}
-          args: --file=./${{ matrix.config.product }}/Dockerfile.${{ matrix.config.os }} --org=${{ secrets.SNYK_ORG_ID }} --product-name=${{ steps.get-default-tag.outputs.DEFAULT_TAG }} --tags=product=${{ matrix.config.product }},os=${{ matrix.config.os }} --exclude-base-image-vulns
+          args: --file=./${{ matrix.config.product }}/Dockerfile.${{ matrix.config.os }} --org=${{ secrets.SNYK_ORG_ID }} --product-name=${{ steps.get-default-tag.outputs.DEFAULT_TAG }} --tags=product=${{ matrix.config.product }},os=${{ matrix.config.os }} --exclude-base-image-vulns --app-vulns
           command: monitor
 
       - name: Run Snyk to check Docker image for vulnerabilities (branch)
@@ -97,7 +97,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           image: ${{ steps.get-default-tag.outputs.DEFAULT_TAG }}
-          args: --file=./${{ matrix.config.product }}/Dockerfile.${{ matrix.config.os }} --org=${{ secrets.SNYK_ORG_ID }} --product-name=${{ steps.get-default-tag.outputs.DEFAULT_TAG }} --tags=product=${{ matrix.config.product }},os=${{ matrix.config.os }} --exclude-base-image-vulns
+          args: --file=./${{ matrix.config.product }}/Dockerfile.${{ matrix.config.os }} --org=${{ secrets.SNYK_ORG_ID }} --product-name=${{ steps.get-default-tag.outputs.DEFAULT_TAG }} --tags=product=${{ matrix.config.product }},os=${{ matrix.config.os }} --exclude-base-image-vulns --app-vulns
           command: test
 
       - name: Login to Docker Hub
