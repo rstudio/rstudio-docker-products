@@ -85,7 +85,7 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          image: ${{ steps.build-image.outputs.TAGS }}
+          image: ${{ steps.get-default-tag.outputs.DEFAULT_TAG }}
           args: |
             --file=./${{ matrix.config.product }}/Dockerfile.${{ matrix.config.os }} \
             --org=${{ secrets.SNYK_ORG_ID }} \
@@ -102,7 +102,7 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          image: ${{ steps.build-image.outputs.TAGS }}
+          image: ${{ steps.get-default-tag.outputs.DEFAULT_TAG }}
           args: |
             --file=./${{ matrix.config.product }}/Dockerfile.${{ matrix.config.os }} \
             --org=${{ secrets.SNYK_ORG_ID }} \
