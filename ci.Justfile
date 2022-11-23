@@ -1,6 +1,7 @@
 set positional-arguments
 
 BUILDX_PATH := ""
+REGISTRY_NAMESPACE := "rstudio"
 
 _get-os-alias OS:
   #!/usr/bin/env bash
@@ -11,6 +12,19 @@ _get-os-alias OS:
   else
     echo "{{OS}}"
   fi
+
+_get-default-tag PRODUCT OS:
+  #!/usr/bin/env bash
+  set -euxo pipefail
+
+  # set image prefix
+  if [[ {{ PRODUCT }} == "r-session-complete" ]]; then
+    IMAGE_PREFIX=""
+  else
+    IMAGE_PREFIX="rstudio-"
+  fi
+
+  echo "{{ REGISTRY_NAMESPACE }}/${IMAGE_PREFIX}{{ PRODUCT }}:{{ OS }}"
 
 # just BUILDX_PATH=~/.buildx build-release workbench ubuntu1804 12.0.11-11
 build-release $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`git rev-parse --short HEAD`:

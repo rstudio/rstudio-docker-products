@@ -80,7 +80,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           image: rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
-          args: --file=./content/base/Dockerfile.${{ matrix.config.os }}
+          args: --file=./content/base/Dockerfile.${{ matrix.config.os }} --org=${{ secrets.SNYK_ORG_ID }} --project-name=rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }} --tags=product=content-base,os=${{ matrix.config.os }} --app-vulns --exclude-base-image-vulns
           command: monitor
 
       - name: Run Snyk to check Docker image for vulnerabilities (branch)
@@ -91,7 +91,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           image: rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
-          args: --file=./content/base/Dockerfile.${{ matrix.config.os }}
+          args: --file=./content/base/Dockerfile.${{ matrix.config.os }} --org=${{ secrets.SNYK_ORG_ID }} --project-name=rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }} --tags=product=content-base,os=${{ matrix.config.os }} --app-vulns --exclude-base-image-vulns
           command: test
 
       - name: Login to Docker Hub
@@ -181,7 +181,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           image: rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
-          args: --file=./content/pro/${{ matrix.config.os }}/Dockerfile
+          args: --file=./content/pro/${{ matrix.config.os }}/Dockerfile --org=${{ secrets.SNYK_ORG_ID }} --project-name=rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }} --tags=product=content-pro,os=${{ matrix.config.os }} --app-vulns --exclude-base-image-vulns
           command: monitor
 
       - name: Run Snyk to check Docker image for vulnerabilities (branch)
@@ -192,7 +192,7 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           image: rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
-          args: --file=./content/pro/${{ matrix.config.os }}/Dockerfile
+          args: --file=./content/pro/${{ matrix.config.os }}/Dockerfile --org=${{ secrets.SNYK_ORG_ID }} --project-name=rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }} --tags=product=content-pro,os=${{ matrix.config.os }} --app-vulns --exclude-base-image-vulns
           command: test
 
       - name: Login to Docker Hub
