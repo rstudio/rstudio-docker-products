@@ -10,8 +10,8 @@ RSC_VERSION := "2022.11.0"
 RSPM_VERSION := "2022.11.2-18"
 RSW_VERSION := "2022.07.2+576.pro12"
 
-DRIVERS_VERSION := "2021.10.0"
-DRIVERS_VERSION_RHEL := "2021.10.0-1"
+DRIVERS_VERSION := "2022.11.0"
+DRIVERS_VERSION_RHEL := DRIVERS_VERSION + "-1"
 
 R_VERSION := "3.6.2"
 R_VERSION_ALT := "4.1.0"
@@ -176,15 +176,20 @@ update-py-versions:
     connect/Justfile \
     Justfile
 
-# just DRIVERS_VERSION=2021.10.0 update-driver-versions
+# just DRIVERS_VERSION=2022.11.0 update-driver-versions
 update-drivers-versions:
   #!/usr/bin/env bash
   set -euxo pipefail
   sed {{ sed_vars }} "s/\"drivers\": \".[^\,\}]*\"/\"drivers\": \"{{ DRIVERS_VERSION }}\"/g" content/matrix.json
-  sed {{ sed_vars }} "s/DRIVERS_VERSION=.*/DRIVERS_VERSION={{ DRIVERS_VERSION }}/g" workbench-for-microsoft-azure-ml/Dockerfile.ubuntu1804
-  sed {{ sed_vars }} "s/DRIVERS_VERSION=.*/DRIVERS_VERSION={{ DRIVERS_VERSION_RHEL }}/g" r-session-complete/Dockerfile.centos7
+  sed {{ sed_vars }} "s/DRIVERS_VERSION=.*/DRIVERS_VERSION={{ DRIVERS_VERSION }}/g" \
+    workbench-for-microsoft-azure-ml/Dockerfile.ubuntu1804 \
+    r-session-complete/Dockerfile.ubuntu*
+  sed {{ sed_vars }} "s/DRIVERS_VERSION=.*/DRIVERS_VERSION={{ DRIVERS_VERSION_RHEL }}/g" \
+    r-session-complete/.env \
+    r-session-complete/Dockerfile.centos7
   sed {{ sed_vars }} "s/^DRIVERS_VERSION := .*/DRIVERS_VERSION := \"{{ DRIVERS_VERSION }}\"/g" \
     content/pro/Justfile \
+    r-session-complete/Justfile \
     Justfile
 
 # just test-image preview workbench 12.0.11-8 tag1 tag2 tag3 ...
