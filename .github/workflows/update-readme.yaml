@@ -2,7 +2,6 @@ on:
   push:
     branches:
       - main
-      - dev
 
 name: Update READMEs on Docker Hub
 jobs:
