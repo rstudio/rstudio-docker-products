@@ -15,7 +15,7 @@ Images for R and Python sessions and jobs to be used RStudio Workbench, Launcher
 # Notice for support 
 
 1. This image may introduce **BREAKING** changes, as such we recommend:
-   - Avoid using the `latest` tag to avoid unexpected issues, and
+   - Avoid using the `latest` or `{operating-system}` tags to avoid unexpected version changes, and
    - Always read through the [NEWS](./NEWS.md) to understand these changes before updating.
 1. These images are provided as a convenience to RStudio customers and are not formally supported by RStudio. If you
    have questions about these images, you can ask them in the issues in the repository or to your support
