@@ -1,12 +1,5 @@
 # RStudio Pro Products Docker Images
 
-> **WARNING: pwnkit vulernability response**
->
-> Bionic-based versions of the r-session-complete docker image are affected by the [PwnKit vulnerability](https://ubuntu.com/security/CVE-2021-4034).
-> If you are using this image in your RStudio Workbench Kubernetes environment, you should update it immediately. [See the linked support article for details](https://support.rstudio.com/hc/en-us/articles/4420538249495)
->
-> Other images are not affected
-
 Docker images for RStudio Professional Products
 
 **IMPORTANT:** There are a few things you need to know before using these images:
@@ -66,10 +59,9 @@ docker-compose up
 
 # Privileged Containers
 
-Each of these images uses the `--privileged`
-flag for user and code isolation and security. Each product differs in the exact reasons why, but we would love to hear
-from you if this is concerning in your infrastructure.
-See [RStudio Professional Product Root & Privileged Requirements](https://support.rstudio.com/hc/en-us/articles/1500005369282)
+As of July 2022, only the RStudio Connect container uses the `--privileged` flag for user and code isolation and 
+security and all other images can be run unprivileged. Please see 
+[RStudio Professional Product Root & Privileged Requirements](https://support.rstudio.com/hc/en-us/articles/1500005369282)
 for more information.
 
 If you have feedback on any of our professional products, please always feel free to reach
@@ -79,31 +71,34 @@ sales@rstudio.com.
 # Instructions for building
 
 After you have cloned [rstudio-docker-products](https://github.com/rstudio/rstudio-docker-products), you can create your
-own containers fairly simply with the provided Makefile.
+own containers fairly simply with the provided Justfiles. If you're unfamiliar with `just`, please check out 
+[their documentation](https://just.systems/man/en). If you are unable to use `just` in your organization,
+most targets in each Justfile can be copy/pasted into your shell and ran there with variables replaced where 
+appropriate. 
 
 To build RStudio Workbench:
 ```
-make workbench
+just workbench/build
 ```
 To build RStudio Connect:
 ```
-make connect
+just connect/build
 ```
 To build RStudio Package Manager:
 ```
-make package-manager
+just package-manager/build
 ```
 
-You can alter what exactly is built by changing `workbench/Dockerfile`, `connect/Dockerfile`,
-and `package-manager/Dockerfile`.
+You can alter what exactly is built by changing `workbench/Dockerfile.$OS`, `connect/Dockerfile.$OS`,
+and `package-manager/Dockerfile.$OS`.
 
-You can then run what you've built to test out with the `run-` commands. For instance, to run the workbench container
+You can then run what you've built to test out with the `run` commands. For instance, to run the workbench container
 you have built:
 ```
-make run-workbench
+just workbench/run
 ```
 
-Note you must have a license in place, and all of the other instructions in separate sections are still relevant.
+Note you must have a license in place, and all other instructions in separate sections are still relevant.
 
 If you have created an image you want to use yourself, you can push to your own image repository system. The images are
 named `rstudio-workbench`, `rstudio-connect`, and `rstudio-package-manager`.

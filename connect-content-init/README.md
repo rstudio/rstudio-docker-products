@@ -12,17 +12,17 @@ Launcher to build/run content.
 
 ## building
 
-Make will build an image using a default Connect distribution.
+Just will build an image using a default Connect distribution.
 
 ```console
-make build
+just build
 ```
 
 The version of the release package to use can be overridden with the
 `RSC_VERSION` build arg.
 
 ```console
-RSC_VERSION=1.8.8.3-dev236 make build
+just build bionic 1.8.8.3-dev236
 ```
 
 ## testing
@@ -36,6 +36,11 @@ docker run --rm -v $(pwd)/rstudio-connect-runtime:/mnt/rstudio-connect-runtime r
 # runtime components.
 ```
 
+You can also test using goss:
+```console
+just test
+```
+
 
 ## inspection
 
@@ -45,7 +50,7 @@ You can see the different layers that make up the image:
 docker history rstudio/rstudio-connect-content-init-preview:1.8.8.3-dev236
 ```
 
-NOTE: almost all of the image size is pandoc.
+NOTE: almost all the image size is pandoc.
 
 # Licensing
 

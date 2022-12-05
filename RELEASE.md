@@ -6,25 +6,20 @@ Hub](https://hub.docker.com/u/rstudio) in the RStudio organization.
 ## Updating Product Versions
 
 To update the version for the `rstudio/rstudio-connect` image, for instance:
-- update the `RSC_VERSION` number in the [`Makefile`](./Makefile)
-- run `make update-versions`
+- update the `RSC_VERSION` number in the [`Justfile`](./Justfile)
+- run `just update-versions`
 - submit a PR
 - the next build on `main` will tag the image with the appropriate version
   number
 
-For RStudio Connect, edit `RSC_VERSION`
+For RStudio Connect, edit `RSC_VERSION`.
 
-For RStudio Workbench, edit `RSW_VERSION`
+For RStudio Workbench, edit `RSW_VERSION`.
 
-For RStudio Package Manager, edit `RSPM_VERSION`
+For RStudio Package Manager, edit `RSPM_VERSION`.
 
 **IMPORTANT NOTE:** The "default" ARG value in the respective `Dockerfile` has
 no effect on the build process
-
-**ALSO:** When updating `RSW_VERSION`, be sure to update the
-[`helper/workbench-for-microsoft-azure-ml/Dockerfile`](./helper/workbench-for-microsoft-azure-ml/Dockerfile)
-with both a `RSW_VERSION` and a version label. The `Makefile` does not yet
-handle this case well.
 
 ## Building Images in CI
 
@@ -41,8 +36,7 @@ we also push to [Docker Hub](https://hub.docker.com/u/rstudio) and [GitHub Conta
 It is possible to test locally from a product directory by using:
 
 ```
-# from ./connect
-docker-compose -f docker-compose.test.yml up
+just test
 ```
 
 If you want to write goss tests,

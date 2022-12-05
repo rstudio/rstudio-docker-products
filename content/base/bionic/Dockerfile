@@ -2,13 +2,23 @@
 FROM ubuntu:bionic
 
 MAINTAINER RStudio Docker <docker@rstudio.com>
+LABEL maintainer="RStudio Docker <docker@rstudio.com>"
+
+# Locale configuration --------------------------------------------------------#
+RUN apt-get update && \
+	apt-get install -y locales && \
+	localedef -i en_US -f UTF-8 en_US.UTF-8 && \
+        rm -rf /var/lib/apt/lists/*
+	
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+ARG DEBIAN_FRONTEND=noninteractive
 
 # Installation prerequisites --------------------------------------------------#
-
 # curl is used to download things.
 # libev-dev is required for most interactive Python applications.
-RUN export DEBIAN_FRONTEND=noninteractive && \
-        apt-get update \
+RUN apt-get update \
         && \
         apt-get install -y \
         curl \
@@ -20,8 +30,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 # https://docs.rstudio.com/rsc/post-setup-tool/#install-system-dependencies
 
 # Now, install the system requirements for R packages.
-RUN export DEBIAN_FRONTEND=noninteractive && \
-        apt-get update \
+RUN apt-get update \
         && \
         apt-get install -y \
         default-jdk \
@@ -71,8 +80,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
 
 # From https://github.com/rstudio/r-docker/blob/master/base/bionic/Dockerfile
 
-RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get update && \
+RUN apt-get update && \
     apt-get install -y wget && \
     rm -rf /var/lib/apt/lists/* && \
     wget -qO- "https://yihui.org/tinytex/install-bin-unix.sh" | sh && \
@@ -93,7 +101,6 @@ ARG R_DISTRIBUTION=ubuntu-1804
 ARG R_VERSION=3.6.3
 ARG R_INSTALLER=r-${R_VERSION}_1_amd64.deb
 RUN curl -fsSL -O https://cdn.rstudio.com/r/${R_DISTRIBUTION}/pkgs/${R_INSTALLER} && \
-    export DEBIAN_FRONTEND=noninteractive && \
     apt-get update && \
     apt-get install -f -y ./${R_INSTALLER} && \
     rm ${R_INSTALLER} && \
@@ -122,7 +129,7 @@ RUN curl -fsSL -o miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-${
     && rm -rf /opt/miniconda
 
 # install quarto
-ARG QUARTO_VERSION=1.0.35
+ARG QUARTO_VERSION=1.0.37
 COPY maybe_install_quarto.sh /tmp/maybe_install_quarto.sh
 RUN /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.rstudio.com/cran/__linux__/bionic/latest")' && \
     /tmp/maybe_install_quarto.sh && \

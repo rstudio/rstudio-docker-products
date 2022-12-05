@@ -5,10 +5,10 @@ services:
     container_name: rstudio-workbench
     build:
       context: ./workbench
+      dockerfile: "Dockerfile.${IMAGE_OS:-bionic}"
       args:
-        RSW_VERSION: 2022.07.0+548.pro5
-    image: rstudio/rstudio-workbench:2022.07.0-548.pro5
-    privileged: true
+        RSW_VERSION: 2022.07.2+576.pro12
+    image: rstudio/rstudio-workbench:2022.07.2-576.pro12
     environment:
       RSW_LICENSE: ${RSW_LICENSE}
       LICENSE_SERVER: ${RSW_LICENSE_SERVER}
@@ -23,9 +23,10 @@ services:
     container_name: rstudio-connect
     build:
       context: ./connect
+      dockerfile: "Dockerfile.${IMAGE_OS:-bionic}"
       args:
-        RSC_VERSION: 2022.07.0
-    image: rstudio/rstudio-connect:2022.07.0
+        RSC_VERSION: 2022.09.0
+    image: rstudio/rstudio-connect:2022.09.0
     privileged: true
     environment:
       RSC_LICENSE: ${RSC_LICENSE}
@@ -40,10 +41,10 @@ services:
     container_name: rstudio-package-manager
     build:
       context: ./package-manager
+      dockerfile: "Dockerfile.${IMAGE_OS:-bionic}"
       args:
-        RSPM_VERSION: 2022.07.0-9
-    image: rstudio/rstudio-package-manager:2022.07.0-9
-    privileged: true
+        RSPM_VERSION: 2022.07.2-11
+    image: rstudio/rstudio-package-manager:2022.07.2-11
     environment:
       RSPM_LICENSE: ${RSPM_LICENSE}
       LICENSE_SERVER: ${RSPM_LICENSE_SERVER}

@@ -1,0 +1,81 @@
+set positional-arguments
+
+BUILDX_PATH := ""
+
+IMAGE_PREFIX := ""
+PRODUCT := "r-session-complete"
+IMAGE_OS := "bionic"
+
+RSW_VERSION := "2022.07.2+576.pro12"
+RSW_TAG_SAFE_VERSION := replace(RSW_VERSION, "+", "-")
+RSW_LICENSE := ""
+
+DRIVERS_VERSION := "2021.10.0"
+DRIVERS_VERSION_RHEL := "2021.10.0-1"
+
+R_VERSION := "4.1.0"
+R_VERSION_ALT := "3.6.2"
+
+PYTHON_VERSION := "3.9.5"
+PYTHON_VERSION_ALT := "3.8.10"
+
+DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":" + IMAGE_OS + "-" + RSW_TAG_SAFE_VERSION
+
+# Build r-session-complete image - just build bionic 2022.07.2+576.pro12 rstudio/r-session-complete:bionic-2022.07.2-576.pro12
+build OS=IMAGE_OS VERSION=RSW_VERSION +TAGS=DEFAULT_TAG:
+  #!/usr/bin/env bash
+  set -euxo pipefail
+  BUILDX_ARGS=""
+  if [[ "{{BUILDX_PATH}}" != "" ]]; then
+    BUILDX_ARGS="--cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache"
+  fi
+  if [[ "{{ OS }}" == "centos7" ]]; then
+    _DRIVERS_VERSION="{{ DRIVERS_VERSION_RHEL }}"
+  else
+    _DRIVERS_VERSION="{{ DRIVERS_VERSION }}"
+  fi
+
+  tag_array=()
+  for TAG in {{TAGS}}
+  do
+    tag_array+=("-t" $TAG)
+  done
+
+  docker buildx --builder="{{ BUILDX_PATH }}" build --load ${BUILDX_ARGS} \
+    ${tag_array[@]} \
+    --build-arg RSW_VERSION="{{ VERSION }}" \
+    --build-arg DRIVERS_VERSION="${_DRIVERS_VERSION}" \
+    --build-arg R_VERSION="{{ R_VERSION }}" \
+    --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
+    --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
+    --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
+    --file=./Dockerfile."{{ OS }}" .
+
+# Test r-session-complete image - just test rstudio/r-session-complete:bionic-2022.07.2-576.pro12 2022.07.2+576.pro12
+test TAG=DEFAULT_TAG VERSION=RSW_VERSION CMD="":
+  #!/usr/bin/env bash
+  set -euxo pipefail
+  IMAGE_NAME="{{ TAG }}" \
+  RSW_VERSION="{{ VERSION }}" \
+  R_VERSION="{{ R_VERSION }}" \
+  R_VERSION_ALT="{{ R_VERSION_ALT }}" \
+  PYTHON_VERSION="{{ PYTHON_VERSION }}" \
+  PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
+  docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
+
+# Test r-session-complete image interactively - just test-i rstudio/r-session-complete:bionic-2022.07.2-576.pro12 2022.07.2+576.pro12
+test-i TAG=DEFAULT_TAG VERSION=RSW_VERSION:
+  just test {{ TAG }} {{ VERSION }} bash
+
+# Run r-session-complete - just run rstudio/r-session-complete:bionic-2022.07.2-576.pro12
+run TAG=DEFAULT_TAG CMD="":
+  #!/usr/bin/env bash
+  set -euxo pipefail
+  if [ -z "{{ RSW_LICENSE }}" ]; then
+    echo "Please set RSW_LICENSE to a valid RStudio Workbench license before running."
+    exit 1
+  fi
+  docker run -it --privileged \
+    -p 8788:8788 \
+    -e RSW_LICENSE="{{ RSW_LICENSE }}" \
+    "{{ TAG }}" {{ CMD }}

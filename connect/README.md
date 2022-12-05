@@ -28,6 +28,9 @@ docker run -it --privileged \
     -p 3939:3939 \
     -e RSC_LICENSE=$RSC_LICENSE \
     rstudio/rstudio-connect:latest
+    
+# Alternatively, the above can be ran using a single just command
+just RSC_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX run
 ```
 
 Open [http://localhost:3939](http://localhost:3939) to access RStudio Connect.
@@ -43,9 +46,11 @@ requirements and how to extend this image.
 
 This container includes:
 
-1. R 3.6.1
-2. Python 3.6.5
-3. RStudio Connect
+1. R 3.6
+2. R 4.1
+3. Python 3.8.10
+4. Python 3.9.5
+5. RStudio Connect
 
 Note that running the RStudio Connect Docker image requires the container to run using the `--privileged` flag and a
 valid RStudio Connect license.

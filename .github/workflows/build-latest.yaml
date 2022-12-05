@@ -10,44 +10,35 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    name: build-${{ matrix.config.tag_prefix}}${{ matrix.config.product}}
+    name: build-${{ matrix.config.product }}-${{ matrix.config.os }}-latest
 
     strategy:
       fail-fast: false
       matrix:
         config:
-          - {product: 'rstudio-workbench', dir: 'workbench', os: 'bionic/amd64', prefix: RSW, version: 'latest'}
-          - {product: 'rstudio-connect', dir: 'connect', prefix: RSC, version: 'latest'}
-          - {product: 'rstudio-connect-content-init', dir: 'connect-content-init', prefix: RSC, version: 'latest'}
-          - {product: 'rstudio-package-manager', dir: 'package-manager', prefix: RSPM, version: 'latest'}
-          - {product: 'r-session-complete', tag_prefix: 'bionic-', dir: 'r-session-complete/bionic', os: 'bionic/amd64', prefix: RSW, version: 'latest'}
-          - {product: 'r-session-complete', tag_prefix: 'centos7-', dir: 'r-session-complete/centos7', os: 'centos7/x86_64', prefix: RSW, version: 'latest'}
-          - {product: 'rstudio-workbench-for-microsoft-azure-ml', dir: 'helper/workbench-for-microsoft-azure-ml', os: 'bionic/amd64', prefix: RSW, version: 'latest'}
+          - {product: 'workbench', os: 'bionic'}
+          - {product: 'workbench', os: 'jammy'}
+          - {product: 'connect', os: 'bionic'}
+          - {product: 'connect', os: 'jammy'}
+          - {product: 'connect-content-init', os: 'bionic'}
+          - {product: 'connect-content-init', os: 'jammy'}
+          - {product: 'package-manager', os: 'bionic'}
+          - {product: 'package-manager', os: 'jammy'}
+          - {product: 'r-session-complete', os: 'bionic'}
+          - {product: 'r-session-complete', os: 'centos7'}
+          - {product: 'r-session-complete', os: 'jammy'}
+          - {product: 'workbench-for-microsoft-azure-ml', os: 'bionic'}
 
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v2
 
+      - name: Set up Just
+        uses: extractions/setup-just@v1
+
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v1
-
-      - name: Get version
-        id: version
-        run: |
-          # NOTE: --local ensures that "latest" builds use the version in our Makefile (instead of latest from the web)
-          VERSION=`./get-version.py ${{ matrix.config.product }} --type=${{ matrix.config.version }} --local`
-          SAFE_VERSION=`echo -n "$VERSION" | sed 's/+/-/g'`
-
-          # strip build metadata for azure builds
-          if [[ "${{ matrix.config.product  }}" == "rstudio-workbench-for-microsoft-azure-ml" ]]; then
-            SAFE_VERSION=`echo -n "$SAFE_VERSION" | sed 's/^\([0-9]\{4\}\.[0-9]\{2\}\.[0-9]*\).*/\1/g'`
-          fi
-
-          echo "::set-output name=SHA_SHORT::--$(git rev-parse --short HEAD)"
-
-          echo "::set-output name=VERSION::${VERSION}"
-          echo "::set-output name=SAFE_VERSION::${SAFE_VERSION}"
 
       - name: Cache Docker layers
         uses: actions/cache@v2
@@ -57,33 +48,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
-      - name: Build
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          context: ./${{ matrix.config.dir }}
-          file: ./${{ matrix.config.dir }}/Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          tags: |
-            rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-            rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
-            rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}${{ steps.version.outputs.SHA_SHORT }}
-            ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-            ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
-            ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}${{ steps.version.outputs.SHA_SHORT }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-          load: true
-          push: false
-          build-args: |
-            RSW_VERSION=${{ steps.version.outputs.VERSION }}
-            RSC_VERSION=${{ steps.version.outputs.VERSION }}
-            RSPM_VERSION=${{ steps.version.outputs.VERSION }}
-            # TODO: need a better way to handle pivoting DOWNLOAD_URL for OS
-            RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/${{ matrix.config.os }}
+      - name: Get Version
+        id: get-version
+        run: |
+          VERSION=`just -f ci.Justfile get-version ${{ matrix.config.product }} --type=release --local`
+          echo "::set-output name=VERSION::$VERSION"
 
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
+      - name: Build Image
+        id: build-image
+        run: |
+          TAGS=`just -f ci.Justfile BUILDX_PATH=${{ steps.buildx.outputs.name }} build-release ${{ matrix.config.product }} ${{ matrix.config.os }} ${{ steps.get-version.outputs.VERSION }}`
+          echo "::set-output name=TAGS::$TAGS"
 
       - name: Show image size
         run: |
@@ -91,16 +66,33 @@ jobs:
 
       - name: Test image
         env:
-          IMAGE_NAME: rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-          # because we cannot dynamically set env var names... set them all...
-          RSW_VERSION: ${{ steps.version.outputs.VERSION }}
-          RSC_VERSION: ${{ steps.version.outputs.VERSION }}
-          RSPM_VERSION: ${{ steps.version.outputs.VERSION }}
           RSC_LICENSE: ${{ secrets.RSC_LICENSE }}
           RSPM_LICENSE: ${{ secrets.RSPM_LICENSE }}
           RSW_LICENSE: ${{ secrets.RSW_LICENSE }}
         run: |
-          docker-compose -f ./${{ matrix.config.dir }}/docker-compose.test.yml run sut
+          just test-image ${{ matrix.config.product }} ${{  steps.get-version.outputs.VERSION }} ${{ steps.build-image.outputs.TAGS }}
+
+      - name: Run Snyk to check Docker image for vulnerabilities (main)
+        if: ${{ github.ref == 'refs/heads/main' }}
+        continue-on-error: true
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: ${{ steps.build-image.outputs.TAGS }}
+          args: --file=./${{ matrix.config.product }}/Dockerfile.${{ matrix.config.os }}
+          command: monitor
+
+      - name: Run Snyk to check Docker image for vulnerabilities (branch)
+        if: ${{ github.ref != 'refs/heads/main' }}
+        continue-on-error: true
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: ${{ steps.build-image.outputs.TAGS }}
+          args: --file=./${{ matrix.config.product }}/Dockerfile.${{ matrix.config.os }}
+          command: test
 
       - name: Login to Docker Hub
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -120,9 +112,5 @@ jobs:
       - name: Push image(s) to Docker Hub
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
-          docker push rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-          docker push rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
-          docker push rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}${{ steps.version.outputs.SHA_SHORT }}
-          docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ matrix.config.version }}
-          docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}
-          docker push ghcr.io/rstudio/${{ matrix.config.product }}:${{ matrix.config.tag_prefix }}${{ steps.version.outputs.SAFE_VERSION }}${{ steps.version.outputs.SHA_SHORT }}
+          just -f ci.Justfile push-images ${{ steps.build-image.outputs.TAGS }}
+

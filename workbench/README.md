@@ -1,10 +1,5 @@
 # RStudio Workbench
 
-> **WARNING: pwnkit vulernability response**
->
-> Bionic-based versions of the r-session-complete docker image are affected by the [PwnKit vulnerability](https://ubuntu.com/security/CVE-2021-4034).
-> If you are using this image in your RStudio Workbench Kubernetes environment, you should update it immediately. [See the linked support article for details](https://support.rstudio.com/hc/en-us/articles/4420538249495)
-
 Docker images for RStudio Professional Products
 
 **IMPORTANT:** There are a few things you need to know before using these images:
@@ -29,30 +24,34 @@ To verify basic functionality as a first step:
 export RSW_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 
 # Run without persistent data using default configuration
-docker run --privileged -it \
+docker run -it \
     -p 8787:8787 \
     -e RSW_LICENSE=$RSW_LICENSE \
     rstudio/rstudio-workbench:latest
+    
+# Alternatively, the above can be ran using a single just command
+just RSW_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX run
 ```
 
-Open http://localhost:8787 to access RStudio Workbench. The default username and password are _rstudio_.
+Open http://localhost:8787 to access RStudio Workbench. The default username and password are `rstudio`.
 
 For a more "real" deployment, continue reading!
 
 ### Overview
 
-Note that running the RStudio Workbench Docker image requires the container to run using the `--privileged` flag and a
-valid RStudio Workbench license.
+Note that running the RStudio Workbench Docker image requires a valid RStudio Workbench license.
 
 This container includes:
 
-1. R 3.6.1
-2. Python 3.6.5
-3. RStudio Workbench
+1. R 3.6
+2. R 4.1
+3. Python 3.8.10
+4. Python 3.9.5
+5. RStudio Workbench
 
 ### Configuration
 
-RStudio Workbench is configured via config files in the in the `/etc/rstudio` directory. Mount this directory as
+RStudio Workbench is configured via config files in the `/etc/rstudio` directory. Mount this directory as
 a volume from the host machine. Changes will take effect when the container is restarted.
 
 You can review possible RStudio Workbench configuration [in the documentation](https://docs.rstudio.com/ide/workbench/).
@@ -106,7 +105,7 @@ Then:
 # sssd is picky about file permissions
 chmod 600 sssd.conf
 
-docker run --privileged -it \
+docker run -it \
     -p 8787:8787 -p 5559:5559 \
     -v $PWD/data/rsp:/home \
     -v $PWD/server-pro/conf/:/etc/rstudio \
@@ -147,14 +146,14 @@ more information.
 export RSW_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 
 # Run without persistent data and using an external configuration
-docker run --privileged -it \
+docker run -it \
     -p 8787:8787 -p 5559:5559 \
     -v $PWD/workbench/conf/:/etc/rstudio \
     -e RSW_LICENSE=$RSW_LICENSE \
     rstudio/rstudio-workbench:latest
 
 # Run with persistent data and using an external configuration
-docker run --privileged -it \
+docker run -it \
     -p 8787:8787 -p 5559:5559 \
     -v $PWD/data/rsw:/home \
     -v $PWD/workbench/conf/:/etc/rstudio \

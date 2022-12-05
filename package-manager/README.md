@@ -36,6 +36,9 @@ docker run -it \
     -p 4242:4242 \
     -e RSPM_LICENSE=$RSPM_LICENSE \
     rstudio/rstudio-package-manager:latest
+    
+# Alternatively, the above can be ran using a single just command
+just RSPM_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX run
 ```
 
 Open [http://localhost:4242](http://localhost:4242) to access RStudio Package Manager UI.
@@ -83,7 +86,7 @@ LauncherDir = /mnt/rspm/data/launcher_internal
 
 ## Licensing
 
-Using the RStudio Package Manager docker image requires to have a valid License. You can set the RSC license in three ways:
+Using the RStudio Package Manager Docker image requires a valid license for Package Manager. You can set the license in three ways:
 
 1. Setting the `RSPM_LICENSE` environment variable to a valid license key inside the container
 2. Setting the `RSPM_LICENSE_SERVER` environment variable to a valid license server / port inside the container
