@@ -4,14 +4,13 @@ BUILDX_PATH := ""
 
 IMAGE_PREFIX := ""
 PRODUCT := "r-session-complete"
-IMAGE_OS := "bionic"
+IMAGE_OS := "ubuntu1804"
 
 RSW_VERSION := "2022.07.2+576.pro12"
-RSW_TAG_SAFE_VERSION := replace(RSW_VERSION, "+", "-")
 RSW_LICENSE := ""
 
-DRIVERS_VERSION := "2021.10.0"
-DRIVERS_VERSION_RHEL := "2021.10.0-1"
+DRIVERS_VERSION := "2022.11.0"
+DRIVERS_VERSION_RHEL := DRIVERS_VERSION + "-1"
 
 R_VERSION := "4.1.0"
 R_VERSION_ALT := "3.6.2"
@@ -19,10 +18,11 @@ R_VERSION_ALT := "3.6.2"
 PYTHON_VERSION := "3.9.5"
 PYTHON_VERSION_ALT := "3.8.10"
 
-DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":" + IMAGE_OS + "-" + RSW_TAG_SAFE_VERSION
+_make-default-tag OS=IMAGE_OS:
+  echo "{{IMAGE_PREFIX}}{{PRODUCT}}:{{OS}}-$(just -f ../Justfile _get-tag-safe-version {{RSW_VERSION}})"
 
-# Build r-session-complete image - just build bionic 2022.07.2+576.pro12 rstudio/r-session-complete:bionic-2022.07.2-576.pro12
-build OS=IMAGE_OS VERSION=RSW_VERSION +TAGS=DEFAULT_TAG:
+# Build r-session-complete image - just build ubuntu1804 2022.07.2+576.pro12 rstudio/r-session-complete:ubuntu1804-2022.07.2-576.pro12
+build OS=IMAGE_OS VERSION=RSW_VERSION *TAGS="":
   #!/usr/bin/env bash
   set -euxo pipefail
   BUILDX_ARGS=""
@@ -35,10 +35,16 @@ build OS=IMAGE_OS VERSION=RSW_VERSION +TAGS=DEFAULT_TAG:
     _DRIVERS_VERSION="{{ DRIVERS_VERSION }}"
   fi
 
+  if [[ "{{TAGS}}" == "" ]]; then
+    raw_tag_array=($(just _make-default-tag {{OS}}))
+  else
+    raw_tag_array=("{{TAGS}}")
+  fi
+
   tag_array=()
-  for TAG in {{TAGS}}
+  for tag in $raw_tag_array
   do
-    tag_array+=("-t" $TAG)
+    tag_array+=("-t" $tag)
   done
 
   docker buildx --builder="{{ BUILDX_PATH }}" build --load ${BUILDX_ARGS} \
@@ -49,10 +55,10 @@ build OS=IMAGE_OS VERSION=RSW_VERSION +TAGS=DEFAULT_TAG:
     --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
     --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
     --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
-    --file=./Dockerfile."{{ OS }}" .
+    --file=./Dockerfile.$(just -f ../Justfile _parse-os {{OS}}) .
 
-# Test r-session-complete image - just test rstudio/r-session-complete:bionic-2022.07.2-576.pro12 2022.07.2+576.pro12
-test TAG=DEFAULT_TAG VERSION=RSW_VERSION CMD="":
+# Test r-session-complete image - just test rstudio/r-session-complete:ubuntu1804-2022.07.2-576.pro12 2022.07.2+576.pro12
+test TAG=`just _make-default-tag` VERSION=RSW_VERSION CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
   IMAGE_NAME="{{ TAG }}" \
@@ -63,12 +69,12 @@ test TAG=DEFAULT_TAG VERSION=RSW_VERSION CMD="":
   PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
   docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
 
-# Test r-session-complete image interactively - just test-i rstudio/r-session-complete:bionic-2022.07.2-576.pro12 2022.07.2+576.pro12
-test-i TAG=DEFAULT_TAG VERSION=RSW_VERSION:
+# Test r-session-complete image interactively - just test-i rstudio/r-session-complete:ubuntu1804-2022.07.2-576.pro12 2022.07.2+576.pro12
+test-i TAG=`just _make-default-tag` VERSION=RSW_VERSION:
   just test {{ TAG }} {{ VERSION }} bash
 
-# Run r-session-complete - just run rstudio/r-session-complete:bionic-2022.07.2-576.pro12
-run TAG=DEFAULT_TAG CMD="":
+# Run r-session-complete - just run rstudio/r-session-complete:ubuntu1804-2022.07.2-576.pro12
+run TAG=`just _make-default-tag` CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
   if [ -z "{{ RSW_LICENSE }}" ]; then

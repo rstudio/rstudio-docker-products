@@ -36,7 +36,7 @@ file:
     group: root
     filetype: file
 # Ensure log files exist
-  /var/log/rstudio-connect.log:
+  /var/log/rstudio/rstudio-connect/rstudio-connect.log:
     exists: true
   /opt/python/{{.Env.PYTHON_VERSION}}/bin/python:
     exists: true

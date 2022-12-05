@@ -16,18 +16,18 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {product: 'workbench', os: 'bionic'}
-          - {product: 'workbench', os: 'jammy'}
-          - {product: 'connect', os: 'bionic'}
-          - {product: 'connect', os: 'jammy'}
-          - {product: 'connect-content-init', os: 'bionic'}
-          - {product: 'connect-content-init', os: 'jammy'}
-          - {product: 'package-manager', os: 'bionic'}
-          - {product: 'package-manager', os: 'jammy'}
-          - {product: 'r-session-complete', os: 'bionic'}
+          - {product: 'workbench', os: 'ubuntu1804'}
+          - {product: 'workbench', os: 'ubuntu2204'}
+          - {product: 'connect', os: 'ubuntu1804'}
+          - {product: 'connect', os: 'ubuntu2204'}
+          - {product: 'connect-content-init', os: 'ubuntu1804'}
+          - {product: 'connect-content-init', os: 'ubuntu2204'}
+          - {product: 'package-manager', os: 'ubuntu1804'}
+          - {product: 'package-manager', os: 'ubuntu2204'}
+          - {product: 'r-session-complete', os: 'ubuntu1804'}
           - {product: 'r-session-complete', os: 'centos7'}
-          - {product: 'r-session-complete', os: 'jammy'}
-          - {product: 'workbench-for-microsoft-azure-ml', os: 'bionic'}
+          - {product: 'r-session-complete', os: 'ubuntu2204'}
+          - {product: 'workbench-for-microsoft-azure-ml', os: 'ubuntu1804'}
 
     steps:
       - name: Check Out Repo
@@ -54,6 +54,12 @@ jobs:
           VERSION=`just -f ci.Justfile get-version ${{ matrix.config.product }} --type=release --local`
           echo "::set-output name=VERSION::$VERSION"
 
+      - name: Get default tag
+        id: get-default-tag
+        run: |
+          DEFAULT_TAG=`just -f ci.Justfile _get-default-tag ${{ matrix.config.product }} ${{ matrix.config.os }}`
+          echo "::set-output name=DEFAULT_TAG::$DEFAULT_TAG"
+
       - name: Build Image
         id: build-image
         run: |
@@ -79,8 +85,8 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          image: ${{ steps.build-image.outputs.TAGS }}
-          args: --file=./${{ matrix.config.product }}/Dockerfile.${{ matrix.config.os }}
+          image: ${{ steps.get-default-tag.outputs.DEFAULT_TAG }}
+          args: --file=./${{ matrix.config.product }}/Dockerfile.${{ matrix.config.os }} --org=${{ secrets.SNYK_ORG_ID }} --project-name=${{ steps.get-default-tag.outputs.DEFAULT_TAG }} --tags=product=${{ matrix.config.product }},os=${{ matrix.config.os }} --exclude-base-image-vulns --app-vulns
           command: monitor
 
       - name: Run Snyk to check Docker image for vulnerabilities (branch)
@@ -90,8 +96,8 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          image: ${{ steps.build-image.outputs.TAGS }}
-          args: --file=./${{ matrix.config.product }}/Dockerfile.${{ matrix.config.os }}
+          image: ${{ steps.get-default-tag.outputs.DEFAULT_TAG }}
+          args: --file=./${{ matrix.config.product }}/Dockerfile.${{ matrix.config.os }} --org=${{ secrets.SNYK_ORG_ID }} --project-name=${{ steps.get-default-tag.outputs.DEFAULT_TAG }} --tags=product=${{ matrix.config.product }},os=${{ matrix.config.os }} --exclude-base-image-vulns --app-vulns
           command: test
 
       - name: Login to Docker Hub

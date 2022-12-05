@@ -1,5 +1,5 @@
 ARG R_VERSION=3.6.2
-FROM rstudio/r-base:${R_VERSION}-jammy
+FROM rstudio/r-base:${R_VERSION}-bionic
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 # Locale configuration --------------------------------------------------------#
@@ -13,6 +13,7 @@ RUN apt-get update --fix-missing \
     && apt-get install -y --no-install-recommends \
         bzip2 \
         ca-certificates \
+        dpkg-sig \
         gdal-bin \
         gdebi-core \
         git \
@@ -42,6 +43,8 @@ RUN apt-get update --fix-missing \
         libsm6 \
         libsodium-dev \
         libssh2-1-dev \
+        libssl-dev \
+        libssl1.0.0 \
         libtiff-dev \
         libudunits2-dev \
         libv8-dev \
@@ -65,7 +68,7 @@ RUN apt-get update --fix-missing \
 
 ARG R_VERSION_ALT=4.1.0
 RUN apt-get update -qq && \
-    curl -O https://cdn.rstudio.com/r/ubuntu-2204/pkgs/r-${R_VERSION_ALT}_1_amd64.deb && \
+    curl -O https://cdn.rstudio.com/r/ubuntu-1804/pkgs/r-${R_VERSION_ALT}_1_amd64.deb && \
     DEBIAN_FRONTEND=noninteractive gdebi --non-interactive r-${R_VERSION_ALT}_1_amd64.deb && \
     rm -f ./r-${R_VERSION_ALT}_1_amd64.deb \
     && apt-get clean \
@@ -98,11 +101,13 @@ RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/down
 COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
 
 # Download RStudio Connect -----------------------------------------------------#
-ARG RSC_VERSION=2022.08.1
+ARG RSC_VERSION=2022.11.0
 SHELL [ "/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update --fix-missing \
     && RSC_VERSION_URL=$(echo -n "${RSC_VERSION}" | sed 's/+/%2B/g') \
-    && curl -L -o rstudio-connect.deb "https://cdn.rstudio.com/connect/$(echo $RSC_VERSION | sed -r 's/([0-9]+\.[0-9]+).*/\1/')/rstudio-connect_${RSC_VERSION_URL}~ubuntu22_amd64.deb" \
+    && curl -L -o rstudio-connect.deb "https://cdn.rstudio.com/connect/$(echo $RSC_VERSION | sed -r 's/([0-9]+\.[0-9]+).*/\1/')/rstudio-connect_${RSC_VERSION_URL}~ubuntu18_amd64.deb" \
+    && gpg --keyserver keyserver.ubuntu.com --recv-keys 3F32EE77E331692F \
+    && dpkg-sig --verify rstudio-connect.deb \
     && gdebi -n rstudio-connect.deb \
     && rm -rf rstudio-connect.deb \
     && apt-get clean \

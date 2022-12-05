@@ -71,6 +71,22 @@ This command generates a single YAML for the available `rstudio/content-pro` ima
 		rstudio/content-pro:r4.1.0-py3.9.2-bionic  > runtime.yaml
 ```
 
+The `NO_PATH_LOOKUPS` environment variable indicates that `PATH` is ignored
+when attempting to discover R, Python, and Quarto installations.
+
+```console
+NO_PATH_LOOKUPS=1 ./scripts/build-image.sh \
+    rstudio/content-pro:r3.1.3-py2.7.18-bionic > runtime.yaml
+```
+
+The `DEBUG` environment variable produces additional output about the image
+analysis.
+
+```console
+DEBUG=1 ./scripts/build-image.sh \
+    rstudio/content-pro:r3.1.3-py2.7.18-bionic > runtime.yaml
+```
+
 ## Build matrix
 
 The json defined in `matrix.json` is loaded by the Github Action to

@@ -12,6 +12,9 @@
 #     ./scripts/build-image-yaml.sh rstudio/content-base:r4.0.5-py3.9.2-bionic
 #     ./scripts/build-image-yaml.sh rstudio/content-base:r3.6.3-py3.8.8-bionic rstudio/content-base:r4.1.0-py3.9.2-bionic
 #
+# Set NO_PATH_LOOKUPS to ignore PATH-based lookups:
+#     NO_PATH_LOOKUPS=1 ./scripts/build-image-yaml.sh rstudio/connect-content-images:kitchen-sink-ubuntu16.04
+#
 # Set DEBUG for debugging output:
 #     DEBUG=1 ./scripts/build-image-yaml.sh rstudio/connect-content-images:kitchen-sink-ubuntu16.04
 #
@@ -48,7 +51,8 @@ for IMAGE in ${IMAGES} ; do
     log "Analyzing: ${IMAGE}"
     log "------------------------------------------------------------"
     docker run --rm \
-           -e DEBUG=${DEBUG} \
+           -e DEBUG="${DEBUG}" \
+           -e NO_PATH_LOOKUPS="${NO_PATH_LOOKUPS}" \
            -v "${SCRIPTS}":/scripts \
            "${IMAGE}" \
            /scripts/examine-image.sh | sort -n | uniq > "${TMPFILE}"

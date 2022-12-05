@@ -6,7 +6,7 @@ on:
         required: true
         type: string
       os:
-        description: "Which os to build. Default 'bionic'. Options: 'bionic', 'focal', 'centos7'"
+        description: "Which os to build. Default 'bionic'. Options: 'bionic|ubuntu1804', 'jammy|ubuntu2204', 'centos7'"
         required: true
         default: "bionic"
         type: string
