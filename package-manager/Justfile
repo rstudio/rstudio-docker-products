@@ -48,8 +48,8 @@ test TAG=`just _make-default-tag` VERSION=RSPM_VERSION CMD="":
   set -euxo pipefail
   IMAGE_NAME="{{ TAG }}" \
   RSPM_VERSION="{{ VERSION }}" \
-  RSPM_LICENSE="{{ RSW_LICENSE }}" \
-  RSPM_LICENSE_SERVER="{{ RSW_LICENSE_SERVER }}" \
+  RSPM_LICENSE="{{ RSPM_LICENSE }}" \
+  RSPM_LICENSE_SERVER="{{ RSPM_LICENSE_SERVER }}" \
   R_VERSION="{{ R_VERSION }}" \
   docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
 
