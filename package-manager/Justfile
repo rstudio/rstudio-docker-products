@@ -8,6 +8,7 @@ IMAGE_OS := "ubuntu1804"
 
 RSPM_VERSION := "2022.11.4-20"
 RSPM_LICENSE := ""
+RSPM_LICENSE_SERVER := ""
 
 R_VERSION := "3.6.2"
 
@@ -47,6 +48,8 @@ test TAG=`just _make-default-tag` VERSION=RSPM_VERSION CMD="":
   set -euxo pipefail
   IMAGE_NAME="{{ TAG }}" \
   RSPM_VERSION="{{ VERSION }}" \
+  RSPM_LICENSE="{{ RSW_LICENSE }}" \
+  RSPM_LICENSE_SERVER="{{ RSW_LICENSE_SERVER }}" \
   R_VERSION="{{ R_VERSION }}" \
   docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
 
@@ -58,11 +61,12 @@ test-i TAG=`just _make-default-tag` VERSION=RSPM_VERSION:
 run TAG=`just _make-default-tag` CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
-  if [ -z "{{ RSPM_LICENSE }}" ]; then
-    echo "Please set RSPM_LICENSE to a valid RStudio Package Manager license before running."
+  if [ -z "{{ RSPM_LICENSE }}" || -z "{{ RSPM_LICENSE_SERVER }}" ]; then
+    echo "Please set RSPM_LICENSE or RSPM_LICENSE_SERVER before running."
     exit 1
   fi
   docker run -it \
     -p 4242:4242 \
     -e RSPM_LICENSE="{{ RSPM_LICENSE }}" \
+    -e RSPM_LICENSE_SERVER="{{ RSPM_LICENSE_SERVER }}" \
     "{{ TAG }}" {{ CMD }}
