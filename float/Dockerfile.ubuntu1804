@@ -6,15 +6,15 @@ ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
       ca-certificates \
-	    gdebi-core \
-	    curl \
-	    wget  \
+      gdebi-core \
+      curl \
+      wget \
     && rm -rf /var/lib/apt/lists/*
 
 # Runtime settings
 ARG TINI_VERSION=0.18.0
-RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini && \
-    chmod +x /usr/local/bin/tini
+RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini \
+    && chmod +x /usr/local/bin/tini
 
 # install license server binary
 ARG PRODUCT=rsp
