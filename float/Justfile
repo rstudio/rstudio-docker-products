@@ -11,4 +11,4 @@ run:
   RSW_FLOAT_LICENSE="{{ RSW_FLOAT_LICENSE }}" \
   RSC_FLOAT_LICENSE="{{ RSC_FLOAT_LICENSE }}" \
   RSPM_FLOAT_LICENSE="{{ RSPM_FLOAT_LICENSE }}" \
-  docker-compose -f helper/float/docker-compose.yml up
+  docker-compose -f ./docker-compose.yml up

@@ -10,6 +10,7 @@ services:
       - RSPM_VERSION
       - R_VERSION
       - RSPM_LICENSE
+      - RSPM_LICENSE_SERVER
     volumes:
       - "./test/run_tests.sh:/run_tests.sh"
       - "./test/goss.yaml:/tmp/goss.yaml"
