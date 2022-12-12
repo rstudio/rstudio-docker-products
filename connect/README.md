@@ -5,8 +5,8 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`2022.11.0`, `bionic`, `ubuntu1804`, `bionic-2022.11.0`, `ubuntu1804-2022.11.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.bionic)
-* [`jammy`, `ubuntu2204`, `jammy-2022.11.0`, `ubuntu2204-2022.11.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.jammy)
+* [`2022.12.0`, `bionic`, `ubuntu1804`, `bionic-2022.12.0`, `ubuntu1804-2022.12.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.bionic)
+* [`jammy`, `ubuntu2204`, `jammy-2022.12.0`, `ubuntu2204-2022.12.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.jammy)
 
 # What is RStudio Connect?
 
@@ -50,7 +50,7 @@ export RSC_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 docker run -it --privileged \
     -p 3939:3939 \
     -e RSC_LICENSE=$RSC_LICENSE \
-    rstudio/rstudio-connect:latest
+    rstudio/rstudio-connect:ubuntu1804
 ```
 Once running, open [http://localhost:3939](http://localhost:3939) to access RStudio Connect.
 
@@ -122,7 +122,7 @@ to explore using a license server, license file, or custom image with manual int
 
 | Variable | Description |
 |-----|---|
-| `2022.11.0` | Default HTTP Port for RStudio Connect |
+| `3939` | Default HTTP Port for RStudio Connect |
 
 ### Example usage
 
@@ -135,7 +135,7 @@ docker run -it --privileged \
     -p 3939:3939 \
     -v $PWD/connect/rstudio-connect.gcfg:/etc/rstudio-connect/rstudio-connect.gcfg \
     -e RSC_LICENSE=$RSC_LICENSE \
-    rstudio/rstudio-connect:latest
+    rstudio/rstudio-connect:ubuntu1804
 
 # Run with persistent data and using an external configuration
 docker run -it --privileged \
@@ -143,7 +143,7 @@ docker run -it --privileged \
     -v $PWD/data/rsc:/data \
     -v $PWD/connect/rstudio-connect.gcfg:/etc/rstudio-connect/rstudio-connect.gcfg \
     -e RSC_LICENSE=$RSC_LICENSE \
-    rstudio/rstudio-connect:latest
+    rstudio/rstudio-connect:ubuntu1804
 ```
 
 Open [http://localhost:3939](http://localhost:3939) to access RStudio Connect.
