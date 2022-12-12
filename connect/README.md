@@ -2,6 +2,8 @@
 
 * Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
 * Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues)
+* RStudio Connect image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-connect)
+* RStudio Connect Content Init image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-connect-content-init)
 
 # Supported tags and respective Dockerfile links
 

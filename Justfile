@@ -109,7 +109,9 @@ update-rsc-versions:
     connect/Justfile \
     connect-content-init/Justfile \
     Justfile
-  sed {{ sed_vars }} -E "s/[0-9]{4}\.[0-9]{1,2}\.[0-9]{1,2}/`just _get-clean-version {{ RSC_VERSION }}`/g" connect/README.md
+  sed {{ sed_vars }} -E "s/[0-9]{4}\.[0-9]{1,2}\.[0-9]{1,2}/`just _get-clean-version {{ RSC_VERSION }}`/g" \
+    connect/README.md \
+    connect-content-init/README.md
 
 # just R_VERSION=3.2.1 R_VERSION_ALT=4.1.0 update-r-versions
 update-r-versions:

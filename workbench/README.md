@@ -2,6 +2,8 @@
 
 * Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
 * Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues)
+* RStudio Workbench image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-workbench)
+* RStudio r-session-complete image: [Docker Hub](https://hub.docker.com/r/rstudio/r-session-complete)
 
 # Supported tags and respective Dockerfile links
 
@@ -149,22 +151,22 @@ more information.
 
 ### Environment variables
 
-| Variable | Description | Default |
-|-----|---|---|
+| Variable | Description | Default   |
+|-----|---|-----------|
 | `RSW_TESTUSER` | Test user to be created in the container, turn off with an empty value | `rstudio` |
 | `RSW_TESTUSER_PASSWD` | Test user password | `rstudio` |
-| `RSW_TESTUSER_UID` | Test user UID | `2022.07.2` |
-| `RSW_LICENSE` | License key for RStudio Workbench, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None |
-| `RSW_LICENSE_SERVER` | Floating license server, format should be: `my.url.com:port` | None |
-| `RSW_LAUNCHER` | Whether or not to use launcher locally / start the launcher process | true |
-| `RSW_LAUNCHER_TIMEOUT` | The timeout, in seconds, to wait for launcher to start listening on the expected port before failing startup | 10 |
+| `RSW_TESTUSER_UID` | Test user UID | `10000`   |
+| `RSW_LICENSE` | License key for RStudio Workbench, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None      |
+| `RSW_LICENSE_SERVER` | Floating license server, format should be: `my.url.com:port` | None      |
+| `RSW_LAUNCHER` | Whether or not to use launcher locally / start the launcher process | true      |
+| `RSW_LAUNCHER_TIMEOUT` | The timeout, in seconds, to wait for launcher to start listening on the expected port before failing startup | 10        |
 
 ### Ports
 
 | Variable | Description |
-|-----|---|
-| `2022.07.2` | Default HTTP Port for RStudio Connect |
-| `2022.07.2` | Port for RStudio Launcher server |
+|--------|---|
+| `8787` | Default HTTP Port for RStudio Connect |
+| `5559` | Port for RStudio Launcher server |
 
 ### Example usage:
 

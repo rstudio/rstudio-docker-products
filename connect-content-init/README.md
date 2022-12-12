@@ -5,11 +5,12 @@
 * Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
 * Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues)
 * RStudio Connect image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-connect)
+* RStudio Connect Content Init image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-connect-content-init)
 
 # Supported tags and respective Dockerfile links
 
-* [`2022.10.0`, `bionic`, `ubuntu1804`, `bionic-2022.10.0`, `ubuntu1804-2022.10.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.bionic)
-* [`jammy`, `ubuntu2204`, `jammy-2022.10.0`, `ubuntu2204-2022.10.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.jammy)
+* [`2022.12.0`, `bionic`, `ubuntu1804`, `bionic-2022.12.0`, `ubuntu1804-2022.12.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.bionic)
+* [`jammy`, `ubuntu2204`, `jammy-2022.12.0`, `ubuntu2204-2022.12.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.jammy)
 
 # RStudio Connect Content Init Container
 

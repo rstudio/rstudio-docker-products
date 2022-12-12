@@ -2,6 +2,7 @@
 
 * Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
 * Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues)
+* RStudio Package Manager image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-package-manager)
 
 # Supported tags and respective Dockerfile links
 
