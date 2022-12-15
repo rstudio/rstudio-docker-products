@@ -1,6 +1,8 @@
 set positional-arguments
 
 BUILDX_PATH := ""
+
+PRODUCT := "product-base"
 IMAGE_OS := "ubuntu1804"
 
 IMAGE_REGISTRY := "rstudio"
@@ -14,16 +16,24 @@ PYTHON_VERSION_ALT := "3.8.10"
 TINI_VERSION := "0.19.0"
 QUARTO_VERSION := "1.1.251"
 
-DEFAULT_BASE_TAG := IMAGE_REGISTRY + "/product-base:" + IMAGE_OS + "-r" + R_VERSION + "_" + R_VERSION_ALT + "-py" + PYTHON_VERSION + "_" + PYTHON_VERSION_ALT
+_make-default-tag OS=IMAGE_OS:
+  echo "{{IMAGE_REGISTRY}}/{{PRODUCT}}:{{OS}}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}"
 
-# Build base image - just build ubuntu1804 rstudio/base:ubuntu1804
-build +TAGS=DEFAULT_BASE_TAG:
+# Build base image - just build ubuntu1804 rstudio/product-base:ubuntu1804
+build OS=IMAGE_OS *TAGS="":
   #!/usr/bin/env bash
   set -euxo pipefail
   BUILDX_ARGS=""
   if [[ "{{BUILDX_PATH}}" != "" ]]; then
     BUILDX_ARGS="--cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache"
   fi
+
+  if [[ "{{TAGS}}" == "" ]]; then
+    raw_tag_array=($(just _make-default-tag {{OS}}))
+  else
+    raw_tag_array=("{{TAGS}}")
+  fi
+
   tag_array=()
   for TAG in {{TAGS}}
   do
@@ -38,10 +48,10 @@ build +TAGS=DEFAULT_BASE_TAG:
     --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
     --build-arg TINI_VERSION="{{ TINI_VERSION }}" \
     --build-arg QUARTO_VERSION="{{ QUARTO_VERSION }}" \
-    --file=./Dockerfile."{{ IMAGE_OS }}" .
+    --file=./Dockerfile.$(just -f ../Justfile _parse-os {{OS}}) .
 
 # Test base image - just test rstudio/base-pro:ubuntu1804
-test TAG=DEFAULT_BASE_TAG CMD="":
+test TAG=`just _make-default-tag` CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
   IMAGE_NAME="{{ TAG }}" \
@@ -55,5 +65,5 @@ test TAG=DEFAULT_BASE_TAG CMD="":
   docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
 
 # Test base image interactively - just test-i rstudio/base-pro:ubuntu1804
-test-i TAG=DEFAULT_BASE_TAG:
+test-i TAG=`just _make-default-tag`:
   just test {{ TAG }} bash
