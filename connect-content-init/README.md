@@ -32,7 +32,7 @@ The version of the release package to use can be overridden with the
 `RSC_VERSION` build arg.
 
 ```console
-just build ubuntu1804 1.8.8.3-dev236
+just build ubuntu1804 2022.12.0
 ```
 
 ## Testing
@@ -57,7 +57,7 @@ just test
 You can see the different layers that make up the image:
 
 ```console
-docker history rstudio/rstudio-connect-content-init-preview:1.8.8.3-dev236
+docker history rstudio/rstudio-connect-content-init-preview:2022.12.0-dev-326
 ```
 
 NOTE: almost all the image size is pandoc.
