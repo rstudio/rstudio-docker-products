@@ -50,7 +50,7 @@ build OS=IMAGE_OS *TAGS="":
     --build-arg QUARTO_VERSION="{{ QUARTO_VERSION }}" \
     --file=./Dockerfile.$(just -f ../Justfile _parse-os {{OS}}) .
 
-# Test base image - just test rstudio/base-pro:ubuntu1804
+# Test base image - just test rstudio/product-base:ubuntu1804
 test TAG=`just _make-default-tag` CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -64,6 +64,6 @@ test TAG=`just _make-default-tag` CMD="":
   OS="{{ IMAGE_OS }}" \
   docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
 
-# Test base image interactively - just test-i rstudio/base-pro:ubuntu1804
+# Test base image interactively - just test-i rstudio/product-base:ubuntu1804
 test-i TAG=`just _make-default-tag`:
   just test {{ TAG }} bash
