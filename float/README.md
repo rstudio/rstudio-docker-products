@@ -41,7 +41,7 @@ docker run -it \
     -v $PWD/workbench/conf/:/etc/rstudio \
     -e RSW_LICENSE_SERVER=$RSW_LICENSE_SERVER \
     --network rstudio-docker-products \
-    rstudio/rstudio-workbench:1.2.5033-1
+    rstudio/rstudio-workbench:ubuntu1804
 
 # RStudio Connect
 docker run -it --privileged \
@@ -50,7 +50,7 @@ docker run -it --privileged \
     -v $PWD/connect/rstudio-connect.gcfg:/etc/rstudio-connect/rstudio-connect.gcfg \
     -e RSC_LICENSE_SERVER=$RSC_LICENSE_SERVER \
     --network rstudio-docker-products \
-    rstudio/rstudio-connect:1.8.0.3-19
+    rstudio/rstudio-connect:ubuntu1804
 
 # RStudio Package Manager
 docker run -it \
@@ -59,7 +59,7 @@ docker run -it \
     -v $PWD/package-manager/rstudio-pm-float.gcfg:/etc/rstudio-pm/rstudio-pm.gcfg \
     -e RSPM_LICENSE_SERVER=$RSPM_LICENSE_SERVER \
     --network rstudio-docker-products \
-    rstudio/rstudio-package-manager:latest
+    rstudio/rstudio-package-manager:ubuntu1804
 ```
 
 **Note:** You need to configure the products (config files) to use remote license, please look at the corresponding admin guides.

@@ -1,22 +1,36 @@
-# r-session-complete
+# Quick reference
 
-Dockerfiles for R and Python sessions and jobs to be used RStudio Workbench,
-Launcher, and Kubernetes.
+* Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
+* Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues)
+* RStudio Workbench image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-workbench)
+* RStudio r-session-complete image: [Docker Hub](https://hub.docker.com/r/rstudio/r-session-complete)
 
-**IMPORTANT:** There are a few things you need to know before using these images:
+# Supported tags and respective Dockerfile links
 
+* [`2022.07.2`, `bionic`, `ubuntu1804`, `bionic-2022.07.2`, `ubuntu1804-2022.07.2`](https://github.com/rstudio/rstudio-docker-products/blob/main/r-session-complete/Dockerfile.ubuntu1804)
+* [`jammy`, `ubuntu2204`, `jammy-2022.07.2`, `ubuntu2204-2022.07.2`](https://github.com/rstudio/rstudio-docker-products/blob/main/r-session-complete/Dockerfile.ubuntu2204)
+
+# What are the r-session-complete images?
+
+Images for R and Python sessions and jobs to be used RStudio Workbench, Launcher, and Kubernetes.
+
+# Notice for support 
+
+1. This image may introduce **BREAKING** changes, as such we recommend:
+   - Avoid using the `latest` or `{operating-system}` tags to avoid unexpected version changes, and
+   - Always read through the [NEWS](./NEWS.md) to understand these changes before updating.
 1. These images are provided as a convenience to RStudio customers and are not formally supported by RStudio. If you
    have questions about these images, you can ask them in the issues in the repository or to your support
    representative, who will route them appropriately.
-2. Outdated images will be removed periodically from DockerHub as product version updates are made. Please make plans to
+1. Outdated images will be removed periodically from DockerHub as product version updates are made. Please make plans to
    update at times or use your own build of the images.
-3. These images are meant as a starting point for your needs. Consider creating a fork of this repo, where you can
+1. These images are meant as a starting point for your needs. Consider creating a fork of this repo, where you can
    continue to merge in changes we make while having your own security scanning, base OS in use, or other custom
    changes. We
    provide [instructions for how to build and use](#how-to-use-these-docker-images)
    for these cases.
 
-## How to Use These Docker Images
+# How to use these images
 
 The Docker images built from these Dockerfiles are intended to be used for R and
 Jupyter sessions and jobs with RStudio Workbench (RSW), Launcher, and
@@ -24,8 +38,8 @@ Kubernetes.
 
 Note: These Docker images are not equipped or intended to be used to run RStudio
 Workbench within a Docker container. Visit the
-[rstudio/rstudio-docker-products](https://github.com/rstudio/rstudio-docker-products)
-repository for images built for that purpose.
+[rstudio/rstudio-worbench Docker Hub page](https://hub.docker.com/r/rstudio/rstudio-workbench)
+for images built for that purpose.
 
 For more information about RStudio Workbench and Launcher, refer to the
 [Launcher Overview](https://solutions.rstudio.com/launcher/overview/) on the
@@ -36,15 +50,14 @@ Launcher, refer to the RStudio support article on [Using Docker images with
 RStudio Workbench, Launcher, and
 Kubernetes](https://support.rstudio.com/hc/en-us/articles/360019253393-Using-Docker-images-with-RStudio-Server-Pro-Launcher-and-Kubernetes).
 
-We provide simple ways to extend and build the Dockerfiles. After you have cloned the repo, you can create your own containers fairly simply with the provided Justfile.
+We provide simple ways to extend and build the Dockerfiles. After you have cloned the repo, you can create your own 
+containers fairly simply with the provided Justfile.
 
-## Docker Images on Docker Hub
+## Overview
 
 Built images are available from the
 [rstudio/r-session-complete](https://hub.docker.com/r/rstudio/r-session-complete)
 repository on Docker Hub.
-
-## Docker Image Layers
 
 These images include the following layers:
 
