@@ -67,13 +67,16 @@ update-rsw-versions:
     workbench/Dockerfile.ubuntu2204 \
     workbench-for-microsoft-azure-ml/Dockerfile.ubuntu1804
   sed {{ sed_vars }} "s/RSW_VERSION:.*/RSW_VERSION: {{ RSW_VERSION }}/g" docker-compose.yml
-  sed {{ sed_vars }} "s/rstudio\/rstudio-workbench:.*/rstudio\/rstudio-workbench:$(just _get-tag-safe-version {{ RSW_VERSION }})/g" docker-compose.yml
+  sed {{ sed_vars }} "s/rstudio\/rstudio-workbench:.*/rstudio\/rstudio-workbench:$(just _get-clean-version {{ RSW_VERSION }})/g" docker-compose.yml
   sed {{ sed_vars }} "s/org.opencontainers.image.version='.*'/org.opencontainers.image.version='{{ RSW_VERSION }}'/g" workbench-for-microsoft-azure-ml/Dockerfile.ubuntu1804
   sed {{ sed_vars }} "s/^RSW_VERSION := .*/RSW_VERSION := \"{{ RSW_VERSION }}\"/g" \
     r-session-complete/Justfile \
     workbench/Justfile \
     workbench-for-microsoft-azure-ml/Justfile \
     Justfile
+  sed {{ sed_vars }} "s/[0-9]{4}\.[0-9]{1,2}\.[0-9]{1,2}/\``just _get-clean-version {{ RSW_VERSION }}`\`/g" \
+    workbench/README.md \
+    r-session-complete/README.md
 
 # just RSPM_VERSION=1.2.3 update-rspm-versions
 update-rspm-versions:
@@ -84,10 +87,11 @@ update-rspm-versions:
     package-manager/Dockerfile.ubuntu1804 \
     package-manager/Dockerfile.ubuntu2204
   sed {{ sed_vars }} "s/RSPM_VERSION:.*/RSPM_VERSION: {{ RSPM_VERSION }}/g" docker-compose.yml
-  sed {{ sed_vars }} "s/rstudio\/rstudio-package-manager:.*/rstudio\/rstudio-package-manager:$(just _get-tag-safe-version {{ RSPM_VERSION }})/g" docker-compose.yml
+  sed {{ sed_vars }} "s/rstudio\/rstudio-package-manager:.*/rstudio\/rstudio-package-manager:$(just _get-clean-version {{ RSPM_VERSION }})/g" docker-compose.yml
   sed {{ sed_vars }} "s/^RSPM_VERSION := .*/RSPM_VERSION := \"{{ RSPM_VERSION }}\"/g" \
     package-manager/Justfile \
     Justfile
+  sed {{ sed_vars }} -E "s/[0-9]{4}\.[0-9]{1,2}\.[0-9]{1,2}/`just _get-clean-version {{ RSPM_VERSION }}`/g" package-manager/README.md
 
 # just RSC_VERSION=1.2.3 update-rsc-versions
 update-rsc-versions:
@@ -103,7 +107,11 @@ update-rsc-versions:
   sed {{ sed_vars }} "s/rstudio\/rstudio-connect:.*/rstudio\/rstudio-connect:{{ RSC_VERSION }}/g" docker-compose.yml
   sed {{ sed_vars }} "s/^RSC_VERSION := .*/RSC_VERSION := \"{{ RSC_VERSION }}\"/g" \
     connect/Justfile \
+    connect-content-init/Justfile \
     Justfile
+  sed {{ sed_vars }} -E "s/[0-9]{4}\.[0-9]{1,2}\.[0-9]{1,2}/`just _get-clean-version {{ RSC_VERSION }}`/g" \
+    connect/README.md \
+    connect-content-init/README.md
 
 # just R_VERSION=3.2.1 R_VERSION_ALT=4.1.0 update-r-versions
 update-r-versions:
