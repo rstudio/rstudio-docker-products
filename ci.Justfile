@@ -3,6 +3,16 @@ set positional-arguments
 BUILDX_PATH := ""
 REGISTRY_NAMESPACE := "rstudio"
 
+R_VERSION := "3.6.2"
+R_VERSION_ALT := "4.1.0"
+
+PYTHON_VERSION := "3.9.5"
+PYTHON_VERSION_ALT := "3.8.10"
+
+DRIVERS_VERSION := "2022.11.0"
+DRIVERS_VERSION_RHEL := DRIVERS_VERSION + "-1"
+
+# just BUILDX_PATH=~/.buildx build-release workbench bionic 12.0.11-11
 _get-os-alias OS:
   #!/usr/bin/env bash
   if [[ "{{OS}}" == "bionic" || "{{OS}}" == "ubuntu1804" ]]; then
@@ -25,6 +35,75 @@ _get-default-tag PRODUCT OS:
   fi
 
   echo "{{ REGISTRY_NAMESPACE }}/${IMAGE_PREFIX}{{ PRODUCT }}:{{ OS }}"
+
+# just BUILDX_PATH=~/.buildx build-base ubuntu1804 base
+build-base $OS $TYPE="base":
+  #!/usr/bin/env bash
+  set -euxo pipefail
+
+  # variable placeholders
+  BUILDX_ARGS=""
+
+  # set short name
+  if [[ $TYPE == "base" || $TYPE == "product-base" ]]; then
+    IMAGE_NAME="product-base"
+    CTX_PATH="./product/base"
+    FILE_PATH="./product/base/Dockerfile.${OS}"
+  elif [[ $TYPE == "base-pro" || $TYPE == "pro" || $TYPE == "product-base-pro" ]]; then
+    IMAGE_NAME="product-base-pro"
+    CTX_PATH="./product/pro"
+    FILE_PATH="./product/pro/Dockerfile.${OS}"
+  fi
+
+  if [[ "${OS}" == "centos7" ]]; then
+    _DRIVERS_VERSION="{{ DRIVERS_VERSION_RHEL }}"
+  else
+    _DRIVERS_VERSION="{{ DRIVERS_VERSION }}"
+  fi
+
+  # set buildx args
+  if [[ "{{BUILDX_PATH}}" != "" ]]; then
+    BUILDX_ARGS="--cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache"
+  fi
+
+  docker buildx --builder="{{BUILDX_PATH}}" build --load $BUILDX_ARGS \
+    -t rstudio/${IMAGE_NAME}:${OS} \
+    -t rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}-py{{PYTHON_VERSION}} \
+    -t rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}} \
+    -t ghcr.io/rstudio/${IMAGE_NAME}:${OS} \
+    -t ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}-py{{PYTHON_VERSION}} \
+    -t ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}} \
+    --build-arg R_VERSION="{{ R_VERSION }}" \
+    --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
+    --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
+    --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
+    --build-arg DRIVERS_VERSION="${_DRIVERS_VERSION}" \
+    --file "${FILE_PATH}" "${CTX_PATH}"
+
+  #  echo rstudio/${IMAGE_NAME}:${OS} \
+  #    rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}-py{{PYTHON_VERSION}} \
+  #    rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}} \
+  #    ghcr.io/rstudio/${IMAGE_NAME}:${OS} \
+  #    ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}-py{{PYTHON_VERSION}} \
+  #    ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}
+
+  echo ghcr.io/rstudio/${IMAGE_NAME}:${OS} \
+    ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}-py{{PYTHON_VERSION}} \
+    ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}
+
+# just BUILDX_PATH=~/.buildx test-base ubuntu1804 base
+test-base $OS $TYPE="base":
+  #!/usr/bin/env bash
+  set -euxo pipefail
+
+  # set short name
+  if [[ $TYPE == "base" ]]; then
+    IMAGE_NAME="product-base"
+    just IMAGE_OS="${OS}" product/base/test ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}
+  elif [[ $TYPE == "base-pro" || $TYPE == "pro" ]]; then
+    IMAGE_NAME="product-base-pro"
+    just IMAGE_OS="${OS}" product/pro/test ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}
+  fi
 
 # just BUILDX_PATH=~/.buildx build-release workbench ubuntu1804 12.0.11-11
 build-release $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`git rev-parse --short HEAD`:
@@ -76,6 +155,10 @@ build-release $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`git 
         ${tag_array[@]} \
         --build-arg "$SHORT_NAME"_VERSION=$VERSION \
         --build-arg RSW_DOWNLOAD_URL=$RSW_DOWNLOAD_URL \
+        --build-arg R_VERSION="{{ R_VERSION }}" \
+        --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
+        --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
+        --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
         --file=./${PRODUCT}/Dockerfile.$(just _parse-os ${OS}) ${PRODUCT}
 
   echo ${tag_array[*]//-t/}
@@ -139,6 +222,10 @@ build-preview $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
         ${tag_array[@]} \
         --build-arg ${SHORT_NAME}_VERSION=$VERSION \
         --build-arg RSW_DOWNLOAD_URL=$RSW_DOWNLOAD_URL \
+        --build-arg R_VERSION="{{ R_VERSION }}" \
+        --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
+        --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
+        --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
         --file=./${PRODUCT}/Dockerfile.$(just _parse-os ${OS}) ${PRODUCT}
 
   # These tags are propogated forward to test-images and push-images in builds. It is important that these tags match the build tags above.

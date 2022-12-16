@@ -1,0 +1,175 @@
+ARG R_VERSION=4.2.0
+ARG R_VERSION_ALT=3.6.2
+ARG PYTHON_VERSION=3.9.5
+ARG PYTHON_VERSION_ALT=3.8.10
+ARG REGISTRY=ghcr.io
+FROM ${REGISTRY}/rstudio/base-pro:ubuntu2204-r${R_VERSION}_${R_VERSION_ALT}-py${PYTHON_VERSION}_${PYTHON_VERSION_ALT} AS workbench
+LABEL maintainer="RStudio Docker <docker@rstudio.com>"
+
+ARG DEBIAN_FRONTEND=noninteractive
+ARG R_VERSION=4.2.0
+ARG R_VERSION_ALT=3.6.2
+ARG PYTHON_VERSION=3.9.5
+ARG PYTHON_VERSION_ALT=3.8.10
+ARG PYTHON_VERSION_JUPYTER=3.8.10
+ARG RSW_VERSION=2022.07.2+576.pro12
+ARG RSW_NAME=rstudio-workbench
+ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/jammy/amd64
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Set default env values
+ENV RSW_LICENSE ""
+ENV RSW_LICENSE_SERVER ""
+ENV USER_NAME azureuser
+ENV USER_PASSWORD ""
+ENV PUID 1001
+ENV PGID 1001
+ENV RSW_LAUNCHER true
+ENV RSW_LAUNCHER_TIMEOUT 10
+ENV DIAGNOSTIC_DIR /var/log/rstudio
+ENV DIAGNOSTIC_ENABLE false
+ENV DIAGNOSTIC_ONLY false
+
+COPY --chmod=755 license-manager-shim /opt/rstudio-license/license-manager
+COPY --chmod=755 TurboActivate.dat /opt/rstudio-license/license-manager.conf
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y \
+      krb5-user \
+      libcap2 \
+      libcurl4-gnutls-dev \
+      libglib2.0-0 \
+      libnss-sss \
+      libpam-sss \
+      libpq-dev \
+      libpq5 \
+      libsm6 \
+      libuser \
+      libuser1-dev \
+      libxext6 \
+      libxrender1 \
+      oddjob-mkhomedir \
+      rrdtool \
+      sssd \
+      supervisor \
+    && curl -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION//+/-}-amd64.deb" \
+    && gpg --keyserver keyserver.ubuntu.com --recv-keys 3F32EE77E331692F \
+    && dpkg-sig --verify ./rstudio-workbench.deb \
+    && apt-get install -yq --no-install-recommends ./rstudio-workbench.deb \
+    && rm ./rstudio-workbench.deb \
+    && mkdir -p /opt/rstudio-license/ \
+    && mkdir -p /var/lib/rstudio-workbench/ \
+    && curl -sL "https://s3.amazonaws.com/rstudio-ide-build/monitor/jammy/rsp-monitor-workbench-azureml-${RSW_VERSION//+/-}.tar.gz" |  \
+       tar xzvf - --strip 2 -C /opt/rstudio-license/ \
+    && chmod 0755 /opt/rstudio-license/license-manager \
+    && mv /opt/rstudio-license/license-manager /opt/rstudio-license/license-manager-orig \
+    && rm -f /usr/lib/rstudio-server/bin/license-manager \
+    && apt-get autoremove -y \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/lib/rstudio-server/r-versions
+
+COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
+COPY startup/* /startup/base/
+COPY startup-launcher/* /startup/launcher/
+COPY startup/* /startup/base/
+COPY supervisord.conf /etc/supervisor/supervisord.conf
+
+# Install R and R Packages
+COPY package-list.txt /tmp/package-list.txt
+COPY install-r.sh /tmp/install-r.sh
+RUN apt-get update --fix-missing -qq \
+    && /tmp/install-r.sh \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyter \
+    && /opt/python/jupyter/bin/pip install \
+      jupyter \
+      jupyterlab \
+      rsconnect_jupyter \
+      rsconnect_python \
+      rsp_jupyter \
+      workbench_jupyterlab \
+    && /opt/python/jupyter/bin/jupyter kernelspec remove python3 -f \
+    && /opt/python/jupyter/bin/pip uninstall -y ipykernel \
+    && ln -s /opt/python/jupyter/bin/jupyter /usr/local/bin/jupyter \
+    && /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter \
+    && /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter \
+    && /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsconnect_jupyter \
+    && /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter \
+    && /opt/python/jupyter/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter \
+    && /opt/python/${PYTHON_VERSION}/bin/pip install \
+      ipykernel \
+      virtualenv \
+    && /opt/python/${PYTHON_VERSION}/bin/python -m ipykernel install --name py${PYTHON_VERSION} --display-name "Python ${PYTHON_VERSION}" \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/pip install \
+      ipykernel \
+      virtualenv \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}"
+
+RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh \
+    && chmod +x /usr/local/bin/wait-for-it.sh
+
+RUN rstudio-server install-vs-code /opt/code-server/ \
+    && ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
+
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash \
+    && az extension add -n ml -y
+
+COPY conf/* /etc/rstudio/
+COPY landing/* /usr/lib/rstudio-server/www/
+
+EXPOSE 8787/tcp
+EXPOSE 5559/tcp
+
+ENTRYPOINT []
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+
+
+
+FROM workbench AS clamav
+
+# Set up ClamAV
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y clamav \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Reconfigure freshclam to get database from our S3 location
+ARG CLAMAV_MIRROR=https://cdn.rstudio.com/platform/clamav
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN grep -v "DatabaseMirror" /etc/clamav/freshclam.conf > /etc/clamav/freshclam.conf.new \
+    && echo "DatabaseMirror ${CLAMAV_MIRROR}" >> /etc/clamav/freshclam.conf.new \
+    && mv /etc/clamav/freshclam.conf.new /etc/clamav/freshclam.conf
+
+# Update ClamAV
+RUN freshclam --log="/var/log/clamav/clamupdate.log"
+
+# Scan all but /sys for viruses. If this fails, the Docker build will
+# fail.
+RUN clamscan --recursive --infected --exclude-dir="^/sys" --log "/var/log/clamav/clamscan.log" /
+
+
+# Ignore the intermediate 'clamav' multi-stage build step so we don't distribute
+# with ClamAV installed. Avoid adding changes in this stage unless they are related
+# to the ClamAV stage. Since the ClamAV stage may be cached, you can't guarantee
+# another full scan if you change anything beyond this point.
+FROM workbench AS final
+
+# Copy ClamAV scan logs so the end user can see them.
+COPY --from=clamav /var/log/clamav/clamscan.log /var/log/clamav/clamupdate.log /
+
+LABEL \
+     azure.ii.language='en-US' \
+     azure.ii.support.stage='preview' \
+     azure.ii.privacy='{"tracking":false,"ads":false,"network-traffic":true}' \
+     azure.ii.auth='{"disable":"DISABLE_AUTH"}' \
+     azure.ii.user='{"mode":"entry_point","name":"USER_NAME","uid":"PUID","gid":"PGID"}' \
+     azure.ii.locale='{"tz":"TZ","lang":"LANG"}' \
+     azure.ii.endpoints='[{"label":"connect","target":8787,"protocol":"http"}]' \
+     org.opencontainers.image.description='A professional integrated development environment for data science teams using R and Python' \
+     org.opencontainers.image.title='RStudio Workbench' \
+     org.opencontainers.image.version='2022.07.2+576.pro12' \
+     org.opencontainers.image.url='https://www.rstudio.com/products/workbench/'

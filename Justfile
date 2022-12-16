@@ -133,7 +133,8 @@ update-r-versions:
     workbench/Justfile \
     workbench-for-microsoft-azure-ml/Justfile \
     connect/Justfile package-manager/Justfile \
-    Justfile
+    Justfile \
+    ci.Justfile
 
   # Update alt R versions
   sed {{ sed_vars }} "s/^R_VERSION_ALT=.*/R_VERSION_ALT={{ R_VERSION_ALT }}/g" \
@@ -147,7 +148,8 @@ update-r-versions:
     workbench/Justfile \
     workbench-for-microsoft-azure-ml/Justfile \
     connect/Justfile \
-    Justfile
+    Justfile \
+    ci.Justfile
 
 # just PYTHON_VERSION=3.9.5 PYTHON_VERSION_ALT=3.8.10 update-py-versions
 update-py-versions:
@@ -168,7 +170,8 @@ update-py-versions:
     workbench/Justfile \
     workbench-for-microsoft-azure-ml/Justfile \
     connect/Justfile \
-    Justfile
+    Justfile \
+    ci.Justfile
 
   # Update alt Python versions
   sed {{ sed_vars }} "s/^PYTHON_VERSION_ALT=.*/PYTHON_VERSION_ALT={{ PYTHON_VERSION_ALT }}/g" \
@@ -182,7 +185,8 @@ update-py-versions:
     workbench/Justfile \
     workbench-for-microsoft-azure-ml/Justfile \
     connect/Justfile \
-    Justfile
+    Justfile \
+    ci.Justfile
 
 # just DRIVERS_VERSION=2022.11.0 update-driver-versions
 update-drivers-versions:
@@ -191,13 +195,16 @@ update-drivers-versions:
   sed {{ sed_vars }} "s/\"drivers\": \".[^\,\}]*\"/\"drivers\": \"{{ DRIVERS_VERSION }}\"/g" content/matrix.json
   sed {{ sed_vars }} "s/DRIVERS_VERSION=.*/DRIVERS_VERSION={{ DRIVERS_VERSION }}/g" \
     workbench-for-microsoft-azure-ml/Dockerfile.ubuntu1804 \
-    r-session-complete/Dockerfile.ubuntu*
+    r-session-complete/Dockerfile.ubuntu* \
+    product/pro/Dockerfile.ubuntu*
   sed {{ sed_vars }} "s/DRIVERS_VERSION=.*/DRIVERS_VERSION={{ DRIVERS_VERSION_RHEL }}/g" \
     r-session-complete/.env \
-    r-session-complete/Dockerfile.centos7
+    r-session-complete/Dockerfile.centos7 \
+    product/pro/Dockerfile.centos7
   sed {{ sed_vars }} "s/^DRIVERS_VERSION := .*/DRIVERS_VERSION := \"{{ DRIVERS_VERSION }}\"/g" \
     content/pro/Justfile \
     r-session-complete/Justfile \
+    product/pro/Justfile \
     Justfile
 
 # just test-image preview workbench 12.0.11-8 tag1 tag2 tag3 ...
@@ -206,7 +213,12 @@ test-image $PRODUCT $VERSION +IMAGES:
   set -euxo pipefail
   IMAGES="{{IMAGES}}"
   read -ra IMAGE_ARRAY <<<"$IMAGES"
-  just $PRODUCT/test "${IMAGE_ARRAY[0]}" "$VERSION"
+  just \
+    R_VERSION={{R_VERSION}} \
+    R_VERSION_ALT={{R_VERSION_ALT}} \
+    PYTHON_VERSION={{PYTHON_VERSION}} \
+    PYTHON_VERSION_ALT={{PYTHON_VERSION_ALT}} \
+    $PRODUCT/test "${IMAGE_ARRAY[0]}" "$VERSION"
 
 # just lint workbench ubuntu1804
 lint $PRODUCT $OS:
