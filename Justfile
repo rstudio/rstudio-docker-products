@@ -195,7 +195,8 @@ update-drivers-versions:
   sed {{ sed_vars }} "s/\"drivers\": \".[^\,\}]*\"/\"drivers\": \"{{ DRIVERS_VERSION }}\"/g" content/matrix.json
   sed {{ sed_vars }} "s/DRIVERS_VERSION=.*/DRIVERS_VERSION={{ DRIVERS_VERSION }}/g" \
     workbench-for-microsoft-azure-ml/Dockerfile.ubuntu1804 \
-    r-session-complete/Dockerfile.ubuntu*
+    r-session-complete/Dockerfile.ubuntu* \
+    product/pro/Dockerfile.ubuntu*
   sed {{ sed_vars }} "s/DRIVERS_VERSION=.*/DRIVERS_VERSION={{ DRIVERS_VERSION_RHEL }}/g" \
     r-session-complete/.env \
     r-session-complete/Dockerfile.centos7 \

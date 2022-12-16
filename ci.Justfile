@@ -9,6 +9,9 @@ R_VERSION_ALT := "4.1.0"
 PYTHON_VERSION := "3.9.5"
 PYTHON_VERSION_ALT := "3.8.10"
 
+DRIVERS_VERSION := "2022.11.0"
+DRIVERS_VERSION_RHEL := DRIVERS_VERSION + "-1"
+
 # just BUILDX_PATH=~/.buildx build-release workbench bionic 12.0.11-11
 _get-os-alias OS:
   #!/usr/bin/env bash
@@ -52,6 +55,12 @@ build-base $OS $TYPE="base":
     FILE_PATH="./product/pro/Dockerfile.${OS}"
   fi
 
+  if [[ "${OS}" == "centos7" ]]; then
+    _DRIVERS_VERSION="{{ DRIVERS_VERSION_RHEL }}"
+  else
+    _DRIVERS_VERSION="{{ DRIVERS_VERSION }}"
+  fi
+
   # set buildx args
   if [[ "{{BUILDX_PATH}}" != "" ]]; then
     BUILDX_ARGS="--cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache"
@@ -68,6 +77,7 @@ build-base $OS $TYPE="base":
     --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
     --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
     --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
+    --build-arg DRIVERS_VERSION="${_DRIVERS_VERSION}" \
     --file "${FILE_PATH}" "${CTX_PATH}"
 
   #  echo rstudio/${IMAGE_NAME}:${OS} \
