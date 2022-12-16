@@ -37,14 +37,14 @@ build OS=IMAGE_OS *TAGS="":
     raw_tag_array=("{{TAGS}}")
   fi
 
-  if [[ "{{ IMAGE_OS }}" == "centos7" ]]; then
+  if [[ "{{ OS }}" == "centos7" ]]; then
     _DRIVERS_VERSION="{{ DRIVERS_VERSION_RHEL }}"
   else
     _DRIVERS_VERSION="{{ DRIVERS_VERSION }}"
   fi
 
   tag_array=()
-  for TAG in {{TAGS}}
+  for TAG in $raw_tag_array
   do
     tag_array+=("-t" $TAG)
   done
@@ -56,17 +56,12 @@ build OS=IMAGE_OS *TAGS="":
     --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
     --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
     --build-arg DRIVERS_VERSION="${_DRIVERS_VERSION}" \
-    --file=./Dockerfile."{{ IMAGE_OS }}" .
+    --file=./Dockerfile.$(just -f ../../Justfile _parse-os {{OS}}) .
 
 # Test base image - just test rstudio/product-base-pro:ubuntu1804
 test TAG=`just _make-default-tag` CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
-  if [[ "{{ TAG }}" =~ .*"centos7".* ]]; then
-    _DRIVERS_VERSION="{{ DRIVERS_VERSION_RHEL }}"
-  else
-    _DRIVERS_VERSION="{{ DRIVERS_VERSION }}"
-  fi
 
   IMAGE_NAME="{{ TAG }}" \
   R_VERSION="{{ R_VERSION }}" \
@@ -75,7 +70,8 @@ test TAG=`just _make-default-tag` CMD="":
   PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
   QUARTO_VERSION="{{ QUARTO_VERSION }}" \
   TINI_VERSION="{{ TINI_VERSION }}" \
-  DRIVERS_VERSION="${_DRIVERS_VERSION}" \
+  DRIVERS_VERSION="{{ DRIVERS_VERSION }}" \
+  OS="{{ IMAGE_OS }}" \
   docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
 
 # Test base image interactively - just test-i rstudio/product-base-pro:ubuntu1804

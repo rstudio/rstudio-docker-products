@@ -48,7 +48,7 @@ build OS=IMAGE_OS *TAGS="":
     --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
     --build-arg TINI_VERSION="{{ TINI_VERSION }}" \
     --build-arg QUARTO_VERSION="{{ QUARTO_VERSION }}" \
-    --file=./Dockerfile.$(just -f ../Justfile _parse-os {{OS}}) .
+    --file=./Dockerfile.$(just -f ../../Justfile _parse-os {{OS}}) .
 
 # Test base image - just test rstudio/product-base:ubuntu1804
 test TAG=`just _make-default-tag` CMD="":

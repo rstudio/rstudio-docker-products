@@ -15,6 +15,7 @@ services:
       - TINI_VERSION
       - QUARTO_VERSION
       - DRIVERS_VERSION
+      - DRIVERS_VERSION_RHEL
       - OS
     volumes:
       - "./test/run_tests.sh:/run_tests.sh"

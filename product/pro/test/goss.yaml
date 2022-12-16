@@ -4,17 +4,21 @@ package:
   {{if .Env.OS | regexMatch "ubuntu.*"}}
   gpg:
     installed: true
+  unixodbc:
+    installed: true
+  unixodbc-dev:
+    installed: true
   {{end}}
   {{if .Env.OS | regexMatch "centos.*"}}
   epel-release:
     installed: true
   gnupg2:
     installed: true
+  unixODBC:
+    installed: true
+  unixODBC-devel:
+    installed: true
   {{end}}
-  unixodbc:
-    installed: true
-  unixodbc-dev:
-    installed: true
   rstudio-drivers:
     installed: true
     versions:
