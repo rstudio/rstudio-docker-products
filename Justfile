@@ -213,7 +213,12 @@ test-image $PRODUCT $VERSION +IMAGES:
   set -euxo pipefail
   IMAGES="{{IMAGES}}"
   read -ra IMAGE_ARRAY <<<"$IMAGES"
-  just $PRODUCT/test "${IMAGE_ARRAY[0]}" "$VERSION"
+  just \
+    R_VERSION={{R_VERSION}} \
+    R_VERSION_ALT={{R_VERSION_ALT}} \
+    PYTHON_VERSION={{PYTHON_VERSION}} \
+    PYTHON_VERSION_ALT={{PYTHON_VERSION_ALT}} \
+    $PRODUCT/test "${IMAGE_ARRAY[0]}" "$VERSION"
 
 # just lint workbench ubuntu1804
 lint $PRODUCT $OS:
