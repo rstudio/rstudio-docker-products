@@ -205,11 +205,6 @@ update-drivers-versions:
     r-session-complete/Justfile \
     product/pro/Justfile \
     Justfile
-  sed {{ sed_vars }} "s/^DRIVERS_VERSION_RHEL := .*/DRIVERS_VERSION_RHEL := \"{{ DRIVERS_VERSION_RHEL }}\"/g" \
-    content/pro/Justfile \
-    r-session-complete/Justfile \
-    product/pro/Justfile \
-    Justfile
 
 # just test-image preview workbench 12.0.11-8 tag1 tag2 tag3 ...
 test-image $PRODUCT $VERSION +IMAGES:
