@@ -3,8 +3,8 @@ set positional-arguments
 BUILDX_PATH := ""
 REGISTRY_NAMESPACE := "rstudio"
 
-R_VERSION := "3.6.2"
-R_VERSION_ALT := "4.1.0"
+R_VERSION := "4.1.0"
+R_VERSION_ALT := "3.6.2"
 
 PYTHON_VERSION := "3.9.5"
 PYTHON_VERSION_ALT := "3.8.10"
