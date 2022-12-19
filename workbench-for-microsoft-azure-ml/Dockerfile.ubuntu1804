@@ -138,7 +138,7 @@ COPY startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh
 
 # Install RStudio Workbench --------------------------------------------------#
-ARG RSW_VERSION=2022.07.2+576.pro12
+ARG RSW_VERSION=2022.12.0+353.pro20
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 ARG RSW_NAME=rstudio-workbench
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
