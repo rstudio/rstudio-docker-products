@@ -12,7 +12,7 @@ install_r_packages() {
 
   set -xe
 
-  local UBUNTU_CODENAME="bionic"
+  local UBUNTU_CODENAME=$(lsb_release -cs)
 
   # passing a r binary as second arg will install with that R version
   local R_BIN=${2:-"/usr/lib/R/bin/R"}
@@ -33,8 +33,8 @@ install_r_packages() {
 
 for rvers in 3.3.3 3.4.4 3.5.3 3.6.3 4.0.5 4.1.2; do
     # install r version
-    curl -O https://cdn.rstudio.com/r/ubuntu-1804/pkgs/r-${rvers}_1_amd64.deb
-    DEBIAN_FRONTEND=noninteractive gdebi --non-interactive r-${rvers}_1_amd64.deb
+    curl -O https://cdn.rstudio.com/r/ubuntu-$(lsb_release -rs | sed 's/\.//g')/pkgs/r-${rvers}_1_amd64.deb
+    DEBIAN_FRONTEND=noninteractive apt-get install -y ./r-${rvers}_1_amd64.deb
     rm -f ./r-${rvers}_1_amd64.deb
 
     # install packages

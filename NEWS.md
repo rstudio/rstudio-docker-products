@@ -5,6 +5,14 @@ changed in each image.
 
 This file only captures pervasive, repository-wide changes.
 
+# 2022-11-10
+- We replaced Ubuntu codenames with explicit version numbers for ease of use. Images will still be tagged with *both*
+the OS version number and the codename to retain backwards compatibility.
+
+# 2022-11-07
+- Potentially breaking changes around tagging with workbench due to simplifying the tagging approach.
+- Remove internal version strings e.g. `554.pro3`.
+
 # 2022-10-12
 - We replaced all `make` definitions with [`just`](https://just.systems/man/en) for ease of use.
 

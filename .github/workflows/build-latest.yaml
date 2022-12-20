@@ -7,27 +7,14 @@ on:
 
 name: build/test/push (latest)
 jobs:
-
-  build:
+  build-base:
     runs-on: ubuntu-latest
-    name: build-${{ matrix.config.product }}-${{ matrix.config.os }}-latest
+    name: build-${{ matrix.os }}
 
     strategy:
       fail-fast: false
       matrix:
-        config:
-          - {product: 'workbench', os: 'bionic'}
-          - {product: 'workbench', os: 'jammy'}
-          - {product: 'connect', os: 'bionic'}
-          - {product: 'connect', os: 'jammy'}
-          - {product: 'connect-content-init', os: 'bionic'}
-          - {product: 'connect-content-init', os: 'jammy'}
-          - {product: 'package-manager', os: 'bionic'}
-          - {product: 'package-manager', os: 'jammy'}
-          - {product: 'r-session-complete', os: 'bionic'}
-          - {product: 'r-session-complete', os: 'centos7'}
-          - {product: 'r-session-complete', os: 'jammy'}
-          - {product: 'workbench-for-microsoft-azure-ml', os: 'bionic'}
+        os: ['ubuntu1804', 'ubuntu2204', 'centos7']
 
     steps:
       - name: Check Out Repo
@@ -48,11 +35,207 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
+      - name: Build base image
+        id: build-base-image
+        run: |
+          TAGS=`just -f ci.Justfile BUILDX_PATH=${{ steps.buildx.outputs.name }} build-base ${{ matrix.os }} base`
+          echo "::set-output name=TAGS::$TAGS"
+
+      - name: Show image size
+        run: |
+          docker image ls
+
+      - name: Test image
+        run: |
+          just -f ci.Justfile test-base ${{ matrix.os }} base
+
+      - name: Run Snyk to check Docker image for vulnerabilities (main)
+        if: ${{ github.ref == 'refs/heads/main' }}
+        continue-on-error: true
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: ${{ steps.build-base-image.outputs.TAGS }}
+          args: --file=./product/Dockerfile.${{ matrix.os }}
+          command: monitor
+
+      - name: Run Snyk to check Docker image for vulnerabilities (branch)
+        if: ${{ github.ref != 'refs/heads/main' }}
+        continue-on-error: true
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: ${{ steps.build-base-image.outputs.TAGS }}
+          args: --file=./product/Dockerfile.${{ matrix.os }}
+          command: test
+
+      - name: Login to Docker Hub
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Login to ghcr.io
+        #if: ${{ github.ref == 'refs/heads/main' }}
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.BUILD_PAT }}
+
+      - name: Push image(s) to Docker Hub
+        #if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          just -f ci.Justfile push-images ${{ steps.build-base-image.outputs.TAGS }}
+
+
+  build-pro:
+    needs: build-base
+    runs-on: ubuntu-latest
+    name: build-pro-${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu1804', 'ubuntu2204', 'centos7']
+
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+
+      - name: Set up Just
+        uses: extractions/setup-just@v1
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Login to ghcr.io
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.BUILD_PAT }}
+
+      - name: Build pro drivers image
+        id: build-pro-image
+        run: |
+          TAGS=`just -f ci.Justfile BUILDX_PATH=${{ steps.buildx.outputs.name }} build-base ${{ matrix.os }} pro`
+          echo "::set-output name=TAGS::$TAGS"
+
+      - name: Show image size
+        run: |
+          docker image ls
+
+      - name: Test image
+        run: |
+          just -f ci.Justfile test-base ${{ matrix.os }} pro
+
+      - name: Run Snyk to check Docker image for vulnerabilities (main)
+        if: ${{ github.ref == 'refs/heads/main' }}
+        continue-on-error: true
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: ${{ steps.build-pro-image.outputs.TAGS }}
+          args: --file=./product/pro/Dockerfile.${{ matrix.os }}
+          command: monitor
+
+      - name: Run Snyk to check Docker image for vulnerabilities (branch)
+        if: ${{ github.ref != 'refs/heads/main' }}
+        continue-on-error: true
+        uses: snyk/actions/docker@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          image: ${{ steps.build-pro-image.outputs.TAGS }}
+          args: --file=./product/pro/Dockerfile.${{ matrix.os }}
+          command: test
+
+      - name: Login to Docker Hub
+        if: ${{ github.ref == 'refs/heads/main' }}
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Push image(s) to Docker Hub
+        #if: ${{ github.ref == 'refs/heads/main' }}
+        run: |
+          just -f ci.Justfile push-images ${{ steps.build-pro-image.outputs.TAGS }}
+
+
+  build-products:
+    needs: [build-base, build-pro]
+    runs-on: ubuntu-latest
+    name: build-${{ matrix.config.product }}-${{ matrix.config.os }}-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {product: 'workbench', os: 'ubuntu1804'}
+          - {product: 'workbench', os: 'ubuntu2204'}
+          - {product: 'connect', os: 'ubuntu1804'}
+          - {product: 'connect', os: 'ubuntu2204'}
+          - {product: 'connect-content-init', os: 'ubuntu1804'}
+          - {product: 'connect-content-init', os: 'ubuntu2204'}
+          - {product: 'package-manager', os: 'ubuntu1804'}
+          - {product: 'package-manager', os: 'ubuntu2204'}
+          - {product: 'r-session-complete', os: 'ubuntu1804'}
+          - {product: 'r-session-complete', os: 'centos7'}
+          - {product: 'r-session-complete', os: 'ubuntu2204'}
+          - {product: 'workbench-for-microsoft-azure-ml', os: 'ubuntu1804'}
+
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v2
+
+      - name: Set up Just
+        uses: extractions/setup-just@v1
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Login to ghcr.io
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.BUILD_PAT }}
+
       - name: Get Version
         id: get-version
         run: |
           VERSION=`just -f ci.Justfile get-version ${{ matrix.config.product }} --type=release --local`
           echo "::set-output name=VERSION::$VERSION"
+
+      - name: Get default tag
+        id: get-default-tag
+        run: |
+          DEFAULT_TAG=`just -f ci.Justfile _get-default-tag ${{ matrix.config.product }} ${{ matrix.config.os }}`
+          echo "::set-output name=DEFAULT_TAG::$DEFAULT_TAG"
 
       - name: Build Image
         id: build-image
@@ -70,7 +253,7 @@ jobs:
           RSPM_LICENSE: ${{ secrets.RSPM_LICENSE }}
           RSW_LICENSE: ${{ secrets.RSW_LICENSE }}
         run: |
-          just test-image ${{ matrix.config.product }} ${{  steps.get-version.outputs.VERSION }} ${{ steps.build-image.outputs.TAGS }}
+          just test-image ${{ matrix.config.product }} ${{ steps.get-version.outputs.VERSION }} ${{ steps.build-image.outputs.TAGS }}
 
       - name: Run Snyk to check Docker image for vulnerabilities (main)
         if: ${{ github.ref == 'refs/heads/main' }}
@@ -79,8 +262,8 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          image: ${{ steps.build-image.outputs.TAGS }}
-          args: --file=./${{ matrix.config.product }}/Dockerfile.${{ matrix.config.os }}
+          image: ${{ steps.get-default-tag.outputs.DEFAULT_TAG }}
+          args: --file=./${{ matrix.config.product }}/Dockerfile.${{ matrix.config.os }} --org=${{ secrets.SNYK_ORG_ID }} --project-name=${{ steps.get-default-tag.outputs.DEFAULT_TAG }} --tags=product=${{ matrix.config.product }},os=${{ matrix.config.os }} --exclude-base-image-vulns --app-vulns
           command: monitor
 
       - name: Run Snyk to check Docker image for vulnerabilities (branch)
@@ -90,8 +273,8 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          image: ${{ steps.build-image.outputs.TAGS }}
-          args: --file=./${{ matrix.config.product }}/Dockerfile.${{ matrix.config.os }}
+          image: ${{ steps.get-default-tag.outputs.DEFAULT_TAG }}
+          args: --file=./${{ matrix.config.product }}/Dockerfile.${{ matrix.config.os }} --org=${{ secrets.SNYK_ORG_ID }} --project-name=${{ steps.get-default-tag.outputs.DEFAULT_TAG }} --tags=product=${{ matrix.config.product }},os=${{ matrix.config.os }} --exclude-base-image-vulns --app-vulns
           command: test
 
       - name: Login to Docker Hub
@@ -101,16 +284,7 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      - name: Login to ghcr.io
-        if: ${{ github.ref == 'refs/heads/main' }}
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.BUILD_PAT }}
-
       - name: Push image(s) to Docker Hub
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           just -f ci.Justfile push-images ${{ steps.build-image.outputs.TAGS }}
-

@@ -1,0 +1,57 @@
+ARG R_VERSION=4.2.0
+ARG R_VERSION_ALT=3.6.2
+ARG PYTHON_VERSION=3.9.5
+ARG PYTHON_VERSION_ALT=3.8.10
+ARG REGISTRY=ghcr.io
+FROM ${REGISTRY}/rstudio/base-pro:ubuntu2204-r${R_VERSION}_${R_VERSION_ALT}-py${PYTHON_VERSION}_${PYTHON_VERSION_ALT}
+LABEL maintainer="RStudio Docker <docker@rstudio.com>"
+
+ARG DEBIAN_FRONTEND=noninteractive
+ARG R_VERSION=4.2.0
+ARG R_VERSION_ALT=3.6.2
+ARG PYTHON_VERSION=3.9.5
+ARG PYTHON_VERSION_ALT=3.8.10
+ARG RSW_VERSION=2022.07.2+576.pro12
+ARG RSW_NAME=rstudio-workbench
+ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/jammy/amd64
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y \
+      krb5-user \
+      libcurl4-gnutls-dev \
+      libuser \
+      libuser1-dev \
+      libpq-dev \
+      rrdtool \
+      subversion \
+    && RSW_VERSION_URL=$(echo -n "${RSW_VERSION}" | sed 's/+/-/g') \
+    && curl -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-amd64.deb" \
+    && gpg --keyserver keyserver.ubuntu.com --recv-keys 3F32EE77E331692F \
+    && dpkg-sig --verify ./rstudio-workbench.deb \
+    && apt-get install -yq --no-install-recommends ./rstudio-workbench.deb \
+    && rm ./rstudio-workbench.deb \
+    && apt-get autoremove -y \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/lib/rstudio-server/r-versions
+
+RUN /opt/python/"${PYTHON_VERSION}"/bin/pip install \
+      jupyter \
+      jupyterlab \
+      rsconnect_jupyter \
+      rsconnect_python \
+      rsp_jupyter \
+      workbench_jupyterlab \
+    && ln -s /opt/python/"${PYTHON_VERSION}"/bin/jupyter /usr/local/bin/jupyter \
+    && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter \
+    && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter \
+    && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-nbextension install --sys-prefix --py rsconnect_jupyter \
+    && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter \
+    && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
+
+COPY vscode.extensions.conf /etc/rstudio/vscode.extensions.conf
+RUN rstudio-server install-vs-code /opt/code-server/ \
+    && ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
+
+EXPOSE 8788/tcp

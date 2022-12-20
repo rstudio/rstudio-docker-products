@@ -4,11 +4,11 @@ BUILDX_PATH := ""
 
 IMAGE_PREFIX := "rstudio-"
 PRODUCT := "connect"
-IMAGE_OS := "bionic"
+IMAGE_OS := "ubuntu1804"
 
-RSC_VERSION := "2022.09.0"
-RSC_TAG_SAFE_VERSION := replace(RSC_VERSION, "+", "-")
+RSC_VERSION := "2022.12.0"
 RSC_LICENSE := ""
+RSC_LICENSE_SERVER := ""
 
 R_VERSION := "3.6.2"
 R_VERSION_ALT := "4.1.0"
@@ -16,9 +16,9 @@ R_VERSION_ALT := "4.1.0"
 PYTHON_VERSION := "3.9.5"
 PYTHON_VERSION_ALT := "3.8.10"
 
-DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":" + IMAGE_OS + "-" + RSC_TAG_SAFE_VERSION
+DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":" + IMAGE_OS + "-" + RSC_VERSION
 
-# Build Connect image - just build bionic 2022.09.0 rstudio/rstudio-connect:bionic-2022.09.0
+# Build Connect image - just build ubuntu1804 2022.10.0 rstudio/rstudio-connect:ubuntu1804-2022.10.0
 build OS=IMAGE_OS VERSION=RSC_VERSION +TAGS=DEFAULT_TAG:
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -39,33 +39,36 @@ build OS=IMAGE_OS VERSION=RSC_VERSION +TAGS=DEFAULT_TAG:
     --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
     --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
     --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
-    --file=./Dockerfile."{{ OS }}" .
+    --file=./Dockerfile.$(just -f ../Justfile _parse-os {{OS}}) .
 
-# Test Connect image - just test rstudio/rstudio-connect:bionic-2022.09.0 2022.09.0
+# Test Connect image - just test rstudio/rstudio-connect:ubuntu1804-2022.10.0 2022.10.0
 test TAG=DEFAULT_TAG VERSION=RSC_VERSION CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
   IMAGE_NAME="{{ TAG }}" \
   RSC_VERSION="{{ VERSION }}" \
+  RSC_LICENSE="{{ RSC_LICENSE }}" \
+  RSC_LICENSE_SERVER="{{ RSC_LICENSE_SERVER }}" \
   R_VERSION="{{ R_VERSION }}" \
   R_VERSION_ALT="{{ R_VERSION_ALT }}" \
   PYTHON_VERSION="{{ PYTHON_VERSION }}" \
   PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
   docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
 
-# Test Connect image interactively - just test-i rstudio/rstudio-connect:bionic-2022.09.0 2022.09.0
+# Test Connect image interactively - just test-i rstudio/rstudio-connect:ubuntu1804-2022.10.0 2022.10.0
 test-i TAG=DEFAULT_TAG VERSION=RSC_VERSION:
   just test {{ TAG }} {{ VERSION }} bash
 
-# Run Connect - just RSC_LICENSE="<RSC license>" run rstudio/rstudio-connect:bionic-2022.09.0
+# Run Connect - just RSC_LICENSE="<RSC license>" run rstudio/rstudio-connect:ubuntu1804-2022.10.0
 run TAG=DEFAULT_TAG CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
-  if [ -z "{{ RSC_LICENSE }}" ]; then
-    echo "Please set RSC_LICENSE to a valid RStudio Connect license before running."
+  if [ -z "{{ RSC_LICENSE }}" || -z "{{ RSC_LICENSE_SERVER }}" ]; then
+    echo "Please set RSC_LICENSE or RSC_LICENSE_SERVER before running."
     exit 1
   fi
   docker run -it --privileged \
     -p 3939:3939 \
     -e RSC_LICENSE="{{ RSC_LICENSE }}" \
+    -e RSC_LICENSE_SERVER="{{ RSC_LICENSE_SERVER }}" \
     "{{ TAG }}" {{ CMD }}

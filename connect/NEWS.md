@@ -1,3 +1,8 @@
+# 2022-12-05
+
+- Add `libnss-sss` and `libpam-sss` to work more nicely with `sssd` as a client
+  (if needed)
+
 # 2022-07-11
 
 - Switch container default configuration to use the `Logging` configuration

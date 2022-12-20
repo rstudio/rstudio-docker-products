@@ -4,58 +4,73 @@ BUILDX_PATH := ""
 
 IMAGE_PREFIX := "rstudio-"
 PRODUCT := "package-manager"
-IMAGE_OS := "bionic"
+IMAGE_OS := "ubuntu1804"
 
-RSPM_VERSION := "2022.07.2-11"
-RSPM_TAG_SAFE_VERSION := replace(RSPM_VERSION, "+", "-")
+RSPM_VERSION := "2022.11.4-20"
 RSPM_LICENSE := ""
+RSPM_LICENSE_SERVER := ""
 
 R_VERSION := "3.6.2"
+R_VERSION_ALT := "4.1.0"
 
-DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":" + IMAGE_OS + "-" + RSPM_TAG_SAFE_VERSION
+PYTHON_VERSION := "3.9.5"
+PYTHON_VERSION_ALT := "3.8.10"
 
-# Build Package Manager image - just build bionic 2022.07.2-11 rstudio/rstudio-connect:bionic-2022.07.2-11
-build OS=IMAGE_OS VERSION=RSPM_VERSION +TAGS=DEFAULT_TAG:
+_make-default-tag OS=IMAGE_OS:
+  echo "{{IMAGE_PREFIX}}{{PRODUCT}}:{{OS}}-$(just -f ../Justfile _get-tag-safe-version {{RSPM_VERSION}})"
+
+# Build Package Manager image - just build ubuntu1804 2022.07.2-11 rstudio/rstudio-package-manager:ubuntu1804-2022.07.2-11
+build OS=IMAGE_OS VERSION=RSPM_VERSION *TAGS="":
   #!/usr/bin/env bash
   set -euxo pipefail
   BUILDX_ARGS=""
   if [[ "{{BUILDX_PATH}}" != "" ]]; then
     BUILDX_ARGS="--cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache"
   fi
+
+  if [[ "{{TAGS}}" == "" ]]; then
+    raw_tag_array=($(just _make-default-tag {{OS}}))
+  else
+    raw_tag_array=("{{TAGS}}")
+  fi
+
   tag_array=()
-  for TAG in {{TAGS}}
+  for tag in $raw_tag_array
   do
-    tag_array+=("-t" $TAG)
+    tag_array+=("-t" $tag)
   done
 
   docker buildx --builder="{{ BUILDX_PATH }}" build --load ${BUILDX_ARGS} \
     ${tag_array[@]} \
     --build-arg RSPM_VERSION="{{ VERSION }}" \
     --build-arg R_VERSION="{{ R_VERSION }}" \
-    --file=./Dockerfile."{{ OS }}" .
+    --file=./Dockerfile.$(just -f ../Justfile _parse-os {{OS}}) .
 
-# Test Package Manager image - just test rstudio/rstudio-connect:bionic-2022.07.2-11 2022.07.2-11
-test TAG=DEFAULT_TAG VERSION=RSPM_VERSION CMD="":
+# Test Package Manager image - just test rstudio/rstudio-package-manager:ubuntu1804-2022.07.2-11 2022.07.2-11
+test TAG=`just _make-default-tag` VERSION=RSPM_VERSION CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
   IMAGE_NAME="{{ TAG }}" \
   RSPM_VERSION="{{ VERSION }}" \
+  RSPM_LICENSE="{{ RSPM_LICENSE }}" \
+  RSPM_LICENSE_SERVER="{{ RSPM_LICENSE_SERVER }}" \
   R_VERSION="{{ R_VERSION }}" \
   docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
 
-# Test Package Manager image interactively - just test-i rstudio/rstudio-connect:bionic-2022.07.2-11 2022.07.2-11
-test-i TAG=DEFAULT_TAG VERSION=RSPM_VERSION:
+# Test Package Manager image interactively - just test-i rstudio/rstudio-package-manager:ubuntu1804-2022.07.2-11 2022.07.2-11
+test-i TAG=`just _make-default-tag` VERSION=RSPM_VERSION:
   just test {{ TAG }} {{ VERSION }} bash
 
-# Run Package Manager - just RSPM_LICENSE="<RSPM license>" run rstudio/rstudio-connect:bionic-2022.07.2-11
-run TAG=DEFAULT_TAG CMD="":
+# Run Package Manager - just RSPM_LICENSE="<RSPM license>" run rstudio/rstudio-package-manager:ubuntu1804-2022.07.2-11
+run TAG=`just _make-default-tag` CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
-  if [ -z "{{ RSPM_LICENSE }}" ]; then
-    echo "Please set RSPM_LICENSE to a valid RStudio Package Manager license before running."
+  if [ -z "{{ RSPM_LICENSE }}" || -z "{{ RSPM_LICENSE_SERVER }}" ]; then
+    echo "Please set RSPM_LICENSE or RSPM_LICENSE_SERVER before running."
     exit 1
   fi
   docker run -it \
     -p 4242:4242 \
     -e RSPM_LICENSE="{{ RSPM_LICENSE }}" \
+    -e RSPM_LICENSE_SERVER="{{ RSPM_LICENSE_SERVER }}" \
     "{{ TAG }}" {{ CMD }}

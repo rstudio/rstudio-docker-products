@@ -105,7 +105,7 @@ RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/r
 
 # Install RStudio Professional Drivers ----------------------------------------#
 
-ARG DRIVERS_VERSION=2021.10.0
+ARG DRIVERS_VERSION=2022.11.0
 RUN apt-get update -y && \
     apt-get install --no-install-recommends -y unixodbc unixodbc-dev gdebi && \
     rm -rf /var/lib/apt/lists/*
