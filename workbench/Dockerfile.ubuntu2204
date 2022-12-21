@@ -82,9 +82,6 @@ RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyt
 RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh && \
     chmod +x /usr/local/bin/wait-for-it.sh
 
-RUN rstudio-server install-vs-code /opt/code-server/ && \
-    ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
-
 COPY --chmod=600 sssd.conf /etc/sssd/sssd.conf
 COPY conf/* /etc/rstudio/
 

@@ -51,7 +51,5 @@ RUN /opt/python/"${PYTHON_VERSION}"/bin/pip install \
     && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
 
 COPY vscode.extensions.conf /etc/rstudio/vscode.extensions.conf
-RUN rstudio-server install-vs-code /opt/code-server/ \
-    && ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
 
 EXPOSE 8788/tcp
