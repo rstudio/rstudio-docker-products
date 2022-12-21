@@ -3,7 +3,7 @@ ARG R_VERSION_ALT=3.6.2
 ARG PYTHON_VERSION=3.9.5
 ARG PYTHON_VERSION_ALT=3.8.10
 ARG REGISTRY=ghcr.io
-FROM ${REGISTRY}/rstudio/base-pro:ubuntu1804-r${R_VERSION}_${R_VERSION_ALT}-py${PYTHON_VERSION}_${PYTHON_VERSION_ALT} AS workbench
+FROM ${REGISTRY}/rstudio/base-pro:ubuntu2204-r${R_VERSION}_${R_VERSION_ALT}-py${PYTHON_VERSION}_${PYTHON_VERSION_ALT} AS workbench
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -14,7 +14,7 @@ ARG PYTHON_VERSION_ALT=3.8.10
 ARG PYTHON_VERSION_JUPYTER=3.8.10
 ARG RSW_VERSION=2022.12.0+353.pro20
 ARG RSW_NAME=rstudio-workbench
-ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
+ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/jammy/amd64
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Set default env values
@@ -45,14 +45,11 @@ RUN apt-get update \
       libpq-dev \
       libpq5 \
       libsm6 \
-      libssl1.0.0 \
       libuser \
       libuser1-dev \
       libxext6 \
       libxrender1 \
       oddjob-mkhomedir \
-      openssh-client \
-      openssl \
       rrdtool \
       sssd \
       supervisor \
@@ -63,7 +60,7 @@ RUN apt-get update \
     && rm ./rstudio-workbench.deb \
     && mkdir -p /opt/rstudio-license/ \
     && mkdir -p /var/lib/rstudio-workbench/ \
-    && curl -sL "https://s3.amazonaws.com/rstudio-ide-build/monitor/bionic/rsp-monitor-workbench-azureml-${RSW_VERSION//+/-}.tar.gz" |  \
+    && curl -sL "https://s3.amazonaws.com/rstudio-ide-build/monitor/jammy/rsp-monitor-workbench-azureml-${RSW_VERSION//+/-}.tar.gz" |  \
        tar xzvf - --strip 2 -C /opt/rstudio-license/ \
     && chmod 0755 /opt/rstudio-license/license-manager \
     && mv /opt/rstudio-license/license-manager /opt/rstudio-license/license-manager-orig \
@@ -115,9 +112,6 @@ RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyt
 RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh \
     && chmod +x /usr/local/bin/wait-for-it.sh
 
-RUN rstudio-server install-vs-code /opt/code-server/ \
-    && ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
-
 RUN curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash \
     && az extension add -n ml -y
 
@@ -129,6 +123,7 @@ EXPOSE 5559/tcp
 
 ENTRYPOINT []
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+
 
 
 FROM workbench AS clamav
