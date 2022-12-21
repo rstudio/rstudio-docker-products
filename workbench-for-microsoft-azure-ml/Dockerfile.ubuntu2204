@@ -60,7 +60,7 @@ RUN apt-get update \
     && rm ./rstudio-workbench.deb \
     && mkdir -p /opt/rstudio-license/ \
     && mkdir -p /var/lib/rstudio-workbench/ \
-    && curl -sL "https://s3.amazonaws.com/rstudio-ide-build/monitor/jammy/rsp-monitor-workbench-azureml-${RSW_VERSION//+/-}.tar.gz" |  \
+    && curl -sL "https://s3.amazonaws.com/rstudio-ide-build/monitor/jammy/rsp-monitor-workbench-azureml-amd64-${RSW_VERSION//+/-}.tar.gz" |  \
        tar xzvf - --strip 2 -C /opt/rstudio-license/ \
     && chmod 0755 /opt/rstudio-license/license-manager \
     && mv /opt/rstudio-license/license-manager /opt/rstudio-license/license-manager-orig \
