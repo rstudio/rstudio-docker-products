@@ -112,7 +112,7 @@ RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyt
 RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh \
     && chmod +x /usr/local/bin/wait-for-it.sh
 
-RUN curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash \
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash \
     && az extension add -n ml -y
 
 COPY conf/* /etc/rstudio/
