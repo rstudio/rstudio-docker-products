@@ -73,8 +73,6 @@ file:
     exists: true
   /etc/rstudio/vscode.conf:
     exists: true
-    contains:
-    - "/usr/lib/rstudio-server/bin/code-server/bin/code-server"
   /tmp/startup.log:
     exists: true
     contains:

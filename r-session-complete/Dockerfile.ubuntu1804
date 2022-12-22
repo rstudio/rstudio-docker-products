@@ -15,6 +15,8 @@ ARG RSW_VERSION=2022.12.0+353.pro20
 ARG RSW_NAME=rstudio-workbench
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 
+ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
+
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
