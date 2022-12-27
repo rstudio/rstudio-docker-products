@@ -5,7 +5,7 @@ file:
     exists: true
   /usr/local/bin/jupyter:
     exists: true
-  /opt/code-server/:
+  /usr/lib/rstudio-server/bin/code-server:
     exists: true
     filetype: directory
   /opt/rstudio-drivers:

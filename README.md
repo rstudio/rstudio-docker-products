@@ -27,6 +27,9 @@ Docker images for RStudio Professional Products
 
 - RStudio Workbench Session Images (requires the launcher)
     - [R Session Complete](./r-session-complete/)
+- Product Base Images
+    - [Base](./product/base)
+    - [Pro (with Pro Drivers)](./product/pro)
 
 ### Preview Images
 
@@ -36,6 +39,41 @@ Docker images for RStudio Professional Products
     - [Content Base Image](./content/base/)
     - [Content Base + Pro Driver Image](./content/pro/)
     - [Content Init Container](./connect-content-init/)
+
+### Image Hierarchy And Relationship
+
+- solid line / arrow: image inheritance
+- dashed line: images related to one another by usage
+
+```mermaid
+flowchart TB;
+  subgraph s1["Connect"];
+    id1("Connect Image")
+    id2("Connect Content Init")
+    id1-.-id2
+  end;
+  subgraph Package Manager;
+    id3("Package Manager Image")
+  end;
+  subgraph Product Base Images;
+    id4("Product Base")
+    id5("Product Base Pro")
+    id4-->id5
+  end
+  subgraph Workbench;
+    id6("Workbench Image")
+    id7("r-session-complete")
+    id5-->id6
+    id5-->id7
+    id6-.-id7
+  end
+  subgraph s5["Content Images"];
+    id8("Content Base")
+    id9("Content Pro")
+    id8-->id9
+  end
+  s1-.-s5
+```
 
 # RStudio Team
 

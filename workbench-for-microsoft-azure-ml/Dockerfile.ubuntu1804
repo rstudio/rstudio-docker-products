@@ -1,121 +1,21 @@
-FROM rstudio/r-base:bionic AS workbench
+ARG R_VERSION=4.2.0
+ARG R_VERSION_ALT=3.6.2
+ARG PYTHON_VERSION=3.9.5
+ARG PYTHON_VERSION_ALT=3.8.10
+ARG REGISTRY=ghcr.io
+FROM ${REGISTRY}/rstudio/product-base-pro:ubuntu1804-r${R_VERSION}_${R_VERSION_ALT}-py${PYTHON_VERSION}_${PYTHON_VERSION_ALT} AS workbench
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
-# Locale configuration --------------------------------------------------------#
-RUN localedef -i en_US -f UTF-8 en_US.UTF-8
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
 ARG DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get update --fix-missing  \
-    && apt-get install -y --no-install-recommends \
-        bzip2 \
-        ca-certificates \
-        dpkg-sig \
-        g++ \
-        gdal-bin \
-        gdebi-core \
-        git \
-        libcap2 \
-        libgdal-dev \
-        libgeos-dev \
-        libglib2.0-0 \
-        libpq5 \
-        libproj-dev \
-        libsm6 \
-        libssl-dev \
-        libssl1.0.0 \
-        libudunits2-dev \
-        libuser \
-        libuser1-dev \
-        libxext6 \
-        libxrender1 \
-        openssh-client \
-        openssl \
-        rrdtool \
-        supervisor \
-        wget \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-
-# Install R and R Packages
-COPY package-list.txt /tmp/package-list.txt
-COPY install-r.sh /tmp/install-r.sh
-RUN apt-get update --fix-missing -qq && \
-    /tmp/install-r.sh && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-# Install jupyter -------------------------------------------------------------#
-
-ARG JUPYTER_VERSION=3.8.10
-RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
-    bash Miniconda3-latest-Linux-x86_64.sh -bp /opt/python/jupyter && \
-    /opt/python/jupyter/bin/conda install -y python==${JUPYTER_VERSION} && \
-    rm -rf Miniconda3-latest-Linux-x86_64.sh && \
-    /opt/python/jupyter/bin/pip install \
-    jupyter \
-    jupyterlab \
-    rsp_jupyter \
-    rsconnect_jupyter \
-    workbench_jupyterlab && \
-    /opt/python/jupyter/bin/jupyter kernelspec remove python3 -f && \
-    /opt/python/jupyter/bin/pip uninstall -y ipykernel && \
-    ln -s /opt/python/jupyter/bin/jupyter /usr/local/bin/jupyter
-
-# Install RSW/RSC Notebook Extensions --------------------#
-
-RUN /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter && \
-    /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter && \
-    /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsconnect_jupyter && \
-    /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter && \
-    /opt/python/jupyter/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
-
-# Install Python --------------------------------------------------------------#
-
+ARG R_VERSION=4.2.0
+ARG R_VERSION_ALT=3.6.2
 ARG PYTHON_VERSION=3.9.5
-RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
-    bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION} && \
-    /opt/python/${PYTHON_VERSION}/bin/conda install -y python==${PYTHON_VERSION} && \
-    /opt/python/${PYTHON_VERSION}/bin/pip install \
-        ipykernel \
-        virtualenv \
-        && \
-    rm -rf Miniconda3-*-Linux-x86_64.sh && \
-    /opt/python/${PYTHON_VERSION}/bin/python -m ipykernel install --name py${PYTHON_VERSION} --display-name "Python ${PYTHON_VERSION}"
-
-# Install another Python --------------------------------------------------------------#
-
 ARG PYTHON_VERSION_ALT=3.8.10
-RUN curl -O https://repo.anaconda.com/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh && \
-    bash Miniconda3-4.7.12.1-Linux-x86_64.sh -bp /opt/python/${PYTHON_VERSION_ALT} && \
-    /opt/python/${PYTHON_VERSION_ALT}/bin/conda install -y python==${PYTHON_VERSION_ALT} && \
-    /opt/python/${PYTHON_VERSION_ALT}/bin/pip install \
-        ipykernel \
-        virtualenv \
-        && \
-    rm -rf Miniconda3-*-Linux-x86_64.sh && \
-    /opt/python/${PYTHON_VERSION_ALT}/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}"
-
-# Runtime settings ------------------------------------------------------------#
-RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh && \
-    chmod +x /usr/local/bin/wait-for-it.sh
-
-# Install RStudio Professional Drivers ----------------------------------------#
-
-ARG DRIVERS_VERSION=2022.11.0
-RUN apt-get update -y && \
-    apt-get install --no-install-recommends -y unixodbc unixodbc-dev gdebi && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN curl -O https://cdn.rstudio.com/drivers/7C152C12/installer/rstudio-drivers_${DRIVERS_VERSION}_amd64.deb && \
-    apt-get update && \
-    DEBIAN_FRONTEND=noninteractive gdebi --non-interactive rstudio-drivers_${DRIVERS_VERSION}_amd64.deb && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm -f rstudio-drivers_${DRIVERS_VERSION}_amd64.deb && \
-    cp /opt/rstudio-drivers/odbcinst.ini.sample /etc/odbcinst.ini
+ARG PYTHON_VERSION_JUPYTER=3.8.10
+ARG RSW_VERSION=2022.12.0+353.pro20
+ARG RSW_NAME=rstudio-workbench
+ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
+ARG DEBIAN_FRONTEND=noninteractive
 
 # Set default env values
 ENV RSW_LICENSE ""
@@ -130,65 +30,96 @@ ENV DIAGNOSTIC_DIR /var/log/rstudio
 ENV DIAGNOSTIC_ENABLE false
 ENV DIAGNOSTIC_ONLY false
 
-# Copy config and startup
-COPY startup/* /startup/base/
-COPY startup-launcher/* /startup/launcher/
-COPY supervisord.conf /etc/supervisor/supervisord.conf
-COPY startup.sh /usr/local/bin/startup.sh
-RUN chmod +x /usr/local/bin/startup.sh
+ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
 
-# Install RStudio Workbench --------------------------------------------------#
-ARG RSW_VERSION=2022.07.2+576.pro12
-ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
-ARG RSW_NAME=rstudio-workbench
+COPY --chmod=755 license-manager-shim /opt/rstudio-license/license-manager
+COPY --chmod=755 TurboActivate.dat /opt/rstudio-license/license-manager.conf
+
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN apt-get update --fix-missing \
-    && RSW_VERSION_URL=$(echo -n "${RSW_VERSION}" | sed 's/+/-/g') \
-    && curl -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-amd64.deb" \
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y \
+      krb5-user \
+      libcap2 \
+      libcurl4-gnutls-dev \
+      libglib2.0-0 \
+      libnss-sss \
+      libpam-sss \
+      libpq-dev \
+      libpq5 \
+      libsm6 \
+      libssl1.0.0 \
+      libuser \
+      libuser1-dev \
+      libxext6 \
+      libxrender1 \
+      oddjob-mkhomedir \
+      openssh-client \
+      openssl \
+      rrdtool \
+      sssd \
+      supervisor \
+    && curl -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION//+/-}-amd64.deb" \
     && gpg --keyserver keyserver.ubuntu.com --recv-keys 3F32EE77E331692F \
-    && dpkg-sig --verify rstudio-workbench.deb \
-    && gdebi --non-interactive rstudio-workbench.deb \
-    && rm rstudio-workbench.deb \
-    # custom license manager \
+    && dpkg-sig --verify ./rstudio-workbench.deb \
+    && apt-get install -yq --no-install-recommends ./rstudio-workbench.deb \
+    && rm ./rstudio-workbench.deb \
     && mkdir -p /opt/rstudio-license/ \
     && mkdir -p /var/lib/rstudio-workbench/ \
-    && curl -sL "https://s3.amazonaws.com/rstudio-ide-build/monitor/bionic/rsp-monitor-workbench-azureml-${RSW_VERSION_URL}.tar.gz" |  \
+    && curl -sL "https://s3.amazonaws.com/rstudio-ide-build/monitor/bionic/rsp-monitor-workbench-azureml-amd64-${RSW_VERSION//+/-}.tar.gz" |  \
        tar xzvf - --strip 2 -C /opt/rstudio-license/ \
     && chmod 0755 /opt/rstudio-license/license-manager \
     && mv /opt/rstudio-license/license-manager /opt/rstudio-license/license-manager-orig \
     && rm -f /usr/lib/rstudio-server/bin/license-manager \
+    && apt-get autoremove -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/rstudio-server/r-versions
 
-# Custom license manager
-COPY --chmod=755 license-manager-shim /opt/rstudio-license/license-manager
-COPY --chmod=755 TurboActivate.dat /opt/rstudio-license/license-manager.conf
+COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
+COPY startup/* /startup/base/
+COPY startup-launcher/* /startup/launcher/
+COPY startup/* /startup/base/
+COPY supervisord.conf /etc/supervisor/supervisord.conf
 
-# Install VSCode code-server, extensions, etc. --------------------------------------------------#
-
-RUN rstudio-server install-vs-code /opt/code-server/ && \
-    ln -s /opt/code-server/bin/code-server /usr/local/bin/code-server
-
-# Install Azure CLI -----------------------------------------------------------#
-
-RUN apt-get update --fix-missing \
-    && apt-get install --no-install-recommends -y ca-certificates curl apt-transport-https lsb-release gnupg \
-    && curl -sL https://packages.microsoft.com/keys/microsoft.asc | \
-        gpg --dearmor | \
-        tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null \
-    && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" | \
-        tee /etc/apt/sources.list.d/azure-cli.list \
-    && apt-get update --fix-missing \
-    && apt-get install --no-install-recommends -y azure-cli \
+# Install R and R Packages
+COPY package-list.txt /tmp/package-list.txt
+COPY install-r.sh /tmp/install-r.sh
+RUN apt-get update --fix-missing -qq \
+    && /tmp/install-r.sh \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install AzureML extension ---------------------------------------------------#
+RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyter \
+    && /opt/python/jupyter/bin/pip install \
+      jupyter \
+      jupyterlab \
+      rsconnect_jupyter \
+      rsconnect_python \
+      rsp_jupyter \
+      workbench_jupyterlab \
+    && /opt/python/jupyter/bin/jupyter kernelspec remove python3 -f \
+    && /opt/python/jupyter/bin/pip uninstall -y ipykernel \
+    && ln -s /opt/python/jupyter/bin/jupyter /usr/local/bin/jupyter \
+    && /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter \
+    && /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter \
+    && /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsconnect_jupyter \
+    && /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter \
+    && /opt/python/jupyter/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter \
+    && /opt/python/${PYTHON_VERSION}/bin/pip install \
+      ipykernel \
+      virtualenv \
+    && /opt/python/${PYTHON_VERSION}/bin/python -m ipykernel install --name py${PYTHON_VERSION} --display-name "Python ${PYTHON_VERSION}" \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/pip install \
+      ipykernel \
+      virtualenv \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}"
 
-RUN az extension add -n ml -y
+RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh \
+    && chmod +x /usr/local/bin/wait-for-it.sh
 
-# Copy config
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash \
+    && az extension add -n ml -y
+
 COPY conf/* /etc/rstudio/
 COPY landing/* /usr/lib/rstudio-server/www/
 
@@ -202,18 +133,17 @@ CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
 FROM workbench AS clamav
 
 # Set up ClamAV
-RUN apt-get update && \
-    apt-get install --no-install-recommends -y \
-        clamav \
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y clamav \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Reconfigure freshclam to get database from our S3 location
 ARG CLAMAV_MIRROR=https://cdn.rstudio.com/platform/clamav
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN grep -v "DatabaseMirror" /etc/clamav/freshclam.conf > /etc/clamav/freshclam.conf.new && \
-    echo "DatabaseMirror ${CLAMAV_MIRROR}" >> /etc/clamav/freshclam.conf.new && \
-    mv /etc/clamav/freshclam.conf.new /etc/clamav/freshclam.conf
+RUN grep -v "DatabaseMirror" /etc/clamav/freshclam.conf > /etc/clamav/freshclam.conf.new \
+    && echo "DatabaseMirror ${CLAMAV_MIRROR}" >> /etc/clamav/freshclam.conf.new \
+    && mv /etc/clamav/freshclam.conf.new /etc/clamav/freshclam.conf
 
 # Update ClamAV
 RUN freshclam --log="/var/log/clamav/clamupdate.log"
@@ -242,5 +172,5 @@ LABEL \
      azure.ii.endpoints='[{"label":"connect","target":8787,"protocol":"http"}]' \
      org.opencontainers.image.description='A professional integrated development environment for data science teams using R and Python' \
      org.opencontainers.image.title='RStudio Workbench' \
-     org.opencontainers.image.version='2022.07.2+576.pro12' \
+     org.opencontainers.image.version='2022.12.0+353.pro20' \
      org.opencontainers.image.url='https://www.rstudio.com/products/workbench/'
