@@ -1,3 +1,10 @@
+# 2022.12.0
+
+- Upgrade workbench to 2022.12.0
+- Use the new `WORKBENCH_JUPYTER_PATH` env var to configure jupyter location
+- Remove `vscode.conf/exe` configuration in favor of the new, internal default `code-server` installation
+- Refactor image to build _FROM_ the new `product-base-pro` image
+
 # 2022-07-28
 
 - Added `conf/launcher.local.conf` with `unprivileged=1` flag so the Local Launcher Plugin starts in unprivileged mode.
