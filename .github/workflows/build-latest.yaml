@@ -88,7 +88,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.BUILD_PAT }}
 
-      - name: Push image(s) to Docker Hub
+      - name: Push image(s) to registries
         #if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           just -f ci.Justfile push-images ${{ steps.build-base-image.outputs.TAGS }}
@@ -175,7 +175,7 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      - name: Push image(s) to Docker Hub
+      - name: Push image(s) to registries
         #if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           just -f ci.Justfile push-images ${{ steps.build-pro-image.outputs.TAGS }}
@@ -290,7 +290,7 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      - name: Push image(s) to Docker Hub
+      - name: Push image(s) to registries
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
           just -f ci.Justfile push-images ${{ steps.build-image.outputs.TAGS }}
