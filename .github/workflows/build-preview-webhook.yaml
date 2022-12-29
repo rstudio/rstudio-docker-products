@@ -52,13 +52,13 @@ jobs:
         id: get-version
         run: |
           VERSION=`just -f ci.Justfile get-version ${{ github.event.inputs.product }} --type=${{ github.event.inputs.type }} --local --override=${{ github.event.inputs.version }}`
-          echo "::set-output name=VERSION::$VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Build Image
         id: build-image
         run: |
           TAGS=`just -f ci.Justfile BUILDX_PATH=${{ steps.buildx.outputs.name }} build-preview ${{ github.event.inputs.type }} ${{ github.event.inputs.product }} ${{ github.event.inputs.os }} ${{ steps.get-version.outputs.VERSION }}`
-          echo "::set-output name=TAGS::$TAGS"
+          echo "TAGS=$TAGS" >> $GITHUB_OUTPUT
 
       - name: Show image size
         run: |

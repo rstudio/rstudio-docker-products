@@ -17,7 +17,7 @@ jobs:
       - id: set-matrix
         run: |
           MATRIX=$(jq -Mcr < content/matrix.json)
-          echo "::set-output name=matrix::$MATRIX"
+          echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
 
   build:
     runs-on: ubuntu-latest
