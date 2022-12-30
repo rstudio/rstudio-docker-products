@@ -29,7 +29,7 @@ jobs:
 
     steps:
       - name: Check Out Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Set up Just
         uses: extractions/setup-just@v1
@@ -38,10 +38,10 @@ jobs:
 
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v2
 
       - name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
@@ -52,13 +52,13 @@ jobs:
         id: get-version
         run: |
           VERSION=`just -f ci.Justfile get-version ${{ github.event.inputs.product }} --type=${{ github.event.inputs.type }} --local --override=${{ github.event.inputs.version }}`
-          echo "::set-output name=VERSION::$VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Build Image
         id: build-image
         run: |
           TAGS=`just -f ci.Justfile BUILDX_PATH=${{ steps.buildx.outputs.name }} build-preview ${{ github.event.inputs.type }} ${{ github.event.inputs.product }} ${{ github.event.inputs.os }} ${{ steps.get-version.outputs.VERSION }}`
-          echo "::set-output name=TAGS::$TAGS"
+          echo "TAGS=$TAGS" >> $GITHUB_OUTPUT
 
       - name: Show image size
         run: |
@@ -74,20 +74,20 @@ jobs:
 
       - name: Login to Docker Hub
         if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Login to ghcr.io
         if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
-        uses: docker/login-action@v1
+        uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.BUILD_PAT }}
 
-      - name: Push image(s) to Docker Hub
+      - name: Push image(s) to registries
         if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
         run: |
           just -f ci.Justfile push-images ${{ steps.build-image.outputs.TAGS }}
