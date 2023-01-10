@@ -16,6 +16,9 @@ R_VERSION_ALT := "4.1.0"
 PYTHON_VERSION := "3.9.5"
 PYTHON_VERSION_ALT := "3.8.10"
 
+PERSIST_LICENSE := "false"
+PERSIST_LICENSE_DIR := join(justfile_directory(), "tmp-lic")
+
 _make-default-tag OS=IMAGE_OS:
   echo "{{IMAGE_PREFIX}}{{PRODUCT}}:{{OS}}-$(just -f ../Justfile _get-tag-safe-version {{RSPM_VERSION}})"
 
@@ -65,11 +68,33 @@ test-i TAG=`just _make-default-tag` VERSION=RSPM_VERSION:
 run TAG=`just _make-default-tag` CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
-  if [ -z "{{ RSPM_LICENSE }}" || -z "{{ RSPM_LICENSE_SERVER }}" ]; then
+  if [ -z "{{ RSPM_LICENSE }}" ] && [ -z "{{ RSPM_LICENSE_SERVER }}" ]; then
     echo "Please set RSPM_LICENSE or RSPM_LICENSE_SERVER before running."
     exit 1
   fi
+
+  volume_opts=()
+  if [ {{ PERSIST_LICENSE }} = "true" ]; then
+    mkdir -p {{ PERSIST_LICENSE_DIR }}/product
+    if [ {{RSPM_LICENSE}} ]; then
+      echo "Volumes will be configured to persist license state data for an activation key."
+      mkdir -p {{ PERSIST_LICENSE_DIR }}/local
+      mkdir -p {{ PERSIST_LICENSE_DIR }}/prof
+
+      volume_opts+=("-v" "{{ PERSIST_LICENSE_DIR }}/local:/home/rstudio-pm/.local/")
+      volume_opts+=("-v" "{{ PERSIST_LICENSE_DIR }}/prof:/home/rstudio-pm/.prof/")
+      volume_opts+=("-v" "{{ PERSIST_LICENSE_DIR }}/product:/home/rstudio-pm/.rstudio-pm/")
+    elif [ {{RSPM_LICENSE_SERVER}} ]; then
+      echo "Volumes will be configured to persist license state data for a floating license server."
+      mkdir -p {{ PERSIST_LICENSE_DIR }}/float
+
+      volume_opts+=("-v" "{{ PERSIST_LICENSE_DIR }}/float:/home/rstudio-pm/.TurboFloat/")
+      volume_opts+=("-v" "{{ PERSIST_LICENSE_DIR }}/product:/home/rstudio-pm/.rstudio-pm/")
+    fi
+  fi
+
   docker run -it \
+    ${volume_opts[@]} \
     -p 4242:4242 \
     -e RSPM_LICENSE="{{ RSPM_LICENSE }}" \
     -e RSPM_LICENSE_SERVER="{{ RSPM_LICENSE_SERVER }}" \

@@ -2,13 +2,41 @@ RSC_FLOAT_LICENSE := ""
 RSPM_FLOAT_LICENSE := ""
 RSW_FLOAT_LICENSE := ""
 
+PERSIST_LICENSE := "false"
+PERSIST_LICENSE_DIR := join(justfile_directory(), "tmp-lic")
+
 # Build floating license server - just build
 build:
   docker-compose build
 
 # Run floating license server - just RSW_FLOAT_LICENSE="<RSW license>" RSC_FLOAT_LICENSE="<RSC license>" RSPM_FLOAT_LICENSE="<RSPM license>" run
 run:
+  #!/usr/bin/env bash
+  set -euxo pipefail
+
+  volume_opts=()
+  COMPOSE_FILE="./docker-compose.yml"
+  if [ {{ PERSIST_LICENSE }} = "true" ]; then
+    echo "Volumes will be configured to persist license state data for a floating license server."
+    products=("workbench" "connect" "package-manager")
+    env_var_list=()
+    for p in ${products[@]}; do
+      if [[ ${p} == "workbench" ]]; then
+        short_name="RSW"
+      elif [[ ${p} == "connect" ]]; then
+        short_name="RSC"
+      elif [[ ${p} == "package-manager" ]]; then
+        short_name="RSPM"
+      fi
+      mkdir -p {{ PERSIST_LICENSE_DIR }}/${p}/local
+      export ${short_name}_LOCAL_PATH={{ PERSIST_LICENSE_DIR }}/${p}/local
+      mkdir -p {{ PERSIST_LICENSE_DIR }}/${p}/prof
+      export ${short_name}_PROF_PATH={{ PERSIST_LICENSE_DIR }}/${p}/prof
+    done
+    COMPOSE_FILE="./docker-compose_persist-license-state.yml"
+  fi
+
   RSW_FLOAT_LICENSE="{{ RSW_FLOAT_LICENSE }}" \
   RSC_FLOAT_LICENSE="{{ RSC_FLOAT_LICENSE }}" \
   RSPM_FLOAT_LICENSE="{{ RSPM_FLOAT_LICENSE }}" \
-  docker-compose -f ./docker-compose.yml up
+  docker-compose -f ${COMPOSE_FILE} up
