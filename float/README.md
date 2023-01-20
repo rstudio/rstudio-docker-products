@@ -2,7 +2,8 @@
 
 **WARNING**: DO NOT USE. These images are for testing only. Floating Licenses should not be used within docker containers unless an
 RStudio employee has suggested you do so, since the docker container failing could require manual intervention to fix (
-see the app referenced below). We provide these images only for development and testing purposes.
+see the app referenced below). We provide these images only for development and testing purposes. We do not advise
+running a floating license server in a containerized environment at this time.
 
 If you want to test floating licenses locally. You will need to do the following:
 

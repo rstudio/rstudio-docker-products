@@ -92,6 +92,7 @@ run TAG=DEFAULT_TAG CMD="":
 
   docker run -it --privileged \
     ${volume_opts[@]} \
+    --network rstudio-docker-products \
     -p 3939:3939 \
     -e RSC_LICENSE="{{ RSC_LICENSE }}" \
     -e RSC_LICENSE_SERVER="{{ RSC_LICENSE_SERVER }}" \
