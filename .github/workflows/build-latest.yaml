@@ -24,6 +24,8 @@ jobs:
         uses: extractions/setup-just@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          just-version: '1.11.0'
 
       - name: Set up Docker Buildx
         id: buildx
@@ -112,6 +114,8 @@ jobs:
         uses: extractions/setup-just@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          just-version: '1.11.0'
 
       - name: Set up Docker Buildx
         id: buildx
@@ -211,6 +215,8 @@ jobs:
         uses: extractions/setup-just@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          just-version: '1.11.0'
 
       - name: Set up Docker Buildx
         id: buildx
