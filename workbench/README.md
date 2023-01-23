@@ -254,7 +254,7 @@ the license state data across restarts of the container. **These directories dif
 * License Key
   * `/var/lib/.local`
   * `/var/lib/.prof`
-  * `/var/lib/rstudio-connect`
+  * `/var/lib/rstudio-workbench`
 * Floating License
   * `/var/lib/.TurboFloat`
 
