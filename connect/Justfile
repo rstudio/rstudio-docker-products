@@ -73,11 +73,11 @@ run TAG=DEFAULT_TAG CMD="":
 
   volume_opts=()
   if [ {{ PERSIST_LICENSE }} = "true" ]; then
-    mkdir -p {{ PERSIST_LICENSE_DIR }}/product
     if [ {{RSC_LICENSE}} ]; then
       echo "Volumes will be configured to persist license state data for an activation key."
       mkdir -p {{ PERSIST_LICENSE_DIR }}/local
       mkdir -p {{ PERSIST_LICENSE_DIR }}/prof
+      mkdir -p {{ PERSIST_LICENSE_DIR }}/product
 
       volume_opts+=("-v" "{{ PERSIST_LICENSE_DIR }}/local:/var/lib/.local/")
       volume_opts+=("-v" "{{ PERSIST_LICENSE_DIR }}/prof:/var/lib/.prof/")

@@ -176,7 +176,6 @@ the license state data across restarts of the container. **These directories dif
   * `/home/rstudio-pm/.rstudio-pm`
 * Floating License
   * `/home/rstudio-pm/.TurboFloat`
-  * `/home/rstudio-pm/.rstudio-pm`
 
 Please note that the files created in these directories are hardware locked and non-transferable between hosts. Due to
 the nature of the hardware fingerprinting algorithm, any low-level changes to the host or container can cause existing

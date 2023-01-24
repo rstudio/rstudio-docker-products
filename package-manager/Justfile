@@ -75,11 +75,11 @@ run TAG=`just _make-default-tag` CMD="":
 
   volume_opts=()
   if [ {{ PERSIST_LICENSE }} = "true" ]; then
-    mkdir -p {{ PERSIST_LICENSE_DIR }}/product
     if [ {{RSPM_LICENSE}} ]; then
       echo "Volumes will be configured to persist license state data for an activation key."
       mkdir -p {{ PERSIST_LICENSE_DIR }}/local
       mkdir -p {{ PERSIST_LICENSE_DIR }}/prof
+      mkdir -p {{ PERSIST_LICENSE_DIR }}/product
 
       volume_opts+=("-v" "{{ PERSIST_LICENSE_DIR }}/local:/home/rstudio-pm/.local/")
       volume_opts+=("-v" "{{ PERSIST_LICENSE_DIR }}/prof:/home/rstudio-pm/.prof/")
@@ -89,7 +89,6 @@ run TAG=`just _make-default-tag` CMD="":
       mkdir -p {{ PERSIST_LICENSE_DIR }}/float
 
       volume_opts+=("-v" "{{ PERSIST_LICENSE_DIR }}/float:/home/rstudio-pm/.TurboFloat/")
-      volume_opts+=("-v" "{{ PERSIST_LICENSE_DIR }}/product:/home/rstudio-pm/.rstudio-pm/")
     fi
   fi
 
