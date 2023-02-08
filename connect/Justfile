@@ -75,18 +75,10 @@ run TAG=DEFAULT_TAG CMD="":
   if [ {{ PERSIST_LICENSE }} = "true" ]; then
     if [ {{RSC_LICENSE}} ]; then
       echo "Volumes will be configured to persist license state data for an activation key."
-      mkdir -p {{ PERSIST_LICENSE_DIR }}/local
-      mkdir -p {{ PERSIST_LICENSE_DIR }}/prof
-      mkdir -p {{ PERSIST_LICENSE_DIR }}/product
-
-      volume_opts+=("-v" "{{ PERSIST_LICENSE_DIR }}/local:/var/lib/.local/")
-      volume_opts+=("-v" "{{ PERSIST_LICENSE_DIR }}/prof:/var/lib/.prof/")
-      volume_opts+=("-v" "{{ PERSIST_LICENSE_DIR }}/product:/var/lib/rstudio-connect/")
+      volume_opts=$(just -f ../Justfile _config-license-persist-volumes key {{PRODUCT}} {{PERSIST_LICENSE_DIR}})
     elif [ {{RSC_LICENSE_SERVER}} ]; then
       echo "Volumes will be configured to persist license state data for a floating license server."
-      mkdir -p {{ PERSIST_LICENSE_DIR }}/float
-
-      volume_opts+=("-v" "{{ PERSIST_LICENSE_DIR }}/float:/var/lib/.TurboFloat/")
+      volume_opts=$(just -f ../Justfile _config-license-persist-volumes float {{PRODUCT}} {{PERSIST_LICENSE_DIR}})
     fi
   fi
 

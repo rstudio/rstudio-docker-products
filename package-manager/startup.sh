@@ -12,6 +12,7 @@ trap deactivate EXIT
 
 # Activate License
 RSPM_LICENSE_FILE_PATH=${RSPM_LICENSE_FILE_PATH:-/etc/rstudio-pm/license.lic}
+/opt/rstudio-pm/bin/license-manager initialize --userspace || true
 if ! [ -z "$RSPM_LICENSE" ]; then
     /opt/rstudio-pm/bin/license-manager activate $RSPM_LICENSE --userspace
 elif ! [ -z "$RSPM_LICENSE_SERVER" ]; then
