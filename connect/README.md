@@ -28,7 +28,7 @@ https://www.rstudio.com/products/connect/.
 # Notice for support
 
 1. This image may introduce **BREAKING** changes; as such we recommend:
-   - Avoid using the `latest` or `{operating-system}` tags to avoid unexpected version upgrades, and
+   - Avoid using the `{operating-system}` tags to avoid unexpected version upgrades, and
    - Always read through the [NEWS](./NEWS.md) to understand the changes before updating.
 1. Outdated images will be removed periodically from DockerHub as product version updates are made. Please make plans to
    update at times or use your own build of the images.
