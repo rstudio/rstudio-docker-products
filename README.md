@@ -4,9 +4,6 @@ Docker images for RStudio Professional Products
 
 **IMPORTANT:** There are a few things you need to know before using these images:
 
-1. These images are provided as a convenience to RStudio customers and are not formally supported by RStudio. If you
-   have questions about these images, you can ask them in the issues in the repository or to your support
-   representative, who will route them appropriately.
 1. Outdated images will be removed periodically from DockerHub as product version updates are made. Please make plans to
    update at times or use your own build of the images.
 1. These images are meant as a starting point for your needs. Consider creating a fork of this repo, where you can
@@ -14,7 +11,7 @@ Docker images for RStudio Professional Products
    changes. We
    provide [instructions for building](https://github.com/rstudio/rstudio-docker-products#instructions-for-building) for
    these cases.
-   
+ 
 # Images
 
 ### Professional Products
