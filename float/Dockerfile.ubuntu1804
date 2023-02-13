@@ -30,6 +30,9 @@ COPY license-server.conf /etc/${PRODUCT}-license-server.conf
 RUN sed -i "s/{{PORT}}/${PORT}/" /etc/${PRODUCT}-license-server.conf \
     && sed -i "s/\${PRODUCT}/${PRODUCT}/" /usr/local/bin/startup.sh
 
+RUN ln -s /var/lib/.yocal /var/lib/.local-float \
+    && ln -s /var/lib/.prot /var/lib/.prof-float
+
 ENTRYPOINT [ "tini", "--" ]
 CMD [ "/usr/local/bin/startup.sh" ]
 EXPOSE ${PORT}

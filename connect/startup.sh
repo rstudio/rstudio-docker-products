@@ -6,7 +6,24 @@ set -x
 # Deactivate license when it exists
 deactivate() {
     echo "Deactivating license ..."
-    /opt/rstudio-connect/bin/license-manager deactivate >/dev/null 2>&1
+    is_deactivated=0
+    retries=0
+    while [[ $is_deactivated -ne 1 ]] && [[ $retries -le 3 ]]; do
+      /opt/rstudio-connect/bin/license-manager deactivate >/dev/null 2>&1
+      is_deactivated=1
+      ((retries+=1))
+      for file in $(ls -A /var/lib/.local); do
+        if [ -s /var/lib/.local/$file ]; then
+          if [[ $retries -lt 3 ]]; then
+            echo "License did not deactivate, retry ${retries}..."
+            is_deactivated=0
+          else
+            echo "Unable to deactivate license. If you encounter issues activating your product in the future, please contact Posit support."
+          fi
+          continue
+        fi
+      done
+    done
 }
 trap deactivate EXIT
 
