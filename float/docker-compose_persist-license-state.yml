@@ -1,0 +1,80 @@
+version: '3.5'
+services:
+
+  rsw-float-lic:
+    hostname: rsw-float-lic
+    image: rstudio/rstudio-workbench-float-lic
+    build:
+      context: tmp-lic
+      dockerfile: Dockerfile.ubuntu1804
+      args:
+        - "PRODUCT=rsp"
+        - "PORT=8989"
+    networks:
+      - default
+    ports:
+      - "8989:8989"
+    environment:
+      - "LICENSE=$RSW_FLOAT_LICENSE"
+    volumes:
+      - "$RSW_LOCAL_PATH:/var/lib/.local-float"
+      - "$RSW_PROF_PATH:/var/lib/.prof-float"
+
+  rsc-float-lic:
+    hostname: rsc-float-lic
+    image: rstudio/rstudio-connect-float-lic
+    build:
+      context: tmp-lic
+      dockerfile: Dockerfile.ubuntu1804
+      args:
+        - "PRODUCT=connect"
+        - "PORT=8999"
+    networks:
+      - default
+    ports:
+      - "8999:8999"
+    environment:
+      - "LICENSE=$RSC_FLOAT_LICENSE"
+    volumes:
+      - "$RSC_LOCAL_PATH:/var/lib/.local-float"
+      - "$RSC_PROF_PATH:/var/lib/.prof-float"
+
+  rspm-float-lic:
+    hostname: rspm-float-lic
+    image: rstudio/rstudio-package-manager-float-lic
+    build:
+      context: tmp-lic
+      dockerfile: Dockerfile.ubuntu1804
+      args:
+        - "PRODUCT=rspm"
+        - "PORT=8969"
+    networks:
+      - default
+    ports:
+      - "8969:8969"
+    environment:
+      - "LICENSE=$RSPM_FLOAT_LICENSE"
+    volumes:
+      - "$RSPM_LOCAL_PATH:/var/lib/.local-float"
+      - "$RSPM_PROF_PATH:/var/lib/.prof-float"
+
+  # Commenting this one since we don't have a public docker image available
+  # ssp-float-lic:
+  #   hostname: ssp-float-lic
+  #   image: rstudio/rstudio-ssp-float-lic
+  #   build:
+  #     context: ./
+  #     dockerfile: Dockerfile
+  #     args:
+  #       - "PRODUCT=ssp"
+  #       - "PORT=8979"
+  #   ports:
+  #     - "8979:8979"
+  #   environment:
+  #     - "LICENSE=$SSP_FLOAT_LICENSE"
+  #   networks:
+  #     - default
+
+networks:
+  default:
+    name: rstudio-docker-products
