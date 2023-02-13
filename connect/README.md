@@ -7,8 +7,8 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`2023.01.0`, `bionic`, `ubuntu1804`, `bionic-2023.01.0`, `ubuntu1804-2023.01.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.bionic)
-* [`jammy`, `ubuntu2204`, `jammy-2023.01.0`, `ubuntu2204-2023.01.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.jammy)
+* [`2023.01.1`, `bionic`, `ubuntu1804`, `bionic-2023.01.1`, `ubuntu1804-2023.01.1`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.bionic)
+* [`jammy`, `ubuntu2204`, `jammy-2023.01.1`, `ubuntu2204-2023.01.1`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.jammy)
 
 # What is RStudio Connect?
 
