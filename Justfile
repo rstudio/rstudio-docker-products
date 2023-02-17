@@ -6,7 +6,7 @@ sed_vars := if os() == "macos" { "-i ''" } else { "-i" }
 
 BUILDX_PATH := ""
 
-RSC_VERSION := "2022.12.0"
+RSC_VERSION := "2023.01.1"
 RSPM_VERSION := "2022.11.4-20"
 RSW_VERSION := "2022.12.0+353.pro20"
 
@@ -29,6 +29,7 @@ _get-clean-version $VERSION:
   #!/usr/bin/env bash
   echo -n "$VERSION" | sed 's/[+|-].*//g'
 
+# just _parse-os bionic
 _parse-os OS:
   #!/usr/bin/env bash
   if [[ "{{OS}}" == "bionic" ]]; then
@@ -37,6 +38,32 @@ _parse-os OS:
     echo "ubuntu2204"
   else
     echo "{{OS}}"
+  fi
+
+# just
+_config-license-persist-volumes TYPE PRODUCT HOST_DIR:
+  #!/usr/bin/env bash
+  if [ "{{PRODUCT}}" = "package-manager" ]; then
+    licensing_state_root_dir="/home/rstudio-pm"
+    product_dir_name=".rstudio-pm"
+  elif [ "{{PRODUCT}}" = "workbench" ]; then
+    licensing_state_root_dir="/var/lib"
+    product_dir_name="rstudio-workbench"
+  elif [ "{{PRODUCT}}" = "connect" ]; then
+    licensing_state_root_dir="/var/lib"
+    product_dir_name="rstudio-connect"
+  fi
+
+  if [ "{{TYPE}}" = "key" ]; then
+    mkdir -p {{HOST_DIR}}/local
+    mkdir -p {{HOST_DIR}}/prof
+    mkdir -p {{HOST_DIR}}/product
+
+    echo "-v {{HOST_DIR}}/local:${licensing_state_root_dir}/.local -v {{HOST_DIR}}/prof:${licensing_state_root_dir}/.prof -v {{HOST_DIR}}/product:${licensing_state_root_dir}/${product_dir_name}"
+  elif [ "{{TYPE}}" = "float" ]; then
+    mkdir -p {{HOST_DIR}}/float
+
+    echo "-v {{HOST_DIR}}/float:${licensing_state_root_dir}/.TurboFloat"
   fi
 
 # just RSW_VERSION=1.2.3 R_VERSION=4.1.0 update-versions

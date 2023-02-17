@@ -1,3 +1,9 @@
+# 2022-01-23
+
+- Add documentation for license leak bug and possible workarounds/solutions.
+- Add an option in the `Justfile` to persist license state files for use
+across multiple restarts.
+
 # 2022-07-21
 
 - BREAKING: Set the default user to `rstudio-pm` instead of root. This may require permission changes for existing

@@ -7,8 +7,8 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`2022.12.0`, `bionic`, `ubuntu1804`, `bionic-2022.12.0`, `ubuntu1804-2022.12.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.bionic)
-* [`jammy`, `ubuntu2204`, `jammy-2022.12.0`, `ubuntu2204-2022.12.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.jammy)
+* [`2023.01.1`, `bionic`, `ubuntu1804`, `bionic-2023.01.1`, `ubuntu1804-2023.01.1`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.bionic)
+* [`jammy`, `ubuntu2204`, `jammy-2023.01.1`, `ubuntu2204-2023.01.1`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.jammy)
 
 # What is RStudio Connect?
 
@@ -27,12 +27,9 @@ https://www.rstudio.com/products/connect/.
 
 # Notice for support
 
-1. This image may introduce **BREAKING** changes, as such we recommend:
-   - Avoid using the `latest` or `{operating-system}` tags to avoid unexpected version upgrades, and
-   - Always read through the [NEWS](./NEWS.md) to understand these changes before updating.
-1. These images are provided as a convenience to RStudio customers and are not yet formally supported by RStudio. If you
-   have questions about these images, you can ask them in the issues in the repository or to your support
-   representative, who will route them appropriately.
+1. This image may introduce **BREAKING** changes; as such we recommend:
+   - Avoid using the `{operating-system}` tags to avoid unexpected version upgrades, and
+   - Always read through the [NEWS](./NEWS.md) to understand the changes before updating.
 1. Outdated images will be removed periodically from DockerHub as product version updates are made. Please make plans to
    update at times or use your own build of the images.
 1. These images are meant as a starting point for your needs. Consider creating a fork of this repo, where you can
@@ -150,12 +147,41 @@ docker run -it --privileged \
 
 Open [http://localhost:3939](http://localhost:3939) to access RStudio Connect.
 
-## Avoid hard termination of containers
+## Caveats of product licensing in containers
+
+*Note: This section **does not** apply to activations using license files.*
 
 There is currently a known licensing bug when using our products in containers. If the container is not stopped
-gracefully, license deactivation may not work properly. To avoid "leaking" licenses, we encourage users not to force
-kill containers and to use `--stop-timeout 120` and `--time 120` for `docker run` and `docker stop` commands
-respectively. This helps ensure the deactivation script has time to run properly. We are still investigating a
+gracefully, the license deactivation step may fail or be skipped. Failing to deactivate the license can result in a 
+"license leak" where a product activation is used up and cannot be deactivated using traditional methods as the 
+activation state on the container has been lost.
+
+To avoid "leaking" licenses, we encourage users not to force kill containers and to use `--stop-timeout 120` and 
+`--time 120` for `docker run` and `docker stop` commands respectively. This helps ensure the deactivation script has 
+ample time to run properly.
+
+In some situations, it can be difficult or impossible to avoid a hard termination (e.g. power failure, 
+critical error on host). Unfortunately, any of these cases can still cause a license to leak an activation. To help
+prevent a license leak in these situations, users can mount the following directories to persistent storage to preserve
+the license state data across restarts of the container. **These directories differ between products.**
+
+* License Key
+  * `/var/lib/.local`
+  * `/var/lib/.prof`
+  * `/var/lib/rstudio-connect`
+* Floating License
+  * `/var/lib/.TurboFloat`
+
+Please note that the files created in these directories are hardware locked and non-transferable between hosts. Due to
+the nature of the hardware fingerprinting algorithm, any low-level changes to the host or container can cause existing
+license state files to invalidate. To avoid this problem, we advise that product containers are gracefully shutdown
+and allowed to deactivate prior to changing any hardware or firmware on the host (e.g. upgrading a network card or 
+updating BIOS) or the container (e.g. changing the network driver used or the allocated number of CPU cores).
+
+While preserving license state data *can* help avoid license leaks across restarts, it's not a guarantee. If you run
+into issues with your license, please do not hesitate to [contact Posit support](https://support.posit.co/hc/en-us).
+
+While neither of these solutions will eliminate the problem, they should help mitigate it. We are still investigating a 
 long-term solution.
 
 # Licensing
