@@ -1,0 +1,20 @@
+version: '2.3'
+services:
+
+  sut:
+    image: $IMAGE_NAME
+    command: /run_tests.sh
+    entrypoint: []
+    environment:
+      # uses .env by default
+      - RSW_VERSION
+      - R_VERSION 
+      - PYTHON_VERSION
+      - PYTHON_VERSION_ALT
+      - JUPYTER_PYTHON_VERSION
+      - R_VERSION_ALT
+      - RSW_LICENSE
+      - RSW_LICENSE_SERVER
+    volumes:
+      - "./test/run_tests.sh:/run_tests.sh"
+      - "./test/goss.yaml:/tmp/goss.yaml"
