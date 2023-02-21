@@ -1,0 +1,86 @@
+set positional-arguments
+
+BUILDX_PATH := ""
+
+IMAGE_PREFIX := "rstudio-"
+PRODUCT := "workbench"
+IMAGE_OS := "ubuntu1804"
+
+RSW_VERSION := "2022.12.0+353.pro20"
+RSW_LICENSE := ""
+RSW_DOWNLOAD_URL := "https://download2.rstudio.org/server/bionic/amd64"
+RSW_LICENSE_SERVER := ""
+
+R_VERSION := "3.6.2"
+R_VERSION_ALT := "4.1.0"
+
+PYTHON_VERSION := "3.9.5"
+PYTHON_VERSION_ALT := "3.8.10"
+
+_make-default-tag:
+  echo "{{IMAGE_PREFIX}}{{PRODUCT}}:$(just -f ../Justfile _get-tag-safe-version {{RSW_VERSION}})"
+
+# Build Workbench image - just build 2022.07.2+576.pro12 rstudio/rstudio-workbench-gcw:2022.07.2
+build VERSION=RSW_VERSION *TAGS="":
+  #!/usr/bin/env bash
+  set -euxo pipefail
+  BUILDX_ARGS=""
+  if [[ "{{BUILDX_PATH}}" != "" ]]; then
+    BUILDX_ARGS="--cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache"
+  fi
+
+  if [[ "{{TAGS}}" == "" ]]; then
+    raw_tag_array=($(just _make-default-tag))
+  else
+    raw_tag_array=("{{TAGS}}")
+  fi
+
+  tag_array=()
+  for tag in $raw_tag_array
+  do
+    tag_array+=("-t" $tag)
+  done
+
+  docker buildx --builder="{{ BUILDX_PATH }}" build --load ${BUILDX_ARGS} \
+    ${tag_array[@]} \
+    --build-arg RSW_VERSION="{{ VERSION }}" \
+    --build-arg R_VERSION="{{ R_VERSION }}" \
+    --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
+    --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
+    --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
+    --build-arg RSW_DOWNLOAD_URL="{{ RSW_DOWNLOAD_URL }}" \
+    --file=./Dockerfile .
+
+# Test Workbench image - just test rstudio/rstudio-workbench:ubuntu1804-2022.07.2-576.pro12 2022.07.2+576.pro12
+test TAG=`just _make-default-tag` VERSION=RSW_VERSION CMD="":
+  #!/usr/bin/env bash
+  set -euxo pipefail
+  IMAGE_NAME="{{ TAG }}" \
+  RSW_VERSION="{{ VERSION }}" \
+  RSW_LICENSE="{{ RSW_LICENSE }}" \
+  RSW_LICENSE_SERVER="{{ RSW_LICENSE_SERVER }}" \
+  R_VERSION="{{ R_VERSION }}" \
+  R_VERSION_ALT="{{ R_VERSION_ALT }}" \
+  PYTHON_VERSION="{{ PYTHON_VERSION }}" \
+  PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
+  docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
+
+# Test Workbench image interactively - just test-i rstudio/rstudio-workbench:ubuntu1804-2022.07.2-576.pro12 2022.07.2+576.pro12
+test-i TAG=`just _make-default-tag` VERSION=RSW_VERSION:
+  just test {{ TAG }} {{ VERSION }} bash
+
+# Run Workbench - just RSW_LICENSE="<RSW license>" run rstudio/r-session-complete:ubuntu1804-2022.07.2-576.pro12
+run TAG=`just _make-default-tag` CMD="":
+  #!/usr/bin/env bash
+  set -euxo pipefail
+  if [ -z "{{ RSW_LICENSE }}" ] && [ -z "{{ RSW_LICENSE_SERVER }}" ]; then
+    echo "Please set RSW_LICENSE or RSW_LICENSE_SERVER before running."
+    exit 1
+  fi
+
+  docker run -it --privileged \
+    ${volume_opts[@]} \
+    -p 80:8787 \
+    -e RSW_LICENSE="{{ RSW_LICENSE }}" \
+    -e RSW_LICENSE_SERVER="{{ RSW_LICENSE_SERVER }}" \
+    "{{ TAG }}" {{ CMD }}

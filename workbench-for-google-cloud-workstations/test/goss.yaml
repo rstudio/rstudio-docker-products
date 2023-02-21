@@ -1,0 +1,133 @@
+user:
+  rstudio-server:
+    exists: true
+    uid: 999
+    gid: 999
+
+group:
+  rstudio-server:
+    exists: true
+    gid: 999
+
+package:
+  rstudio-server:
+    installed: true
+
+port:
+  tcp:80:
+    listening: true
+    ip:
+    - 0.0.0.0
+    skip: false
+  tcp:5559:
+    listening: true
+    ip:
+    - 127.0.0.1
+    skip: false
+
+process:
+  rserver:
+    running: true
+    skip: false
+  rstudio-launche:
+    running: true
+    skip: false
+
+file:
+  /etc/rstudio-server/license.lic:
+    # currently does not exist
+    # be sure it is NOT a directory
+    exists: false
+  /usr/lib/rstudio-server:
+    exists: true
+  /opt/R/{{.Env.R_VERSION_ALT}}/bin/R:
+    exists: true
+    filetype: file
+  /opt/python/{{.Env.PYTHON_VERSION}}/bin/python:
+    exists: true
+    filetype: symlink
+  /opt/python/{{.Env.PYTHON_VERSION_ALT}}/bin/python:
+    exists: true
+    filetype: symlink
+  /opt/python/jupyter/bin/python:
+    exists: true
+    filetype: symlink
+  /opt/python/jupyter/bin/jupyter:
+    exists: true
+  /usr/local/bin/jupyter:
+    exists: true
+  # this file gets created at startup?
+  # /var/lib/rstudio-server/r-versions:
+  #   exists: false
+  /usr/lib/rstudio-server/bin/rserver:
+    exists: true
+  /usr/lib/rstudio-server/bin/rstudio-server:
+    exists: true
+  /usr/lib/rstudio-server/bin/rstudio-launcher:
+    exists: true
+  /var/lib/rstudio-server/monitor/log:
+    exists: true
+    owner: rstudio-server
+    group: rstudio-server
+  /usr/lib/rstudio-server/bin/code-server/bin/code-server:
+    exists: true
+  /etc/rstudio/vscode.conf:
+    exists: true
+  /tmp/startup.log:
+    exists: true
+    contains:
+    - "!Error reading /etc/rstudio/rserver.conf:"
+  /etc/pam.d/common-session:
+    exists: true
+    contains:
+      - "/^session required pam_mkhomedir.so skel=/etc/skel umask=0022$/"
+  /etc/sssd/sssd.conf:
+    exists: true
+    owner: root
+    group: root
+    mode: "0600"
+
+command:
+  "su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'":
+    title: workbench_monitor_log_file_creates
+    exit-status: 0
+  "touch /var/log/rstudio-server.log":
+    title: workbench_server_log_creates
+    exit-status: 0
+# Check product version
+  "rstudio-server version":
+    title: workbench_version_matches
+    exit-status: 0
+    stdout: [
+       "{{ .Env.RSW_VERSION }}",
+       "Workbench"
+     ]
+  "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/jupyter/bin/jupyter nbconvert --to notebook --stdin --stdout":
+    title: jupyter_works
+    exit-status: 0
+# Ensure correct python version
+  "/opt/python/3.8.10/bin/python --version":
+    title: alternate_python_version_matches
+    exit-status: 0
+    stdout: [
+        "{{.Env.PYTHON_VERSION_ALT}}"
+    ]
+# Ensure correct python version
+  "/opt/python/3.9.5/bin/python --version":
+    title: python_version_matches
+    exit-status: 0
+    stdout: [
+      "{{.Env.PYTHON_VERSION}}"
+    ]
+  "/opt/python/jupyter/bin/python --version":
+    title: jupyter_python_version_matches
+    exit-status: 0
+    stdout: [
+        "{{.Env.JUPYTER_PYTHON_VERSION}}"
+    ]
+  "which openssl":
+    title: uses_system_openssl
+    exit-status: 0
+    stdout: [
+      "/usr/bin/openssl"
+    ]
