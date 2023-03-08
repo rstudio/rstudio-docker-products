@@ -34,3 +34,14 @@ command:
     stdout: [
       "{{ .Env.PYTHON_VERSION }}"
     ]
+
+  "python3 --version":
+    title: python_in_path_var
+    exit-status: 0
+    stdout: [
+      "{{ .Env.PYTHON_VERSION }}"
+    ]
+
+  "jupyter --version":
+    title: jupyter_in_path_var
+    exit-status: 0
