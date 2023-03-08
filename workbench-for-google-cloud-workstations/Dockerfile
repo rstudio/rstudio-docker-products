@@ -58,7 +58,8 @@ ADD https://cdn.rstudio.com/platform/tini/v${TINI_VERSION}/tini-amd64.asc /tini.
 RUN gpg --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7 \
     && gpg --batch --verify /tini.asc /tini \
     && chmod +x /tini \
-    && ln -s /tini /usr/local/bin/tini
+    && ln -s /tini /usr/local/bin/tini \
+    && rm /tini.asc
 
 ### Install R versions ###
 RUN curl -O https://cdn.rstudio.com/r/debian-11/pkgs/r-${R_VERSION}_1_amd64.deb \
