@@ -41,6 +41,8 @@ RUN /opt/python/"${PYTHON_VERSION}"/bin/pip3 install \
     && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter \
     && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
 
+ENV PATH="/opt/python/${PYTHON_VERSION}/bin:${PATH}"
+
 COPY vscode.extensions.conf /etc/rstudio/vscode.extensions.conf
 
 EXPOSE 8788/tcp
