@@ -1,9 +1,8 @@
 #!/bin/bash
 
-export LICENSE_MANAGER_PATH=${LICENSE_MANAGER_PATH:-/opt/rstudio-license}
+export LICENSE_MANAGER_PATH=${LICENSE_MANAGER_PATH:-/usr/lib/rstudio-server/bin}
 
-set -e
-set -x
+set -ex
 
 # Deactivate license when the process exits
 deactivate() {
@@ -20,7 +19,7 @@ verify_installation(){
    echo "==VERIFY INSTALLATION==";
    mkdir -p $DIAGNOSTIC_DIR
    chmod 777 $DIAGNOSTIC_DIR
-   rstudio-server verify-installation --verify-user=$RSW_TESTUSER | tee $DIAGNOSTIC_DIR/verify.log 
+   rstudio-server verify-installation --verify-user=$RSW_TESTUSER | tee $DIAGNOSTIC_DIR/verify.log
 }
 
 # Support RSP_ or RSW_ prefix
@@ -42,18 +41,6 @@ unset RSP_LICENSE
 unset RSP_LICENSE_SERVER
 unset RSW_LICENSE
 unset RSW_LICENSE_SERVER
-
-# Create one user
-if [ $(getent passwd $RSW_TESTUSER_UID) ] ; then
-    echo "UID $RSW_TESTUSER_UID already exists, not creating $RSW_TESTUSER test user";
-else
-    if [ -z "$RSW_TESTUSER" ]; then
-        echo "Empty 'RSW_TESTUSER' variables, not creating test user";
-    else
-        useradd -m -s /bin/bash -N -u $RSW_TESTUSER_UID $RSW_TESTUSER
-        echo "$RSW_TESTUSER:$RSW_TESTUSER_PASSWD" | sudo chpasswd
-    fi
-fi
 
 # Start Launcher
 if [ "$RSW_LAUNCHER" == "true" ]; then

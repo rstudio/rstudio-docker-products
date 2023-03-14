@@ -2,13 +2,12 @@ FROM us-central1-docker.pkg.dev/cloud-workstations-images/predefined/base:latest
 
 ### ARG declarations ###
 ARG DEBIAN_FRONTEND=noninteractive
-ARG R_VERSION=4.2.0
-ARG R_VERSION_ALT=3.6.2
-ARG PYTHON_VERSION=3.9.5
-ARG PYTHON_VERSION_ALT=3.8.10
-ARG PYTHON_VERSION_JUPYTER=3.8.10
-ARG TINI_VERSION=0.19.0
-ARG QUARTO_VERSION=1.1.251
+ARG R_VERSION=4.2.2
+ARG R_VERSION_ALT=4.1.3
+ARG PYTHON_VERSION=3.10.10
+ARG PYTHON_VERSION_ALT=3.9.16
+ARG PYTHON_VERSION_JUPYTER=3.9.16
+ARG QUARTO_VERSION=1.2.335
 ARG DRIVERS_VERSION=2022.11.0
 ARG RSW_VERSION=2022.12.0+353.pro20
 ARG RSW_NAME=rstudio-workbench
@@ -16,7 +15,7 @@ ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/debian-11/amd64
 
 ENV RSW_LICENSE ""
 ENV RSW_LICENSE_SERVER ""
-ENV RSW_TESTUSER rstudio
+ENV RSW_TESTUSER user
 ENV RSW_TESTUSER_PASSWD rstudio
 ENV RSW_TESTUSER_UID 10000
 ENV RSW_LAUNCHER true
@@ -24,6 +23,7 @@ ENV RSW_LAUNCHER_TIMEOUT 10
 ENV DIAGNOSTIC_DIR /var/log/rstudio
 ENV DIAGNOSTIC_ENABLE false
 ENV DIAGNOSTIC_ONLY false
+ENV LICENSE_MANAGER_PATH /usr/lib/rstudio-server/bin
 
 ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
 
@@ -51,15 +51,6 @@ RUN apt-get update --fix-missing  \
       sssd \
       supervisor \
     && rm -rf /var/lib/apt/lists/*
-
-### Install tini ###
-ADD https://cdn.rstudio.com/platform/tini/v${TINI_VERSION}/tini-amd64 /tini
-ADD https://cdn.rstudio.com/platform/tini/v${TINI_VERSION}/tini-amd64.asc /tini.asc
-RUN gpg --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7 \
-    && gpg --batch --verify /tini.asc /tini \
-    && chmod +x /tini \
-    && ln -s /tini /usr/local/bin/tini \
-    && rm /tini.asc
 
 ### Install R versions ###
 RUN curl -O https://cdn.rstudio.com/r/debian-11/pkgs/r-${R_VERSION}_1_amd64.deb \
@@ -141,11 +132,14 @@ RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/r
 
 COPY --chmod=600 sssd.conf /etc/sssd/sssd.conf
 COPY conf/* /etc/rstudio/
+COPY --chmod=600 conf/launcher.p* /etc/rstudio
 
 RUN mkdir -p /var/lib/rstudio-server/monitor/log \
     && chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor \
     && mkdir -p /startup/custom/ \
     && printf '\n# allow home directory creation\nsession required pam_mkhomedir.so skel=/etc/skel umask=0022' >> /etc/pam.d/common-session
+
+COPY --chmod=755 workstation-startup/* /etc/workstation-startup.d/
 
 ### Clean up ###
 RUN apt-get remove -yq dpkg-sig \
@@ -156,6 +150,3 @@ RUN apt-get remove -yq dpkg-sig \
 
 EXPOSE 80/tcp
 EXPOSE 5559/tcp
-
-ENTRYPOINT []
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
