@@ -8,7 +8,6 @@ IMAGE_OS := "ubuntu1804"
 
 RSW_VERSION := "2022.12.0+353.pro20"
 RSW_LICENSE := ""
-RSW_DOWNLOAD_URL := "https://download2.rstudio.org/server/bionic/amd64"
 RSW_LICENSE_SERVER := ""
 
 R_VERSION := "3.6.2"
@@ -19,6 +18,9 @@ PYTHON_VERSION_ALT := "3.8.10"
 
 PERSIST_LICENSE := "false"
 PERSIST_LICENSE_DIR := join(justfile_directory(), "tmp-lic")
+
+_get-download-url OS=IMAGE_OS:
+  echo "https://download2.rstudio.org/server/$(just -f ../Justfile _rev-parse-os {{OS}})/amd64"
 
 _make-default-tag OS=IMAGE_OS:
   echo "{{IMAGE_PREFIX}}{{PRODUCT}}:{{OS}}-$(just -f ../Justfile _get-tag-safe-version {{RSW_VERSION}})"
@@ -51,7 +53,7 @@ build OS=IMAGE_OS VERSION=RSW_VERSION *TAGS="":
     --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
     --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
     --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
-    --build-arg RSW_DOWNLOAD_URL="{{ RSW_DOWNLOAD_URL }}" \
+    --build-arg RSW_DOWNLOAD_URL="$(just _get-download-url {{OS}})" \
     --file=./Dockerfile.$(just -f ../Justfile _parse-os {{OS}}) .
 
 # Test Workbench image - just test rstudio/rstudio-workbench:ubuntu1804-2022.07.2-576.pro12 2022.07.2+576.pro12
