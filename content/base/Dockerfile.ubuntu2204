@@ -1,10 +1,10 @@
 # Using dated tags from https://hub.docker.com/_/ubuntu/
-FROM ubuntu:18.04
+FROM ubuntu:22.04
 
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 ARG DEBIAN_FRONTEND=noninteractive
-ARG DISTRIBUTION=ubuntu-1804
+ARG DISTRIBUTION=ubuntu-2204
 
 ARG R_VERSION=3.6.3
 ARG R_INSTALLER=r-${R_VERSION}_1_amd64.deb
@@ -16,7 +16,7 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends locales \
     && localedef -i en_US -f UTF-8 en_US.UTF-8 \
     && rm -rf /var/lib/apt/lists/*
-	
+
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
