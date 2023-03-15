@@ -40,6 +40,17 @@ _parse-os OS:
     echo "{{OS}}"
   fi
 
+# just _rev-parse-os ubuntu1804
+_rev-parse-os OS:
+  #!/usr/bin/env bash
+  if [[ "{{OS}}" == "ubuntu1804" ]]; then
+    echo "bionic"
+  elif [[ "{{OS}}" == "ubuntu2204" ]]; then
+    echo "jammy"
+  else
+    echo "{{OS}}"
+  fi
+
 # just
 _config-license-persist-volumes TYPE PRODUCT HOST_DIR:
   #!/usr/bin/env bash
