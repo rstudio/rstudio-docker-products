@@ -112,7 +112,7 @@ update-rsw-versions:
     workbench/Justfile \
     workbench-for-microsoft-azure-ml/Justfile \
     Justfile
-  sed {{ sed_vars }} "s/[0-9]{4}\.[0-9]{1,2}\.[0-9]{1,2}/\``just _get-clean-version {{ RSW_VERSION }}`\`/g" \
+  sed {{ sed_vars }} "s/[0-9]\{4\}\.[0-9]\{1,2\}\.[0-9]\{1,2\}/`just _get-clean-version {{ RSW_VERSION }}`/g" \
     workbench/README.md \
     r-session-complete/README.md
 
