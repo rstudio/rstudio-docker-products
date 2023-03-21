@@ -108,3 +108,9 @@ RUN localedef -i en_US -f UTF-8 en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
+
+RUN mkdir -p /patches
+COPY patches/vm2-patch-sandbox-CVE-2022-36067-d9a7f3cc995d3d861e1380eafb886cb3c5e2b873.patch \
+     patches/vm2-patch-sandbox-CVE-2022-25893-3a9876482be487b78a90ac459675da7f83f46d69.patch \
+     /patches
+RUN git apply --directory /opt/code-server/node_modules/vm2 --unsafe-paths patches/*.patch
