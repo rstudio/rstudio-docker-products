@@ -12,7 +12,7 @@ ARG R_VERSION_ALT=3.6.2
 ARG PYTHON_VERSION=3.9.5
 ARG PYTHON_VERSION_ALT=3.8.10
 ARG PYTHON_VERSION_JUPYTER=3.8.10
-ARG RSW_VERSION=2022.12.0+353.pro20
+ARG RSW_VERSION=2023.03.0+386.pro1
 ARG RSW_NAME=rstudio-workbench
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/jammy/amd64
 ARG DEBIAN_FRONTEND=noninteractive
@@ -170,5 +170,5 @@ LABEL \
      azure.ii.endpoints='[{"label":"connect","target":8787,"protocol":"http"}]' \
      org.opencontainers.image.description='A professional integrated development environment for data science teams using R and Python' \
      org.opencontainers.image.title='RStudio Workbench' \
-     org.opencontainers.image.version='2022.12.0+353.pro20' \
+     org.opencontainers.image.version='2023.03.0+386.pro1' \
      org.opencontainers.image.url='https://www.rstudio.com/products/workbench/'
