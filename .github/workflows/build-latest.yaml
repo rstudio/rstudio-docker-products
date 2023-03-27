@@ -17,7 +17,7 @@ jobs:
         os: ['ubuntu1804', 'ubuntu2204', 'centos7']
         lang:
           - {r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
-          - {r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.16", py-alternate: "3.8.16"}
+          - {r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
 
     steps:
       - name: Check Out Repo
@@ -110,7 +110,7 @@ jobs:
         os: ['ubuntu1804', 'ubuntu2204', 'centos7']
         lang:
           - {r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
-          - {r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.16", py-alternate: "3.8.16"}
+          - {r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
 
     steps:
       - name: Check Out Repo
@@ -200,18 +200,18 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {product: 'workbench', os: 'ubuntu1804', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.16", py-alternate: "3.8.16"}
-          - {product: 'workbench', os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.16", py-alternate: "3.8.16"}
+          - {product: 'workbench', os: 'ubuntu1804', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
+          - {product: 'workbench', os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
           - {product: 'connect', os: 'ubuntu1804', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
           - {product: 'connect', os: 'ubuntu2204', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
           - {product: 'connect-content-init', os: 'ubuntu1804', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
           - {product: 'connect-content-init', os: 'ubuntu2204', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
           - {product: 'package-manager', os: 'ubuntu1804', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
           - {product: 'package-manager', os: 'ubuntu2204', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
-          - {product: 'r-session-complete', os: 'ubuntu1804', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.16", py-alternate: "3.8.16"}
-          - {product: 'r-session-complete', os: 'centos7', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.16", py-alternate: "3.8.16"}
-          - {product: 'r-session-complete', os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.16", py-alternate: "3.8.16"}
-          - {product: 'workbench-for-microsoft-azure-ml', os: 'ubuntu1804', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.16", py-alternate: "3.8.16"}
+          - {product: 'r-session-complete', os: 'ubuntu1804', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
+          - {product: 'r-session-complete', os: 'centos7', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
+          - {product: 'r-session-complete', os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
+          - {product: 'workbench-for-microsoft-azure-ml', os: 'ubuntu1804', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
 
     steps:
       - name: Check Out Repo
