@@ -71,7 +71,7 @@ jobs:
       - name: Build Image
         id: build-image
         run: |
-          TAGS=`just -f ci.Justfile BUILDX_PATH=${{ steps.buildx.outputs.name }} R_VERSION=${{ matrix.lang.r-primary }} R_VERSION_ALT=${{ matrix.lang.r-alternate }} PYTHON_VERSION=${{ matrix.lang.py-primary }} PYTHON_VERSION_ALT=${{ matrix.lang.py-alternate }} build-preview ${{ matrix.config.type }} ${{ matrix.config.product }} ${{ matrix.config.os }} ${{ steps.get-version.outputs.VERSION }}`
+          TAGS=`just -f ci.Justfile BUILDX_PATH=${{ steps.buildx.outputs.name }} R_VERSION=${{ matrix.config.r-primary }} R_VERSION_ALT=${{ matrix.config.r-alternate }} PYTHON_VERSION=${{ matrix.config.py-primary }} PYTHON_VERSION_ALT=${{ matrix.config.py-alternate }} build-preview ${{ matrix.config.type }} ${{ matrix.config.product }} ${{ matrix.config.os }} ${{ steps.get-version.outputs.VERSION }}`
           echo "TAGS=$TAGS" >> $GITHUB_OUTPUT
 
       - name: Show image size
@@ -84,7 +84,7 @@ jobs:
           RSPM_LICENSE: ${{ secrets.RSPM_LICENSE }}
           RSW_LICENSE: ${{ secrets.RSW_LICENSE }}
         run: |
-          just R_VERSION=${{ matrix.lang.r-primary }} R_VERSION_ALT=${{ matrix.lang.r-alternate }} PYTHON_VERSION=${{ matrix.lang.py-primary }} PYTHON_VERSION_ALT=${{ matrix.lang.py-alternate }} test-image ${{ matrix.config.product }} ${{  steps.get-version.outputs.VERSION }} ${{ steps.build-image.outputs.TAGS }}
+          just R_VERSION=${{ matrix.config.r-primary }} R_VERSION_ALT=${{ matrix.config.r-alternate }} PYTHON_VERSION=${{ matrix.config.py-primary }} PYTHON_VERSION_ALT=${{ matrix.config.py-alternate }} test-image ${{ matrix.config.product }} ${{ steps.get-version.outputs.VERSION }} ${{ steps.build-image.outputs.TAGS }}
 
       - name: Login to Docker Hub
         if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
