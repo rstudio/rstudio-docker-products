@@ -252,13 +252,13 @@ jobs:
       - name: Get default tag
         id: get-default-tag
         run: |
-          DEFAULT_TAG=`just -f ci.Justfile R_VERSION=${{ matrix.lang.r-primary }} R_VERSION_ALT=${{ matrix.lang.r-alternate }} PYTHON_VERSION=${{ matrix.lang.py-primary }} PYTHON_VERSION_ALT=${{ matrix.lang.py-alternate }} _get-default-tag ${{ matrix.config.product }} ${{ matrix.config.os }}`
+          DEFAULT_TAG=`just -f ci.Justfile R_VERSION=${{ matrix.config.r-primary }} R_VERSION_ALT=${{ matrix.config.r-alternate }} PYTHON_VERSION=${{ matrix.config.py-primary }} PYTHON_VERSION_ALT=${{ matrix.config.py-alternate }} _get-default-tag ${{ matrix.config.product }} ${{ matrix.config.os }}`
           echo "DEFAULT_TAG=$DEFAULT_TAG" >> $GITHUB_OUTPUT
 
       - name: Build Image
         id: build-image
         run: |
-          TAGS=`just -f ci.Justfile BUILDX_PATH=${{ steps.buildx.outputs.name }} R_VERSION=${{ matrix.lang.r-primary }} R_VERSION_ALT=${{ matrix.lang.r-alternate }} PYTHON_VERSION=${{ matrix.lang.py-primary }} PYTHON_VERSION_ALT=${{ matrix.lang.py-alternate }} build-release ${{ matrix.config.product }} ${{ matrix.config.os }} ${{ steps.get-version.outputs.VERSION }}`
+          TAGS=`just -f ci.Justfile BUILDX_PATH=${{ steps.buildx.outputs.name }} R_VERSION=${{ matrix.config.r-primary }} R_VERSION_ALT=${{ matrix.config.r-alternate }} PYTHON_VERSION=${{ matrix.config.py-primary }} PYTHON_VERSION_ALT=${{ matrix.config.py-alternate }} build-release ${{ matrix.config.product }} ${{ matrix.config.os }} ${{ steps.get-version.outputs.VERSION }}`
           echo "TAGS=$TAGS" >> $GITHUB_OUTPUT
 
       - name: Show image size
@@ -271,7 +271,7 @@ jobs:
           RSPM_LICENSE: ${{ secrets.RSPM_LICENSE }}
           RSW_LICENSE: ${{ secrets.RSW_LICENSE }}
         run: |
-          just R_VERSION=${{ matrix.lang.r-primary }} R_VERSION_ALT=${{ matrix.lang.r-alternate }} PYTHON_VERSION=${{ matrix.lang.py-primary }} PYTHON_VERSION_ALT=${{ matrix.lang.py-alternate }} test-image ${{ matrix.config.product }} ${{ steps.get-version.outputs.VERSION }} ${{ steps.build-image.outputs.TAGS }}
+          just R_VERSION=${{ matrix.lang.r-primary }} R_VERSION=${{ matrix.config.r-primary }} R_VERSION_ALT=${{ matrix.config.r-alternate }} PYTHON_VERSION=${{ matrix.config.py-primary }} PYTHON_VERSION_ALT=${{ matrix.config.py-alternate }} test-image ${{ matrix.config.product }} ${{ steps.get-version.outputs.VERSION }} ${{ steps.build-image.outputs.TAGS }}
 
       - name: Run Snyk to check Docker image for vulnerabilities (main)
         if: ${{ github.ref == 'refs/heads/main' }}
