@@ -18,7 +18,6 @@ these pro images. Attempting to build a pro image using a content-base image tha
 does not exist will result in an error.
 
 
-
 ## Examine images
 
 The `scripts/build-image-yaml.sh` script that runs the
