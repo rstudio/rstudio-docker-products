@@ -32,6 +32,7 @@ RUN apt-get update --fix-missing  \
     && apt-get upgrade -yq \
     && apt-get install -yq --no-install-recommends \
       dpkg-sig \
+      gnupg \
       krb5-user \
       libcap2 \
       libcurl4-gnutls-dev \
