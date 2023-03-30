@@ -32,7 +32,7 @@ jobs:
          - {product: "connect-content-init", type: "daily", os: "ubuntu2204"}
          - {product: "package-manager", type: "daily", os: "ubuntu1804"}
          - {product: "package-manager", type: "daily", os: "ubuntu2204"}
-         - {product: "package-manager", type: "preview", os: "bionic"}
+         - {product: "package-manager", type: "daily", os: "bionic"}
          - {product: "r-session-complete", type: "daily", os: "ubuntu1804"}
          - {product: "r-session-complete", type: "daily", os: "ubuntu2204"}
          - {product: "r-session-complete", type: "daily", os: "centos7"}
