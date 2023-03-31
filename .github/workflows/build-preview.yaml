@@ -47,7 +47,8 @@ jobs:
       - name: Check Out main Branch
         if: github.event.schedule == '0 8 * * *'
         uses: actions/checkout@v3
-        ref: 'main'
+        with:
+          ref: 'main'
 
       - name: Check Out Repo at Triggered Branch
         if: github.event.schedule != '0 8 * * *'
