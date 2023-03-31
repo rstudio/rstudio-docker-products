@@ -36,6 +36,8 @@ installing the product on different operating systems, upgrading, and configurin
    a more secure option for configuring
    [Git-related package builds](https://docs.rstudio.com/rspm/admin/building-packages/) we recommend [using a system with
    sandboxing enabled](https://docs.rstudio.com/rspm/admin/process-management/#docker).
+1. **Security Note:** These images are provided AS IS based on the build environment at the time their product version was released/updated. They should be reviewed and updated before production use. If your organization has a specific set of security requirements related to CVE/Vulnerability severity levels, you should plan to use the [instructions for building](https://github.com/rstudio/rstudio-docker-products#instructions-for-building) to clone this repository, and rebuild these images to your specific internal security standards.
+
 
 # How to use this image
 

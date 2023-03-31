@@ -26,6 +26,7 @@ Images for R and Python sessions and jobs to be used RStudio Workbench, Launcher
    changes. We
    provide [instructions for how to build and use](#how-to-use-these-docker-images)
    for these cases.
+1. **Security Note:** These images are provided AS IS based on the build environment at the time their product version was released/updated. They should be reviewed and updated before production use. If your organization has a specific set of security requirements related to CVE/Vulnerability severity levels, you should plan to use the [instructions for building](https://github.com/rstudio/rstudio-docker-products#instructions-for-building) to clone this repository, and rebuild these images to your specific internal security standards.
 
 # How to use these images
 
