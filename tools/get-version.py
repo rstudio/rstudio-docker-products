@@ -57,19 +57,25 @@ def clean_product_selection(product: str) -> str:
     pref = re.compile('^rstudio-')
     product = pref.sub('', product)
 
+    pref2 = re.compile('^posit-')
+    product = pref2.sub('', product)
+
     suffix = re.compile('-preview$')
     product = suffix.sub('', product)
 
-    rsw = re.compile('^rsw$')
-    if rsw.match(product):
+    rsw = re.compile('^rsw$', re.IGNORECASE)
+    pwb = re.compile('^pwb$', re.IGNORECASE)
+    if rsw.match(product) or pwb.match(product):
         product = 'workbench'
 
-    rsc = re.compile('^rsc$')
-    if rsc.match(product):
+    rsc = re.compile('^rsc$', re.IGNORECASE)
+    pct = re.compile('^pct$', re.IGNORECASE)
+    if rsc.match(product) or pct.match(product):
         product = 'connect'
 
-    rspm = re.compile('^rspm$')
-    if rspm.match(product):
+    rspm = re.compile('^rspm$', re.IGNORECASE)
+    ppm = re.compile('^ppm$', re.IGNORECASE)
+    if rspm.match(product) or ppm.match(product):
         product = 'package-manager'
 
     session_pref = re.compile('^r-session')
@@ -91,8 +97,8 @@ def clean_product_selection(product: str) -> str:
 
 
 def rstudio_workbench_daily():
-    version_json = download_json("https://dailies.rstudio.com/rstudio/cherry-blossom/index.json")
-    return version_json['workbench']['platforms']['bionic-amd64']['version']
+    version_json = download_json("https://dailies.rstudio.com/rstudio/mountain-hydrangea/index.json")
+    return version_json['workbench']['platforms']['jammy-amd64']['version']
 
 
 def download_json(url):
