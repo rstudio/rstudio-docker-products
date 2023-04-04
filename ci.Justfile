@@ -99,10 +99,10 @@ test-base $OS $TYPE="base":
   # set short name
   if [[ $TYPE == "base" ]]; then
     IMAGE_NAME="product-base"
-    just IMAGE_OS="${OS}" product/base/test ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}
+    just IMAGE_OS="${OS}" R_VERSION={{R_VERSION}} R_VERSION_ALT={{R_VERSION_ALT}} PYTHON_VERSION={{PYTHON_VERSION}} PYTHON_VERSION_ALT={{PYTHON_VERSION_ALT}} product/base/test ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}
   elif [[ $TYPE == "base-pro" || $TYPE == "pro" ]]; then
     IMAGE_NAME="product-base-pro"
-    just IMAGE_OS="${OS}" product/pro/test ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}
+    just IMAGE_OS="${OS}" R_VERSION={{R_VERSION}} R_VERSION_ALT={{R_VERSION_ALT}} PYTHON_VERSION={{PYTHON_VERSION}} PYTHON_VERSION_ALT={{PYTHON_VERSION_ALT}} product/pro/test ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}
   fi
 
 # just BUILDX_PATH=~/.buildx build-release workbench ubuntu1804 12.0.11-11
