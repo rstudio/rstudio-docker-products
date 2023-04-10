@@ -18,7 +18,8 @@ jobs:
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v3
-        ref: gcw-workbench
+        with:
+          ref: gcw-workbench
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v1
