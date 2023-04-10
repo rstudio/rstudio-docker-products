@@ -47,7 +47,10 @@ jobs:
         id: get-version
         run: |
           VERSION=`just -f ci.Justfile get-version workbench --type=release --local`
-          echo "VERSION=${VERSION//\"/}" >> $GITHUB_OUTPUT
+          VERSION=${VERSION//\"/}
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "TAG_SAFE_VERSION=${VERSION/+/-}" >> $GITHUB_OUTPUT
+          
 
       - name: Build Image
         uses: docker/build-push-action@v4
@@ -64,7 +67,7 @@ jobs:
             PYTHON_VERSION_ALT=$PYTHON_VERSION_ALT
           tags: |
             us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:latest,
-            us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:${{ steps.get-version.outputs.VERSION }}
+            us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:${{ steps.get-version.outputs.TAG_SAFE_VERSION }}
 
       - name: Test Image
         env:
