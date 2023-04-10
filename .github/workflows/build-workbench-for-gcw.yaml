@@ -47,7 +47,7 @@ jobs:
         id: get-version
         run: |
           VERSION=`just -f ci.Justfile get-version workbench --type=release --local`
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "VERSION=${VERSION//\"/}" >> $GITHUB_OUTPUT
 
       - name: Build Image
         uses: docker/build-push-action@v4
