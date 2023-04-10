@@ -11,7 +11,7 @@ ARG QUARTO_VERSION=1.2.335
 ARG DRIVERS_VERSION=2022.11.0
 ARG RSW_VERSION=2023.03.0+386.pro1
 ARG RSW_NAME=rstudio-workbench
-ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/debian-11/amd64
+ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/focal/amd64
 
 ENV RSW_LICENSE ""
 ENV RSW_LICENSE_SERVER ""
@@ -37,6 +37,7 @@ RUN apt-get update --fix-missing  \
       libcap2 \
       libcurl4-gnutls-dev \
       libglib2.0-0 \
+      libicu-dev \
       libnss-sss \
       libpam-sss \
       libpq-dev \
@@ -54,8 +55,8 @@ RUN apt-get update --fix-missing  \
     && rm -rf /var/lib/apt/lists/*
 
 ### Install R versions ###
-RUN curl -O https://cdn.rstudio.com/r/debian-11/pkgs/r-${R_VERSION}_1_amd64.deb \
-    && curl -O https://cdn.rstudio.com/r/debian-11/pkgs/r-${R_VERSION_ALT}_1_amd64.deb \
+RUN curl -O https://cdn.rstudio.com/r/ubuntu-2004/pkgs/r-${R_VERSION}_1_amd64.deb \
+    && curl -O https://cdn.rstudio.com/r/ubuntu-2004/pkgs/r-${R_VERSION_ALT}_1_amd64.deb \
     && apt-get update \
     && apt-get install -yq --no-install-recommends ./r-${R_VERSION}_1_amd64.deb \
     && apt-get install -yq --no-install-recommends ./r-${R_VERSION_ALT}_1_amd64.deb \
@@ -65,8 +66,8 @@ RUN curl -O https://cdn.rstudio.com/r/debian-11/pkgs/r-${R_VERSION}_1_amd64.deb 
     && ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
 
 ### Install Python versions ###
-RUN curl -O https://cdn.rstudio.com/python/debian-11/pkgs/python-${PYTHON_VERSION}_1_amd64.deb \
-    && curl -O https://cdn.rstudio.com/python/debian-11/pkgs/python-${PYTHON_VERSION_ALT}_1_amd64.deb \
+RUN curl -O https://cdn.rstudio.com/python/ubuntu-2004/pkgs/python-${PYTHON_VERSION}_1_amd64.deb \
+    && curl -O https://cdn.rstudio.com/python/ubuntu-2004/pkgs/python-${PYTHON_VERSION_ALT}_1_amd64.deb \
     && apt-get update \
     && apt-get install -yq --no-install-recommends ./python-${PYTHON_VERSION}_1_amd64.deb \
     && apt-get install -yq --no-install-recommends ./python-${PYTHON_VERSION_ALT}_1_amd64.deb \
