@@ -11,7 +11,7 @@ ARG QUARTO_VERSION=1.2.335
 ARG DRIVERS_VERSION=2022.11.0
 ARG RSW_VERSION=2023.03.0+386.pro1
 ARG RSW_NAME=rstudio-workbench
-ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/focal/amd64
+ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 
 ENV RSW_LICENSE ""
 ENV RSW_LICENSE_SERVER ""
@@ -93,7 +93,7 @@ RUN apt-get update \
     && rm -f ./rstudio-drivers_${DRIVERS_VERSION}_amd64.deb \
     && rm -rf /var/lib/apt/lists/* \
     && cp /opt/rstudio-drivers/odbcinst.ini.sample /etc/odbcinst.ini \
-    && /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.rstudio.com/cran/__linux__/ubuntu-2004/latest")'
+    && /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.rstudio.com/cran/__linux__/focal/latest")'
 
 ### Install Workbench ###
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
