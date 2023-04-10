@@ -52,7 +52,11 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           build-args:
-            RSW_VERSION: ${{ steps.get-version.outputs.VERSION }}
+            - RSW_VERSION=${{ steps.get-version.outputs.VERSION }}
+            - R_VERSION=$R_VERSION
+            - R_VERSION_ALT=$R_VERSION_ALT
+            - PYTHON_VERSION=$PYTHON_VERSION
+            - PYTHON_VERSION_ALT=$PYTHON_VERSION_ALT
           tags:
             - us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:latest
             - us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:${{ steps.get-version.outputs.VERSION }}
