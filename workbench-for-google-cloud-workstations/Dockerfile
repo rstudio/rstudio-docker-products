@@ -93,7 +93,7 @@ RUN apt-get update \
     && rm -f ./rstudio-drivers_${DRIVERS_VERSION}_amd64.deb \
     && rm -rf /var/lib/apt/lists/* \
     && cp /opt/rstudio-drivers/odbcinst.ini.sample /etc/odbcinst.ini \
-    && /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.rstudio.com/cran/__linux__/debian-11/latest")'
+    && /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.rstudio.com/cran/__linux__/ubuntu-2004/latest")'
 
 ### Install Workbench ###
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
