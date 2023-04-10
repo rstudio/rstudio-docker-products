@@ -6,7 +6,7 @@ ARG R_VERSION=4.2.2
 ARG R_VERSION_ALT=4.1.3
 ARG PYTHON_VERSION=3.10.10
 ARG PYTHON_VERSION_ALT=3.9.16
-ARG PYTHON_VERSION_JUPYTER=3.9.16
+ARG PYTHON_VERSION_JUPYTER=3.10.10
 ARG QUARTO_VERSION=1.2.335
 ARG DRIVERS_VERSION=2022.11.0
 ARG RSW_VERSION=2023.03.0+386.pro1
@@ -126,7 +126,8 @@ RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyt
     && /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter \
     && /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsconnect_jupyter \
     && /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter \
-    && /opt/python/jupyter/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
+    && /opt/python/jupyter/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter \
+    && /opt/python/jupyter/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}"
 
 RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh \
     && chmod +x /usr/local/bin/wait-for-it.sh
