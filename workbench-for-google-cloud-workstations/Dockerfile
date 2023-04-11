@@ -31,6 +31,10 @@ ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
 RUN apt-get update --fix-missing  \
     && apt-get upgrade -yq \
     && apt-get install -yq --no-install-recommends \
+      apt-transport-https \
+      build-essential \
+      ca-certificates \
+      dirmngr \
       dpkg-sig \
       gnupg \
       krb5-user \
@@ -43,6 +47,7 @@ RUN apt-get update --fix-missing  \
       libpq-dev \
       libpq5 \
       libsm6 \
+      libssl-dev \
       libuser \
       libuser1-dev \
       libxext6 \
