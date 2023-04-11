@@ -50,12 +50,15 @@ jobs:
           VERSION=${VERSION//\"/}
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "TAG_SAFE_VERSION=${VERSION/+/-}" >> $GITHUB_OUTPUT
-          
+
+      - name: Authenticate gcloud
+        run: |
+          gcloud auth configure-docker -q us-central1-docker.pkg.dev
 
       - name: Build Image
         uses: docker/build-push-action@v4
         with:
-          push: false
+          push: true
           context: ./workbench-for-google-cloud-workstations
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
@@ -79,8 +82,3 @@ jobs:
 #          PYTHON_VERSION_ALT: ${{ env.PYTHON_VERSION_ALT }}
 #        run:
 #          docker-compose -f ./workbench-for-google-cloud-workstations/docker-compose.test.yml run sut
-
-      - name: Push Image
-        run: |
-          gcloud auth configure-docker -q us-central1-docker.pkg.dev
-          docker push -a us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw
