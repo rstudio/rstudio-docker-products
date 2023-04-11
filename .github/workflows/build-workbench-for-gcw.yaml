@@ -82,5 +82,5 @@ jobs:
 
       - name: Push Image
         run: |
-          gcloud auth configure-docker us-central1-docker.pkg.dev
+          gcloud auth configure-docker -q us-central1-docker.pkg.dev
           docker push -a us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw
