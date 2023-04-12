@@ -148,6 +148,7 @@ RUN mkdir -p /var/lib/rstudio-server/monitor/log \
     && printf '\n# allow home directory creation\nsession required pam_mkhomedir.so skel=/etc/skel umask=0022' >> /etc/pam.d/common-session
 
 COPY --chmod=755 workstation-startup/* /etc/workstation-startup.d/
+COPY --chmod=644 jupyter/jupyter_notebook_config.json /opt/python/jupyter/etc/jupyter/jupyter_notebook_config.json
 
 ### Clean up ###
 RUN apt-get remove -yq dpkg-sig \
