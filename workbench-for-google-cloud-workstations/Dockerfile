@@ -80,8 +80,17 @@ RUN curl -O https://cdn.rstudio.com/python/ubuntu-2004/pkgs/python-${PYTHON_VERS
     && rm -rf python-${PYTHON_VERSION_ALT}_1_amd64.deb \
     && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install 'virtualenv<20' \
     && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install --upgrade setuptools \
+    && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install --upgrade pip \
     && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install 'virtualenv<20' \
-    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install --upgrade setuptools
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install --upgrade setuptools \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install --upgrade pip
+
+### Install basic data science packages for Python and R ###
+COPY deps/* /
+RUN /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install -r /py_packages.txt \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install -r /py_packages.txt \
+    && ./install_r_packages.sh \
+    && rm install_r_packages.sh py_packages.txt r_packages.txt
 
 ### Locale configuration ###
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
@@ -133,6 +142,7 @@ RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyt
     && /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsconnect_jupyter \
     && /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter \
     && /opt/python/jupyter/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter \
+    && /opt/python/jupyter/bin/python -m ipykernel install --name py${PYTHON_VERSION} --display-name "Python ${PYTHON_VERSION}" \
     && /opt/python/jupyter/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}"
 
 RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh \
