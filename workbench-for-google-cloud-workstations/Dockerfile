@@ -7,7 +7,7 @@ ARG R_VERSION_ALT=4.1.3
 ARG PYTHON_VERSION=3.10.10
 ARG PYTHON_VERSION_ALT=3.9.16
 ARG PYTHON_VERSION_JUPYTER=3.10.10
-ARG QUARTO_VERSION=1.2.335
+ARG QUARTO_VERSION=1.3.324
 ARG DRIVERS_VERSION=2022.11.0
 ARG RSW_VERSION=2023.03.0+386.pro1
 ARG RSW_NAME=rstudio-workbench
@@ -98,6 +98,12 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
+### Install Quarto ###
+RUN curl -o quarto-linux-amd64.deb -L https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.deb \
+    && apt-get install -yq ./quarto-linux-amd64.deb \
+    && rm quarto-linux-amd64.deb
+
+
 ### Install Pro Drivers ###
 RUN apt-get update \
     && apt-get install -yq --no-install-recommends unixodbc unixodbc-dev \
@@ -128,6 +134,7 @@ COPY startup-user-provisioning/* /startup/user-provisioning/
 COPY startup/* /startup/base/
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 
+### Install Jupyter and extensions ###
 RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyter \
     && /opt/python/jupyter/bin/pip install \
       jupyter \
