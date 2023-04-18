@@ -1,3 +1,8 @@
+# 2023.03.0
+
+- Update R versions to include 4.2.3
+- Update Python versions to 3.8.15 and 3.9.14
+
 # 2022.12.0
 
 - Upgrade workbench to 2022.12.0
