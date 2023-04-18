@@ -117,6 +117,12 @@ jobs:
           docker push rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
           docker push ghcr.io/rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
 
+      - name: Push image(s)
+        if: ${{ github.ref != 'refs/heads/main' }}
+        run: |  # Push images to ghcr on non-main branches, otherwise Pro images may not build
+          docker push ghcr.io/rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
+          docker push ghcr.io/rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
+
 
 
   build-pro:
