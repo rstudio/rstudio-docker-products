@@ -1,7 +1,15 @@
 # Using dated tags from https://hub.docker.com/_/ubuntu/
-FROM ubuntu:18.04
+FROM ubuntu:22.04
 
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
+
+ARG DEBIAN_FRONTEND=noninteractive
+ARG DISTRIBUTION=ubuntu-2204
+
+ARG R_VERSION=3.6.3
+ARG R_INSTALLER=r-${R_VERSION}_1_amd64.deb
+
+ARG PYTHON_VERSION=3.9.5
 
 # Locale configuration --------------------------------------------------------#
 RUN apt-get update \
@@ -12,7 +20,6 @@ RUN apt-get update \
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
-ARG DEBIAN_FRONTEND=noninteractive
 
 # Installation prerequisites --------------------------------------------------#
 # curl is used to download things.
@@ -91,12 +98,7 @@ RUN apt-get update  \
 # Reference: https://docs.rstudio.com/resources/install-r/
 
 # We are NOT linking one of these R versions into the PATH.
-
-ARG R_DISTRIBUTION=ubuntu-1804
-
-ARG R_VERSION=3.6.3
-ARG R_INSTALLER=r-${R_VERSION}_1_amd64.deb
-RUN curl -fsSL -O https://cdn.rstudio.com/r/${R_DISTRIBUTION}/pkgs/${R_INSTALLER} \
+RUN curl -fsSL -O https://cdn.rstudio.com/r/${DISTRIBUTION}/pkgs/${R_INSTALLER} \
     && apt-get update \
     && apt-get install -f -y --no-install-recommends ./${R_INSTALLER} \
     && rm ${R_INSTALLER} \
@@ -109,23 +111,14 @@ RUN curl -fsSL -O https://cdn.rstudio.com/r/${R_DISTRIBUTION}/pkgs/${R_INSTALLER
 
 # We are NOT linking one of these Python versions into the PATH.
 
-ARG MINICONDA_VERSION=4.7.12.1
-ARG PYTHON_VERSION=3.7.6
-
-# The documented approach uses a particular miniconda install script version
-# to obtain the desired Python version. We are first installing miniconda and
-# then asking it to install different Python versions.
-
-RUN curl -fsSL -o miniconda.sh https://repo.anaconda.com/miniconda/Miniconda3-${MINICONDA_VERSION}-Linux-x86_64.sh \
-    && chmod 755 miniconda.sh \
-    && ./miniconda.sh -b -p /opt/miniconda \
-    && /opt/miniconda/bin/conda create --quiet --yes --prefix /opt/python/${PYTHON_VERSION} python=${PYTHON_VERSION} virtualenv \
-    && rm -f miniconda.sh \
-    # remove miniconda too, for size
-    && rm -rf /opt/miniconda
+RUN curl -O https://cdn.rstudio.com/python/${DISTRIBUTION}/pkgs/python-${PYTHON_VERSION}_1_amd64.deb \
+    && apt-get install -yq --no-install-recommends ./python-${PYTHON_VERSION}_1_amd64.deb \
+    && rm -rf python-${PYTHON_VERSION}_1_amd64.deb \
+    && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install 'virtualenv<20' \
+    && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install --upgrade setuptools
 
 # install quarto
-ARG QUARTO_VERSION=1.0.37
+ARG QUARTO_VERSION=1.1.251
 COPY maybe_install_quarto.sh /tmp/maybe_install_quarto.sh
 RUN /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.rstudio.com/cran/__linux__/bionic/latest")' \
     && /tmp/maybe_install_quarto.sh \

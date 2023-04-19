@@ -42,5 +42,7 @@ build OS=IMAGE_OS _R_VERSION=R_VERSION _PYTHON_VERSION=PYTHON_VERSION +TAGS=DEFA
 
   docker buildx --builder="{{ BUILDX_PATH }}" build --load ${BUILDX_ARGS} \
     ${tag_array[@]} \
-    --build-arg DRIVERS_VERSION="{{ DRIVERS_VERSION }}"
+    --build-arg R_VERSION="{{ _R_VERSION }}" \
+    --build-arg PYTHON_VERSION="{{ _PYTHON_VERSION }}" \
+    --build-arg DRIVERS_VERSION="{{ DRIVERS_VERSION }}" \
     --file="Dockerfile.{{ OS }}" {{ justfile_directory() }}
