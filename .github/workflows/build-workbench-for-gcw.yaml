@@ -68,6 +68,7 @@ jobs:
             R_VERSION_ALT=${{ env.R_VERSION_ALT }}
             PYTHON_VERSION=${{ env.PYTHON_VERSION }}
             PYTHON_VERSION_ALT=${{ env.PYTHON_VERSION_ALT }}
+            PYTHON_VERSION_JUPYTER=${{ env.PYTHON_VERSION }}
           tags: |
             us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:latest,
             us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:${{ steps.get-version.outputs.TAG_SAFE_VERSION }}
@@ -80,5 +81,6 @@ jobs:
           R_VERSION_ALT: ${{ env.R_VERSION_ALT }}
           PYTHON_VERSION: ${{ env.PYTHON_VERSION }}
           PYTHON_VERSION_ALT: ${{ env.PYTHON_VERSION_ALT }}
+          PYTHON_VERSION_JUPYTER: ${{ env.PYTHON_VERSION }}
         run:
           docker-compose -f ./workbench-for-google-cloud-workstations/docker-compose.test.yml run sut
