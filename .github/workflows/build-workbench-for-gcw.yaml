@@ -72,13 +72,13 @@ jobs:
             us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:latest,
             us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:${{ steps.get-version.outputs.TAG_SAFE_VERSION }}
 
-#      - name: Test Image
-#        env:
-#          IMAGE_NAME: us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:latest
-#          RSW_VERSION: ${{ steps.get-version.outputs.VERSION }}
-#          R_VERSION: ${{ env.R_VERSION }}
-#          R_VERSION_ALT: ${{ env.R_VERSION_ALT }}
-#          PYTHON_VERSION: ${{ env.PYTHON_VERSION }}
-#          PYTHON_VERSION_ALT: ${{ env.PYTHON_VERSION_ALT }}
-#        run:
-#          docker-compose -f ./workbench-for-google-cloud-workstations/docker-compose.test.yml run sut
+      - name: Test Image
+        env:
+          IMAGE_NAME: us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:latest
+          RSW_VERSION: ${{ steps.get-version.outputs.VERSION }}
+          R_VERSION: ${{ env.R_VERSION }}
+          R_VERSION_ALT: ${{ env.R_VERSION_ALT }}
+          PYTHON_VERSION: ${{ env.PYTHON_VERSION }}
+          PYTHON_VERSION_ALT: ${{ env.PYTHON_VERSION_ALT }}
+        run:
+          docker-compose -f ./workbench-for-google-cloud-workstations/docker-compose.test.yml run sut

@@ -2,12 +2,12 @@ user:
   rstudio-server:
     exists: true
     uid: 999
-    gid: 999
+    gid: 998
 
 group:
   rstudio-server:
     exists: true
-    gid: 999
+    gid: 998
 
 package:
   rstudio-server:
@@ -106,14 +106,14 @@ command:
     title: jupyter_works
     exit-status: 0
 # Ensure correct python version
-  "/opt/python/3.8.10/bin/python --version":
+  "/opt/python/3.9.16/bin/python --version":
     title: alternate_python_version_matches
     exit-status: 0
     stdout: [
         "{{.Env.PYTHON_VERSION_ALT}}"
     ]
 # Ensure correct python version
-  "/opt/python/3.9.5/bin/python --version":
+  "/opt/python/3.10.10/bin/python --version":
     title: python_version_matches
     exit-status: 0
     stdout: [
@@ -123,7 +123,7 @@ command:
     title: jupyter_python_version_matches
     exit-status: 0
     stdout: [
-        "{{.Env.JUPYTER_PYTHON_VERSION}}"
+        "{{.Env.PYTHON_VERSION_JUPYTER}}"
     ]
   "which openssl":
     title: uses_system_openssl
