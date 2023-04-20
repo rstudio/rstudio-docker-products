@@ -128,7 +128,7 @@ RUN curl -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/rstudio-server/r-versions
 
-# TODO: Remove this block and use S3 dev build
+# TODO: Remove this block at initial release, but for now it may be helpful for testing any Workbench fixes
 #COPY rstudio-workbench-2023.04.999-dev-999.pro9.deb /rstudio-workbench.deb
 #RUN apt-get update \
 #    && apt-get install -y --no-install-recommends ./rstudio-workbench.deb \

@@ -14,6 +14,8 @@ jobs:
       R_VERSION_ALT: 4.1.3
       PYTHON_VERSION: 3.10.10
       PYTHON_VERSION_ALT: 3.9.16
+      RSW_VERSION: 2023.05.0-daily-271.pro3
+      RSW_DOWNLOAD_URL: https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64
 
     steps:
       - name: Check Out Repo
@@ -43,13 +45,13 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-buildx-
 
-      - name: Get Version
-        id: get-version
-        run: |
-          VERSION=`just -f ci.Justfile get-version workbench --type=release --local`
-          VERSION=${VERSION//\"/}
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-          echo "TAG_SAFE_VERSION=${VERSION/+/-}" >> $GITHUB_OUTPUT
+#      - name: Get Version
+#        id: get-version
+#        run: |
+#          VERSION=`just -f ci.Justfile get-version workbench --type=release --local`
+#          VERSION=${VERSION//\"/}
+#          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+#          echo "TAG_SAFE_VERSION=${VERSION/+/-}" >> $GITHUB_OUTPUT
 
       - name: Authenticate gcloud
         run: |
@@ -63,7 +65,8 @@ jobs:
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
           build-args: |
-            RSW_VERSION=${{ steps.get-version.outputs.VERSION }}
+            RSW_VERSION=${{ env.RSW_VERSION }}
+            RSW_DOWNLOAD_URL=${{ env.RSW_DOWNLOAD_URL }}
             R_VERSION=${{ env.R_VERSION }}
             R_VERSION_ALT=${{ env.R_VERSION_ALT }}
             PYTHON_VERSION=${{ env.PYTHON_VERSION }}
@@ -76,7 +79,7 @@ jobs:
       - name: Test Image
         env:
           IMAGE_NAME: us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:latest
-          RSW_VERSION: ${{ steps.get-version.outputs.VERSION }}
+          RSW_VERSION: ${{ env.RSW_VERSION }}
           R_VERSION: ${{ env.R_VERSION }}
           R_VERSION_ALT: ${{ env.R_VERSION_ALT }}
           PYTHON_VERSION: ${{ env.PYTHON_VERSION }}

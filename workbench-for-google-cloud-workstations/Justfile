@@ -6,7 +6,7 @@ IMAGE_PREFIX := "rstudio-"
 PRODUCT := "workbench"
 IMAGE_OS := "ubuntu1804"
 
-RSW_VERSION := "2023.04.999-dev+999.pro9"
+RSW_VERSION := "2023.05.0-daily-271.pro3"
 RSW_LICENSE := ""
 RSW_DOWNLOAD_URL := "https://download2.rstudio.org/server/bionic/amd64"
 RSW_LICENSE_SERVER := ""
@@ -31,7 +31,7 @@ build VERSION=RSW_VERSION *TAGS="":
   fi
 
   if [[ "{{TAGS}}" == "" ]]; then
-    raw_tag_array=($(just _make-default-tag))
+    raw_tag_array=($(just IMAGE_PREFIX="{{IMAGE_PREFIX}}" RSW_VERSION="{{RSW_VERSION}}" _make-default-tag))
   else
     raw_tag_array=("{{TAGS}}")
   fi
@@ -57,8 +57,9 @@ build VERSION=RSW_VERSION *TAGS="":
 test TAG=`just _make-default-tag` CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
+  RSW_VERSION_CLEAN=$(sed "s/daily-/daily+/" <<<{{RSW_VERSION}})
   IMAGE_NAME="{{ TAG }}" \
-  RSW_VERSION="{{ RSW_VERSION }}" \
+  RSW_VERSION="$RSW_VERSION_CLEAN" \
   RSW_LICENSE="{{ RSW_LICENSE }}" \
   RSW_LICENSE_SERVER="{{ RSW_LICENSE_SERVER }}" \
   R_VERSION="{{ R_VERSION }}" \
