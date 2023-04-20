@@ -74,7 +74,7 @@ jobs:
             PYTHON_VERSION_JUPYTER=${{ env.PYTHON_VERSION }}
           tags: |
             us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:latest,
-            us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:${{ steps.get-version.outputs.TAG_SAFE_VERSION }}
+            us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:${{ env.RSW_VERSION }}
 
       - name: Test Image
         env:
