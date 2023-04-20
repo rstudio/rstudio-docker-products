@@ -6,7 +6,7 @@ IMAGE_PREFIX := "rstudio-"
 PRODUCT := "workbench"
 IMAGE_OS := "ubuntu1804"
 
-RSW_VERSION := "2023.03.0+386.pro1"
+RSW_VERSION := "2023.04.999-dev+999.pro9"
 RSW_LICENSE := ""
 RSW_DOWNLOAD_URL := "https://download2.rstudio.org/server/bionic/amd64"
 RSW_LICENSE_SERVER := ""
@@ -16,6 +16,7 @@ R_VERSION_ALT := "4.1.3"
 
 PYTHON_VERSION := "3.10.10"
 PYTHON_VERSION_ALT := "3.9.16"
+PYTHON_VERSION_JUPYTER := "3.10.10"
 
 _make-default-tag:
   echo "{{IMAGE_PREFIX}}{{PRODUCT}}:$(just -f ../Justfile _get-tag-safe-version {{RSW_VERSION}})"
@@ -48,26 +49,28 @@ build VERSION=RSW_VERSION *TAGS="":
     --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
     --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
     --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
+    --build-arg PYTHON_VERSION_JUPYTER="{{ PYTHON_VERSION_JUPYTER }}" \
     --build-arg RSW_DOWNLOAD_URL="{{ RSW_DOWNLOAD_URL }}" \
     --file=./Dockerfile .
 
 # Test Workbench image - just test rstudio/rstudio-workbench:ubuntu1804-2022.07.2-576.pro12 2022.07.2+576.pro12
-test TAG=`just _make-default-tag` VERSION=RSW_VERSION CMD="":
+test TAG=`just _make-default-tag` CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
   IMAGE_NAME="{{ TAG }}" \
-  RSW_VERSION="{{ VERSION }}" \
+  RSW_VERSION="{{ RSW_VERSION }}" \
   RSW_LICENSE="{{ RSW_LICENSE }}" \
   RSW_LICENSE_SERVER="{{ RSW_LICENSE_SERVER }}" \
   R_VERSION="{{ R_VERSION }}" \
   R_VERSION_ALT="{{ R_VERSION_ALT }}" \
   PYTHON_VERSION="{{ PYTHON_VERSION }}" \
   PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
+  PYTHON_VERSION_JUPYTER="{{ PYTHON_VERSION_JUPYTER }}" \
   docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
 
 # Test Workbench image interactively - just test-i rstudio/rstudio-workbench:ubuntu1804-2022.07.2-576.pro12 2022.07.2+576.pro12
-test-i TAG=`just _make-default-tag` VERSION=RSW_VERSION:
-  just test {{ TAG }} {{ VERSION }} bash
+test-i TAG=`just _make-default-tag`:
+  just test {{ TAG }} bash
 
 # Run Workbench - just RSW_LICENSE="<RSW license>" run rstudio/r-session-complete:ubuntu1804-2022.07.2-576.pro12
 run TAG=`just _make-default-tag` CMD="":
