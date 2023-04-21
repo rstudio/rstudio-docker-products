@@ -56,7 +56,18 @@ jobs:
       - name: Build base image
         id: build
         run: |
-          TAGS=`just BUILDX_PATH=${{ steps.buildx.outputs.name }} RSW_VERSION=${{ env.RSW_VERSION }} RSW_DOWNLOAD_URL=${{ env.RSW_DOWNLOAD_URL }} R_VERSION=${{ env.R_VERSION }} R_VERSION_ALT=${{ env.R_VERSION_ALT }} PYTHON_VERSION=${{ env.PYTHON_VERSION }} PYTHON_VERSION_ALT=${{ env.PYTHON_VERSION_ALT }} PYTHON_VERSION_JUPYTER=${{ env.PYTHON_VERSION }} workbench-for-google-cloud-workstations/build`
+          TAGS=$(just \
+            BUILDX_PATH=${{ steps.buildx.outputs.name }} \
+            RSW_VERSION=${{ env.RSW_VERSION }} \
+            RSW_DOWNLOAD_URL=${{ env.RSW_DOWNLOAD_URL }} \
+            R_VERSION=${{ env.R_VERSION }} \
+            R_VERSION_ALT=${{ env.R_VERSION_ALT }} \
+            PYTHON_VERSION=${{ env.PYTHON_VERSION }} \
+            PYTHON_VERSION_ALT=${{ env.PYTHON_VERSION_ALT }} \
+            PYTHON_VERSION_JUPYTER=${{ env.PYTHON_VERSION }} \
+            workbench-for-google-cloud-workstations/build \
+            us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:latest \
+            us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:${{ env.RSW_VERSION }})
           echo "TAGS=$TAGS" >> $GITHUB_OUTPUT
 
       - name: Test Image
