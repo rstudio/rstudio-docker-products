@@ -53,14 +53,14 @@ jobs:
 #          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 #          echo "TAG_SAFE_VERSION=${VERSION/+/-}" >> $GITHUB_OUTPUT
 
-      - name: Authenticate gcloud
+      - name: Authenticate GCAR
         run: |
           gcloud auth configure-docker -q us-central1-docker.pkg.dev
 
       - name: Build Image
         uses: docker/build-push-action@v4
         with:
-          push: true
+          push: false
           context: ./workbench-for-google-cloud-workstations
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
@@ -85,5 +85,31 @@ jobs:
           PYTHON_VERSION: ${{ env.PYTHON_VERSION }}
           PYTHON_VERSION_ALT: ${{ env.PYTHON_VERSION_ALT }}
           PYTHON_VERSION_JUPYTER: ${{ env.PYTHON_VERSION }}
-        run:
-          docker-compose -f ./workbench-for-google-cloud-workstations/docker-compose.test.yml run sut
+        run: |
+          just \
+            RSW_VERSION=${{ env.RSW_VERSION }} \
+            R_VERSION=${{ env.R_VERSION }} \
+            R_VERSION_ALT=${{ env.R_VERSION_ALT }} \
+            PYTHON_VERSION=${{ env.PYTHON_VERSION }} \
+            PYTHON_VERSION_ALT=${{ env.PYTHON_VERSION_ALT }} \
+            PYTHON_VERSION_JUPYTER=${{ env.PYTHON_VERSION }} \
+            test
+          
+      - name: Push Image
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          context: ./workbench-for-google-cloud-workstations
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+          build-args: |
+            RSW_VERSION=${{ env.RSW_VERSION }}
+            RSW_DOWNLOAD_URL=${{ env.RSW_DOWNLOAD_URL }}
+            R_VERSION=${{ env.R_VERSION }}
+            R_VERSION_ALT=${{ env.R_VERSION_ALT }}
+            PYTHON_VERSION=${{ env.PYTHON_VERSION }}
+            PYTHON_VERSION_ALT=${{ env.PYTHON_VERSION_ALT }}
+            PYTHON_VERSION_JUPYTER=${{ env.PYTHON_VERSION }}
+          tags: |
+            us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:latest,
+            us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:${{ env.RSW_VERSION }}
