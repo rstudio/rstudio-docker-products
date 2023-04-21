@@ -53,39 +53,15 @@ jobs:
 #          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 #          echo "TAG_SAFE_VERSION=${VERSION/+/-}" >> $GITHUB_OUTPUT
 
-      - name: Authenticate GCAR
+      - name: Build base image
+        id: build
         run: |
-          gcloud auth configure-docker -q us-central1-docker.pkg.dev
-
-      - name: Build Image
-        uses: docker/build-push-action@v4
-        with:
-          push: false
-          context: ./workbench-for-google-cloud-workstations
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-          build-args: |
-            RSW_VERSION=${{ env.RSW_VERSION }}
-            RSW_DOWNLOAD_URL=${{ env.RSW_DOWNLOAD_URL }}
-            R_VERSION=${{ env.R_VERSION }}
-            R_VERSION_ALT=${{ env.R_VERSION_ALT }}
-            PYTHON_VERSION=${{ env.PYTHON_VERSION }}
-            PYTHON_VERSION_ALT=${{ env.PYTHON_VERSION_ALT }}
-            PYTHON_VERSION_JUPYTER=${{ env.PYTHON_VERSION }}
-          tags: |
-            us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:latest,
-            us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:${{ env.RSW_VERSION }}
+          TAGS=`just BUILDX_PATH=${{ steps.buildx.outputs.name }} RSW_VERSION=${{ env.RSW_VERSION }} RSW_DOWNLOAD_URL=${{ env.RSW_DOWNLOAD_URL }} R_VERSION=${{ env.R_VERSION }} R_VERSION_ALT=${{ env.R_VERSION_ALT }} PYTHON_VERSION=${{ env.PYTHON_VERSION }} PYTHON_VERSION_ALT=${{ env.PYTHON_VERSION_ALT }} PYTHON_VERSION_JUPYTER=${{ env.PYTHON_VERSION }} workbench-for-google-cloud-workstations/build`
+          echo "TAGS=$TAGS" >> $GITHUB_OUTPUT
 
       - name: Test Image
-        env:
-          IMAGE_NAME: us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:latest
-          RSW_VERSION: ${{ env.RSW_VERSION }}
-          R_VERSION: ${{ env.R_VERSION }}
-          R_VERSION_ALT: ${{ env.R_VERSION_ALT }}
-          PYTHON_VERSION: ${{ env.PYTHON_VERSION }}
-          PYTHON_VERSION_ALT: ${{ env.PYTHON_VERSION_ALT }}
-          PYTHON_VERSION_JUPYTER: ${{ env.PYTHON_VERSION }}
         run: |
+          IFS=" " read -a tags <<<${{ steps.build.outputs.TAGS }}
           just \
             RSW_VERSION=${{ env.RSW_VERSION }} \
             R_VERSION=${{ env.R_VERSION }} \
@@ -93,23 +69,11 @@ jobs:
             PYTHON_VERSION=${{ env.PYTHON_VERSION }} \
             PYTHON_VERSION_ALT=${{ env.PYTHON_VERSION_ALT }} \
             PYTHON_VERSION_JUPYTER=${{ env.PYTHON_VERSION }} \
-            workbench-for-google-cloud-workstations/test us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:latest
+            workbench-for-google-cloud-workstations/test "${tags[1]}"
+
+      - name: Authenticate GCAR
+        run: |
+          gcloud auth configure-docker -q us-central1-docker.pkg.dev
           
       - name: Push Image
-        uses: docker/build-push-action@v4
-        with:
-          push: true
-          context: ./workbench-for-google-cloud-workstations
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-          build-args: |
-            RSW_VERSION=${{ env.RSW_VERSION }}
-            RSW_DOWNLOAD_URL=${{ env.RSW_DOWNLOAD_URL }}
-            R_VERSION=${{ env.R_VERSION }}
-            R_VERSION_ALT=${{ env.R_VERSION_ALT }}
-            PYTHON_VERSION=${{ env.PYTHON_VERSION }}
-            PYTHON_VERSION_ALT=${{ env.PYTHON_VERSION_ALT }}
-            PYTHON_VERSION_JUPYTER=${{ env.PYTHON_VERSION }}
-          tags: |
-            us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:latest,
-            us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:${{ env.RSW_VERSION }}
+        run: docker push ${{ steps.build-base-image.outputs.TAGS }}
