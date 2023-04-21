@@ -22,7 +22,7 @@ _make-default-tag:
   echo "{{IMAGE_PREFIX}}{{PRODUCT}}:$(just -f ../Justfile _get-tag-safe-version {{RSW_VERSION}})"
 
 # Build Workbench image - just build 2022.07.2+576.pro12 rstudio/rstudio-workbench-gcw:2022.07.2
-build VERSION=RSW_VERSION *TAGS="":
+build *TAGS="":
   #!/usr/bin/env bash
   set -euxo pipefail
   BUILDX_ARGS=""
@@ -44,7 +44,7 @@ build VERSION=RSW_VERSION *TAGS="":
 
   docker buildx --builder="{{ BUILDX_PATH }}" build --load ${BUILDX_ARGS} \
     ${tag_array[@]} \
-    --build-arg RSW_VERSION="{{ VERSION }}" \
+    --build-arg RSW_VERSION="{{ RSW_VERSION }}" \
     --build-arg R_VERSION="{{ R_VERSION }}" \
     --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
     --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
@@ -52,6 +52,8 @@ build VERSION=RSW_VERSION *TAGS="":
     --build-arg PYTHON_VERSION_JUPYTER="{{ PYTHON_VERSION_JUPYTER }}" \
     --build-arg RSW_DOWNLOAD_URL="{{ RSW_DOWNLOAD_URL }}" \
     --file=./Dockerfile .
+
+  echo ${raw_tag_array[@]}
 
 # Test Workbench image - just test rstudio/rstudio-workbench:ubuntu1804-2022.07.2-576.pro12 2022.07.2+576.pro12
 test TAG=`just _make-default-tag` CMD="":
