@@ -93,7 +93,7 @@ jobs:
             PYTHON_VERSION=${{ env.PYTHON_VERSION }} \
             PYTHON_VERSION_ALT=${{ env.PYTHON_VERSION_ALT }} \
             PYTHON_VERSION_JUPYTER=${{ env.PYTHON_VERSION }} \
-            workbench-for-google-cloud-workstations/test
+            workbench-for-google-cloud-workstations/test us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:latest
           
       - name: Push Image
         uses: docker/build-push-action@v4
