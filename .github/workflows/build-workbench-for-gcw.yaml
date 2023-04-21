@@ -87,4 +87,4 @@ jobs:
           gcloud auth configure-docker -q us-central1-docker.pkg.dev
           
       - name: Push Image
-        run: docker push ${{ steps.build.outputs.TAGS }}
+        run: just -f ci.Justfile push-images ${{ steps.build.outputs.TAGS }}
