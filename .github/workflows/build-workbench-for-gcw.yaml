@@ -72,7 +72,7 @@ jobs:
 
       - name: Test Image
         run: |
-          IFS=" " read -a tags <<<${{ steps.build.outputs.TAGS }}
+          IFS=" " read -a tags <<<"${{ steps.build.outputs.TAGS }}"
           just \
             RSW_VERSION=${{ env.RSW_VERSION }} \
             R_VERSION=${{ env.R_VERSION }} \
