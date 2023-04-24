@@ -88,7 +88,7 @@ jobs:
             workbench-for-google-cloud-workstations/test "${tags[0]}"
           
       - name: Push Image
-        run: docker push -a ${{ env.IMAGE_REGISTRY_NAME }}
+        run: just -f ci.Justfile push-images ${{ steps.build.outputs.TAGS }}
 
       - name: Move cache
         run: |
