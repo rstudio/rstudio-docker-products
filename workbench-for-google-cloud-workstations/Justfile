@@ -37,7 +37,7 @@ build *TAGS="":
   fi
 
   tag_array=()
-  for tag in $raw_tag_array
+  for tag in ${raw_tag_array[@]};
   do
     tag_array+=("-t" $tag)
   done

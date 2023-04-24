@@ -57,6 +57,10 @@ RUN apt-get update --fix-missing  \
       rrdtool \
       sssd \
       supervisor \
+      tcl \
+      tk \
+      tk-dev \
+      tk-table \
     && rm -rf /var/lib/apt/lists/*
 
 ### Install R versions ###
