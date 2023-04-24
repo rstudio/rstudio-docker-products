@@ -16,6 +16,7 @@ jobs:
       PYTHON_VERSION_ALT: 3.9.16
       RSW_VERSION: 2023.05.0-daily-271.pro3
       RSW_DOWNLOAD_URL: https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64
+      IMAGE_REGISTRY_NAME: us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw
 
     steps:
       - name: Check Out Repo
@@ -70,8 +71,8 @@ jobs:
             PYTHON_VERSION_ALT=${{ env.PYTHON_VERSION_ALT }} \
             PYTHON_VERSION_JUPYTER=${{ env.PYTHON_VERSION }} \
             workbench-for-google-cloud-workstations/build \
-            us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:latest \
-            us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw:${{ env.RSW_VERSION }})
+            ${{ env.IMAGE_REGISTRY_NAME }}:latest \
+            ${{ env.IMAGE_REGISTRY_NAME }}:${{ env.RSW_VERSION }})
           echo "TAGS=$TAGS" >> $GITHUB_OUTPUT
 
       - name: Test Image
@@ -87,4 +88,9 @@ jobs:
             workbench-for-google-cloud-workstations/test "${tags[0]}"
           
       - name: Push Image
-        run: docker push -a us-central1-docker.pkg.dev/gcp-workstations-testing/posit/workbench-for-gcw
+        run: docker push -a ${{ env.IMAGE_REGISTRY_NAME }}
+
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache

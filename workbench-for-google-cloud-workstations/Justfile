@@ -27,7 +27,7 @@ build *TAGS="":
   set -euxo pipefail
   BUILDX_ARGS=""
   if [[ "{{BUILDX_PATH}}" != "" ]]; then
-    BUILDX_ARGS="--cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache"
+    BUILDX_ARGS="--cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max"
   fi
 
   if [[ "{{TAGS}}" == "" ]]; then
