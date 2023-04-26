@@ -6,15 +6,15 @@ IMAGE_PREFIX := "rstudio-"
 PRODUCT := "workbench"
 IMAGE_OS := "ubuntu1804"
 
-RSW_VERSION := "2022.12.0+353.pro20"
+RSW_VERSION := "2023.03.0+386.pro1"
 RSW_LICENSE := ""
 RSW_LICENSE_SERVER := ""
 
-R_VERSION := "3.6.2"
-R_VERSION_ALT := "4.1.0"
+R_VERSION := "4.2.3"
+R_VERSION_ALT := "4.1.3"
 
-PYTHON_VERSION := "3.9.5"
-PYTHON_VERSION_ALT := "3.8.10"
+PYTHON_VERSION := "3.9.14"
+PYTHON_VERSION_ALT := "3.8.15"
 
 PERSIST_LICENSE := "false"
 PERSIST_LICENSE_DIR := join(justfile_directory(), "tmp-lic")

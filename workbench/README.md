@@ -7,8 +7,8 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`2022.07.2`, `bionic`, `ubuntu1804`, `bionic-2022.07.2`, `ubuntu1804-2022.07.2`](https://github.com/rstudio/rstudio-docker-products/blob/main/workbench/Dockerfile.ubuntu1804)
-* [`jammy`, `ubuntu2204`, `jammy-2022.07.2`, `ubuntu2204-2022.07.2`](https://github.com/rstudio/rstudio-docker-products/blob/main/workbench/Dockerfile.ubuntu2204)
+* [`2023.03.0`, `bionic`, `ubuntu1804`, `bionic-2023.03.0`, `ubuntu1804-2023.03.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/workbench/Dockerfile.ubuntu1804)
+* [`jammy`, `ubuntu2204`, `jammy-2023.03.0`, `ubuntu2204-2023.03.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/workbench/Dockerfile.ubuntu2204)
 
 # What is RStudio Workbench?
 
@@ -45,6 +45,8 @@ For more information on running RStudio Workbench in your organization please vi
    changes. We
    provide [instructions for building](https://github.com/rstudio/rstudio-docker-products#instructions-for-building) for
    these cases.
+1. **Security Note:** These images are provided AS IS based on the build environment at the time their product version was released/updated. They should be reviewed and updated before production use. If your organization has a specific set of security requirements related to CVE/Vulnerability severity levels, you should plan to use the [instructions for building](https://github.com/rstudio/rstudio-docker-products#instructions-for-building) to clone this repository, and rebuild these images to your specific internal security standards.
+
 
 # How to use this image
 

@@ -8,7 +8,7 @@ BUILDX_PATH := ""
 
 RSC_VERSION := "2023.03.0"
 RSPM_VERSION := "2022.11.4-20"
-RSW_VERSION := "2022.12.0+353.pro20"
+RSW_VERSION := "2023.03.0+386.pro1"
 
 DRIVERS_VERSION := "2022.11.0"
 DRIVERS_VERSION_RHEL := DRIVERS_VERSION + "-1"
@@ -112,7 +112,7 @@ update-rsw-versions:
     workbench/Justfile \
     workbench-for-microsoft-azure-ml/Justfile \
     Justfile
-  sed {{ sed_vars }} "s/[0-9]{4}\.[0-9]{1,2}\.[0-9]{1,2}/\``just _get-clean-version {{ RSW_VERSION }}`\`/g" \
+  sed {{ sed_vars }} "s/[0-9]\{4\}\.[0-9]\{1,2\}\.[0-9]\{1,2\}/`just _get-clean-version {{ RSW_VERSION }}`/g" \
     workbench/README.md \
     r-session-complete/README.md
 

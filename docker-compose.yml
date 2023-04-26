@@ -7,8 +7,8 @@ services:
       context: ./workbench
       dockerfile: "Dockerfile.${IMAGE_OS:-ubuntu1804}"
       args:
-        RSW_VERSION: 2022.12.0+353.pro20
-    image: rstudio/rstudio-workbench:2022.12.0
+        RSW_VERSION: 2023.03.0+386.pro1
+    image: rstudio/rstudio-workbench:2023.03.0
     environment:
       RSW_LICENSE: ${RSW_LICENSE}
       LICENSE_SERVER: ${RSW_LICENSE_SERVER}
