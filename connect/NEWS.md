@@ -3,8 +3,8 @@
 - Add Quarto 1.3.340 to the Ubuntu 18.04 and Ubuntu 22.04 images.
 - Enable and configure Connect Quarto support, using the Quarto 1.3.340
   installation.
-- Install Python from https://github.com/rstudio/python-builds into the Ubuntu
-  22.04 images; these installations do not contain `virtualenv`.
+- Replace Miniconda-based Python installation with Python from https://github.com/rstudio/python-builds in the Ubuntu
+  22.04 images. These installations do not contain `virtualenv`.
 
 # 2022-01-23
 
