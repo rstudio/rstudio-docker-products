@@ -4,7 +4,7 @@
 - Enable and configure Connect Quarto support, using the Quarto 1.3.340
   installation.
 - Install Python from https://github.com/rstudio/python-builds into the Ubuntu
-  22.04 images without; these installations do not contain `virtualenv`.
+  22.04 images; these installations do not contain `virtualenv`.
 
 # 2022-01-23
 
