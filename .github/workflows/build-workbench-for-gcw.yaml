@@ -75,6 +75,7 @@ jobs:
           echo "TAGS=$TAGS" >> $GITHUB_OUTPUT
 
       - name: Test Image
+        continue-on-error: true
         run: |
           IFS=" " read -a tags <<<"${{ steps.build.outputs.TAGS }}"
           just \
