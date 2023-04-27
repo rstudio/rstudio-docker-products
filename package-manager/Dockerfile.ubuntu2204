@@ -1,4 +1,4 @@
-ARG R_VERSION=3.6.2
+ARG R_VERSION=4.2.0
 FROM rstudio/r-base:${R_VERSION}-jammy
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
@@ -15,6 +15,16 @@ ENV PATH /opt/rstudio-pm/bin:$PATH
 ARG TINI_VERSION=0.18.0
 RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini && \
     chmod +x /usr/local/bin/tini
+
+# Add another R version -------------------------------------------------------#
+
+ARG R_VERSION_ALT=3.6.2
+RUN apt-get update -qq && \
+    curl -O https://cdn.rstudio.com/r/ubuntu-2204/pkgs/r-${R_VERSION_ALT}_1_amd64.deb && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y ./r-${R_VERSION_ALT}_1_amd64.deb && \
+    rm -f ./r-${R_VERSION_ALT}_1_amd64.deb \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 # Download RStudio Package Manager ---------------------------------------------#
 ARG RSPM_VERSION=2022.11.4-20

@@ -47,6 +47,7 @@ build OS=IMAGE_OS VERSION=RSPM_VERSION *TAGS="":
     ${tag_array[@]} \
     --build-arg RSPM_VERSION="{{ VERSION }}" \
     --build-arg R_VERSION="{{ R_VERSION }}" \
+    --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
     --file=./Dockerfile.$(just -f ../Justfile _parse-os {{OS}}) .
 
 # Test Package Manager image - just test rstudio/rstudio-package-manager:ubuntu1804-2022.07.2-11 2022.07.2-11
@@ -58,6 +59,7 @@ test TAG=`just _make-default-tag` VERSION=RSPM_VERSION CMD="":
   RSPM_LICENSE="{{ RSPM_LICENSE }}" \
   RSPM_LICENSE_SERVER="{{ RSPM_LICENSE_SERVER }}" \
   R_VERSION="{{ R_VERSION }}" \
+  R_VERSION_ALT="{{ R_VERSION_ALT }}" \
   docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
 
 # Test Package Manager image interactively - just test-i rstudio/rstudio-package-manager:ubuntu1804-2022.07.2-11 2022.07.2-11
