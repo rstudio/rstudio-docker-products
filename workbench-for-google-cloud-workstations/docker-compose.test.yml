@@ -8,13 +8,17 @@ services:
     environment:
       # uses .env by default
       - RSW_VERSION
-      - R_VERSION 
+      - R_VERSION
+      - R_VERSION_ALT
       - PYTHON_VERSION
       - PYTHON_VERSION_ALT
       - PYTHON_VERSION_JUPYTER
-      - R_VERSION_ALT
+      - QUARTO_VERSION
+      - DRIVERS_VERSION
       - RSW_LICENSE
       - RSW_LICENSE_SERVER
     volumes:
       - "./test/run_tests.sh:/run_tests.sh"
       - "./test/goss.yaml:/tmp/goss.yaml"
+      - "./deps/py_packages.txt:/tmp/py_packages.txt"
+      - "./deps/r_packages.txt:/tmp/r_packages.txt"

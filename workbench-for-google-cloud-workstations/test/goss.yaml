@@ -12,6 +12,24 @@ group:
 package:
   rstudio-server:
     installed: true
+    versions:
+    - {{ .Env.RSW_VERSION }}
+  r-{{.Env.R_VERSION}}:
+    installed: true
+  r-{{.Env.R_VERSION_ALT}}:
+    installed: true
+  python-{{.Env.PYTHON_VERSION}}:
+    installed: true
+  python-{{.Env.PYTHON_VERSION_ALT}}:
+    installed: true
+  quarto:
+    installed: true
+    versions:
+    - {{.Env.QUARTO_VERSION}}
+  rstudio-drivers:
+    installed: true
+    versions:
+    - {{.Env.DRIVERS_VERSION}}
 
 port:
   tcp:80:
@@ -35,8 +53,6 @@ process:
 
 file:
   /etc/rstudio-server/license.lic:
-    # currently does not exist
-    # be sure it is NOT a directory
     exists: false
   /usr/lib/rstudio-server:
     exists: true
@@ -56,9 +72,6 @@ file:
     exists: true
   /usr/local/bin/jupyter:
     exists: true
-  # this file gets created at startup?
-  # /var/lib/rstudio-server/r-versions:
-  #   exists: false
   /usr/lib/rstudio-server/bin/rserver:
     exists: true
   /usr/lib/rstudio-server/bin/rstudio-server:
@@ -73,6 +86,31 @@ file:
     exists: true
   /etc/rstudio/vscode.conf:
     exists: true
+  /etc/rstudio/jupyter.conf:
+    exists: true
+    contains:
+    - --LabApp.token=""
+    - --no-browser
+    - --allow-root
+    - --ip=0.0.0.0
+  /etc/rstudio/rserver.conf:
+    exists: true
+    contains:
+    - www-port=80
+    - launcher-sessions-callback-address=http://0.0.0.0:80
+    - auth-proxy=1
+    - auth-proxy-sign-in-url=http://localhost:80/
+    - auth-proxy-user-header=x-custom-user-name
+  /etc/rstudio/nginx.site.conf:
+    exists: true
+    contains:
+    - proxy_set_header X-CUSTOM-USER-NAME user/google;
+    - proxy_set_header Host $http_x_forwarded_host;
+  /etc/rstudio/vscode.extensions.conf:
+    exists: true
+    contains:
+    - quarto.quarto
+    - GoogleCloudTools.cloudcode
   /tmp/startup.log:
     exists: true
     contains:
@@ -86,48 +124,108 @@ file:
     owner: root
     group: root
     mode: "0600"
+  /usr/local/bin/wait-for-it.sh:
+    exists: true
+    owner: root
+    group: root
+    mode: "0755"
+  /etc/workstation-startup.d/010_add-user.sh:
+    exists: true
+    owner: root
+    group: root
+    mode: "0755"
+    filetype: file
+    contains: [
+      "useradd -m user"
+    ]
+  /etc/workstation-startup.d/110_config-jupyter.sh:
+    exists: true
+    owner: root
+    group: root
+    mode: "0755"
+    filetype: file
+    contains: [
+      # Checks that we're setting the Jupyter shell to /bin/bash
+      "echo \"c.ServerApp.terminado_settings = {'shell_command': ['/bin/bash']}\" > /home/user/.jupyter/jupyter_notebook_config.py"
+    ]
+  /etc/workstation-startup.d/120_start-workbench.sh:
+    exists: true
+    owner: root
+    group: root
+    mode: "0755"
+    filetype: file
+    contains: [
+      "/usr/bin/supervisord -c /etc/supervisor/supervisord.conf"
+    ]
+
 
 command:
-  "su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'":
-    title: workbench_monitor_log_file_creates
+  # Check OS release version (early heads up in case the base image is modified)
+  Check OS version is "focal":
+    exec: "lsb_release -cs"
     exit-status: 0
-  "touch /var/log/rstudio-server.log":
-    title: workbench_server_log_creates
+    stdout: [
+      "focal"
+    ]
+  Test Workbench Monitor rstudio-server.log creation:
+    exec: su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'
     exit-status: 0
-# Check product version
-  "rstudio-server version":
-    title: workbench_version_matches
+  Test rstudio-server.log creation:
+    exec: touch /var/log/rstudio-server.log
+    exit-status: 0
+  Check RStudio Workbench version is {{ .Env.RSW_VERSION }}:
+    exec: rstudio-server version
     exit-status: 0
     stdout: [
        "{{ .Env.RSW_VERSION }}",
        "Workbench"
      ]
-  "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/jupyter/bin/jupyter nbconvert --to notebook --stdin --stdout":
-    title: jupyter_works
+  Test Jupyter works:
+    exec: "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/jupyter/bin/jupyter nbconvert --to notebook --stdin --stdout"
     exit-status: 0
-# Ensure correct python version
-  "/opt/python/3.9.16/bin/python --version":
-    title: alternate_python_version_matches
-    exit-status: 0
-    stdout: [
-        "{{.Env.PYTHON_VERSION_ALT}}"
-    ]
-# Ensure correct python version
-  "/opt/python/3.10.10/bin/python --version":
-    title: python_version_matches
+  Check primary Python is version {{.Env.PYTHON_VERSION}}:
+    exec: /opt/python/{{.Env.PYTHON_VERSION}}/bin/python --version
     exit-status: 0
     stdout: [
       "{{.Env.PYTHON_VERSION}}"
     ]
-  "/opt/python/jupyter/bin/python --version":
-    title: jupyter_python_version_matches
+  Check alternate Python is version {{.Env.PYTHON_VERSION_ALT}}:
+    exec: /opt/python/{{.Env.PYTHON_VERSION_ALT}}/bin/python --version
+    exit-status: 0
+    stdout: [
+        "{{.Env.PYTHON_VERSION_ALT}}"
+    ]
+  Check Jupyter venv uses Python {{.Env.PYTHON_VERSION_JUPYTER}}:
+    exec: /opt/python/jupyter/bin/python --version
     exit-status: 0
     stdout: [
         "{{.Env.PYTHON_VERSION_JUPYTER}}"
     ]
-  "which openssl":
-    title: uses_system_openssl
+  Check for OpenSSL:
+    exec: which openssl
     exit-status: 0
     stdout: [
       "/usr/bin/openssl"
     ]
+  {{ $python_version := .Env.PYTHON_VERSION }}
+  {{ $python_version_alt := .Env.PYTHON_VERSION_ALT }}
+  {{ $py_package_list := readFile "/tmp/py_packages.txt" | splitList "\n" }}
+  {{- range $py_package_list }}
+  Check Python {{ $python_version }} has "{{.}}" installed:
+    exec: /opt/python/{{$python_version}}/bin/pip show {{.}}
+    exit-status: 0
+  Check Python {{ $python_version_alt }} has "{{.}}" installed:
+    exec: /opt/python/{{$python_version_alt}}/bin/pip show {{.}}
+    exit-status: 0
+  {{end}}
+  {{ $r_version := .Env.R_VERSION }}
+  {{ $r_version_alt := .Env.R_VERSION_ALT }}
+  {{ $r_package_list := readFile "/tmp/r_packages.txt" | splitList "\n" }}
+  {{- range $r_package_list }}
+  Check R {{ $r_version }} has "{{.}}" installed:
+    exec: /opt/R/{{$r_version}}/bin/R --slave -e "library(\"{{.}}\")"
+    exit-status: 0
+  Check R {{ $r_version_alt }} has "{{.}}" installed:
+    exec: /opt/R/{{$r_version_alt}}/bin/R --slave -e "library(\"{{.}}\")"
+    exit-status: 0
+  {{end}}

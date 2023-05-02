@@ -34,6 +34,7 @@ RUN apt-get update --fix-missing  \
       apt-transport-https \
       build-essential \
       ca-certificates \
+      default-jdk \
       dirmngr \
       dpkg-sig \
       gnupg \
@@ -46,6 +47,7 @@ RUN apt-get update --fix-missing  \
       libpam-sss \
       libpq-dev \
       libpq5 \
+      libsecret-1-dev \
       libsm6 \
       libssl-dev \
       libuser \
