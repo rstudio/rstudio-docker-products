@@ -4,12 +4,13 @@ BUILDX_PATH := ""
 
 IMAGE_PREFIX := "rstudio-"
 PRODUCT := "workbench"
-IMAGE_OS := "ubuntu1804"
+IMAGE_OS := "ubuntu2004"
 
 RSW_VERSION := "2023.05.0-daily-271.pro3"
 RSW_LICENSE := ""
 RSW_DOWNLOAD_URL := "https://download2.rstudio.org/server/bionic/amd64"
 RSW_LICENSE_SERVER := ""
+DRIVERS_VERSION := "2022.11.0"
 
 R_VERSION := "4.2.2"
 R_VERSION_ALT := "4.1.3"
@@ -17,6 +18,8 @@ R_VERSION_ALT := "4.1.3"
 PYTHON_VERSION := "3.10.10"
 PYTHON_VERSION_ALT := "3.9.16"
 PYTHON_VERSION_JUPYTER := "3.10.10"
+
+QUARTO_VERSION := "1.3.324"
 
 _make-default-tag:
   echo "{{IMAGE_PREFIX}}{{PRODUCT}}:$(just -f ../Justfile _get-tag-safe-version {{RSW_VERSION}})"
@@ -50,6 +53,8 @@ build *TAGS="":
     --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
     --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
     --build-arg PYTHON_VERSION_JUPYTER="{{ PYTHON_VERSION_JUPYTER }}" \
+    --build-arg QUARTO_VERSION="{{ QUARTO_VERSION }}" \
+    --build-arg DRIVERS_VERSION="{{ DRIVERS_VERSION }}" \
     --build-arg RSW_DOWNLOAD_URL="{{ RSW_DOWNLOAD_URL }}" \
     --file=./Dockerfile .
 
@@ -64,11 +69,13 @@ test TAG=`just _make-default-tag` CMD="":
   RSW_VERSION="$RSW_VERSION_CLEAN" \
   RSW_LICENSE="{{ RSW_LICENSE }}" \
   RSW_LICENSE_SERVER="{{ RSW_LICENSE_SERVER }}" \
+  DRIVERS_VERSION="{{ DRIVERS_VERSION }}" \
   R_VERSION="{{ R_VERSION }}" \
   R_VERSION_ALT="{{ R_VERSION_ALT }}" \
   PYTHON_VERSION="{{ PYTHON_VERSION }}" \
   PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
   PYTHON_VERSION_JUPYTER="{{ PYTHON_VERSION_JUPYTER }}" \
+  QUARTO_VERSION="{{ QUARTO_VERSION }}" \
   docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
 
 # Test Workbench image interactively - just test-i rstudio/rstudio-workbench:ubuntu1804-2022.07.2-576.pro12 2022.07.2+576.pro12
