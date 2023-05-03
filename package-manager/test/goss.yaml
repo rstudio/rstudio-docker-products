@@ -57,3 +57,10 @@ command:
     stdout: [
       "{{ .Env.R_VERSION }}"
     ]
+
+  "/opt/R/{{ .Env.R_VERSION_ALT }}/bin/R --version":
+    title: r_version_alt_match
+    exit-status: 0
+    stdout: [
+      "{{ .Env.R_VERSION_ALT }}"
+    ]
