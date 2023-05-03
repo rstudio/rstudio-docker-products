@@ -1,3 +1,9 @@
+# 2022.11.4-20
+
+- Mid-release, we accidentally bumped the version of R. To mitigate issues, we added another version of R,
+  so the container grew in size and now has R versions 4.2.0 and 3.6.2 (for backwards compatibility). Thanks
+  for your patience with any issues! Please reach out if you have trouble.
+
 # 2022-01-23
 
 - Add documentation for license leak bug and possible workarounds/solutions.
