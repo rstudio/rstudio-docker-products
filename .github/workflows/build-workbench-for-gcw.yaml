@@ -42,13 +42,14 @@ jobs:
         run: |
           gcloud auth configure-docker -q us-central1-docker.pkg.dev
 
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
+# FIXME(ianpittwood): Caching keeps overrunning our disk space
+#      - name: Cache Docker layers
+#        uses: actions/cache@v3
+#        with:
+#          path: /tmp/.buildx-cache
+#          key: ${{ runner.os }}-buildx-${{ github.sha }}
+#          restore-keys: |
+#            ${{ runner.os }}-buildx-
 
 #      - name: Get Version
 #        id: get-version
@@ -94,7 +95,7 @@ jobs:
           docker tag ${{ steps.build.outputs.TAGS }}
           just -f ci.Justfile push-images ${{ steps.build.outputs.TAGS }}
 
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+#      - name: Move cache
+#        run: |
+#          rm -rf /tmp/.buildx-cache
+#          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
