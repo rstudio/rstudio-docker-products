@@ -2,6 +2,7 @@ on:
   schedule:
     # every morning at 8am UTC
     # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#onschedule
+    # make sure to change the `if` commands below when changing the schedule
     - cron: '0 8 * * *'
   push:
     branches:
@@ -40,7 +41,17 @@ jobs:
          - {product: "r-session-complete", type: "preview", os: "centos7", r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
 
     steps:
-      - name: Check Out Repo
+      # the schedule triggers on the "default" branch (dev), so we have to specify "main"
+      # this schedule matching / specification is less than ideal at present and must be
+      # kept in sync with the schedule specification at the top of the file
+      - name: Check Out main Branch
+        if: github.event.schedule == '0 8 * * *'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+
+      - name: Check Out Repo at Triggered Branch
+        if: github.event.schedule != '0 8 * * *'
         uses: actions/checkout@v3
 
       - name: Set up Just

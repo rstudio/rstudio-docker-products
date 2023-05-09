@@ -75,7 +75,7 @@ This container includes:
 
 1. Two versions of R
 2. Two versions of Python
-3. RStudio Connect
+3. RStudio Workbench
 
 ## Configuration
 

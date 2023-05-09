@@ -14,7 +14,8 @@ fi
 if [[ `grep -oE jammy /etc/lsb-release` ]]; then
   qver=${QUARTO_VERSION:-1.3.340}
   echo '--> Installing Quarto'
-  curl -L -o /quarto.deb https://github.com/quarto-dev/quarto-cli/releases/download/v${qver}/quarto-${qver}-linux-amd64.deb
-  apt install /quarto.deb
-  rm -f /quarto.deb
+  curl -L -o /quarto.tar.gz "https://github.com/quarto-dev/quarto-cli/releases/download/v${qver}/quarto-${qver}-linux-amd64.tar.gz"
+  mkdir -p /opt/quarto/${qver}
+  tar -zxvf quarto.tar.gz -C "/opt/quarto/${qver}" --strip-components=1
+  rm -f /quarto.tar.gz
 fi

@@ -9,6 +9,7 @@ services:
       # uses .env by default
       - RSPM_VERSION
       - R_VERSION
+      - R_VERSION_ALT
       - RSPM_LICENSE
       - RSPM_LICENSE_SERVER
     volumes:
