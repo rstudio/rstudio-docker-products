@@ -7,7 +7,7 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`2023.03.0`, `bionic`, `ubuntu1804`, `bionic-2023.03.0`, `ubuntu1804-2023.03.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/workbench/Dockerfile.ubuntu1804)
+* [`2023.03.0`, `focal`, `ubuntu2004`, `focal-2023.03.0`, `ubuntu2004-2023.03.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/workbench/Dockerfile.ubuntu2004)
 * [`jammy`, `ubuntu2204`, `jammy-2023.03.0`, `ubuntu2204-2023.03.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/workbench/Dockerfile.ubuntu2204)
 
 # What is RStudio Workbench?
@@ -60,7 +60,7 @@ export RSW_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 docker run -it \
     -p 8787:8787 \
     -e RSW_LICENSE=$RSW_LICENSE \
-    rstudio/rstudio-workbench:ubuntu1804
+    rstudio/rstudio-workbench:ubuntu2004
 ```
 
 
@@ -139,7 +139,7 @@ docker run -it \
     -v $PWD/server-pro/conf/:/etc/rstudio \
     -v $PWD/sssd.conf:/etc/sssd/conf.d/sssd.conf \
     -e RSP_LICENSE=$RSP_LICENSE \
-    rstudio/rstudio-workbench:ubuntu1804
+    rstudio/rstudio-workbench:ubuntu2004
 ```
 
 It is worth noting that you may also need to modify the PAM configuration files
@@ -178,7 +178,7 @@ docker run -it \
     -p 8787:8787 -p 5559:5559 \
     -v $PWD/workbench/conf/:/etc/rstudio \
     -e RSW_LICENSE=$RSW_LICENSE \
-    rstudio/rstudio-workbench:ubuntu1804
+    rstudio/rstudio-workbench:ubuntu2004
 
 # Run with persistent data and using an external configuration
 docker run -it \
@@ -186,7 +186,7 @@ docker run -it \
     -v $PWD/data/rsw:/home \
     -v $PWD/workbench/conf/:/etc/rstudio \
     -e RSW_LICENSE=$RSW_LICENSE \
-    rstudio/rstudio-workbench:ubuntu1804
+    rstudio/rstudio-workbench:ubuntu2004
 ```
 
 Open [http://localhost:8787](http://localhost:8787) to access RStudio Workbench.

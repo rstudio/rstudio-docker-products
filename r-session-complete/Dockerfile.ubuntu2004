@@ -3,7 +3,7 @@ ARG R_VERSION_ALT=4.1.3
 ARG PYTHON_VERSION=3.9.14
 ARG PYTHON_VERSION_ALT=3.8.15
 ARG REGISTRY=ghcr.io
-FROM ${REGISTRY}/rstudio/product-base-pro:ubuntu1804-r${R_VERSION}_${R_VERSION_ALT}-py${PYTHON_VERSION}_${PYTHON_VERSION_ALT}
+FROM ${REGISTRY}/rstudio/product-base-pro:ubuntu2004-r${R_VERSION}_${R_VERSION_ALT}-py${PYTHON_VERSION}_${PYTHON_VERSION_ALT}
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -13,7 +13,7 @@ ARG PYTHON_VERSION=3.9.14
 ARG PYTHON_VERSION_ALT=3.8.15
 ARG RSW_VERSION=2023.03.0+386.pro1
 ARG RSW_NAME=rstudio-workbench
-ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
+ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/focal/amd64
 
 ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
 
@@ -22,7 +22,6 @@ RUN apt-get update \
     && apt-get install --no-install-recommends -y \
       krb5-user \
       libcurl4-gnutls-dev \
-      libssl1.0.0 \
       libuser \
       libuser1-dev \
       libpq-dev \

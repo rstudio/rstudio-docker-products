@@ -17,6 +17,8 @@ _get-os-alias OS:
   #!/usr/bin/env bash
   if [[ "{{OS}}" == "bionic" || "{{OS}}" == "ubuntu1804" ]]; then
     echo "ubuntu1804 bionic"
+  elif [[ "{{OS}}" == "focal" || "{{OS}}" == "ubuntu2004" ]]; then
+    echo "ubuntu2004 focal"
   elif [[ "{{OS}}" == "jammy" || "{{OS}}" == "ubuntu2204" ]]; then
     echo "ubuntu2204 jammy"
   else
@@ -246,6 +248,8 @@ _get-rsw-download-url TYPE OS:
   URL_OS="{{OS}}"
   if [[ "{{OS}}" == "ubuntu1804" ]]; then
     URL_OS="bionic"
+  elif [[ "{{OS}}" == "ubuntu2004" ]]; then
+    URL_OS="focal"
   elif [[ "{{OS}}" == "ubuntu2204" ]]; then
     URL_OS="jammy"
   fi

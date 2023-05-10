@@ -34,6 +34,8 @@ _parse-os OS:
   #!/usr/bin/env bash
   if [[ "{{OS}}" == "bionic" ]]; then
     echo "ubuntu1804"
+  elif [[ "{{OS}}" == "focal" ]]; then
+    echo "ubuntu2004"
   elif [[ "{{OS}}" == "jammy" ]]; then
     echo "ubuntu2204"
   else
@@ -45,6 +47,8 @@ _rev-parse-os OS:
   #!/usr/bin/env bash
   if [[ "{{OS}}" == "ubuntu1804" ]]; then
     echo "bionic"
+  elif [[ "{{OS}}" == "ubuntu2004" ]]; then
+    echo "focal"
   elif [[ "{{OS}}" == "ubuntu2204" ]]; then
     echo "jammy"
   else
@@ -98,15 +102,15 @@ update-rsw-versions:
     workbench/.env \
     r-session-complete/.env \
     workbench-for-microsoft-azure-ml/.env \
-    r-session-complete/Dockerfile.ubuntu1804 \
+    r-session-complete/Dockerfile.ubuntu2004 \
     r-session-complete/Dockerfile.ubuntu2204 \
     r-session-complete/Dockerfile.centos7 \
-    workbench/Dockerfile.ubuntu1804 \
+    workbench/Dockerfile.ubuntu2004 \
     workbench/Dockerfile.ubuntu2204 \
-    workbench-for-microsoft-azure-ml/Dockerfile.ubuntu1804
+    workbench-for-microsoft-azure-ml/Dockerfile.ubuntu2004
   sed {{ sed_vars }} "s/RSW_VERSION:.*/RSW_VERSION: {{ RSW_VERSION }}/g" docker-compose.yml
   sed {{ sed_vars }} "s/rstudio\/rstudio-workbench:.*/rstudio\/rstudio-workbench:$(just _get-clean-version {{ RSW_VERSION }})/g" docker-compose.yml
-  sed {{ sed_vars }} "s/org.opencontainers.image.version='.*'/org.opencontainers.image.version='{{ RSW_VERSION }}'/g" workbench-for-microsoft-azure-ml/Dockerfile.ubuntu1804
+  sed {{ sed_vars }} "s/org.opencontainers.image.version='.*'/org.opencontainers.image.version='{{ RSW_VERSION }}'/g" workbench-for-microsoft-azure-ml/Dockerfile.ubuntu2004
   sed {{ sed_vars }} "s/^RSW_VERSION := .*/RSW_VERSION := \"{{ RSW_VERSION }}\"/g" \
     r-session-complete/Justfile \
     workbench/Justfile \
@@ -160,7 +164,7 @@ update-r-versions:
     workbench/.env \
     connect/.env \
     package-manager/.env \
-    workbench/Dockerfile.ubuntu1804 \
+    workbench/Dockerfile.ubuntu2004 \
     connect/Dockerfile.ubuntu1804 \
     package-manager/Dockerfile.ubuntu1804 \
     workbench/Dockerfile.ubuntu2204 \
@@ -178,7 +182,7 @@ update-r-versions:
   sed {{ sed_vars }} "s/^R_VERSION_ALT=.*/R_VERSION_ALT={{ R_VERSION_ALT }}/g" \
     workbench/.env \
     connect/.env \
-    workbench/Dockerfile.ubuntu1804 \
+    workbench/Dockerfile.ubuntu2004 \
     connect/Dockerfile.ubuntu1804 \
     workbench/Dockerfile.ubuntu2204 \
     connect/Dockerfile.ubuntu2204
@@ -195,7 +199,7 @@ update-py-versions:
   set -euxo pipefail
   # Update primary Python versions
   sed {{ sed_vars }} "s/^PYTHON_VERSION=.*/PYTHON_VERSION={{ PYTHON_VERSION }}/g" \
-    workbench/Dockerfile.ubuntu1804 \
+    workbench/Dockerfile.ubuntu2004 \
     workbench/Dockerfile.ubuntu2204 \
     workbench/.env \
     connect/Dockerfile.ubuntu1804 \
@@ -213,7 +217,7 @@ update-py-versions:
 
   # Update alt Python versions
   sed {{ sed_vars }} "s/^PYTHON_VERSION_ALT=.*/PYTHON_VERSION_ALT={{ PYTHON_VERSION_ALT }}/g" \
-    workbench/Dockerfile.ubuntu1804 \
+    workbench/Dockerfile.ubuntu2004 \
     workbench/Dockerfile.ubuntu2204 \
     workbench/.env \
     connect/Dockerfile.ubuntu1804 \
@@ -232,7 +236,7 @@ update-drivers-versions:
   set -euxo pipefail
   sed {{ sed_vars }} "s/\"drivers\": \".[^\,\}]*\"/\"drivers\": \"{{ DRIVERS_VERSION }}\"/g" content/matrix.json
   sed {{ sed_vars }} "s/DRIVERS_VERSION=.*/DRIVERS_VERSION={{ DRIVERS_VERSION }}/g" \
-    workbench-for-microsoft-azure-ml/Dockerfile.ubuntu1804 \
+    workbench-for-microsoft-azure-ml/Dockerfile.ubuntu2004 \
     r-session-complete/Dockerfile.ubuntu* \
     product/pro/Dockerfile.ubuntu*
   sed {{ sed_vars }} "s/DRIVERS_VERSION=.*/DRIVERS_VERSION={{ DRIVERS_VERSION_RHEL }}/g" \
@@ -258,7 +262,7 @@ test-image $PRODUCT $VERSION +IMAGES:
     PYTHON_VERSION_ALT={{PYTHON_VERSION_ALT}} \
     $PRODUCT/test "${IMAGE_ARRAY[0]}" "$VERSION"
 
-# just lint workbench ubuntu1804
+# just lint workbench ubuntu2004
 lint $PRODUCT $OS:
   #!/usr/bin/env bash
   docker run --rm -i -v $PWD/hadolint.yaml:/.config/hadolint.yaml ghcr.io/hadolint/hadolint < $PRODUCT/Dockerfile.$(just _parse-os {{OS}})
