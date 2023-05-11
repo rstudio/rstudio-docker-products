@@ -6,7 +6,7 @@ IMAGE_PREFIX := "rstudio-"
 PRODUCT := "connect"
 IMAGE_OS := "ubuntu1804"
 
-RSC_VERSION := "2023.03.0"
+RSC_VERSION := "2023.05.0"
 RSC_LICENSE := ""
 RSC_LICENSE_SERVER := ""
 
