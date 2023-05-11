@@ -25,8 +25,8 @@ services:
       context: ./connect
       dockerfile: "Dockerfile.${IMAGE_OS:-ubuntu1804}"
       args:
-        RSC_VERSION: 2023.03.0
-    image: rstudio/rstudio-connect:2023.03.0
+        RSC_VERSION: 2023.05.0
+    image: rstudio/rstudio-connect:2023.05.0
     privileged: true
     environment:
       RSC_LICENSE: ${RSC_LICENSE}
