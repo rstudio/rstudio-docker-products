@@ -9,8 +9,8 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`2023.03.0`, `bionic`, `ubuntu1804`, `bionic-2023.03.0`, `ubuntu1804-2023.03.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.bionic)
-* [`jammy`, `ubuntu2204`, `jammy-2023.03.0`, `ubuntu2204-2023.03.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.jammy)
+* [`2023.05.0`, `bionic`, `ubuntu1804`, `bionic-2023.05.0`, `ubuntu1804-2023.05.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.bionic)
+* [`jammy`, `ubuntu2204`, `jammy-2023.05.0`, `ubuntu2204-2023.05.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.jammy)
 
 # RStudio Connect Content Init Container
 
@@ -32,7 +32,7 @@ The version of the release package to use can be overridden with the
 `RSC_VERSION` build arg.
 
 ```console
-just build ubuntu1804 2023.03.0
+just build ubuntu1804 2023.05.0
 ```
 
 ## Testing
@@ -57,7 +57,7 @@ just test
 You can see the different layers that make up the image:
 
 ```console
-docker history rstudio/rstudio-connect-content-init-preview:2023.03.0-dev-326
+docker history rstudio/rstudio-connect-content-init-preview:2023.05.0-dev-326
 ```
 
 NOTE: almost all the image size is pandoc.
