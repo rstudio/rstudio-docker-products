@@ -4,7 +4,7 @@ BUILDX_PATH := ""
 
 IMAGE_PREFIX := ""
 PRODUCT := "r-session-complete"
-IMAGE_OS := "ubuntu1804"
+IMAGE_OS := "ubuntu2204"
 
 RSW_VERSION := "2023.03.0+386.pro1"
 RSW_LICENSE := ""
