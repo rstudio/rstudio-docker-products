@@ -9,7 +9,7 @@ ARG PYTHON_VERSION_ALT=3.9.16
 ARG PYTHON_VERSION_JUPYTER=3.10.10
 ARG QUARTO_VERSION=1.3.324
 ARG DRIVERS_VERSION=2022.11.0
-ARG RSW_VERSION=2023.03.0+386.pro1
+ARG RSW_VERSION=2023.03.1+446.pro1
 ARG RSW_NAME=rstudio-workbench
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
 
@@ -133,16 +133,6 @@ RUN curl -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/rstudio-server/r-versions
-
-# TODO: Remove this block at initial release, but for now it may be helpful for testing any Workbench fixes
-#COPY rstudio-workbench-2023.04.999-dev-999.pro9.deb /rstudio-workbench.deb
-#RUN apt-get update \
-#    && apt-get install -y --no-install-recommends ./rstudio-workbench.deb \
-#    && rm ./rstudio-workbench.deb \
-#    && apt-get autoremove -y \
-#    && apt-get clean \
-#    && rm -rf /var/lib/apt/lists/* \
-#    && rm -rf /var/lib/rstudio-server/r-versions
 
 COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
 COPY startup-launcher/* /startup/launcher/
