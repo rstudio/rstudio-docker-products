@@ -6,7 +6,7 @@ IMAGE_PREFIX := "rstudio-"
 PRODUCT := "workbench"
 IMAGE_OS := "ubuntu2004"
 
-RSW_VERSION := "2023.05.0-daily-271.pro3"
+RSW_VERSION := "2023.03.1+446.pro1"
 RSW_LICENSE := ""
 RSW_DOWNLOAD_URL := "https://download2.rstudio.org/server/bionic/amd64"
 RSW_LICENSE_SERVER := ""
