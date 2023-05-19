@@ -4,6 +4,7 @@ on:
     # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#onschedule
     # make sure to change the `if` commands below when changing the schedule
     - cron: '0 8 * * *'
+    - cron: '0 9 * * *'
   push:
     branches:
       - main
@@ -50,8 +51,14 @@ jobs:
         with:
           ref: 'main'
 
+      - name: Check Out dev Branch
+        if: github.event.schedule == '0 9 * * *'
+        uses: actions/checkout@v3
+        with:
+          ref: 'dev'
+
       - name: Check Out Repo at Triggered Branch
-        if: github.event.schedule != '0 8 * * *'
+        if: github.event.schedule != '0 8 * * *' && github.event.schedule != '0 9 * * *'
         uses: actions/checkout@v3
 
       - name: Set up Just

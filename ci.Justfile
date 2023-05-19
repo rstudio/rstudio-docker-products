@@ -176,6 +176,13 @@ build-preview $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
   TAG_CLEAN_VERSION=`just _get-clean-version $VERSION`
   TAG_VERSION=`just _get-tag-safe-version $VERSION`
 
+  # set branch prefix
+  if [[ $BRANCH == "dev" ]]; then
+    BRANCH_PREFIX="dev-"
+  elif [[ $BRANCH == "dev-rspm" ]]; then
+    BRANCH_PREFIX="dev-rspm-"
+  fi
+
   # set short name
   if [[ $PRODUCT == "workbench" || $PRODUCT == "r-session-complete" || $PRODUCT == "workbench-for-microsoft-azure-ml" ]]; then
     SHORT_NAME="RSW"
