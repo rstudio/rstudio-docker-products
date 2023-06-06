@@ -27,6 +27,8 @@ ENV LICENSE_MANAGER_PATH /usr/lib/rstudio-server/bin
 
 ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
 
+COPY --chmod=755 TurboActivate.dat /opt/rstudio-license/license-manager.conf
+
 ### Update/upgrade system packages ###
 RUN apt-get update --fix-missing  \
     && apt-get upgrade -yq \
@@ -134,6 +136,17 @@ RUN curl -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/rstudio-server/r-versions
 
+### Install GCW License Manager ###
+# TODO(ianpittwood): Replace monitor download with $RSW_VERSION after upgrading to 2023.06.0
+RUN mkdir -p /opt/rstudio-license/ \
+    && mkdir -p /var/lib/rstudio-workbench \
+    && curl -sL "https://s3.amazonaws.com/rstudio-ide-build/monitor/focal/rsp-monitor-workbench-gcpw-amd64-2023.06.0-419.pro1.tar.gz" |  \
+       tar xzvf - --strip 2 -C /opt/rstudio-license/ \
+    && chmod 0755 /opt/rstudio-license/license-manager \
+    && mv /opt/rstudio-license/license-manager /opt/rstudio-license/license-manager-orig \
+    && rm -f /usr/lib/rstudio-server/bin/license-manager
+
+COPY --chmod=755 license-manager-shim /opt/rstudio-license/license-manager
 COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
 COPY startup-launcher/* /startup/launcher/
 COPY startup-user-provisioning/* /startup/user-provisioning/
