@@ -1,8 +1,10 @@
 #!/bin/bash
 
-export LICENSE_MANAGER_PATH=${LICENSE_MANAGER_PATH:-/usr/lib/rstudio-server/bin}
+export LICENSE_MANAGER_PATH=${LICENSE_MANAGER_PATH:-/opt/rstudio-license}
 
 set -ex
+
+exec >/startup.log 2>&1
 
 # Deactivate license when the process exits
 deactivate() {
