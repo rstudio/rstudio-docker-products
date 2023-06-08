@@ -23,7 +23,7 @@ ENV RSW_LAUNCHER_TIMEOUT 10
 ENV DIAGNOSTIC_DIR /var/log/rstudio
 ENV DIAGNOSTIC_ENABLE false
 ENV DIAGNOSTIC_ONLY false
-ENV LICENSE_MANAGER_PATH /usr/lib/rstudio-server/bin
+ENV LICENSE_MANAGER_PATH /opt/rstudio-license
 
 ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
 
