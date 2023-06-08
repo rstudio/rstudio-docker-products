@@ -4,7 +4,8 @@ export LICENSE_MANAGER_PATH=${LICENSE_MANAGER_PATH:-/opt/rstudio-license}
 
 set -ex
 
-exec >/startup.log 2>&1
+# Uncomment to get a log for this script
+#exec >/startup.log 2>&1
 
 # Deactivate license when the process exits
 deactivate() {
