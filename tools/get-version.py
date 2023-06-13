@@ -97,7 +97,7 @@ def clean_product_selection(product: str) -> str:
 
 
 def rstudio_workbench_daily():
-    version_json = download_json("https://dailies.rstudio.com/rstudio/mountain-hydrangea/index.json")
+    version_json = download_json("https://dailies.rstudio.com/rstudio/desert-sunflower/index.json")
     return version_json['workbench']['platforms']['jammy-amd64']['version']
 
 

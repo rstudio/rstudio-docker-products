@@ -7,7 +7,7 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`jammy`, `ubuntu2204`, `jammy-2023.03.2`, `ubuntu2204-2023.03.2`](https://github.com/rstudio/rstudio-docker-products/blob/main/r-session-complete/Dockerfile.ubuntu2204)
+* [`jammy`, `ubuntu2204`, `jammy-2023.06.0`, `ubuntu2204-2023.06.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/r-session-complete/Dockerfile.ubuntu2204)
 
 # What are the r-session-complete images?
 
