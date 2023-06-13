@@ -4,6 +4,7 @@ on:
     # https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions#onschedule
     # make sure to change the `if` commands below when changing the schedule
     - cron: '0 8 * * *'
+    - cron: '0 9 * * *'
   push:
     branches:
       - main
