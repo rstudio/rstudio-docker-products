@@ -98,15 +98,12 @@ update-rsw-versions:
     workbench/.env \
     r-session-complete/.env \
     workbench-for-microsoft-azure-ml/.env \
-    r-session-complete/Dockerfile.ubuntu1804 \
     r-session-complete/Dockerfile.ubuntu2204 \
     r-session-complete/Dockerfile.centos7 \
-    workbench/Dockerfile.ubuntu1804 \
     workbench/Dockerfile.ubuntu2204 \
-    workbench-for-microsoft-azure-ml/Dockerfile.ubuntu1804
+    workbench-for-microsoft-azure-ml/Dockerfile.ubuntu2204
   sed {{ sed_vars }} "s/RSW_VERSION:.*/RSW_VERSION: {{ RSW_VERSION }}/g" docker-compose.yml
   sed {{ sed_vars }} "s/rstudio\/rstudio-workbench:.*/rstudio\/rstudio-workbench:$(just _get-clean-version {{ RSW_VERSION }})/g" docker-compose.yml
-  sed {{ sed_vars }} "s/org.opencontainers.image.version='.*'/org.opencontainers.image.version='{{ RSW_VERSION }}'/g" workbench-for-microsoft-azure-ml/Dockerfile.ubuntu1804
   sed {{ sed_vars }} "s/^RSW_VERSION := .*/RSW_VERSION := \"{{ RSW_VERSION }}\"/g" \
     r-session-complete/Justfile \
     workbench/Justfile \
@@ -160,7 +157,6 @@ update-r-versions:
     workbench/.env \
     connect/.env \
     package-manager/.env \
-    workbench/Dockerfile.ubuntu1804 \
     connect/Dockerfile.ubuntu1804 \
     package-manager/Dockerfile.ubuntu1804 \
     workbench/Dockerfile.ubuntu2204 \
@@ -178,7 +174,6 @@ update-r-versions:
   sed {{ sed_vars }} "s/^R_VERSION_ALT=.*/R_VERSION_ALT={{ R_VERSION_ALT }}/g" \
     workbench/.env \
     connect/.env \
-    workbench/Dockerfile.ubuntu1804 \
     connect/Dockerfile.ubuntu1804 \
     workbench/Dockerfile.ubuntu2204 \
     connect/Dockerfile.ubuntu2204
@@ -195,7 +190,6 @@ update-py-versions:
   set -euxo pipefail
   # Update primary Python versions
   sed {{ sed_vars }} "s/^PYTHON_VERSION=.*/PYTHON_VERSION={{ PYTHON_VERSION }}/g" \
-    workbench/Dockerfile.ubuntu1804 \
     workbench/Dockerfile.ubuntu2204 \
     workbench/.env \
     connect/Dockerfile.ubuntu1804 \
@@ -213,7 +207,6 @@ update-py-versions:
 
   # Update alt Python versions
   sed {{ sed_vars }} "s/^PYTHON_VERSION_ALT=.*/PYTHON_VERSION_ALT={{ PYTHON_VERSION_ALT }}/g" \
-    workbench/Dockerfile.ubuntu1804 \
     workbench/Dockerfile.ubuntu2204 \
     workbench/.env \
     connect/Dockerfile.ubuntu1804 \

@@ -5,7 +5,7 @@ services:
     container_name: rstudio-workbench
     build:
       context: ./workbench
-      dockerfile: "Dockerfile.${IMAGE_OS:-ubuntu1804}"
+      dockerfile: "Dockerfile.${IMAGE_OS:-ubuntu2204}"
       args:
         RSW_VERSION: 2023.06.0+421.pro1
     image: rstudio/rstudio-workbench:2023.06.0
