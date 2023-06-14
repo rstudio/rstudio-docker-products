@@ -24,9 +24,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
-         - {product: "workbench", type: "daily", os: "ubuntu1804", r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
          - {product: "workbench", type: "daily", os: "ubuntu2204", r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
-         - {product: "workbench", type: "preview", os: "ubuntu1804", r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
          - {product: "workbench", type: "preview", os: "ubuntu2204", r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
          - {product: "connect", type: "daily", os: "ubuntu1804", r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
          - {product: "connect", type: "daily", os: "ubuntu2204", r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
@@ -34,10 +32,8 @@ jobs:
          - {product: "connect-content-init", type: "daily", os: "ubuntu2204", r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
          - {product: "package-manager", type: "daily", os: "ubuntu1804", r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
          - {product: "package-manager", type: "daily", os: "ubuntu2204", r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
-         - {product: "r-session-complete", type: "daily", os: "ubuntu1804", r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
          - {product: "r-session-complete", type: "daily", os: "ubuntu2204", r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
          - {product: "r-session-complete", type: "daily", os: "centos7", r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
-         - {product: "r-session-complete", type: "preview", os: "ubuntu1804", r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
          - {product: "r-session-complete", type: "preview", os: "ubuntu2204", r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
          - {product: "r-session-complete", type: "preview", os: "centos7", r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
 
