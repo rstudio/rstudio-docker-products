@@ -28,9 +28,10 @@ _make-default-tag:
 build *TAGS="":
   #!/usr/bin/env bash
   set -euxo pipefail
+  CACHE_PATH=${GITHUB_WORKSPACE:-/tmp}
   BUILDX_ARGS=""
   if [[ "{{BUILDX_PATH}}" != "" ]]; then
-    BUILDX_ARGS="--cache-from=type=local,src=~/.buildx-cache --cache-to=type=local,dest=~/.buildx-cache-new,mode=max"
+    BUILDX_ARGS="--cache-from=type=local,src=${CACHE_PATH}/.buildx-cache --cache-to=type=local,dest=${CACHE_PATH}/.buildx-cache-new,mode=max"
   fi
 
   if [[ "{{TAGS}}" == "" ]]; then

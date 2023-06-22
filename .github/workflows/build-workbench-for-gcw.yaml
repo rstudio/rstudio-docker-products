@@ -55,7 +55,7 @@ jobs:
 #      - name: Cache Docker layers
 #        uses: actions/cache@v3
 #        with:
-#          path: /tmp/.buildx-cache
+#          path: /${GITHUB_WORKFLOW}/.buildx-cache
 #          key: ${{ runner.os }}-buildx-${{ github.sha }}
 #          restore-keys: |
 #            ${{ runner.os }}-buildx-
@@ -104,7 +104,7 @@ jobs:
           docker tag ${{ steps.build.outputs.TAGS }}
           just -f ci.Justfile push-images ${{ steps.build.outputs.TAGS }}
 
-#      - name: Move cache
-#        run: |
-#          rm -rf /tmp/.buildx-cache
-#          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+      - name: Move cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
