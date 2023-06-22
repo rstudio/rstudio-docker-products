@@ -21,6 +21,13 @@ jobs:
       IMAGE_REGISTRY_NAME: us-central1-docker.pkg.dev/posit-images/cloud-workstations/workbench
 
     steps:
+      - name: Maximize build space
+        uses: easimon/maximize-build-space@master
+        with:
+          root-reserve-mb: 512
+          swap-size-mb: 1024
+          remove-dotnet: 'true'
+
       - name: Check Out Repo
         uses: actions/checkout@v3
         with:
