@@ -14,10 +14,10 @@ jobs:
     env:
       R_VERSION: 4.2.3
       R_VERSION_ALT: 4.1.3
-      PYTHON_VERSION: 3.10.11
-      PYTHON_VERSION_ALT: 3.9.16
-      RSW_VERSION: 2023.03.1-446.pro1
-      #RSW_DOWNLOAD_URL: https://s3.amazonaws.com/rstudio-ide-build/server/bionic/amd64
+      PYTHON_VERSION: 3.10.12
+      PYTHON_VERSION_ALT: 3.9.17
+      RSW_VERSION: 2023.03.1+446.pro1
+      RSW_TAG_VERSION: 2023.03.1-446.pro1
       IMAGE_REGISTRY_NAME: us-central1-docker.pkg.dev/posit-images/cloud-workstations/workbench
 
     steps:
@@ -68,26 +68,42 @@ jobs:
 #          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 #          echo "TAG_SAFE_VERSION=${VERSION/+/-}" >> $GITHUB_OUTPUT
 
-      - name: Build base image
-        id: build
-        run: |
-          TAGS=$(just \
-            BUILDX_PATH=${{ steps.buildx.outputs.name }} \
-            RSW_VERSION=${{ env.RSW_VERSION }} \
-            RSW_DOWNLOAD_URL=${{ env.RSW_DOWNLOAD_URL }} \
-            R_VERSION=${{ env.R_VERSION }} \
-            R_VERSION_ALT=${{ env.R_VERSION_ALT }} \
-            PYTHON_VERSION=${{ env.PYTHON_VERSION }} \
-            PYTHON_VERSION_ALT=${{ env.PYTHON_VERSION_ALT }} \
-            PYTHON_VERSION_JUPYTER=${{ env.PYTHON_VERSION }} \
-            workbench-for-google-cloud-workstations/build \
-            ${{ env.IMAGE_REGISTRY_NAME }}:latest ${{ env.IMAGE_REGISTRY_NAME }}:${{ env.RSW_VERSION }})
-          echo "TAGS=$TAGS" >> $GITHUB_OUTPUT
+      - name: Build
+        uses: docker/build-push-action@v4
+        with:
+          context: ./workbench-for-google-cloud-workstations
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha
+          build-args: |
+            RSW_VERSION=${{ env.RSW_VERSION }}
+            R_VERSION=${{ env.R_VERSION }}
+            R_VERSION_ALT=${{ env.R_VERSION_ALT }}
+            PYTHON_VERSION=${{ env.PYTHON_VERSION }}
+            PYTHON_VERSION_ALT=${{ env.PYTHON_VERSION_ALT }}
+            PYTHON_VERSION_JUPYTER=${{ env.PYTHON_VERSION }}
+          tags: |
+            ${{ env.IMAGE_REGISTRY_NAME }}:latest,
+            ${{ env.IMAGE_REGISTRY_NAME }}:${{ env.RSW_TAG_VERSION }}
+
+#      - name: Build base image
+#        id: build
+#        run: |
+#          TAGS=$(just \
+#            BUILDX_PATH=${{ steps.buildx.outputs.name }} \
+#            RSW_VERSION=${{ env.RSW_VERSION }} \
+#            RSW_DOWNLOAD_URL=${{ env.RSW_DOWNLOAD_URL }} \
+#            R_VERSION=${{ env.R_VERSION }} \
+#            R_VERSION_ALT=${{ env.R_VERSION_ALT }} \
+#            PYTHON_VERSION=${{ env.PYTHON_VERSION }} \
+#            PYTHON_VERSION_ALT=${{ env.PYTHON_VERSION_ALT }} \
+#            PYTHON_VERSION_JUPYTER=${{ env.PYTHON_VERSION }} \
+#            workbench-for-google-cloud-workstations/build \
+#            ${{ env.IMAGE_REGISTRY_NAME }}:latest ${{ env.IMAGE_REGISTRY_NAME }}:${{ env.RSW_VERSION }})
+#          echo "TAGS=$TAGS" >> $GITHUB_OUTPUT
 
       - name: Test Image
-        continue-on-error: true
         run: |
-          IFS=" " read -a tags <<<"${{ steps.build.outputs.TAGS }}"
           just \
             RSW_VERSION=${{ env.RSW_VERSION }} \
             R_VERSION=${{ env.R_VERSION }} \
@@ -95,16 +111,28 @@ jobs:
             PYTHON_VERSION=${{ env.PYTHON_VERSION }} \
             PYTHON_VERSION_ALT=${{ env.PYTHON_VERSION_ALT }} \
             PYTHON_VERSION_JUPYTER=${{ env.PYTHON_VERSION }} \
-            workbench-for-google-cloud-workstations/test "${tags[0]}"
+            workbench-for-google-cloud-workstations/test ${{ env.IMAGE_REGISTRY_NAME }}:latest
 
-      # FIXME: The second tag isn't persisting for some reason, having to reapply it here
-      - name: Push Image
-        run: |
-          docker image ls
-          docker tag ${{ steps.build.outputs.TAGS }}
-          just -f ci.Justfile push-images ${{ steps.build.outputs.TAGS }}
+      - name: Push
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          context: workbench-for-google-cloud-workstations
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha
+          build-args: |
+            RSW_VERSION=${{ env.RSW_VERSION }}
+            R_VERSION=${{ env.R_VERSION }}
+            R_VERSION_ALT=${{ env.R_VERSION_ALT }}
+            PYTHON_VERSION=${{ env.PYTHON_VERSION }}
+            PYTHON_VERSION_ALT=${{ env.PYTHON_VERSION_ALT }}
+            PYTHON_VERSION_JUPYTER=${{ env.PYTHON_VERSION }}
+          tags: |
+            ${{ env.IMAGE_REGISTRY_NAME }}:latest,
+            ${{ env.IMAGE_REGISTRY_NAME }}:${{ env.RSW_TAG_VERSION }}
 
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+#      - name: Move cache
+#        run: |
+#          rm -rf /tmp/.buildx-cache
+#          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
