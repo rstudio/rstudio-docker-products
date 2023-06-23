@@ -82,7 +82,6 @@ jobs:
         with:
           push: true
           context: workbench-for-google-cloud-workstations
-          load: true
           cache-from: type=gha
           cache-to: type=gha
           build-args: |
