@@ -62,7 +62,7 @@ jobs:
             DRIVERS_VERSION=${{ env.DRIVERS_VERSION }}
             RSW_DOWNLOAD_URL=${{ env.RSW_DOWNLOAD_URL }}
           tags: |
-            ${{ env.IMAGE_REGISTRY_NAME }}:latest,
+            ${{ env.IMAGE_REGISTRY_NAME }}:latest
             ${{ env.IMAGE_REGISTRY_NAME }}:${{ env.RSW_TAG_VERSION }}
 
       - name: Test Image
@@ -75,7 +75,7 @@ jobs:
             PYTHON_VERSION_ALT=${{ env.PYTHON_VERSION_ALT }} \
             PYTHON_VERSION_JUPYTER=${{ env.PYTHON_VERSION }} \
             DRIVERS_VERSION=${{ env.DRIVERS_VERSION }} \
-            workbench-for-google-cloud-workstations/test ${{ env.IMAGE_REGISTRY_NAME }}:latest
+            workbench-for-google-cloud-workstations/test ${{ env.IMAGE_REGISTRY_NAME }}:${{ env.RSW_TAG_VERSION }}
 
       - name: Push
         uses: docker/build-push-action@v4
@@ -95,5 +95,5 @@ jobs:
             DRIVERS_VERSION=${{ env.DRIVERS_VERSION }}
             RSW_DOWNLOAD_URL=${{ env.RSW_DOWNLOAD_URL }}
           tags: |
-            ${{ env.IMAGE_REGISTRY_NAME }}:latest,
+            ${{ env.IMAGE_REGISTRY_NAME }}:latest
             ${{ env.IMAGE_REGISTRY_NAME }}:${{ env.RSW_TAG_VERSION }}

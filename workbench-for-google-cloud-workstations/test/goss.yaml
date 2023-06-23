@@ -224,8 +224,10 @@ command:
   {{- range $r_package_list }}
   Check R {{ $r_version }} has "{{.}}" installed:
     exec: /opt/R/{{$r_version}}/bin/R --slave -e "library(\"{{.}}\")"
+    timeout: 60000
     exit-status: 0
   Check R {{ $r_version_alt }} has "{{.}}" installed:
     exec: /opt/R/{{$r_version_alt}}/bin/R --slave -e "library(\"{{.}}\")"
+    timeout: 60000
     exit-status: 0
   {{end}}
