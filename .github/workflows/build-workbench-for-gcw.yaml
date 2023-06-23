@@ -18,14 +18,14 @@ jobs:
       PYTHON_VERSION_ALT: 3.9.16
       RSW_VERSION: 2023.03.1+446.pro1
       RSW_TAG_VERSION: 2023.03.1-446.pro1
+      RSW_DOWNLOAD_URL: https://download2.rstudio.org/server/focal/amd64
+      DRIVERS_VERSION: 2023.05.0
       IMAGE_REGISTRY_NAME: us-central1-docker.pkg.dev/posit-images/cloud-workstations/workbench
 
     steps:
 
       - name: Check Out Repo
         uses: actions/checkout@v3
-        with:
-          ref: gcw-workbench
 
       - name: Set up Just
         uses: extractions/setup-just@v1
@@ -45,23 +45,6 @@ jobs:
         run: |
           gcloud auth configure-docker -q us-central1-docker.pkg.dev
 
-# FIXME(ianpittwood): Caching keeps overrunning our disk space
-#      - name: Cache Docker layers
-#        uses: actions/cache@v3
-#        with:
-#          path: /${GITHUB_WORKFLOW}/.buildx-cache
-#          key: ${{ runner.os }}-buildx-${{ github.sha }}
-#          restore-keys: |
-#            ${{ runner.os }}-buildx-
-
-#      - name: Get Version
-#        id: get-version
-#        run: |
-#          VERSION=`just -f ci.Justfile get-version workbench --type=release --local`
-#          VERSION=${VERSION//\"/}
-#          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-#          echo "TAG_SAFE_VERSION=${VERSION/+/-}" >> $GITHUB_OUTPUT
-
       - name: Build
         uses: docker/build-push-action@v4
         with:
@@ -76,25 +59,11 @@ jobs:
             PYTHON_VERSION=${{ env.PYTHON_VERSION }}
             PYTHON_VERSION_ALT=${{ env.PYTHON_VERSION_ALT }}
             PYTHON_VERSION_JUPYTER=${{ env.PYTHON_VERSION }}
+            DRIVERS_VERSION=${{ env.DRIVERS_VERSION }}
+            RSW_DOWNLOAD_URL=${{ env.RSW_DOWNLOAD_URL }}
           tags: |
             ${{ env.IMAGE_REGISTRY_NAME }}:latest,
             ${{ env.IMAGE_REGISTRY_NAME }}:${{ env.RSW_TAG_VERSION }}
-
-#      - name: Build base image
-#        id: build
-#        run: |
-#          TAGS=$(just \
-#            BUILDX_PATH=${{ steps.buildx.outputs.name }} \
-#            RSW_VERSION=${{ env.RSW_VERSION }} \
-#            RSW_DOWNLOAD_URL=${{ env.RSW_DOWNLOAD_URL }} \
-#            R_VERSION=${{ env.R_VERSION }} \
-#            R_VERSION_ALT=${{ env.R_VERSION_ALT }} \
-#            PYTHON_VERSION=${{ env.PYTHON_VERSION }} \
-#            PYTHON_VERSION_ALT=${{ env.PYTHON_VERSION_ALT }} \
-#            PYTHON_VERSION_JUPYTER=${{ env.PYTHON_VERSION }} \
-#            workbench-for-google-cloud-workstations/build \
-#            ${{ env.IMAGE_REGISTRY_NAME }}:latest ${{ env.IMAGE_REGISTRY_NAME }}:${{ env.RSW_VERSION }})
-#          echo "TAGS=$TAGS" >> $GITHUB_OUTPUT
 
       - name: Test Image
         run: |
@@ -105,6 +74,7 @@ jobs:
             PYTHON_VERSION=${{ env.PYTHON_VERSION }} \
             PYTHON_VERSION_ALT=${{ env.PYTHON_VERSION_ALT }} \
             PYTHON_VERSION_JUPYTER=${{ env.PYTHON_VERSION }} \
+            DRIVERS_VERSION=${{ env.DRIVERS_VERSION }} \
             workbench-for-google-cloud-workstations/test ${{ env.IMAGE_REGISTRY_NAME }}:latest
 
       - name: Push
@@ -122,11 +92,8 @@ jobs:
             PYTHON_VERSION=${{ env.PYTHON_VERSION }}
             PYTHON_VERSION_ALT=${{ env.PYTHON_VERSION_ALT }}
             PYTHON_VERSION_JUPYTER=${{ env.PYTHON_VERSION }}
+            DRIVERS_VERSION=${{ env.DRIVERS_VERSION }}
+            RSW_DOWNLOAD_URL=${{ env.RSW_DOWNLOAD_URL }}
           tags: |
             ${{ env.IMAGE_REGISTRY_NAME }}:latest,
             ${{ env.IMAGE_REGISTRY_NAME }}:${{ env.RSW_TAG_VERSION }}
-
-#      - name: Move cache
-#        run: |
-#          rm -rf /tmp/.buildx-cache
-#          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
