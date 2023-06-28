@@ -8,7 +8,7 @@ ARG R_VERSION_ALT=3.6.2
 ARG PYTHON_VERSION=3.9.5
 ARG PYTHON_VERSION_ALT=3.8.10
 ARG TINI_VERSION=0.19.0
-ARG QUARTO_VERSION=1.1.251
+ARG QUARTO_VERSION=1.3.340
 
 ### Update/upgrade system packages ###
 RUN apt-get update --fix-missing  \
