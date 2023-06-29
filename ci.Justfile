@@ -47,15 +47,18 @@ build-base $OS $TYPE="base" $BRANCH=`git branch --show`:
   # set short name
   if [[ $TYPE == "base" || $TYPE == "product-base" ]]; then
     IMAGE_NAME="product-base"
+    SRC_IMAGE_NAME=""
     CTX_PATH="./product/base"
     FILE_PATH="./product/base/Dockerfile.${OS}"
   elif [[ $TYPE == "base-pro" || $TYPE == "pro" || $TYPE == "product-base-pro" ]]; then
     IMAGE_NAME="product-base-pro"
+    SRC_IMAGE_NAME="product-base"
     CTX_PATH="./product/pro"
     FILE_PATH="./product/pro/Dockerfile.${OS}"
   fi
   if [[ $BRANCH != "main" ]]; then
     IMAGE_NAME="${IMAGE_NAME}-dev"
+    SRC_IMAGE_NAME="${SRC_IMAGE_NAME}-dev"
   fi
 
   if [[ "${OS}" == "centos7" ]]; then
@@ -81,7 +84,7 @@ build-base $OS $TYPE="base" $BRANCH=`git branch --show`:
     --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
     --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
     --build-arg DRIVERS_VERSION="${_DRIVERS_VERSION}" \
-    --build-arg IMAGE_NAME="${IMAGE_NAME}" \
+    --build-arg SRC_IMAGE_NAME="${SRC_IMAGE_NAME}" \
     --file "${FILE_PATH}" "${CTX_PATH}"
 
   #  echo rstudio/${IMAGE_NAME}:${OS} \
@@ -140,7 +143,7 @@ build-release $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`git 
     if [[ $BRANCH == "main" ]]; then
       SRC_IMAGE_NAME="product-base"
     else
-      SRC_IMAGE_NAME="product-base"
+      SRC_IMAGE_NAME="product-base-dev"
     fi
   elif [[ $PRODUCT == "package-manager" ]]; then
     SHORT_NAME="RSPM"
@@ -180,7 +183,7 @@ build-release $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`git 
         --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
         --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
         --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
-        --build-arg IMAGE_NAME="${SRC_IMAGE_NAME}" \
+        --build-arg SRC_IMAGE_NAME="${SRC_IMAGE_NAME}" \
         --file=./${PRODUCT}/Dockerfile.$(just _parse-os ${OS}) ${PRODUCT}
 
   echo ${tag_array[*]//-t/}
@@ -218,7 +221,7 @@ build-preview $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
     if [[ $BRANCH == "main" ]]; then
       SRC_IMAGE_NAME="product-base"
     else
-      SRC_IMAGE_NAME="product-base"
+      SRC_IMAGE_NAME="product-base-dev"
     fi
   elif [[ $PRODUCT == "package-manager" ]]; then
     SHORT_NAME="RSPM"
@@ -258,7 +261,7 @@ build-preview $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
         --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
         --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
         --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
-        --build-arg IMAGE_NAME="${SRC_IMAGE_NAME}" \
+        --build-arg SRC_IMAGE_NAME="${SRC_IMAGE_NAME}" \
         --file=./${PRODUCT}/Dockerfile.$(just _parse-os ${OS}) ${PRODUCT}
 
   # These tags are propogated forward to test-images and push-images in builds. It is important that these tags match the build tags above.
