@@ -236,7 +236,8 @@ update-drivers-versions:
     content/pro/Justfile \
     r-session-complete/Justfile \
     product/pro/Justfile \
-    Justfile
+    content/pro/Dockerfile.ubuntu* \
+    ci.Justfile
 
 # just test-image preview workbench 12.0.11-8 tag1 tag2 tag3 ...
 test-image $PRODUCT $VERSION +IMAGES:
