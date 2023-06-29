@@ -1,3 +1,4 @@
+set dotenv-load := true
 set positional-arguments
 
 BUILDX_PATH := ""
