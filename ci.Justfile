@@ -209,6 +209,7 @@ build-preview $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
   fi
 
   # set short name
+  SRC_IMAGE_NAME=""
   if [[ $PRODUCT == "workbench" || $PRODUCT == "r-session-complete" || $PRODUCT == "workbench-for-microsoft-azure-ml" ]]; then
     SHORT_NAME="RSW"
     if [[ $BRANCH == "main" ]]; then
