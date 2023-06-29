@@ -14,7 +14,7 @@ package:
     installed: true
 
 port:
-  tcp:3939:
+  tcp6:3939:
     listening: true
     skip: false
 
