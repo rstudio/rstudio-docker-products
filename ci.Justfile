@@ -180,7 +180,7 @@ build-release $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`git 
         --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
         --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
         --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
-        --build-arg IMAGE_NAME="{{ SRC_IMAGE_NAME }}" \
+        --build-arg IMAGE_NAME="${SRC_IMAGE_NAME}" \
         --file=./${PRODUCT}/Dockerfile.$(just _parse-os ${OS}) ${PRODUCT}
 
   echo ${tag_array[*]//-t/}
@@ -258,7 +258,7 @@ build-preview $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
         --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
         --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
         --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
-        --build-arg IMAGE_NAME="{{ SRC_IMAGE_NAME }}" \
+        --build-arg IMAGE_NAME="${SRC_IMAGE_NAME}" \
         --file=./${PRODUCT}/Dockerfile.$(just _parse-os ${OS}) ${PRODUCT}
 
   # These tags are propogated forward to test-images and push-images in builds. It is important that these tags match the build tags above.
