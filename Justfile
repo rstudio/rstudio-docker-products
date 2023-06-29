@@ -226,6 +226,7 @@ update-drivers-versions:
   sed {{ sed_vars }} "s/\"drivers\": \".[^\,\}]*\"/\"drivers\": \"{{ DRIVERS_VERSION }}\"/g" content/matrix.json
   sed {{ sed_vars }} "s/DRIVERS_VERSION=.*/DRIVERS_VERSION={{ DRIVERS_VERSION }}/g" \
     workbench-for-microsoft-azure-ml/Dockerfile.ubuntu2204 \
+    content/pro/Dockerfile.ubuntu* \
     r-session-complete/Dockerfile.ubuntu* \
     product/pro/Dockerfile.ubuntu*
   sed {{ sed_vars }} "s/DRIVERS_VERSION=.*/DRIVERS_VERSION={{ DRIVERS_VERSION_RHEL }}/g" \
@@ -236,7 +237,6 @@ update-drivers-versions:
     content/pro/Justfile \
     r-session-complete/Justfile \
     product/pro/Justfile \
-    content/pro/Dockerfile.ubuntu* \
     ci.Justfile
 
 # just test-image preview workbench 12.0.11-8 tag1 tag2 tag3 ...
