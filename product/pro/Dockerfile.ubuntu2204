@@ -11,7 +11,7 @@ ARG R_VERSION=4.2.0
 ARG R_VERSION_ALT=3.6.2
 ARG PYTHON_VERSION=3.9.5
 ARG PYTHON_VERSION_ALT=3.8.10
-ARG DRIVERS_VERSION=2022.11.0
+ARG DRIVERS_VERSION=2023.05.0
 
 RUN apt-get update \
     && apt-get install -yq --no-install-recommends unixodbc unixodbc-dev \
