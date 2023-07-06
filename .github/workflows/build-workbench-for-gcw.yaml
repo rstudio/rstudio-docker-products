@@ -62,15 +62,7 @@ jobs:
 
       - name: Test Image
         run: |
-          just \
-            RSW_VERSION=${{ env.RSW_VERSION }} \
-            R_VERSION=${{ env.R_VERSION }} \
-            R_VERSION_ALT=${{ env.R_VERSION_ALT }} \
-            PYTHON_VERSION=${{ env.PYTHON_VERSION }} \
-            PYTHON_VERSION_ALT=${{ env.PYTHON_VERSION_ALT }} \
-            PYTHON_VERSION_JUPYTER=${{ env.PYTHON_VERSION }} \
-            DRIVERS_VERSION=${{ env.DRIVERS_VERSION }} \
-            workbench-for-google-cloud-workstations/test ${{ env.IMAGE_REGISTRY_NAME }}:${{ env.RSW_TAG_VERSION }}
+          just workbench-for-google-cloud-workstations/test ${{ env.IMAGE_REGISTRY_NAME }}:${{ env.RSW_TAG_VERSION }}
 
       - name: Push
         uses: docker/build-push-action@v4
