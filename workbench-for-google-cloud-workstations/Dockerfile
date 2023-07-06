@@ -24,10 +24,7 @@ ENV DIAGNOSTIC_DIR /var/log/rstudio
 ENV DIAGNOSTIC_ENABLE false
 ENV DIAGNOSTIC_ONLY false
 ENV LICENSE_MANAGER_PATH /opt/rstudio-license
-
 ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
-
-COPY --chmod=755 TurboActivate.dat /opt/rstudio-license/license-manager.conf
 
 ### Update/upgrade system packages ###
 RUN apt-get update --fix-missing  \
@@ -76,7 +73,8 @@ RUN curl -O https://cdn.rstudio.com/r/ubuntu-2004/pkgs/r-${R_VERSION}_1_amd64.de
     && rm -f ./r-${R_VERSION}_1_amd64.deb \
     && rm -f ./r-${R_VERSION_ALT}_1_amd64.deb \
     && ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R \
-    && ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
+    && ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript \
+    && rm -rf /var/lib/apt/lists/*
 
 ### Install Python versions ###
 RUN curl -O https://cdn.rstudio.com/python/ubuntu-2004/pkgs/python-${PYTHON_VERSION}_1_amd64.deb \
@@ -89,14 +87,19 @@ RUN curl -O https://cdn.rstudio.com/python/ubuntu-2004/pkgs/python-${PYTHON_VERS
     && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install 'virtualenv<20' \
     && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install --upgrade setuptools \
     && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install --upgrade pip \
+    && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip cache purge \
     && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install 'virtualenv<20' \
     && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install --upgrade setuptools \
-    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install --upgrade pip
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install --upgrade pip \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip cache purge \
+    && rm -rf /var/lib/apt/lists/*
 
 ### Install basic data science packages for Python and R ###
 COPY deps/* /
 RUN /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install -r /py_packages.txt \
+    && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip cache purge \
     && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install -r /py_packages.txt \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip cache purge \
     && ./install_r_packages.sh \
     && rm install_r_packages.sh py_packages.txt r_packages.txt
 
@@ -108,9 +111,10 @@ ENV LC_ALL en_US.UTF-8
 
 ### Install Quarto ###
 RUN curl -o quarto-linux-amd64.deb -L https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.deb \
+    && apt-get update \
     && apt-get install -yq ./quarto-linux-amd64.deb \
+    && rm -rf /var/lib/apt/lists/* \
     && rm quarto-linux-amd64.deb
-
 
 ### Install Pro Drivers ###
 RUN apt-get update \
@@ -146,13 +150,6 @@ RUN mkdir -p /opt/rstudio-license/ \
     && mv /opt/rstudio-license/license-manager /opt/rstudio-license/license-manager-orig \
     && rm -f /usr/lib/rstudio-server/bin/license-manager
 
-COPY --chmod=755 license-manager-shim /opt/rstudio-license/license-manager
-COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
-COPY startup-launcher/* /startup/launcher/
-COPY startup-user-provisioning/* /startup/user-provisioning/
-COPY startup/* /startup/base/
-COPY supervisord.conf /etc/supervisor/supervisord.conf
-
 ### Install Jupyter and extensions ###
 RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyter \
     && /opt/python/jupyter/bin/pip install \
@@ -169,20 +166,30 @@ RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyt
     && /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter \
     && /opt/python/jupyter/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter \
     && /opt/python/jupyter/bin/python -m ipykernel install --name py${PYTHON_VERSION} --display-name "Python ${PYTHON_VERSION}" \
-    && /opt/python/jupyter/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}"
+    && /opt/python/jupyter/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}" \
+    && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip cache purge \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip cache purge
 
 RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh \
     && chmod +x /usr/local/bin/wait-for-it.sh
-
-COPY --chmod=600 sssd.conf /etc/sssd/sssd.conf
-COPY conf/* /etc/rstudio/
-COPY --chmod=600 conf/launcher.p* /etc/rstudio
 
 RUN mkdir -p /var/lib/rstudio-server/monitor/log \
     && chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor \
     && mkdir -p /startup/custom/ \
     && printf '\n# allow home directory creation\nsession required pam_mkhomedir.so skel=/etc/skel umask=0022' >> /etc/pam.d/common-session
 
+COPY --chmod=755 TurboActivate.dat /opt/rstudio-license/license-manager.conf
+COPY --chmod=755 license-manager-shim /opt/rstudio-license/license-manager
+COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
+COPY startup-launcher/* /startup/launcher/
+COPY startup-user-provisioning/* /startup/user-provisioning/
+COPY startup/* /startup/base/
+COPY supervisord.conf /etc/supervisor/supervisord.conf
+COPY --chmod=600 sssd.conf /etc/sssd/sssd.conf
+COPY conf/* /etc/rstudio/
+COPY --chmod=600 conf/launcher.p* /etc/rstudio
+
+# GCW specific
 COPY --chmod=755 workstation-startup/* /etc/workstation-startup.d/
 COPY --chmod=644 jupyter/jupyter_notebook_config.json /opt/python/jupyter/etc/jupyter/jupyter_notebook_config.json
 
