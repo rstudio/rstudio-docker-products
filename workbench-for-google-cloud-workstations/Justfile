@@ -74,7 +74,7 @@ test-i TAG=`just _make-default-tag`:
 # Run Workbench - just RSW_LICENSE="<RSW license>" run rstudio/r-session-complete:ubuntu1804-2022.07.2-576.pro12
 run TAG=`just _make-default-tag` CMD="":
   #!/usr/bin/env bash
-  set -euxo pipefail
+  set -euo pipefail
   if [ -z "{{ RSW_LICENSE }}" ] && [ -z "{{ RSW_LICENSE_SERVER }}" ]; then
     echo "Please set RSW_LICENSE or RSW_LICENSE_SERVER before running."
     exit 1
