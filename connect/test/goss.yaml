@@ -12,6 +12,8 @@ group:
 package:
   rstudio-connect:
     installed: true
+  cracklib-runtime:
+    installed: true
 
 port:
   tcp6:3939:
@@ -46,6 +48,9 @@ file:
     exists: true
     contains:
     - "!Error: Couldn't read configuration file "
+  # Check that `cracklib-runtime` is present so `chpasswd` works
+  /var/cache/cracklib/cracklib_dict.pwd:
+    exists: true
 
 # Check product version
 command:
