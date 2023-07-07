@@ -3,6 +3,7 @@
 - WARNING: Refactor image to build _FROM_ the new `product-base` image, this could be potentially breaking for some 
   users.
   - The following packages have been removed from the image: `gdebi-core`, `libsm6`, `libxext6`, and `libxrender1`.
+- The [Posit Professional Drivers](https://docs.posit.co/pro-drivers/) are now included by default in the image.
 
 # 2023-04-26
 

@@ -66,7 +66,8 @@ This container includes:
 
 1. Two versions of R
 2. Two versions of Python
-3. RStudio Connect
+3. Posit Professional Drivers
+4. RStudio Connect
 
 Note that running the RStudio Connect Docker image requires the container to run using the `--privileged` flag and a
 valid RStudio Connect license.

@@ -141,9 +141,9 @@ build-release $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`git 
   elif [[ $PRODUCT == "connect" ]]; then
     SHORT_NAME="RSC"
     if [[ $BRANCH == "main" ]]; then
-      SRC_IMAGE_NAME="product-base"
+      SRC_IMAGE_NAME="product-base-pro"
     else
-      SRC_IMAGE_NAME="product-base-dev"
+      SRC_IMAGE_NAME="product-base-pro-dev"
     fi
   elif [[ $PRODUCT == "package-manager" ]]; then
     SHORT_NAME="RSPM"
