@@ -92,6 +92,7 @@ jobs:
           password: ${{ secrets.BUILD_PAT }}
 
       - name: Push image(s) to registries
+        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' }}
         run: |
           just -f ci.Justfile push-images ${{ steps.build-base-image.outputs.TAGS }}
 
@@ -182,6 +183,7 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Push image(s) to registries
+        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' }}
         run: |
           just -f ci.Justfile push-images ${{ steps.build-pro-image.outputs.TAGS }}
 
