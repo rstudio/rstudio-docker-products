@@ -17,6 +17,7 @@ RUN apt-get update --fix-missing  \
         apt-transport-https \
         ca-certificates \
         cmake \
+        cracklib-runtime \
         curl \
         default-jdk \
         dirmngr \
