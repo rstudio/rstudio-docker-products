@@ -1,3 +1,8 @@
+# 2023-07-07
+
+- WARNING: Refactor image to build _FROM_ the new `product-base` image, this could be potentially breaking for some 
+  users.
+
 # 2023-04-26
 
 - Add Quarto 1.3.340 to the Ubuntu 18.04 and Ubuntu 22.04 images.
