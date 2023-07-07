@@ -1,7 +1,7 @@
-# 2022-06-27
+# 2023-07-07
 
 - WARNING: Refactor image to build _FROM_ the new `product-base` image, this could be potentially breaking for some 
-  users
+  users.
 
 # 2023-04-26
 
