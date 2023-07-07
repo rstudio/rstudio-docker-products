@@ -4,6 +4,8 @@ package:
   {{if .Env.OS | regexMatch "ubuntu.*"}}
   gpg:
     installed: true
+  cracklib-runtime:
+    installed: true
   {{end}}
   {{if .Env.OS | regexMatch "centos.*"}}
   epel-release:
@@ -25,6 +27,11 @@ file:
     exists: true
   /opt/quarto/{{.Env.QUARTO_VERSION}}/bin/quarto:
     exists: true
+  {{if .Env.OS | regexMatch "ubuntu.*"}}
+  # Check that `cracklib-runtime` is present so `chpasswd` works
+  /var/cache/cracklib/cracklib_dict.pwd:
+    exists: true
+  {{end}}
 
 command:
 # Ensure correct R version
