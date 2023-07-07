@@ -37,7 +37,7 @@ _get-default-tag PRODUCT OS:
   echo "{{ REGISTRY_NAMESPACE }}/${IMAGE_PREFIX}{{ PRODUCT }}:{{ OS }}"
 
 # just BUILDX_PATH=~/.buildx build-base ubuntu1804 base
-build-base $OS $TYPE="base":
+build-base $OS $TYPE="base" $BRANCH=`git branch --show`:
   #!/usr/bin/env bash
   set -euxo pipefail
 
@@ -47,12 +47,18 @@ build-base $OS $TYPE="base":
   # set short name
   if [[ $TYPE == "base" || $TYPE == "product-base" ]]; then
     IMAGE_NAME="product-base"
+    SRC_IMAGE_NAME=""
     CTX_PATH="./product/base"
     FILE_PATH="./product/base/Dockerfile.${OS}"
   elif [[ $TYPE == "base-pro" || $TYPE == "pro" || $TYPE == "product-base-pro" ]]; then
     IMAGE_NAME="product-base-pro"
+    SRC_IMAGE_NAME="product-base"
     CTX_PATH="./product/pro"
     FILE_PATH="./product/pro/Dockerfile.${OS}"
+  fi
+  if [[ $BRANCH != "main" ]]; then
+    IMAGE_NAME="${IMAGE_NAME}-dev"
+    SRC_IMAGE_NAME="${SRC_IMAGE_NAME}-dev"
   fi
 
   if [[ "${OS}" == "centos7" ]]; then
@@ -78,6 +84,7 @@ build-base $OS $TYPE="base":
     --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
     --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
     --build-arg DRIVERS_VERSION="${_DRIVERS_VERSION}" \
+    --build-arg SRC_IMAGE_NAME="${SRC_IMAGE_NAME}" \
     --file "${FILE_PATH}" "${CTX_PATH}"
 
   #  echo rstudio/${IMAGE_NAME}:${OS} \
@@ -92,16 +99,22 @@ build-base $OS $TYPE="base":
     ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}
 
 # just BUILDX_PATH=~/.buildx test-base ubuntu1804 base
-test-base $OS $TYPE="base":
+test-base $OS $TYPE="base" $BRANCH=`git branch --show`:
   #!/usr/bin/env bash
   set -euxo pipefail
 
   # set short name
   if [[ $TYPE == "base" ]]; then
     IMAGE_NAME="product-base"
+    if [[ $BRANCH != "main" ]]; then
+      IMAGE_NAME="${IMAGE_NAME}-dev"
+    fi
     just IMAGE_OS="${OS}" R_VERSION={{R_VERSION}} R_VERSION_ALT={{R_VERSION_ALT}} PYTHON_VERSION={{PYTHON_VERSION}} PYTHON_VERSION_ALT={{PYTHON_VERSION_ALT}} product/base/test ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}
   elif [[ $TYPE == "base-pro" || $TYPE == "pro" ]]; then
     IMAGE_NAME="product-base-pro"
+    if [[ $BRANCH != "main" ]]; then
+      IMAGE_NAME="${IMAGE_NAME}-dev"
+    fi
     just IMAGE_OS="${OS}" R_VERSION={{R_VERSION}} R_VERSION_ALT={{R_VERSION_ALT}} PYTHON_VERSION={{PYTHON_VERSION}} PYTHON_VERSION_ALT={{PYTHON_VERSION_ALT}} product/pro/test ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}
   fi
 
@@ -116,11 +129,22 @@ build-release $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`git 
   SHORT_NAME=""
   TAG_CLEAN_VERSION=`just _get-clean-version $VERSION`
 
-  # set short name
+  # set short name and source image name
+  SRC_IMAGE_NAME=""
   if [[ $PRODUCT == "workbench" || $PRODUCT == "r-session-complete" || $PRODUCT == "workbench-for-microsoft-azure-ml" ]]; then
     SHORT_NAME="RSW"
+    if [[ $BRANCH == "main" ]]; then
+      SRC_IMAGE_NAME="product-base-pro"
+    else
+      SRC_IMAGE_NAME="product-base-pro-dev"
+    fi
   elif [[ $PRODUCT == "connect" ]]; then
     SHORT_NAME="RSC"
+    if [[ $BRANCH == "main" ]]; then
+      SRC_IMAGE_NAME="product-base-pro"
+    else
+      SRC_IMAGE_NAME="product-base-pro-dev"
+    fi
   elif [[ $PRODUCT == "package-manager" ]]; then
     SHORT_NAME="RSPM"
   fi
@@ -159,6 +183,7 @@ build-release $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`git 
         --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
         --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
         --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
+        --build-arg SRC_IMAGE_NAME="${SRC_IMAGE_NAME}" \
         --file=./${PRODUCT}/Dockerfile.$(just _parse-os ${OS}) ${PRODUCT}
 
   echo ${tag_array[*]//-t/}
@@ -184,10 +209,21 @@ build-preview $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
   fi
 
   # set short name
+  SRC_IMAGE_NAME=""
   if [[ $PRODUCT == "workbench" || $PRODUCT == "r-session-complete" || $PRODUCT == "workbench-for-microsoft-azure-ml" ]]; then
     SHORT_NAME="RSW"
+    if [[ $BRANCH == "main" ]]; then
+      SRC_IMAGE_NAME="product-base-pro"
+    else
+      SRC_IMAGE_NAME="product-base-pro-dev"
+    fi
   elif [[ $PRODUCT == "connect" || $PRODUCT == "connect-content-init" ]]; then
     SHORT_NAME="RSC"
+    if [[ $BRANCH == "main" ]]; then
+      SRC_IMAGE_NAME="product-base"
+    else
+      SRC_IMAGE_NAME="product-base-dev"
+    fi
   elif [[ $PRODUCT == "package-manager" ]]; then
     SHORT_NAME="RSPM"
   fi
@@ -226,6 +262,7 @@ build-preview $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
         --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
         --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
         --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
+        --build-arg SRC_IMAGE_NAME="${SRC_IMAGE_NAME}" \
         --file=./${PRODUCT}/Dockerfile.$(just _parse-os ${OS}) ${PRODUCT}
 
   # These tags are propogated forward to test-images and push-images in builds. It is important that these tags match the build tags above.

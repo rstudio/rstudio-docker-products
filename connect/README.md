@@ -7,8 +7,8 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`2023.05.0`, `bionic`, `ubuntu1804`, `bionic-2023.05.0`, `ubuntu1804-2023.05.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.bionic)
-* [`jammy`, `ubuntu2204`, `jammy-2023.05.0`, `ubuntu2204-2023.05.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.jammy)
+* [`2023.06.0`, `bionic`, `ubuntu1804`, `bionic-2023.06.0`, `ubuntu1804-2023.06.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.bionic)
+* [`jammy`, `ubuntu2204`, `jammy-2023.06.0`, `ubuntu2204-2023.06.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.jammy)
 
 # What is RStudio Connect?
 
@@ -66,7 +66,8 @@ This container includes:
 
 1. Two versions of R
 2. Two versions of Python
-3. RStudio Connect
+3. Posit Professional Drivers
+4. RStudio Connect
 
 Note that running the RStudio Connect Docker image requires the container to run using the `--privileged` flag and a
 valid RStudio Connect license.
