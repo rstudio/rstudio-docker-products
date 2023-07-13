@@ -4,7 +4,7 @@ BUILDX_PATH := ""
 
 IMAGE_PREFIX := "rstudio-"
 PRODUCT := "connect"
-IMAGE_OS := "ubuntu1804"
+IMAGE_OS := "ubuntu2204"
 
 RSC_VERSION := "2023.06.0"
 RSC_LICENSE := ""
@@ -21,7 +21,7 @@ PERSIST_LICENSE_DIR := join(justfile_directory(), "tmp-lic")
 
 DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":" + IMAGE_OS + "-" + RSC_VERSION
 
-# Build Connect image - just build ubuntu1804 2022.10.0 rstudio/rstudio-connect:ubuntu1804-2022.10.0
+# Build Connect image - just build ubuntu2204 2022.10.0 rstudio/rstudio-connect:ubuntu2204-2022.10.0
 build OS=IMAGE_OS VERSION=RSC_VERSION +TAGS=DEFAULT_TAG:
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -44,7 +44,7 @@ build OS=IMAGE_OS VERSION=RSC_VERSION +TAGS=DEFAULT_TAG:
     --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
     --file=./Dockerfile.$(just -f ../Justfile _parse-os {{OS}}) .
 
-# Test Connect image - just test rstudio/rstudio-connect:ubuntu1804-2022.10.0 2022.10.0
+# Test Connect image - just test rstudio/rstudio-connect:ubuntu2204-2022.10.0 2022.10.0
 test TAG=DEFAULT_TAG VERSION=RSC_VERSION CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -58,11 +58,11 @@ test TAG=DEFAULT_TAG VERSION=RSC_VERSION CMD="":
   PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
   docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
 
-# Test Connect image interactively - just test-i rstudio/rstudio-connect:ubuntu1804-2022.10.0 2022.10.0
+# Test Connect image interactively - just test-i rstudio/rstudio-connect:ubuntu2204-2022.10.0 2022.10.0
 test-i TAG=DEFAULT_TAG VERSION=RSC_VERSION:
   just test {{ TAG }} {{ VERSION }} bash
 
-# Run Connect - just RSC_LICENSE="<RSC license>" run rstudio/rstudio-connect:ubuntu1804-2022.10.0
+# Run Connect - just RSC_LICENSE="<RSC license>" run rstudio/rstudio-connect:ubuntu2204-2022.10.0
 run TAG=DEFAULT_TAG CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail

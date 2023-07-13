@@ -4,7 +4,7 @@ BUILDX_PATH := ""
 
 IMAGE_PREFIX := "rstudio-"
 PRODUCT := "connect-content-init"
-IMAGE_OS := "ubuntu1804"
+IMAGE_OS := "ubuntu2204"
 
 RSC_VERSION := "2023.06.0"
 RSC_TAG_SAFE_VERSION := replace(RSC_VERSION, "+", "-")
@@ -18,7 +18,7 @@ PYTHON_VERSION_ALT := "3.8.10"
 
 DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":" + IMAGE_OS + "-" + RSC_TAG_SAFE_VERSION
 
-# Build Connect content init image - just build ubuntu1804 2022.10.0 rstudio/rstudio-connect-content-init:ubuntu1804-2022.10.0
+# Build Connect content init image - just build ubuntu2204 2022.10.0 rstudio/rstudio-connect-content-init:ubuntu2204-2022.10.0
 build OS=IMAGE_OS VERSION=RSC_VERSION +TAGS=DEFAULT_TAG:
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -37,7 +37,7 @@ build OS=IMAGE_OS VERSION=RSC_VERSION +TAGS=DEFAULT_TAG:
     --build-arg RSC_VERSION="{{ VERSION }}" \
     --file=./Dockerfile.$(just -f ../Justfile _parse-os {{OS}}) .
 
-# Test Connect content init image - just test rstudio/rstudio-connect:ubuntu1804-2022.10.0 2022.10.0
+# Test Connect content init image - just test rstudio/rstudio-connect:ubuntu2204-2022.10.0 2022.10.0
 test TAG=DEFAULT_TAG VERSION=RSC_VERSION CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -45,6 +45,6 @@ test TAG=DEFAULT_TAG VERSION=RSC_VERSION CMD="":
   RSC_VERSION="{{ VERSION }}" \
   docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
 
-# Test Connect content init image interactively - just test-i rstudio/rstudio-connect:ubuntu1804-2022.10.0 2022.10.0
+# Test Connect content init image interactively - just test-i rstudio/rstudio-connect:ubuntu2204-2022.10.0 2022.10.0
 test-i TAG=DEFAULT_TAG VERSION=RSC_VERSION:
   just test {{ TAG }} {{ VERSION }} bash

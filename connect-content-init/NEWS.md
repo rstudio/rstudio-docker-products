@@ -1,3 +1,7 @@
+# 2023-07-12
+
+- BREAKING: Deprecate the Ubuntu 18.04 (Bionic Beaver) images.
+
 # 2021.08.0
 
 - WARNING: this Dockerfile now only works with `YYYY.MM.PATCH` (this is because

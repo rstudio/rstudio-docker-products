@@ -9,8 +9,7 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`2023.06.0`, `bionic`, `ubuntu1804`, `bionic-2023.06.0`, `ubuntu1804-2023.06.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.bionic)
-* [`jammy`, `ubuntu2204`, `jammy-2023.06.0`, `ubuntu2204-2023.06.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.jammy)
+* [`jammy`, `ubuntu2204`, `jammy-2023.06.0`, `ubuntu2204-2023.06.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.2204)
 
 # RStudio Connect Content Init Container
 
@@ -32,7 +31,7 @@ The version of the release package to use can be overridden with the
 `RSC_VERSION` build arg.
 
 ```console
-just build ubuntu1804 2023.06.0
+just build ubuntu2204 2023.06.0
 ```
 
 ## Testing
