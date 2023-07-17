@@ -1,3 +1,7 @@
+# 2023-07-10
+
+- BREAKING: Deprecate the Ubuntu 18.04 (Bionic Beaver) images.
+
 # 2023-07-07
 
 - WARNING: Refactor image to build _FROM_ the new `product-base` image, this could be potentially breaking for some 

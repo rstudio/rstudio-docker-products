@@ -8,9 +8,9 @@ BUILDX_PATH := ""
 
 RSC_VERSION := "2023.06.0"
 RSPM_VERSION := "2023.04.0-6"
-RSW_VERSION := "2023.06.0+421.pro1"
+RSW_VERSION := "2023.06.1+524.pro1"
 
-DRIVERS_VERSION := "2022.11.0"
+DRIVERS_VERSION := "2023.05.0"
 DRIVERS_VERSION_RHEL := DRIVERS_VERSION + "-1"
 
 R_VERSION := "3.6.2"
@@ -225,7 +225,8 @@ update-drivers-versions:
   set -euxo pipefail
   sed {{ sed_vars }} "s/\"drivers\": \".[^\,\}]*\"/\"drivers\": \"{{ DRIVERS_VERSION }}\"/g" content/matrix.json
   sed {{ sed_vars }} "s/DRIVERS_VERSION=.*/DRIVERS_VERSION={{ DRIVERS_VERSION }}/g" \
-    workbench-for-microsoft-azure-ml/Dockerfile.ubuntu1804 \
+    workbench-for-microsoft-azure-ml/Dockerfile.ubuntu2204 \
+    content/pro/Dockerfile.ubuntu* \
     r-session-complete/Dockerfile.ubuntu* \
     product/pro/Dockerfile.ubuntu*
   sed {{ sed_vars }} "s/DRIVERS_VERSION=.*/DRIVERS_VERSION={{ DRIVERS_VERSION_RHEL }}/g" \
@@ -236,7 +237,7 @@ update-drivers-versions:
     content/pro/Justfile \
     r-session-complete/Justfile \
     product/pro/Justfile \
-    Justfile
+    ci.Justfile
 
 # just test-image preview workbench 12.0.11-8 tag1 tag2 tag3 ...
 test-image $PRODUCT $VERSION +IMAGES:

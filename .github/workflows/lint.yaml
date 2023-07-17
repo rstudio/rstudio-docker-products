@@ -23,9 +23,7 @@ jobs:
           - {product: 'product/pro', os: 'ubuntu2204'}
           - {product: 'product/pro', os: 'centos7'}
           - {product: 'workbench', os: 'ubuntu2204'}
-          - {product: 'connect', os: 'ubuntu1804'}
           - {product: 'connect', os: 'ubuntu2204'}
-          - {product: 'connect-content-init', os: 'ubuntu1804'}
           - {product: 'connect-content-init', os: 'ubuntu2204'}
           - {product: 'package-manager', os: 'ubuntu1804'}
           - {product: 'package-manager', os: 'ubuntu2204'}
