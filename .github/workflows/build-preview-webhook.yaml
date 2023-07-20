@@ -8,7 +8,7 @@ on:
       os:
         description: "Which os to build. Default 'bionic'. Options: 'bionic|ubuntu1804', 'jammy|ubuntu2204', 'centos7'"
         required: true
-        default: "bionic"
+        default: "ubuntu2204"
         type: string
       type:
         description: "Which build type. Default 'preview'. Options: 'preview', 'daily'"
