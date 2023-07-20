@@ -57,11 +57,17 @@ jobs:
           echo "IMAGE_TAGS=$IMAGE_TAGS" >> $GITHUB_OUTPUT
 
       - name: Build/Test/Scan/Push base image
-        uses: ./.github/workflows/generic-build-test-scan-push.yaml
+        uses: ./.github/actions/build-test-scan-push
         with:
           context: ./product/base
           os: ${{ matrix.os }}
+          product: base
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
+          snyk-token: ${{ secrets.SNYK_TOKEN }}
+          snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
+          ghcr-token: ${{ secrets.BUILD_PAT }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
 
 
