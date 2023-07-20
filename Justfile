@@ -13,11 +13,11 @@ RSW_VERSION := "2023.06.1+524.pro1"
 DRIVERS_VERSION := "2023.05.0"
 DRIVERS_VERSION_RHEL := DRIVERS_VERSION + "-1"
 
-R_VERSION := "3.6.2"
-R_VERSION_ALT := "4.1.0"
+R_VERSION := "4.2.3"
+R_VERSION_ALT := "4.1.3"
 
-PYTHON_VERSION := "3.9.5"
-PYTHON_VERSION_ALT := "3.8.10"
+PYTHON_VERSION := "3.9.17"
+PYTHON_VERSION_ALT := "3.8.17"
 
 # just _get-tag-safe-version 2022.07.2+576.pro12
 _get-tag-safe-version $VERSION:
@@ -134,8 +134,6 @@ update-rsc-versions:
   set -euxo pipefail
   sed {{ sed_vars }} "s/RSC_VERSION=.*/RSC_VERSION={{ RSC_VERSION }}/g" \
     connect/.env \
-    connect/Dockerfile.ubuntu1804 \
-    connect-content-init/Dockerfile.ubuntu1804 \
     connect/Dockerfile.ubuntu2204 \
     connect-content-init/Dockerfile.ubuntu2204
   sed {{ sed_vars }} "s/RSC_VERSION:.*/RSC_VERSION: {{ RSC_VERSION }}/g" docker-compose.yml
@@ -157,7 +155,6 @@ update-r-versions:
     workbench/.env \
     connect/.env \
     package-manager/.env \
-    connect/Dockerfile.ubuntu1804 \
     package-manager/Dockerfile.ubuntu1804 \
     workbench/Dockerfile.ubuntu2204 \
     connect/Dockerfile.ubuntu2204 \
@@ -174,7 +171,6 @@ update-r-versions:
   sed {{ sed_vars }} "s/^R_VERSION_ALT=.*/R_VERSION_ALT={{ R_VERSION_ALT }}/g" \
     workbench/.env \
     connect/.env \
-    connect/Dockerfile.ubuntu1804 \
     workbench/Dockerfile.ubuntu2204 \
     connect/Dockerfile.ubuntu2204
   sed {{ sed_vars }} "s/^R_VERSION_ALT := .*/R_VERSION_ALT := \"{{ R_VERSION_ALT }}\"/g" \
@@ -192,7 +188,6 @@ update-py-versions:
   sed {{ sed_vars }} "s/^PYTHON_VERSION=.*/PYTHON_VERSION={{ PYTHON_VERSION }}/g" \
     workbench/Dockerfile.ubuntu2204 \
     workbench/.env \
-    connect/Dockerfile.ubuntu1804 \
     connect/Dockerfile.ubuntu2204 \
     connect/.env \
     package-manager/Dockerfile.ubuntu1804 \
@@ -209,7 +204,6 @@ update-py-versions:
   sed {{ sed_vars }} "s/^PYTHON_VERSION_ALT=.*/PYTHON_VERSION_ALT={{ PYTHON_VERSION_ALT }}/g" \
     workbench/Dockerfile.ubuntu2204 \
     workbench/.env \
-    connect/Dockerfile.ubuntu1804 \
     connect/Dockerfile.ubuntu2204 \
     connect/.env
   sed {{ sed_vars }} "s/^PYTHON_VERSION_ALT := .*/PYTHON_VERSION_ALT := \"{{ PYTHON_VERSION_ALT }}\"/g" \
