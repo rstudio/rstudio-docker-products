@@ -85,15 +85,13 @@ runs:
         tags: ${{ inputs.image-tags }}
 
     - name: Get first tag
+      shell: bash
       id: first-tag
       run: |
         echo "FIRST_TAG=$(cut -d " " -f 1 <<< $IMAGE_TAGS)" >> $GITHUB_OUTPUT
 
     - name: Test
-      env:
-        RSC_LICENSE: ${{ secrets.RSC_LICENSE }}
-        RSPM_LICENSE: ${{ secrets.RSPM_LICENSE }}
-        RSW_LICENSE: ${{ secrets.RSW_LICENSE }}
+      shell: bash
       if: ${{ inputs.test-image }}
       run: |
         ${{ inputs.build-args }} IMAGE_NAME=${{ steps.first-tag.FIRST_TAG }} docker-compose -f ${{ inputs.context }}/docker-compose.test.yml run sut
@@ -103,7 +101,7 @@ runs:
       continue-on-error: true
       uses: snyk/actions/docker@master
       env:
-        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        SNYK_TOKEN: ${{ inputs.snyk-token }}
       with:
         image: ${{ steps.first-tag.FIRST_TAG }}
         args: |
@@ -125,7 +123,7 @@ runs:
         image: ${{ steps.first-tag.FIRST_TAG }}
         args: |
           --file=${{ inputs.context }}/Dockerfile.${{ inputs.os }} \
-          --org=${{ secrets.SNYK_ORG_ID }} \
+          --org=${{ inputs.snyk-org-id }} \
           --project-name=${{ steps.get-default-tag.outputs.DEFAULT_TAG }} \
           --tags=product=${{ inputs.product }},os=${{ inputs.os }} \
           --exclude-base-image-vulns \
