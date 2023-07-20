@@ -111,7 +111,6 @@ get-base-args $OS $TYPE="base" $BRANCH=`git branch --show`:
     FILE_PATH="./product/pro/Dockerfile.${OS}"
   fi
   if [[ $BRANCH != "main" ]]; then
-    IMAGE_NAME="${IMAGE_NAME}-dev"
     SRC_IMAGE_NAME="${SRC_IMAGE_NAME}-dev"
   fi
 
@@ -130,6 +129,7 @@ get-base-args $OS $TYPE="base" $BRANCH=`git branch --show`:
 get-base-tags $OS $TYPE="base" $BRANCH=`git branch --show`:
   #!/usr/bin/env bash
   set -euxo pipefail
+  IMAGE_NAME=""
   if [[ $TYPE == "base" || $TYPE == "product-base" ]]; then
     IMAGE_NAME="product-base"
   elif [[ $TYPE == "base-pro" || $TYPE == "pro" || $TYPE == "product-base-pro" ]]; then
