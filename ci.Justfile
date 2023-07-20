@@ -98,6 +98,51 @@ build-base $OS $TYPE="base" $BRANCH=`git branch --show`:
     ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}-py{{PYTHON_VERSION}} \
     ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}
 
+get-base-args $OS $TYPE="base" $BRANCH=`git branch --show`:
+  #!/usr/bin/env bash
+  set -euxo pipefail
+  if [[ $TYPE == "base" || $TYPE == "product-base" ]]; then
+    SRC_IMAGE_NAME=""
+    CTX_PATH="./product/base"
+    FILE_PATH="./product/base/Dockerfile.${OS}"
+  elif [[ $TYPE == "base-pro" || $TYPE == "pro" || $TYPE == "product-base-pro" ]]; then
+    SRC_IMAGE_NAME="product-base"
+    CTX_PATH="./product/pro"
+    FILE_PATH="./product/pro/Dockerfile.${OS}"
+  fi
+  if [[ $BRANCH != "main" ]]; then
+    IMAGE_NAME="${IMAGE_NAME}-dev"
+    SRC_IMAGE_NAME="${SRC_IMAGE_NAME}-dev"
+  fi
+
+  if [[ "${OS}" == "centos7" ]]; then
+    _DRIVERS_VERSION="{{ DRIVERS_VERSION_RHEL }}"
+  else
+    _DRIVERS_VERSION="{{ DRIVERS_VERSION }}"
+  fi
+  echo R_VERSION="{{ R_VERSION }}" \
+    R_VERSION_ALT="{{ R_VERSION_ALT }}" \
+    PYTHON_VERSION="{{ PYTHON_VERSION }}" \
+    PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
+    DRIVERS_VERSION="${_DRIVERS_VERSION}" \
+    SRC_IMAGE_NAME="${SRC_IMAGE_NAME}"
+
+get-base-tags $OS $TYPE="base" $BRANCH=`git branch --show`:
+  #!/usr/bin/env bash
+  set -euxo pipefail
+  if [[ $TYPE == "base" || $TYPE == "product-base" ]]; then
+    IMAGE_NAME="product-base"
+  elif [[ $TYPE == "base-pro" || $TYPE == "pro" || $TYPE == "product-base-pro" ]]; then
+    IMAGE_NAME="product-base-pro"
+  fi
+  if [[ $BRANCH != "main" ]]; then
+    IMAGE_NAME="${IMAGE_NAME}-dev"
+  fi
+
+  echo ghcr.io/rstudio/${IMAGE_NAME}:${OS} \
+    ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}-py{{PYTHON_VERSION}} \
+    ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}
+
 # just BUILDX_PATH=~/.buildx test-base ubuntu1804 base
 test-base $OS $TYPE="base" $BRANCH=`git branch --show`:
   #!/usr/bin/env bash
