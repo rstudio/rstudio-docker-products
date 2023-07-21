@@ -22,7 +22,7 @@ package:
   rstudio-drivers:
     installed: true
     versions:
-      - "{{ .Env.DRIVERS_VERSION }}"
+      - {{ trimSuffix "-1" .Env.DRIVERS_VERSION }}  # RHEL driver doesn't print the "-1" suffix in the package name
 
 file:
   /opt/R/{{.Env.R_VERSION}}/bin/R:
