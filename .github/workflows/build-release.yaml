@@ -33,6 +33,7 @@ jobs:
       - name: Get build args
         id: get-build-args
         run: |
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           BUILD_ARGS=$( \
               just -f ci.Justfile \
               R_VERSION=${{ matrix.lang.r-primary }} \
@@ -41,7 +42,9 @@ jobs:
               PYTHON_VERSION_ALT=${{ matrix.lang.py-alternate }} \
               get-base-args ${{ matrix.os }} base \
           )
-          echo "BUILD_ARGS=\"${BUILD_ARGS}\"" >> $GITHUB_OUTPUT
+          echo "BUILD_ARGS<<$EOF" >> $GITHUB_OUTPUT
+          echo "$BUILD_ARGS" >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
 
       - name: echo args
         shell: bash
