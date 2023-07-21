@@ -12,6 +12,8 @@ PYTHON_VERSION_ALT := "3.8.17"
 DRIVERS_VERSION := "2023.05.0"
 DRIVERS_VERSION_RHEL := DRIVERS_VERSION + "-1"
 
+QUARTO_VERSION := "1.3.340"
+
 # just BUILDX_PATH=~/.buildx build-release workbench bionic 12.0.11-11
 _get-os-alias OS:
   #!/usr/bin/env bash
@@ -123,6 +125,7 @@ get-base-args $OS $TYPE="base" $BRANCH=`git branch --show`:
   R_VERSION_ALT={{ R_VERSION_ALT }}
   PYTHON_VERSION={{ PYTHON_VERSION }}
   PYTHON_VERSION_ALT={{ PYTHON_VERSION_ALT }}
+  QUARTO_VERSION={{ QUARTO_VERSION }}
   DRIVERS_VERSION=${_DRIVERS_VERSION}
   SRC_IMAGE_NAME=${SRC_IMAGE_NAME}"
 

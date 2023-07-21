@@ -19,6 +19,8 @@ R_VERSION_ALT := "4.1.3"
 PYTHON_VERSION := "3.9.17"
 PYTHON_VERSION_ALT := "3.8.17"
 
+QUARTO_VERSION := "1.3.340"
+
 # just _get-tag-safe-version 2022.07.2+576.pro12
 _get-tag-safe-version $VERSION:
   #!/usr/bin/env bash
@@ -88,7 +90,8 @@ update-versions:
     PYTHON_VERSION={{PYTHON_VERSION}} \
     PYTHON_VERSION_ALT={{PYTHON_VERSION_ALT}} \
     DRIVERS_VERSION={{DRIVERS_VERSION}} \
-    update-rsw-versions update-rspm-versions update-rsc-versions update-r-versions update-py-versions update-drivers-versions
+    QUARTO_VERSION={{QUARTO_VERSION}} \
+    update-rsw-versions update-rspm-versions update-rsc-versions update-r-versions update-py-versions update-drivers-versions update-quarto-versions
 
 # just RSW_VERSION=1.2.3 update-rsw-versions
 update-rsw-versions:
@@ -232,6 +235,23 @@ update-drivers-versions:
     r-session-complete/Justfile \
     product/pro/Justfile \
     ci.Justfile
+
+update-quarto-versions:
+  #!/usr/bin/env bash
+  set -euxo pipefail
+  sed {{ sed_vars }} "s/^QUARTO_VERSION := .*/QUARTO_VERSION := \"{{ QUARTO_VERSION }}\"/g" \
+    content/base/Justfile \
+    product/base/Justfile \
+    ci.Justfile \
+    Justfile
+  sed {{ sed_vars }} "s/^QUARTO_VERSION=.*/QUARTO_VERSION={{ QUARTO_VERSION }}/g" \
+    content/base/Dockerfile* \
+    product/base/Dockerfile*
+  sed {{ sed_vars }} "s/^Executable = \/opt\/quarto\/.*\/bin\/quarto/Executable = \/opt\/quarto\/{{ QUARTO_VERSION }}\/bin\/quarto/g" \
+    connect/rstudio-connect.gcfg
+  sed {{ sed_vars }} "s/qver=\${QUARTO_VERSION:-.*}/qver=\${QUARTO_VERSION:-{{ QUARTO_VERSION }}}/g" \
+    content/base/maybe_install_quarto.sh
+
 
 # just test-image preview workbench 12.0.11-8 tag1 tag2 tag3 ...
 test-image $PRODUCT $VERSION +IMAGES:
