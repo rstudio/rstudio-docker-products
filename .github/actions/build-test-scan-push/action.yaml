@@ -97,7 +97,8 @@ runs:
       shell: bash
       id: first-tag
       run: |
-        FIRST_TAG=$(cut -d "," -f 1 <<< $IMAGE_TAGS)
+        FIRST_TAG=$(cut -d "," -f 1 <<< "${{ inputs.image-tags }}")
+        echo "$FIRST_TAG"
         echo "FIRST_TAG=$FIRST_TAG" >> $GITHUB_OUTPUT
 
     - name: Test
@@ -105,6 +106,7 @@ runs:
       if: ${{ inputs.test-image }}
       run: |
         BUILD_ARGS_CLEAN=$(tr '\n' ' ' <<< "${{ inputs.build-args }}")
+        echo "$BUILD_ARGS_CLEAN"
         ${BUILD_ARGS_CLEAN} IMAGE_NAME=${{ steps.first-tag.outputs.FIRST_TAG }} docker-compose -f ${{ inputs.context }}/docker-compose.test.yml run sut
 
     - name: Run Snyk to check Docker image for vulnerabilities (main)
