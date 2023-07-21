@@ -97,13 +97,15 @@ runs:
       shell: bash
       id: first-tag
       run: |
-        echo "FIRST_TAG=$(cut -d " " -f 1 <<< $IMAGE_TAGS)" >> $GITHUB_OUTPUT
+        FIRST_TAG=$(cut -d "," -f 1 <<< $IMAGE_TAGS)
+        echo "FIRST_TAG=$FIRST_TAG" >> $GITHUB_OUTPUT
 
     - name: Test
       shell: bash
       if: ${{ inputs.test-image }}
       run: |
-        ${{ inputs.build-args }} IMAGE_NAME=${{ steps.first-tag.outputs.FIRST_TAG }} docker-compose -f ${{ inputs.context }}/docker-compose.test.yml run sut
+        BUILD_ARGS_CLEAN=$(tr '\n' ' ' <<< ${{ inputs.build-args }})
+        ${BUILD_ARGS_CLEAN} IMAGE_NAME=${{ steps.first-tag.outputs.FIRST_TAG }} docker-compose -f ${{ inputs.context }}/docker-compose.test.yml run sut
 
     - name: Run Snyk to check Docker image for vulnerabilities (main)
       if: ${{ github.ref == 'refs/heads/main' }} && ${{ inputs.scan-image }}
