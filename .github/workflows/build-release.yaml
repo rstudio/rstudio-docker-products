@@ -59,7 +59,7 @@ jobs:
               R_VERSION_ALT=${{ matrix.lang.r-alternate }} \
               PYTHON_VERSION=${{ matrix.lang.py-primary }} \
               PYTHON_VERSION_ALT=${{ matrix.lang.py-alternate }} \
-              get-base-tags ${{ matrix.lang.os }} base \
+              get-base-tags ${{ matrix.os }} base \
           )
           echo "IMAGE_TAGS=$IMAGE_TAGS" >> $GITHUB_OUTPUT
 
