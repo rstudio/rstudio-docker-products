@@ -76,10 +76,6 @@ runs:
         username: ${{ inputs.dockerhub-username }}
         password: ${{ inputs.dockerhub-token }}
 
-    - name: echo args
-      shell: bash
-      run: echo ${{ inputs.build-args }}
-
     - name: Build
       id: image-build
       uses: docker/build-push-action@v4
@@ -105,7 +101,7 @@ runs:
       shell: bash
       if: ${{ inputs.test-image }}
       run: |
-        ${{ inputs.build-args }} IMAGE_NAME=${{ steps.first-tag.outputs.FIRST_TAG }} docker-compose -f ${{ inputs.context }}/docker-compose.test.yml run sut
+        ${{ inputs.build-args }} OS=${{ inputs.os }} IMAGE_NAME=${{ steps.first-tag.outputs.FIRST_TAG }} docker-compose -f ${{ inputs.context }}/docker-compose.test.yml run sut
 
     - name: Run Snyk to check Docker image for vulnerabilities (main)
       if: ${{ github.ref == 'refs/heads/main' }} && ${{ inputs.scan-image }}
