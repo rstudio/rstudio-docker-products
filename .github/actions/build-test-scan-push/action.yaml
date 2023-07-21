@@ -85,7 +85,7 @@ runs:
         cache-from: type=gha
         cache-to: type=gha
         build-args: |
-          ${{ join(fromJSON(inputs.build-args), '\n') }}
+          ${{ inputs.build-args }}
         tags: ${{ inputs.image-tags }}
 
     - name: Get first tag
