@@ -41,7 +41,7 @@ jobs:
               PYTHON_VERSION_ALT=${{ matrix.lang.py-alternate }} \
               get-base-args ${{ matrix.os }} base \
           )
-          echo "BUILD_ARGS=$BUILD_ARGS" >> $GITHUB_OUTPUT
+          echo "BUILD_ARGS=\"${BUILD_ARGS}\"" >> $GITHUB_OUTPUT
 
       - name: Get tags
         id: get-tags
