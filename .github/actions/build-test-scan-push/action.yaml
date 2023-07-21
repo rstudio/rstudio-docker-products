@@ -72,6 +72,10 @@ runs:
         username: ${{ inputs.dockerhub-username }}
         password: ${{ inputs.dockerhub-token }}
 
+    - name: echo args
+      shell: bash
+      run: echo ${{ inputs.build-args }}
+
     - name: Build
       id: image-build
       uses: docker/build-push-action@v4
