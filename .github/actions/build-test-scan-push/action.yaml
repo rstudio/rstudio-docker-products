@@ -11,6 +11,10 @@ inputs:
   product:
     description: Product being built
     type: string
+  build-args:
+    description: JSON list of build args for the built image
+    required: true
+    type: string
   image-tags:
     description: List of tags for the built image
     required: true
