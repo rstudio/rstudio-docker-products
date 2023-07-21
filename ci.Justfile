@@ -139,8 +139,8 @@ get-base-tags $OS $TYPE="base" $BRANCH=`git branch --show`:
     IMAGE_NAME="${IMAGE_NAME}-dev"
   fi
 
-  echo ghcr.io/rstudio/${IMAGE_NAME}:${OS} \
-    ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}-py{{PYTHON_VERSION}} \
+  echo ghcr.io/rstudio/${IMAGE_NAME}:${OS},\
+    ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}-py{{PYTHON_VERSION}},\
     ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}
 
 # just BUILDX_PATH=~/.buildx test-base ubuntu1804 base
