@@ -234,7 +234,7 @@ get-prerelease-tags $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
   TAG_VERSION=$(just _get-tag-safe-version $VERSION)
 
   # set branch prefix
-  if [[ $BRANCH != "main" ]]; then
+  if [[ ! -z $BRANCH ]] && [[ $BRANCH != "main" ]]; then
     BRANCH_PREFIX="${BRANCH}-"
   fi
 
