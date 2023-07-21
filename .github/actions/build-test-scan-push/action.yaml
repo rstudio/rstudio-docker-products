@@ -101,7 +101,10 @@ runs:
       shell: bash
       if: ${{ inputs.test-image }}
       run: |
-        ${{ inputs.build-args }} OS=${{ inputs.os }} IMAGE_NAME=${{ steps.first-tag.outputs.FIRST_TAG }} docker-compose -f ${{ inputs.context }}/docker-compose.test.yml run sut
+        echo "${{ inputs.build-args }}" > ${{ inputs.context }}/.env
+        echo "OS=${{ inputs.os }}" >> ${{ inputs.context }}/.env
+        cat ${{ inputs.context }}/.env
+        IMAGE_NAME=${{ steps.first-tag.outputs.FIRST_TAG }} docker-compose -f ${{ inputs.context }}/docker-compose.test.yml run sut
 
     - name: Run Snyk to check Docker image for vulnerabilities (main)
       if: ${{ github.ref == 'refs/heads/main' }} && ${{ inputs.scan-image }}
