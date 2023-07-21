@@ -119,12 +119,12 @@ get-base-args $OS $TYPE="base" $BRANCH=`git branch --show`:
   else
     _DRIVERS_VERSION="{{ DRIVERS_VERSION }}"
   fi
-  printf "R_VERSION={{ R_VERSION }}
-  R_VERSION_ALT={{ R_VERSION_ALT }}
-  PYTHON_VERSION={{ PYTHON_VERSION }}
-  PYTHON_VERSION_ALT={{ PYTHON_VERSION_ALT }}
-  DRIVERS_VERSION=${_DRIVERS_VERSION}
-  SRC_IMAGE_NAME=${SRC_IMAGE_NAME}"
+  echo "[\"R_VERSION={{ R_VERSION }}\",\
+  \"R_VERSION_ALT={{ R_VERSION_ALT }}\",\
+  \"PYTHON_VERSION={{ PYTHON_VERSION }}\",\
+  \"PYTHON_VERSION_ALT={{ PYTHON_VERSION_ALT }}\",\
+  \"DRIVERS_VERSION=${_DRIVERS_VERSION}\",\
+  \"SRC_IMAGE_NAME=${SRC_IMAGE_NAME}\"]"
 
 get-base-tags $OS $TYPE="base" $BRANCH=`git branch --show`:
   #!/usr/bin/env bash
