@@ -23,6 +23,8 @@ PYTHON_VERSION_ALT_RHEL := "3.8.15"
 
 QUARTO_VERSION := "1.3.340"
 
+QUARTO_VERSION := "1.3.340"
+
 # just _get-tag-safe-version 2022.07.2+576.pro12
 _get-tag-safe-version $VERSION:
   #!/usr/bin/env bash
