@@ -63,6 +63,7 @@ jobs:
           os: ${{ matrix.os }}
           product: base
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
+          push-image: ${{ github.ref == 'refs/heads/main' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
           ghcr-token: ${{ secrets.BUILD_PAT }}

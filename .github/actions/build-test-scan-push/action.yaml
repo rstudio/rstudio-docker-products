@@ -81,7 +81,8 @@ runs:
         file: ${{ inputs.context }}/Dockerfile.${{ inputs.os }}
         cache-from: type=gha
         cache-to: type=gha
-        build-args: ${{ inputs.build-args }}
+        build-args: |
+          ${{ inputs.build-args }}
         tags: ${{ inputs.image-tags }}
 
     - name: Get first tag
