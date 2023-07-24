@@ -188,7 +188,7 @@ get-prerelease-args $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
   #!/usr/bin/env bash
   set -euxo pipefail
 
-  RSW_DOWNLOAD_URL=$(just -f ci.Justfile _get-rsw-download-url release $OS)
+  RSW_DOWNLOAD_URL=$(just -f ci.Justfile _get-rsw-download-url $TYPE $OS)
 
   if [[ $PRODUCT == "workbench" || $PRODUCT == "r-session-complete" || $PRODUCT == "workbench-for-microsoft-azure-ml" ]]; then
     SHORT_NAME="RSW"
