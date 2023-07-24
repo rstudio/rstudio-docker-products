@@ -140,11 +140,15 @@ runs:
           --app-vulns
         command: test
 
+    - name: Debug push-image
+      shell: bash
+      run: echo ${{ inputs.push-image }}
+
     - name: Build
       uses: docker/build-push-action@v4
       if: ${{ inputs.push-image }}
       with:
-        push: true
+        push: false
         context: ${{ inputs.context }}
         file: ${{ inputs.context }}/Dockerfile.${{ inputs.os }}
         cache-from: type=gha

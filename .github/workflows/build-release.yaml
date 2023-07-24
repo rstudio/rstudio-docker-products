@@ -61,6 +61,11 @@ jobs:
           )
           echo "IMAGE_TAGS=$IMAGE_TAGS" >> $GITHUB_OUTPUT
 
+      - name: Debug push-image
+        run: |
+          echo ${{ github.ref }}
+          echo ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' }}
+
       - name: Build/Test/Scan/Push base image
         uses: ./.github/actions/build-test-scan-push
         with:
@@ -69,7 +74,7 @@ jobs:
           product: product-base
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
           build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
-          push-image: ${{ github.ref == 'refs/heads/main' }} || ${{ github.ref == 'refs/heads/dev' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
           ghcr-token: ${{ secrets.BUILD_PAT }}
@@ -129,6 +134,11 @@ jobs:
           )
           echo "IMAGE_TAGS=$IMAGE_TAGS" >> $GITHUB_OUTPUT
 
+      - name: Debug push-image
+        run: |
+          echo ${{ github.ref }}
+          echo ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' }}
+
       - name: Build/Test/Scan/Push base pro image
         uses: ./.github/actions/build-test-scan-push
         with:
@@ -137,7 +147,7 @@ jobs:
           product: product-base-pro
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
           build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
-          push-image: ${{ github.ref == 'refs/heads/main' }} || ${{ github.ref == 'refs/heads/dev' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
           ghcr-token: ${{ secrets.BUILD_PAT }}
@@ -212,6 +222,11 @@ jobs:
           )
           echo "IMAGE_TAGS=$IMAGE_TAGS" >> $GITHUB_OUTPUT
 
+      - name: Debug push-image
+        run: |
+          echo ${{ github.ref }}
+          echo ${{ github.ref == 'refs/heads/main' }}
+
       - name: Build/Test/Scan/Push base pro image
         uses: ./.github/actions/build-test-scan-push
         with:
@@ -220,7 +235,7 @@ jobs:
           product: ${{ matrix.config.product }}
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
           build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
-          push-image: ${{ github.ref == 'refs/heads/main' }}
+          push-image: false
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
           ghcr-token: ${{ secrets.BUILD_PAT }}
