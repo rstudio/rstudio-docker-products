@@ -95,7 +95,7 @@ jobs:
       - name: Build/Test/Scan/Push base pro image
         uses: ./.github/actions/build-test-scan-push
         with:
-          context: ./product/pro
+          context: ./${{ matrix.config.product }}
           os: ${{ matrix.config.os }}
           product: ${{ matrix.config.product }}
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}

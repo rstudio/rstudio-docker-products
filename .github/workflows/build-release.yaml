@@ -69,7 +69,7 @@ jobs:
           product: product-base
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
           build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
-          push-image: ${{ github.ref == 'refs/heads/main' }}
+          push-image: ${{ github.ref == 'refs/heads/main' }} || ${{ github.ref == 'refs/heads/dev' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
           ghcr-token: ${{ secrets.BUILD_PAT }}
@@ -137,7 +137,7 @@ jobs:
           product: product-base-pro
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
           build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
-          push-image: ${{ github.ref == 'refs/heads/main' }}
+          push-image: ${{ github.ref == 'refs/heads/main' }} || ${{ github.ref == 'refs/heads/dev' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
           ghcr-token: ${{ secrets.BUILD_PAT }}
