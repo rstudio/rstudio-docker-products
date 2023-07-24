@@ -100,7 +100,7 @@ jobs:
           product: ${{ matrix.config.product }}
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
           build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
-          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          push-image: ${{ github.ref == 'refs/heads/main' }} || ${{ github.ref == 'refs/heads/dev' }} || ${{ github.ref == 'refs/heads/dev-rspm' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
           ghcr-token: ${{ secrets.BUILD_PAT }}

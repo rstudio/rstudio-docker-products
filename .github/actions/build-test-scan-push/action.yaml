@@ -35,7 +35,7 @@ inputs:
     type: string
   push-image:
     description: Flag to push image once built
-    default: true
+    default: false
     type: boolean
   use-ghcr:
     description: Flag to authenticate with GHCR.io
