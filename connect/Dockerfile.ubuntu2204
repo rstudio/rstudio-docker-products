@@ -9,6 +9,10 @@ LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
 
+ARG R_VERSION=4.2.0
+ARG R_VERSION_ALT=3.6.2
+ARG PYTHON_VERSION=3.9.5
+ARG PYTHON_VERSION_ALT=3.8.10
 ARG RSC_VERSION=2023.06.0
 SHELL [ "/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update --fix-missing \
@@ -30,6 +34,8 @@ EXPOSE 3939/tcp
 ENV RSC_LICENSE ""
 ENV RSC_LICENSE_SERVER ""
 COPY rstudio-connect.gcfg /etc/rstudio-connect/rstudio-connect.gcfg
+RUN sed -i "s/{{PYTHON_VERSION}}/${PYTHON_VERSION}/g" /etc/rstudio-connect/rstudio-connect.gcfg \
+    && sed -i "s/{{PYTHON_VERSION_ALT}}/${PYTHON_VERSION_ALT}/g" /etc/rstudio-connect/rstudio-connect.gcfg
 VOLUME ["/data"]
 
 ENTRYPOINT ["tini", "--"]
