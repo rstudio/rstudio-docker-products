@@ -48,11 +48,6 @@ jobs:
             PYTHON_VERSION=${{ matrix.config.py }}
           test-image: false
           push-image: ${{ github.ref == 'refs/heads/main' }}
-          snyk-token: ${{ secrets.SNYK_TOKEN }}
-          snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
-          ghcr-token: ${{ secrets.BUILD_PAT }}
-          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
   build-pro:
     runs-on: ubuntu-latest
@@ -86,8 +81,3 @@ jobs:
             BASE_IMAGE=rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
           test-image: false
           push-image: ${{ github.ref == 'refs/heads/main' }}
-          snyk-token: ${{ secrets.SNYK_TOKEN }}
-          snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
-          ghcr-token: ${{ secrets.BUILD_PAT }}
-          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}

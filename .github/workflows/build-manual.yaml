@@ -128,9 +128,3 @@ jobs:
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
           build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
           push-image: ${{ inputs.push }}
-          snyk-token: ${{ secrets.SNYK_TOKEN }}
-          snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
-          ghcr-token: ${{ secrets.BUILD_PAT }}
-          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-
