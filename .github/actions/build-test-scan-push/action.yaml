@@ -87,7 +87,7 @@ runs:
         echo "$FIRST_TAG"
         echo "FIRST_TAG=$FIRST_TAG" >> $GITHUB_OUTPUT
 
-    - name: Test
+    - name: Test - ${{ inputs.test-image }}
       shell: bash
       run: |
         if [[ "${{ inputs.test-image }}" == "true" ]]; then
@@ -108,7 +108,7 @@ runs:
         fi
         echo "SNYK_COMMAND=$SNYK_COMMAND" >> $GITHUB_OUTPUT     
 
-    - name: Run Snyk to check Docker image for vulnerabilities
+    - name: Run Snyk ${{ steps.eval-snyk-command.SNYK_COMMAND }}
       continue-on-error: true
       uses: snyk/actions/docker@master
       env:
@@ -124,11 +124,7 @@ runs:
           --app-vulns
         command: ${{ steps.eval-snyk-command.SNYK_COMMAND }}
 
-    - name: Debug push-image
-      shell: bash
-      run: echo ${{ inputs.push-image }}
-
-    - name: Build
+    - name: Push - ${{ inputs.push-image }}
       uses: docker/build-push-action@v4
       with:
         push: ${{ inputs.push-image }}
