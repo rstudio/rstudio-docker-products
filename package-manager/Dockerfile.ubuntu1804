@@ -49,8 +49,9 @@ RUN mkdir -p /var/run/rstudio-pm \
     && chown rstudio-pm:rstudio-pm /usr/local/bin/startup.sh \
     && chown -R rstudio-pm:rstudio-pm /var/run/rstudio-pm
 
-USER rstudio-pm
 COPY rstudio-pm.gcfg /etc/rstudio-pm/rstudio-pm.gcfg
+RUN sed -i "s/{{R_VERSION}}/${R_VERSION}/g" /etc/rstudio-pm/rstudio-pm.gcfg
+USER rstudio-pm
 
 # Set up licensing to work in userspace mode. This will not prevent activating a
 # license as root, but it is required to activate one as the non-root user at
