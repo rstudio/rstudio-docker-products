@@ -1,3 +1,6 @@
+# 2023-07-25
+- Changed `rstudio-connect.gcfg` Python version numbers behavior from statically defined to dynamically filled on build. 
+
 # 2023-07-10
 
 - BREAKING: Deprecate the Ubuntu 18.04 (Bionic Beaver) images.
