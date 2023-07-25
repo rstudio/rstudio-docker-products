@@ -5,9 +5,8 @@ on:
       - dev
   pull_request:
 
-name: build/push RStudio Content Images
+name: Content Images - Build, Test, Scan, and Push
 jobs:
-
   matrix:
     runs-on: ubuntu-latest
     outputs:
@@ -22,7 +21,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     needs: matrix
-    name: r${{ matrix.config.r }} py${{ matrix.config.py }} ${{ matrix.config.os }} ${{ github.ref }}
+    name: content-base-${{ matrix.config.os }}-r${{ matrix.config.r }}-py${{ matrix.config.py }}--${{ github.ref }}
 
     strategy:
       fail-fast: false
@@ -33,96 +32,31 @@ jobs:
       - name: Check Out Repo
         uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
-      - name: Build and Push
-        id: docker_build
-        uses: docker/build-push-action@v3
+      - name: Build/Test/Scan/Push content base image
+        uses: ./.github/actions/build-test-scan-push
         with:
           context: ./content/base
-          file: ./content/base/Dockerfile.${{ matrix.config.os }}
-          builder: ${{ steps.buildx.outputs.name }}
-          tags: |
-            rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
-            ghcr.io/rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
-            rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
+          os: ${{ matrix.config.os }}
+          product: content-base
+          image-tags: |
+            rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }},
+            ghcr.io/rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }},
+            rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }},
             ghcr.io/rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-          load: true
-          push: false
           build-args: |
             R_VERSION=${{ matrix.config.r }}
             PYTHON_VERSION=${{ matrix.config.py }}
-
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
-
-      - name: Show image size
-        run: |
-          docker image ls
-
-      - name: Run Snyk to check Docker image for vulnerabilities (main)
-        if: ${{ github.ref == 'refs/heads/main' }}
-        continue-on-error: true
-        uses: snyk/actions/docker@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          image: rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
-          args: --file=./content/base/Dockerfile.${{ matrix.config.os }} --org=${{ secrets.SNYK_ORG_ID }} --project-name=rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }} --tags=product=content-base,os=${{ matrix.config.os }} --app-vulns --exclude-base-image-vulns
-          command: monitor
-
-      - name: Run Snyk to check Docker image for vulnerabilities (branch)
-        if: ${{ github.ref != 'refs/heads/main' }}
-        continue-on-error: true
-        uses: snyk/actions/docker@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          image: rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
-          args: --file=./content/base/Dockerfile.${{ matrix.config.os }} --org=${{ secrets.SNYK_ORG_ID }} --project-name=rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }} --tags=product=content-base,os=${{ matrix.config.os }} --app-vulns --exclude-base-image-vulns
-          command: test
-
-      - name: Login to Docker Hub
-        if: ${{ github.ref == 'refs/heads/main' }}
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-
-      - name: Login to ghcr.io
-        if: ${{ github.ref == 'refs/heads/main' }}
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.BUILD_PAT }}
-
-      - name: Push image(s)
-        if: ${{ github.ref == 'refs/heads/main' }}
-        run: |
-          docker push rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
-          docker push ghcr.io/rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
-          docker push rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
-          docker push ghcr.io/rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
-
-
+          push-image: ${{ github.ref == 'refs/heads/main' }}
+          snyk-token: ${{ secrets.SNYK_TOKEN }}
+          snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
+          ghcr-token: ${{ secrets.BUILD_PAT }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
   build-pro:
     runs-on: ubuntu-latest
     needs: [ matrix, build ]
-    name: pro r${{ matrix.config.r }} py${{ matrix.config.py }} ${{ matrix.config.os }} ${{ github.ref }}
+    name: content-pro-${{ matrix.config.os }}-r${{ matrix.config.r }}-py${{ matrix.config.py }}--${{ github.ref }}
 
     strategy:
       fail-fast: false
@@ -133,88 +67,25 @@ jobs:
       - name: Check Out Repo
         uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
-      - name: Build and Push
-        id: docker_build
-        uses: docker/build-push-action@v3
+      - name: Build/Test/Scan/Push content pro image
+        uses: ./.github/actions/build-test-scan-push
         with:
           context: ./content/pro
-          file: ./content/pro/Dockerfile.${{ matrix.config.os }}
-          builder: ${{ steps.buildx.outputs.name }}
-          tags: |
+          os: ${{ matrix.config.os }}
+          product: content-pro
+          image-tags: |
             rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
             ghcr.io/rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
             rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
             ghcr.io/rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
-          load: true
-          push: false
           build-args: |
             R_VERSION=${{ matrix.config.r }}
             PYTHON_VERSION=${{ matrix.config.py }}
             DRIVERS_VERSION=${{ matrix.config.drivers }}
             BASE_IMAGE=rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
-
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
-
-      - name: Show image size
-        run: |
-          docker image ls
-
-      - name: Run Snyk to check Docker image for vulnerabilities (main)
-        if: ${{ github.ref == 'refs/heads/main' }}
-        continue-on-error: true
-        uses: snyk/actions/docker@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          image: rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
-          args: --file=./content/pro/${{ matrix.config.os }}/Dockerfile --org=${{ secrets.SNYK_ORG_ID }} --project-name=rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }} --tags=product=content-pro,os=${{ matrix.config.os }} --app-vulns --exclude-base-image-vulns
-          command: monitor
-
-      - name: Run Snyk to check Docker image for vulnerabilities (branch)
-        if: ${{ github.ref != 'refs/heads/main' }}
-        continue-on-error: true
-        uses: snyk/actions/docker@master
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          image: rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
-          args: --file=./content/pro/${{ matrix.config.os }}/Dockerfile --org=${{ secrets.SNYK_ORG_ID }} --project-name=rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }} --tags=product=content-pro,os=${{ matrix.config.os }} --app-vulns --exclude-base-image-vulns
-          command: test
-
-      - name: Login to Docker Hub
-        if: ${{ github.ref == 'refs/heads/main' }}
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-
-      - name: Login to ghcr.io
-        if: ${{ github.ref == 'refs/heads/main' }}
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.BUILD_PAT }}
-
-      - name: Push image(s)
-        if: ${{ github.ref == 'refs/heads/main' }}
-        run: |
-          docker push rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
-          docker push ghcr.io/rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
-          docker push rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
-          docker push ghcr.io/rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
-
+          push-image: ${{ github.ref == 'refs/heads/main' }}
+          snyk-token: ${{ secrets.SNYK_TOKEN }}
+          snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
+          ghcr-token: ${{ secrets.BUILD_PAT }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
