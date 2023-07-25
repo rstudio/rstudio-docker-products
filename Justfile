@@ -18,6 +18,8 @@ R_VERSION_ALT := "4.1.3"
 
 PYTHON_VERSION := "3.9.17"
 PYTHON_VERSION_ALT := "3.8.17"
+PYTHON_VERSION_RHEL := "3.9.14"
+PYTHON_VERSION_ALT_RHEL := "3.8.15"
 
 QUARTO_VERSION := "1.3.340"
 
@@ -89,6 +91,8 @@ update-versions:
     R_VERSION_ALT={{R_VERSION_ALT}} \
     PYTHON_VERSION={{PYTHON_VERSION}} \
     PYTHON_VERSION_ALT={{PYTHON_VERSION_ALT}} \
+    PYTHON_VERSION_RHEL={{PYTHON_VERSION_RHEL}} \
+    PYTHON_VERSION_ALT_RHEL={{PYTHON_VERSION_ALT_RHEL}} \
     DRIVERS_VERSION={{DRIVERS_VERSION}} \
     QUARTO_VERSION={{QUARTO_VERSION}} \
     update-rsw-versions update-rspm-versions update-rsc-versions update-r-versions update-py-versions update-drivers-versions update-quarto-versions
@@ -154,32 +158,42 @@ update-r-versions:
   #!/usr/bin/env bash
   set -euxo pipefail
   # Update primary R versions
-  sed {{ sed_vars }} "s/^R_VERSION=.*/R_VERSION={{ R_VERSION }}/g" \
+  sed {{ sed_vars }} "s/R_VERSION=.*/R_VERSION={{ R_VERSION }}/g" \
     workbench/.env \
     connect/.env \
     package-manager/.env \
-    package-manager/Dockerfile.ubuntu1804 \
+    package-manager/Dockerfile.ubuntu* \
     workbench/Dockerfile.ubuntu2204 \
     connect/Dockerfile.ubuntu2204 \
-    package-manager/Dockerfile.ubuntu2204
-  sed {{ sed_vars }} "s|^RVersion.*=.*|RVersion = /opt/R/{{ R_VERSION }}/|g" package-manager/rstudio-pm.gcfg
+    product/base/Dockerfile.ubuntu* \
+    product/pro/Dockerfile.ubuntu*
   sed {{ sed_vars }} "s/^R_VERSION := .*/R_VERSION := \"{{ R_VERSION }}\"/g" \
     workbench/Justfile \
     workbench-for-microsoft-azure-ml/Justfile \
-    connect/Justfile package-manager/Justfile \
+    connect/Justfile \
+    package-manager/Justfile \
+    product/base/Justfile \
+    product/pro/Justfile \
     Justfile \
     ci.Justfile
 
   # Update alt R versions
-  sed {{ sed_vars }} "s/^R_VERSION_ALT=.*/R_VERSION_ALT={{ R_VERSION_ALT }}/g" \
+  sed {{ sed_vars }} "s/R_VERSION_ALT=.*/R_VERSION_ALT={{ R_VERSION_ALT }}/g" \
     workbench/.env \
     connect/.env \
+    package-manager/.env \
+    package-manager/Dockerfile.ubuntu* \
     workbench/Dockerfile.ubuntu2204 \
-    connect/Dockerfile.ubuntu2204
+    connect/Dockerfile.ubuntu2204 \
+    product/base/Dockerfile.ubuntu* \
+    product/pro/Dockerfile.ubuntu*
   sed {{ sed_vars }} "s/^R_VERSION_ALT := .*/R_VERSION_ALT := \"{{ R_VERSION_ALT }}\"/g" \
     workbench/Justfile \
     workbench-for-microsoft-azure-ml/Justfile \
     connect/Justfile \
+    package-manager/Justfile \
+    product/base/Justfile \
+    product/pro/Justfile \
     Justfile \
     ci.Justfile
 
@@ -188,31 +202,50 @@ update-py-versions:
   #!/usr/bin/env bash
   set -euxo pipefail
   # Update primary Python versions
-  sed {{ sed_vars }} "s/^PYTHON_VERSION=.*/PYTHON_VERSION={{ PYTHON_VERSION }}/g" \
+  sed {{ sed_vars }} "s/PYTHON_VERSION=.*/PYTHON_VERSION={{ PYTHON_VERSION }}/g" \
     workbench/Dockerfile.ubuntu2204 \
     workbench/.env \
     connect/Dockerfile.ubuntu2204 \
     connect/.env \
-    package-manager/Dockerfile.ubuntu1804 \
-    package-manager/Dockerfile.ubuntu2204 \
-    package-manager/.env
+    package-manager/Dockerfile.ubuntu* \
+    package-manager/.env \
+    product/base/Dockerfile.ubuntu* \
+    product/pro/Dockerfile.ubuntu* \
+    r-session-complete/Dockerfile.ubuntu2204
+  sed {{ sed_vars }} "s/PYTHON_VERSION=.*/PYTHON_VERSION={{ PYTHON_VERSION_RHEL }}/g" \
+    product/base/Dockerfile.centos7 \
+    product/pro/Dockerfile.centos7 \
+    r-session-complete/Dockerfile.centos7
   sed {{ sed_vars }} "s/^PYTHON_VERSION := .*/PYTHON_VERSION := \"{{ PYTHON_VERSION }}\"/g" \
     workbench/Justfile \
     workbench-for-microsoft-azure-ml/Justfile \
     connect/Justfile \
+    package-manager/Justfile \
+    product/base/Justfile \
+    product/pro/Justfile \
     Justfile \
     ci.Justfile
 
   # Update alt Python versions
-  sed {{ sed_vars }} "s/^PYTHON_VERSION_ALT=.*/PYTHON_VERSION_ALT={{ PYTHON_VERSION_ALT }}/g" \
+  sed {{ sed_vars }} "s/PYTHON_VERSION_ALT=.*/PYTHON_VERSION_ALT={{ PYTHON_VERSION_ALT }}/g" \
     workbench/Dockerfile.ubuntu2204 \
     workbench/.env \
     connect/Dockerfile.ubuntu2204 \
-    connect/.env
+    connect/.env \
+    product/base/Dockerfile.ubuntu* \
+    product/pro/Dockerfile.ubuntu* \
+    r-session-complete/Dockerfile.ubuntu2204
+  sed {{ sed_vars }} "s/PYTHON_VERSION_ALT=.*/PYTHON_VERSION_ALT={{ PYTHON_VERSION_ALT_RHEL }}/g" \
+    product/base/Dockerfile.centos7 \
+    product/pro/Dockerfile.centos7 \
+    r-session-complete/Dockerfile.centos7
   sed {{ sed_vars }} "s/^PYTHON_VERSION_ALT := .*/PYTHON_VERSION_ALT := \"{{ PYTHON_VERSION_ALT }}\"/g" \
     workbench/Justfile \
     workbench-for-microsoft-azure-ml/Justfile \
     connect/Justfile \
+    package-manager/Justfile \
+    product/base/Justfile \
+    product/pro/Justfile \
     Justfile \
     ci.Justfile
 
