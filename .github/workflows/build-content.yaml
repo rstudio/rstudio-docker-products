@@ -46,6 +46,7 @@ jobs:
           build-args: |
             R_VERSION=${{ matrix.config.r }}
             PYTHON_VERSION=${{ matrix.config.py }}
+          test-image: false
           push-image: ${{ github.ref == 'refs/heads/main' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
@@ -83,6 +84,7 @@ jobs:
             PYTHON_VERSION=${{ matrix.config.py }}
             DRIVERS_VERSION=${{ matrix.config.drivers }}
             BASE_IMAGE=rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
+          test-image: false
           push-image: ${{ github.ref == 'refs/heads/main' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}

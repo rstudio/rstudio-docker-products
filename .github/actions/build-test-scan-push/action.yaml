@@ -82,7 +82,8 @@ runs:
       shell: bash
       id: first-tag
       run: |
-        FIRST_TAG=$(cut -d "," -f 1 <<< "${{ inputs.image-tags }}")
+        IMG_TAGS="${{ inputs.image-tags }}"
+        FIRST_TAG=$(cut -d "," -f 1 <<< "${IMG_TAGS//$'\n'/}")
         echo "$FIRST_TAG"
         echo "FIRST_TAG=$FIRST_TAG" >> $GITHUB_OUTPUT
 
