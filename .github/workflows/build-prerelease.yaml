@@ -92,11 +92,6 @@ jobs:
           )
           echo "IMAGE_TAGS=$IMAGE_TAGS" >> $GITHUB_OUTPUT
 
-      - name: Debug push-image
-        run: |
-          echo ${{ github.ref }}
-          echo ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
-
       - name: Build/Test/Scan/Push base pro image
         uses: ./.github/actions/build-test-scan-push
         with:

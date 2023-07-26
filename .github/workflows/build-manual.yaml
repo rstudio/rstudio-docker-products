@@ -119,7 +119,7 @@ jobs:
           )
           echo "IMAGE_TAGS=$IMAGE_TAGS" >> $GITHUB_OUTPUT
 
-      - name: Build/Test/Scan/Push base pro image
+      - name: Build/Test/Scan/Push manual build image
         uses: ./.github/actions/build-test-scan-push
         with:
           context: ./${{ inputs.product }}
