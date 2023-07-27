@@ -78,8 +78,6 @@ runs:
         load: true
         context: ${{ inputs.context }}
         file: ${{ inputs.context }}/Dockerfile.${{ inputs.os }}
-        cache-from: type=gha
-        cache-to: type=gha
         build-args: |
           ${{ inputs.build-args }}
         tags: ${{ inputs.image-tags }}
@@ -137,7 +135,5 @@ runs:
         push: ${{ inputs.push-image }}
         context: ${{ inputs.context }}
         file: ${{ inputs.context }}/Dockerfile.${{ inputs.os }}
-        cache-from: type=gha
-        cache-to: type=gha
         build-args: ${{ inputs.build-args }}
         tags: ${{ inputs.image-tags }}
