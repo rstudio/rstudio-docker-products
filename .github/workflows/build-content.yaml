@@ -22,6 +22,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: matrix
     name: content-base-${{ matrix.config.os }}-r${{ matrix.config.r }}-py${{ matrix.config.py }}--${{ github.ref }}
+    concurrency:
+      group: content-base-${{ matrix.config.os }}-r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ github.ref }}
+      cancel-in-progress: true
 
     strategy:
       fail-fast: false
@@ -112,6 +115,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ matrix, build ]
     name: content-pro-${{ matrix.config.os }}-r${{ matrix.config.r }}-py${{ matrix.config.py }}--${{ github.ref }}
+    concurrency:
+      group: content-pro-${{ matrix.config.os }}-r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ github.ref }}
+      cancel-in-progress: true
 
     strategy:
       fail-fast: false
