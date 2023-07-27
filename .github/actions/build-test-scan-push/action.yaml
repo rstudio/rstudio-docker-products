@@ -93,6 +93,7 @@ runs:
         echo "$FIRST_TAG"
         echo "FIRST_TAG=$FIRST_TAG" >> $GITHUB_OUTPUT
 
+    # We have to use bash logic because step "if"s don't work in composite actions
     - name: Test - ${{ inputs.test-image }}
       shell: bash
       run: |
