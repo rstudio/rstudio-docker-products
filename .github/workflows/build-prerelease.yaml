@@ -93,7 +93,9 @@ jobs:
           echo "IMAGE_TAGS=$IMAGE_TAGS" >> $GITHUB_OUTPUT
 
       - name: Build/Test/Scan/Push base pro image
+        id: build1
         uses: ./.github/actions/build-test-scan-push
+        continue-on-error: true
         with:
           context: ./${{ matrix.config.product }}
           os: ${{ matrix.config.os }}
@@ -106,3 +108,28 @@ jobs:
           ghcr-token: ${{ secrets.BUILD_PAT }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      # Begin retry logic
+
+      - name: Wait 60s on failure before retrying
+        if: steps.build1.outcome == 'failure'
+        run: sleep 60
+
+      - name: Retry - Build/Test/Scan/Push base pro image
+        id: build2
+        if: steps.build1.outcome == 'failure'
+        uses: ./.github/actions/build-test-scan-push
+        with:
+          context: ./product/base
+          os: ${{ matrix.config.os }}
+          product: product-base
+          image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
+          build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' }}
+          snyk-token: ${{ secrets.SNYK_TOKEN }}
+          snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
+          ghcr-token: ${{ secrets.BUILD_PAT }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      # End retry logic
