@@ -48,10 +48,6 @@ jobs:
           echo "$BUILD_ARGS" >> $GITHUB_OUTPUT
           echo "$EOF" >> $GITHUB_OUTPUT
 
-      - name: echo args
-        shell: bash
-        run: echo "${{ steps.get-build-args.outputs.BUILD_ARGS }}"
-
       - name: Get tags
         id: get-tags
         run: |
