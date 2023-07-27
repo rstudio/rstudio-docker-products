@@ -38,7 +38,7 @@ _get-default-tag PRODUCT OS:
 
   echo "{{ REGISTRY_NAMESPACE }}/${IMAGE_PREFIX}{{ PRODUCT }}:{{ OS }}"
 
-# just _get-rsw-download-url release ubuntu1804
+# just _get-rsw-download-url release ubuntu2204
 _get-rsw-download-url TYPE OS:
   #!/usr/bin/env bash
   URL_OS="{{OS}}"
