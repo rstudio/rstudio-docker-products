@@ -14,7 +14,7 @@ DRIVERS_VERSION_RHEL := DRIVERS_VERSION + "-1"
 
 QUARTO_VERSION := "1.3.340"
 
-# just BUILDX_PATH=~/.buildx build-release workbench bionic 12.0.11-11
+# just _get-os-alias jammy
 _get-os-alias OS:
   #!/usr/bin/env bash
   if [[ "{{OS}}" == "bionic" || "{{OS}}" == "ubuntu1804" ]]; then
@@ -25,6 +25,7 @@ _get-os-alias OS:
     echo "{{OS}}"
   fi
 
+# just _get-default-tag connect ubuntu2204
 _get-default-tag PRODUCT OS:
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -58,6 +59,7 @@ _get-rsw-download-url TYPE OS:
 get-version +NARGS:
   ./tools/get-version.py {{NARGS}}
 
+# just get-base-args ubuntu2204 base|pro
 get-base-args $OS $TYPE="base" $BRANCH=`git branch --show`:
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -88,6 +90,7 @@ get-base-args $OS $TYPE="base" $BRANCH=`git branch --show`:
   DRIVERS_VERSION=${_DRIVERS_VERSION}
   SRC_IMAGE_NAME=${SRC_IMAGE_NAME}"
 
+# just get-base-tags ubuntu2204 base|pro
 get-base-tags $OS $TYPE="base" $BRANCH=`git branch --show`:
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -105,6 +108,7 @@ get-base-tags $OS $TYPE="base" $BRANCH=`git branch --show`:
   ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}-py{{PYTHON_VERSION}},\
   ghcr.io/rstudio/${IMAGE_NAME}:${OS}
 
+# just get-product-args connect ubuntu2204 2023.05.0
 get-product-args $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`git rev-parse --short HEAD`:
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -145,6 +149,7 @@ get-product-args $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`g
   SRC_IMAGE_NAME=${SRC_IMAGE_NAME}
   RSW_DOWNLOAD_URL=${RSW_DOWNLOAD_URL}"
 
+# just get-product-tags connect ubuntu2204 2023.05.0
 get-product-tags $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`git rev-parse --short HEAD`:
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -185,6 +190,7 @@ get-product-tags $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`g
   tags=$(IFS="," ; echo "${tag_array[*]}")
   echo "${tags}"
 
+# just get-prerelease-args preview|daily connect ubuntu2204 2023.05.0
 get-prerelease-args $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -226,6 +232,7 @@ get-prerelease-args $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
   SRC_IMAGE_NAME=${SRC_IMAGE_NAME}
   RSW_DOWNLOAD_URL=${RSW_DOWNLOAD_URL}"
 
+# just get-prerelease-tags preview|daily connect ubuntu2204 2023.05.0
 get-prerelease-tags $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
   #!/usr/bin/env bash
   set -euxo pipefail
