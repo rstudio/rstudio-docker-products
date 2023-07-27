@@ -5,6 +5,14 @@ changed in each image.
 
 This file only captures pervasive, repository-wide changes.
 
+# 2023-07-25
+- Overhauled the workflows for this repository to use official Github Actions over `just` targets for building, testing,
+scanning, and pushing images.
+- Universally updated Python versions to 3.9.17 and 3.8.17 for Ubuntu-based images and 3.9.14 and 3.8.15 for CentOS 
+images.
+- **BREAKING:** Universally updated R versions to 4.2.3 and 4.1.3 from 3.6.2 and 4.2.0.
+- Added scheduled builds for latest release images to keep images up to date with security patches. 
+
 # 2022-11-10
 - We replaced Ubuntu codenames with explicit version numbers for ease of use. Images will still be tagged with *both*
 the OS version number and the codename to retain backwards compatibility.

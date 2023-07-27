@@ -11,7 +11,7 @@ Address =
 ;
 ; Git sources require a configured R installation. R is often installed at `/usr/lib/R`
 ; or `/usr/lib64/R`.
-RVersion = /opt/R/3.6.2/
+RVersion = /opt/R/4.2.3/
 ;
 ; Customize the data directory if necessary. This is where all packages and metadata are
 ; stored by default. Refer to Admin Guide for details.

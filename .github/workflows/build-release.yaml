@@ -1,0 +1,309 @@
+on:
+  schedule:
+    - cron: '0 12 * * 1'
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+
+name: Release - Build, Test, Scan, and Push
+jobs:
+  build-base:
+    runs-on: ubuntu-latest
+    name: product-base-build-${{ matrix.config.os }}-r${{ matrix.config.r-primary }}_${{ matrix.config.r-alternate }}-py${{ matrix.config.py-primary }}_${{ matrix.config.py-alternate }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: 'centos7', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
+          - {os: 'centos7', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
+          - {os: 'ubuntu1804', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
+          - {os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
+          - {os: 'ubuntu2204', r-primary: "4.3.1", r-alternate: "4.2.3", py-primary: "3.11.4", py-alternate: "3.10.12"}
+
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v3
+
+      - name: Set up Just
+        uses: extractions/setup-just@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get build args
+        id: get-build-args
+        run: |
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          BUILD_ARGS=$( \
+              just -f ci.Justfile \
+              R_VERSION=${{ matrix.config.r-primary }} \
+              R_VERSION_ALT=${{ matrix.config.r-alternate }} \
+              PYTHON_VERSION=${{ matrix.config.py-primary }} \
+              PYTHON_VERSION_ALT=${{ matrix.config.py-alternate }} \
+              get-base-args ${{ matrix.config.os }} product-base \
+          )
+          echo "BUILD_ARGS<<$EOF" >> $GITHUB_OUTPUT
+          echo "$BUILD_ARGS" >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
+
+      - name: Get tags
+        id: get-tags
+        run: |
+          IMAGE_TAGS=$( \
+              just -f ci.Justfile \
+              R_VERSION=${{ matrix.config.r-primary }} \
+              R_VERSION_ALT=${{ matrix.config.r-alternate }} \
+              PYTHON_VERSION=${{ matrix.config.py-primary }} \
+              PYTHON_VERSION_ALT=${{ matrix.config.py-alternate }} \
+              get-base-tags ${{ matrix.config.os }} product-base \
+          )
+          echo "IMAGE_TAGS=$IMAGE_TAGS" >> $GITHUB_OUTPUT
+
+      - name: Build/Test/Scan/Push base image
+        id: build1
+        uses: ./.github/actions/build-test-scan-push
+        continue-on-error: true
+        with:
+          context: ./product/base
+          os: ${{ matrix.config.os }}
+          product: product-base
+          image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
+          build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' }}
+          snyk-token: ${{ secrets.SNYK_TOKEN }}
+          snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
+          ghcr-token: ${{ secrets.BUILD_PAT }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      # Begin retry logic
+
+      - name: Wait 60s on failure before retrying
+        if: steps.build1.outcome == 'failure'
+        run: sleep 60
+
+      - name: Retry - Build/Test/Scan/Push base pro image
+        id: build2
+        if: steps.build1.outcome == 'failure'
+        uses: ./.github/actions/build-test-scan-push
+        with:
+          context: ./product/base
+          os: ${{ matrix.config.os }}
+          product: product-base
+          image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
+          build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' }}
+          snyk-token: ${{ secrets.SNYK_TOKEN }}
+          snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
+          ghcr-token: ${{ secrets.BUILD_PAT }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      # End retry logic
+
+  build-base-pro:
+    needs: build-base
+    runs-on: ubuntu-latest
+    name: product-base-pro-build-${{ matrix.config.os }}-r${{ matrix.config.r-primary }}_${{ matrix.config.r-alternate }}-py${{ matrix.config.py-primary }}_${{ matrix.config.py-alternate }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {os: 'centos7', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
+          - {os: 'centos7', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
+          - {os: 'ubuntu1804', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
+          - {os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
+          - {os: 'ubuntu2204', r-primary: "4.3.1", r-alternate: "4.2.3", py-primary: "3.11.4", py-alternate: "3.10.12"}
+
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v3
+
+      - name: Set up Just
+        uses: extractions/setup-just@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get build args
+        id: get-build-args
+        run: |
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          BUILD_ARGS=$( \
+              just -f ci.Justfile \
+              R_VERSION=${{ matrix.config.r-primary }} \
+              R_VERSION_ALT=${{ matrix.config.r-alternate }} \
+              PYTHON_VERSION=${{ matrix.config.py-primary }} \
+              PYTHON_VERSION_ALT=${{ matrix.config.py-alternate }} \
+              get-base-args ${{ matrix.config.os }} product-base-pro \
+          )
+          echo "BUILD_ARGS<<$EOF" >> $GITHUB_OUTPUT
+          echo "$BUILD_ARGS" >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
+
+      - name: Get tags
+        id: get-tags
+        run: |
+          IMAGE_TAGS=$( \
+              just -f ci.Justfile \
+              R_VERSION=${{ matrix.config.r-primary }} \
+              R_VERSION_ALT=${{ matrix.config.r-alternate }} \
+              PYTHON_VERSION=${{ matrix.config.py-primary }} \
+              PYTHON_VERSION_ALT=${{ matrix.config.py-alternate }} \
+              get-base-tags ${{ matrix.config.os }} product-base-pro \
+          )
+          echo "IMAGE_TAGS=$IMAGE_TAGS" >> $GITHUB_OUTPUT
+
+      - name: Build/Test/Scan/Push base pro image
+        id: build1
+        uses: ./.github/actions/build-test-scan-push
+        continue-on-error: true
+        with:
+          context: ./product/pro
+          os: ${{ matrix.config.os }}
+          product: product-base-pro
+          image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
+          build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' }}
+          snyk-token: ${{ secrets.SNYK_TOKEN }}
+          snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
+          ghcr-token: ${{ secrets.BUILD_PAT }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      # Begin retry logic
+
+      - name: Wait 60s on failure before retrying
+        if: steps.build1.outcome == 'failure'
+        run: sleep 60
+
+      - name: Retry - Build/Test/Scan/Push base pro image
+        id: build2
+        if: steps.build1.outcome == 'failure'
+        uses: ./.github/actions/build-test-scan-push
+        with:
+          context: ./product/pro
+          os: ${{ matrix.config.os }}
+          product: product-base-pro
+          image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
+          build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' }}
+          snyk-token: ${{ secrets.SNYK_TOKEN }}
+          snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
+          ghcr-token: ${{ secrets.BUILD_PAT }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      # End retry logic
+
+  build-products:
+    needs: [ build-base, build-base-pro ]
+    runs-on: ubuntu-latest
+    name: build-${{ matrix.config.product }}-${{ matrix.config.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - {product: 'workbench', os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
+          - {product: 'connect', os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
+          - {product: 'connect-content-init', os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
+          - {product: 'package-manager', os: 'ubuntu1804', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
+          - {product: 'package-manager', os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
+          - {product: 'r-session-complete', os: 'centos7', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
+          - {product: 'r-session-complete', os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
+          - {product: 'workbench-for-microsoft-azure-ml', os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
+
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v3
+
+      - name: Set up Just
+        uses: extractions/setup-just@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get Version
+        id: get-version
+        run: |
+          VERSION=`just -f ci.Justfile get-version ${{ matrix.config.product }} --type=release --local`
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Get build args
+        id: get-build-args
+        run: |
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          BUILD_ARGS=$( \
+              just -f ci.Justfile \
+              R_VERSION=${{ matrix.config.r-primary }} \
+              R_VERSION_ALT=${{ matrix.config.r-alternate }} \
+              PYTHON_VERSION=${{ matrix.config.py-primary }} \
+              PYTHON_VERSION_ALT=${{ matrix.config.py-alternate }} \
+              get-product-args \
+              ${{ matrix.config.product }} \
+              ${{ matrix.config.os }} \
+              ${{ steps.get-version.outputs.VERSION }} \
+          )
+          echo "BUILD_ARGS<<$EOF" >> $GITHUB_OUTPUT
+          echo "$BUILD_ARGS" >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
+
+      - name: Get tags
+        id: get-tags
+        run: |
+          IMAGE_TAGS=$( \
+              just -f ci.Justfile \
+              R_VERSION=${{ matrix.config.r-primary }} \
+              R_VERSION_ALT=${{ matrix.config.r-alternate }} \
+              PYTHON_VERSION=${{ matrix.config.py-primary }} \
+              PYTHON_VERSION_ALT=${{ matrix.config.py-alternate }} \
+              get-product-tags \
+              ${{ matrix.config.product }} \
+              ${{ matrix.config.os }} \
+              ${{ steps.get-version.outputs.VERSION }} \
+          )
+          echo "IMAGE_TAGS=$IMAGE_TAGS" >> $GITHUB_OUTPUT
+
+      - name: Build/Test/Scan/Push base pro image
+        id: build1
+        uses: ./.github/actions/build-test-scan-push
+        continue-on-error: true
+        with:
+          context: ./${{ matrix.config.product }}
+          os: ${{ matrix.config.os }}
+          product: ${{ matrix.config.product }}
+          image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
+          build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
+          push-image: ${{ github.ref == 'refs/heads/main' }}
+          snyk-token: ${{ secrets.SNYK_TOKEN }}
+          snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
+          ghcr-token: ${{ secrets.BUILD_PAT }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      # Begin retry logic
+
+      - name: Wait 60s on failure before retrying
+        if: steps.build1.outcome == 'failure'
+        run: sleep 60
+
+      - name: Retry - Build/Test/Scan/Push base pro image
+        id: build2
+        if: steps.build1.outcome == 'failure'
+        uses: ./.github/actions/build-test-scan-push
+        with:
+          context: ./${{ matrix.config.product }}
+          os: ${{ matrix.config.os }}
+          product: ${{ matrix.config.product }}
+          image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
+          build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
+          push-image: ${{ github.ref == 'refs/heads/main' }}
+          snyk-token: ${{ secrets.SNYK_TOKEN }}
+          snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
+          ghcr-token: ${{ secrets.BUILD_PAT }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      # End retry logic

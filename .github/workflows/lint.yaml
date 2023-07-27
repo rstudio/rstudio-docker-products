@@ -5,7 +5,7 @@ on:
       - dev
   pull_request:
 
-name: lint Dockerfiles
+name: Lint Dockerfiles
 jobs:
 
   lint:
