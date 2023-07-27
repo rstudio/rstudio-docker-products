@@ -32,6 +32,38 @@ jobs:
       - name: Check Out Repo
         uses: actions/checkout@v3
 
+      - name: Set up Just
+        uses: extractions/setup-just@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get build args
+        id: get-build-args
+        run: |
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          BUILD_ARGS=$( \
+              just -f ci.Justfile \
+              get-content-args \
+              ${{ matrix.config.r }} \
+              ${{ matrix.config.py }} \
+          )
+          echo "BUILD_ARGS<<$EOF" >> $GITHUB_OUTPUT
+          echo "$BUILD_ARGS" >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
+
+      - name: Get tags
+        id: get-tags
+        run: |
+          IMAGE_TAGS=$( \
+              just -f ci.Justfile \
+              get-content-tags \
+              content-base \
+              ${{ matrix.config.r }} \
+              ${{ matrix.config.py }} \
+              ${{ matrix.config.os }} \
+          )
+          echo "IMAGE_TAGS=$IMAGE_TAGS" >> $GITHUB_OUTPUT
+
       - name: Build/Test/Scan/Push content base image
         id: build1
         uses: ./.github/actions/build-test-scan-push
@@ -40,14 +72,8 @@ jobs:
           context: ./content/base
           os: ${{ matrix.config.os }}
           product: content-base
-          image-tags: |
-            rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }},
-            ghcr.io/rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }},
-            rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }},
-            ghcr.io/rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
-          build-args: |
-            R_VERSION=${{ matrix.config.r }}
-            PYTHON_VERSION=${{ matrix.config.py }}
+          image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
+          build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
           test-image: false
           push-image: ${{ github.ref == 'refs/heads/main' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
@@ -70,14 +96,8 @@ jobs:
           context: ./content/base
           os: ${{ matrix.config.os }}
           product: content-base
-          image-tags: |
-            rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }},
-            ghcr.io/rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }},
-            rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }},
-            ghcr.io/rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
-          build-args: |
-            R_VERSION=${{ matrix.config.r }}
-            PYTHON_VERSION=${{ matrix.config.py }}
+          image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
+          build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
           test-image: false
           push-image: ${{ github.ref == 'refs/heads/main' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
@@ -102,6 +122,39 @@ jobs:
       - name: Check Out Repo
         uses: actions/checkout@v3
 
+      - name: Set up Just
+        uses: extractions/setup-just@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get build args
+        id: get-build-args
+        run: |
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          BUILD_ARGS=$( \
+              just -f ci.Justfile \
+              get-content-args \
+              ${{ matrix.config.r }} \
+              ${{ matrix.config.py }} \
+              ${{ matrix.config.drivers }} \
+          )
+          echo "BUILD_ARGS<<$EOF" >> $GITHUB_OUTPUT
+          echo "$BUILD_ARGS" >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
+
+      - name: Get tags
+        id: get-tags
+        run: |
+          IMAGE_TAGS=$( \
+              just -f ci.Justfile \
+              get-content-tags \
+              content-pro \
+              ${{ matrix.config.r }} \
+              ${{ matrix.config.py }} \
+              ${{ matrix.config.os }} \
+          )
+          echo "IMAGE_TAGS=$IMAGE_TAGS" >> $GITHUB_OUTPUT
+
       - name: Build/Test/Scan/Push content pro image
         id: build1
         uses: ./.github/actions/build-test-scan-push
@@ -110,16 +163,8 @@ jobs:
           context: ./content/pro
           os: ${{ matrix.config.os }}
           product: content-pro
-          image-tags: |
-            rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
-            ghcr.io/rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
-            rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
-            ghcr.io/rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
-          build-args: |
-            R_VERSION=${{ matrix.config.r }}
-            PYTHON_VERSION=${{ matrix.config.py }}
-            DRIVERS_VERSION=${{ matrix.config.drivers }}
-            BASE_IMAGE=rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
+          image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
+          build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
           test-image: false
           push-image: ${{ github.ref == 'refs/heads/main' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
@@ -142,16 +187,8 @@ jobs:
           context: ./content/pro
           os: ${{ matrix.config.os }}
           product: content-pro
-          image-tags: |
-            rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
-            ghcr.io/rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
-            rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
-            ghcr.io/rstudio/content-pro:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os_alt }}
-          build-args: |
-            R_VERSION=${{ matrix.config.r }}
-            PYTHON_VERSION=${{ matrix.config.py }}
-            DRIVERS_VERSION=${{ matrix.config.drivers }}
-            BASE_IMAGE=rstudio/content-base:r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ matrix.config.os }}
+          image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
+          build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
           test-image: false
           push-image: ${{ github.ref == 'refs/heads/main' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}

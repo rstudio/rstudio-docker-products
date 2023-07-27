@@ -269,3 +269,20 @@ get-prerelease-tags $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
   done
   tags=$(IFS="," ; echo "${tag_array[*]}")
   echo "${tags}"
+
+# just get-content-args 4.2.3 3.9.17
+get-content-args r-ver py-ver drivers-ver="":
+  #!/usr/bin/env bash
+  printf "R_VERSION={{r-ver}}
+  PYTHON_VERSION={{py-ver}}
+  DRIVERS_VERSION={{drivers-ver}}"
+
+# just get-content-tags content-base|content-pro 4.2.3 3.9.17 ubuntu2204
+get-content-tags image-name r-ver py-ver os:
+  #!/usr/bin/env bash
+  OS=$(just _parse-os {{os}})
+  OS_ALT=$(just _rev-parse-os {{os}})
+  echo rstudio/{{image-name}}:r{{r-ver}}-py{{py-ver}}-${OS},\
+  ghcr.io/rstudio/{{image-name}}:r{{r-ver}}-py{{py-ver}}-${OS},\
+  rstudio/{{image-name}}:r{{r-ver}}-py{{py-ver}}-${OS_ALT},\
+  ghcr.io/rstudio/{{image-name}}:r{{r-ver}}-py{{py-ver}}-${OS_ALT}
