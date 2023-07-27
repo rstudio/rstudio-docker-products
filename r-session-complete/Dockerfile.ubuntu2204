@@ -30,7 +30,10 @@ RUN apt-get update \
       subversion \
     && RSW_VERSION_URL=$(echo -n "${RSW_VERSION}" | sed 's/+/-/g') \
     && curl -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-amd64.deb" \
+    # Pre 7/25/23 packages
     && gpg --keyserver keyserver.ubuntu.com --recv-keys 3F32EE77E331692F \
+    # Post 7/25 packages
+    && gpg --keyserver keys.openpgp.org --search-keys 51C0B5BB19F92D60 \
     && dpkg-sig --verify ./rstudio-workbench.deb \
     && apt-get install -yq --no-install-recommends ./rstudio-workbench.deb \
     && rm ./rstudio-workbench.deb \
