@@ -59,7 +59,7 @@ COPY rstudio-pm.gcfg /etc/rstudio-pm/rstudio-pm.gcfg
 # license as root, but it is required to activate one as the non-root user at
 # runtime. It's possible for this to fail and the trail will be considered over,
 # in which case we can ignore it anyway.
-RUN license-manager initialize --userspace || true
+RUN license-manager initialize --userspace
 
 ENTRYPOINT ["tini", "--"]
 CMD ["/usr/local/bin/startup.sh"]
