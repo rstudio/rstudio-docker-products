@@ -1,11 +1,11 @@
 # format per https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners#about-code-owners
-* @colearendt @atheriel
+* @colearendt @ianpittwood @bschwedler
 
 /connect/* @rstudio/connect
 /connect-content-init/* @rstudio/connect
 /content/* @rstudio/connect
 
-/package-manager/* @rstudio/rspm-dev
+/package-manager/* @rstudio/ppm
 
 /workbench/* @cm421 @melissa-barca
 /r-session-complete/* @cm421 @melissa-barca
