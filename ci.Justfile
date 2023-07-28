@@ -230,7 +230,8 @@ get-prerelease-args $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
   QUARTO_VERSION={{ QUARTO_VERSION }}
   DRIVERS_VERSION=${_DRIVERS_VERSION}
   SRC_IMAGE_NAME=${SRC_IMAGE_NAME}
-  RSW_DOWNLOAD_URL=${RSW_DOWNLOAD_URL}"
+  RSW_DOWNLOAD_URL=${RSW_DOWNLOAD_URL}
+  RSPM_DOWNLOAD_URL=https://cdn.rstudio.com/package-manager/deb/amd64"
 
 # just get-prerelease-tags preview|daily connect ubuntu2204 2023.05.0
 get-prerelease-tags $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
