@@ -124,7 +124,7 @@ jobs:
         if: steps.build1.outcome == 'failure'
         uses: ./.github/actions/build-test-scan-push
         with:
-          context: ./product/base
+          context: .${{ matrix.config.product }}
           os: ${{ matrix.config.os }}
           product: product-base
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
