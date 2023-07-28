@@ -113,13 +113,13 @@ runs:
         fi
         echo "SNYK_COMMAND=$SNYK_COMMAND" >> $GITHUB_OUTPUT     
 
-    - name: Run Snyk ${{ steps.eval-snyk-command.SNYK_COMMAND }}
+    - name: Run Snyk ${{ steps.eval-snyk-command.outputs.SNYK_COMMAND }}
       continue-on-error: true
       uses: snyk/actions/docker@master
       env:
         SNYK_TOKEN: ${{ inputs.snyk-token }}
       with:
-        image: ${{ steps.first-tag.FIRST_TAG }}
+        image: ${{ steps.first-tag.outputs.FIRST_TAG }}
         args: |
           --file=${{ inputs.context }}/Dockerfile.${{ inputs.os }} \
           --org=${{ inputs.snyk-org-id }} \
@@ -127,7 +127,7 @@ runs:
           --tags=product=${{ inputs.product }},os=${{ inputs.os }} \
           --exclude-base-image-vulns \
           --app-vulns
-        command: ${{ steps.eval-snyk-command.SNYK_COMMAND }}
+        command: ${{ steps.eval-snyk-command.outputs.SNYK_COMMAND }}
 
     - name: Push - ${{ inputs.push-image }}
       uses: docker/build-push-action@v4
