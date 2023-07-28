@@ -2,6 +2,8 @@ ARG R_VERSION=4.2.3
 FROM rstudio/r-base:${R_VERSION}-bionic
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
+ARG R_VERSION=4.2.3
+
 # Locale configuration --------------------------------------------------------#
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
 ENV LANG en_US.UTF-8
@@ -44,6 +46,9 @@ RUN apt-get update --fix-missing \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && ln -s /opt/rstudio-pm/bin/rspm /usr/local/bin/rspm
+
+# Set default R version symlink
+RUN ln -s /opt/R/${R_VERSION} /opt/R/default
 
 # Add run script and set permissions -------------------------------------------#
 COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh

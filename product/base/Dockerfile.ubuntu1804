@@ -108,7 +108,8 @@ RUN curl -O https://cdn.rstudio.com/r/ubuntu-1804/pkgs/r-${R_VERSION}_1_amd64.de
     && rm -f ./r-${R_VERSION}_1_amd64.deb \
     && rm -f ./r-${R_VERSION_ALT}_1_amd64.deb \
     && ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R \
-    && ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
+    && ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript \
+    && ln -s /opt/R/${R_VERSION} /opt/R/default
 
 ### Install Python versions ###
 RUN curl -O https://cdn.rstudio.com/python/ubuntu-1804/pkgs/python-${PYTHON_VERSION}_1_amd64.deb \
@@ -120,7 +121,8 @@ RUN curl -O https://cdn.rstudio.com/python/ubuntu-1804/pkgs/python-${PYTHON_VERS
     && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install 'virtualenv<20' \
     && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install --upgrade setuptools \
     && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install 'virtualenv<20' \
-    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install --upgrade setuptools
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install --upgrade setuptools \
+    && ln -s /opt/python/${PYTHON_VERSION} /opt/python/default
 
 ### Locale configuration ###
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
