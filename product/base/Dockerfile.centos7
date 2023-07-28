@@ -64,9 +64,9 @@ RUN curl -O https://cdn.rstudio.com/r/centos-7/pkgs/R-${R_VERSION}-1-1.x86_64.rp
     && yum clean all \
     && rm -rf R-${R_VERSION}-1-1.x86_64.rpm \
     && rm -rf R-${R_VERSION_ALT}-1-1.x86_64.rpm \
-    && ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R \
-    && ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript \
-    && ln -s /opt/R/${R_VERSION} /opt/R/default
+    && ln -s /opt/R/${R_VERSION} /opt/R/default \
+    && ln -s /opt/R/default/bin/R /usr/local/bin/R \
+    && ln -s /opt/R/default/bin/Rscript /usr/local/bin/Rscript
 
 ### Install Python versions ###
 RUN curl -O https://cdn.rstudio.com/python/centos-7/pkgs/python-${PYTHON_VERSION}-1-1.x86_64.rpm \

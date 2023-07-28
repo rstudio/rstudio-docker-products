@@ -107,9 +107,9 @@ RUN curl -O https://cdn.rstudio.com/r/ubuntu-2204/pkgs/r-${R_VERSION}_1_amd64.de
     && apt-get install -yq --no-install-recommends ./r-${R_VERSION_ALT}_1_amd64.deb \
     && rm -f ./r-${R_VERSION}_1_amd64.deb \
     && rm -f ./r-${R_VERSION_ALT}_1_amd64.deb \
-    && ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R \
-    && ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript \
-    && ln -s /opt/R/${R_VERSION} /opt/R/default
+    && ln -s /opt/R/${R_VERSION} /opt/R/default \
+    && ln -s /opt/R/default/bin/R /usr/local/bin/R \
+    && ln -s /opt/R/default/bin/Rscript /usr/local/bin/Rscript
 
 ### Install Python versions ###
 RUN curl -O https://cdn.rstudio.com/python/ubuntu-2204/pkgs/python-${PYTHON_VERSION}_1_amd64.deb \
