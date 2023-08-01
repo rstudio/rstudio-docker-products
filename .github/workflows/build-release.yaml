@@ -22,9 +22,11 @@ jobs:
         config:
           - {os: 'centos7', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
           - {os: 'centos7', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
+          - {os: 'ubuntu1804', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
           - {os: 'ubuntu1804', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
+          - {os: 'ubuntu2204', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
+          - {os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
           - {os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
-          - {os: 'ubuntu2204', r-primary: "4.3.1", r-alternate: "4.2.3", py-primary: "3.11.4", py-alternate: "3.10.12"}
 
     steps:
       - name: Check Out Repo
@@ -117,9 +119,11 @@ jobs:
         config:
           - {os: 'centos7', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
           - {os: 'centos7', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
+          - {os: 'ubuntu1804', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
           - {os: 'ubuntu1804', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
+          - {os: 'ubuntu2204', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
+          - {os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
           - {os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
-          - {os: 'ubuntu2204', r-primary: "4.3.1", r-alternate: "4.2.3", py-primary: "3.11.4", py-alternate: "3.10.12"}
 
     concurrency:
       group: build-base-pro-${{ matrix.config.os }}-r${{ matrix.config.r-primary }}_${{ matrix.config.r-alternate }}-py${{ matrix.config.py-primary }}_${{ matrix.config.py-alternate }}-${{ github.ref }}
@@ -214,14 +218,14 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {product: 'workbench', os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
+          - {product: 'workbench', os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
           - {product: 'connect', os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
           - {product: 'connect-content-init', os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
-          - {product: 'package-manager', os: 'ubuntu1804', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
-          - {product: 'package-manager', os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
+          - {product: 'package-manager', os: 'ubuntu1804', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
+          - {product: 'package-manager', os: 'ubuntu2204', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
           - {product: 'r-session-complete', os: 'centos7', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
-          - {product: 'r-session-complete', os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
-          - {product: 'workbench-for-microsoft-azure-ml', os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
+          - {product: 'r-session-complete', os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
+          - {product: 'workbench-for-microsoft-azure-ml', os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
 
     concurrency:
       group: build-products-${{ matrix.config.product }}-${{ matrix.config.os }}-${{ github.ref }}
