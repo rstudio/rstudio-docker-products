@@ -3,10 +3,10 @@ LABEL maintainer="Posit Docker <docker@posit.co>"
 
 ### ARG declarations ###
 ARG DEBIAN_FRONTEND=noninteractive
-ARG R_VERSION=4.2.0
-ARG R_VERSION_ALT=3.6.2
-ARG PYTHON_VERSION=3.9.5
-ARG PYTHON_VERSION_ALT=3.8.10
+ARG R_VERSION=4.2.3
+ARG R_VERSION_ALT=4.1.3
+ARG PYTHON_VERSION=3.9.17
+ARG PYTHON_VERSION_ALT=3.8.17
 ARG TINI_VERSION=0.19.0
 ARG QUARTO_VERSION=1.3.340
 
@@ -107,8 +107,9 @@ RUN curl -O https://cdn.rstudio.com/r/ubuntu-2204/pkgs/r-${R_VERSION}_1_amd64.de
     && apt-get install -yq --no-install-recommends ./r-${R_VERSION_ALT}_1_amd64.deb \
     && rm -f ./r-${R_VERSION}_1_amd64.deb \
     && rm -f ./r-${R_VERSION_ALT}_1_amd64.deb \
-    && ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R \
-    && ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript
+    && ln -s /opt/R/${R_VERSION} /opt/R/default \
+    && ln -s /opt/R/default/bin/R /usr/local/bin/R \
+    && ln -s /opt/R/default/bin/Rscript /usr/local/bin/Rscript
 
 ### Install Python versions ###
 RUN curl -O https://cdn.rstudio.com/python/ubuntu-2204/pkgs/python-${PYTHON_VERSION}_1_amd64.deb \
@@ -120,7 +121,8 @@ RUN curl -O https://cdn.rstudio.com/python/ubuntu-2204/pkgs/python-${PYTHON_VERS
     && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install 'virtualenv<20' \
     && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install --upgrade setuptools \
     && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install 'virtualenv<20' \
-    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install --upgrade setuptools
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install --upgrade setuptools \
+    && ln -s /opt/python/${PYTHON_VERSION} /opt/python/default
 
 ### Locale configuration ###
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8

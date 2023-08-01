@@ -164,7 +164,7 @@ def rstudio_connect_daily():
 
 
 def rstudio_pm_daily():
-    latest_url = "https://cdn.rstudio.com/package-manager/ubuntu/amd64/rstudio-pm-main-latest.txt"
+    latest_url = "https://cdn.rstudio.com/package-manager/deb/amd64/rstudio-pm-main-latest.txt"
     raw_version = requests.get(latest_url).content
     return raw_version.decode('utf-8').replace('\n','')
 

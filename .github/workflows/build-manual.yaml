@@ -1,0 +1,136 @@
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch to build off."
+        default: "main"
+        type: choice
+        options:
+          - main
+          - dev
+          - dev-rspm
+      product:
+        description: "The product/path to build."
+        required: true
+        type: choice
+        options:
+          - connect
+          - connect-content-init
+          - content/base
+          - content/pro
+          - package-manager
+          - product/base
+          - product/pro
+          - r-session-complete
+          - workbench
+          - workbench-for-microsoft-azure-ml
+      os:
+        description: "Which OS to build. WARNING: Not all OSes may be present for all products."
+        required: false
+        default: "ubuntu2204"
+        type: choice
+        options:
+          - ubuntu2204
+          - ubuntu1804
+          - centos7
+      type:
+        description: "The type of image being built."
+        required: false
+        default: "preview"
+        type: choice
+        options:
+          - preview
+          - daily
+          - release
+      version:
+        description: "The version to build. Use 'auto' to target the latest build."
+        required: false
+        default: "auto"
+        type: string
+      push:
+        description: "Flag to push the image after build."
+        required: false
+        default: false
+        type: boolean
+
+name: Manual - Build, Test, Scan, and Push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: manual-build
+
+    steps:
+      - name: Check Out Repo
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ inputs.branch }}
+
+      - name: Set up Just
+        uses: extractions/setup-just@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get Version
+        id: get-version
+        run: |
+          if [[ "${{ inputs.version }}" == "auto" ]]; then
+            VERSION=`just -f ci.Justfile get-version ${{ inputs.product }} --type=${{ inputs.type }} --local`
+          else
+            VERSION="${{ inputs.version }}"
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Get build args
+        id: get-build-args
+        run: |
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          ARGS_CMD=""
+          if [[ "${{ inputs.type }}" == "release" ]]; then
+            ARGS_CMD="get-product-args"
+          else
+            ARGS_CMD="get-prerelease-args ${{inputs.type}}"
+          fi
+          BUILD_ARGS=$( \
+              just -f ci.Justfile \
+              ${ARGS_CMD} \
+              ${{ inputs.product }} \
+              ${{ inputs.os }} \
+              ${{ steps.get-version.outputs.VERSION }} \
+          )
+          echo "BUILD_ARGS<<$EOF" >> $GITHUB_OUTPUT
+          echo "$BUILD_ARGS" >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
+
+      - name: Get tags
+        id: get-tags
+        run: |
+          ARGS_CMD=""
+          if [[ "${{ inputs.type }}" == "release" ]]; then
+            ARGS_CMD="get-product-tags"
+          else
+            ARGS_CMD="get-prerelease-tags ${{inputs.type}}"
+          fi
+          IMAGE_TAGS=$( \
+              just -f ci.Justfile \
+              ${ARGS_CMD} \
+              ${{ inputs.product }} \
+              ${{ inputs.os }} \
+              ${{ steps.get-version.outputs.VERSION }} \
+          )
+          echo "IMAGE_TAGS=$IMAGE_TAGS" >> $GITHUB_OUTPUT
+
+      - name: Build/Test/Scan/Push manual build image
+        uses: ./.github/actions/build-test-scan-push
+        with:
+          context: ./${{ inputs.product }}
+          os: ${{ inputs.os }}
+          product: ${{ inputs.product }}
+          image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
+          build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
+          push-image: ${{ inputs.push }}
+          snyk-token: ${{ secrets.SNYK_TOKEN }}
+          snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
+          ghcr-token: ${{ secrets.BUILD_PAT }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+

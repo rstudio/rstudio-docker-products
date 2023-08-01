@@ -1,3 +1,6 @@
+# 2023-07-25
+- Changed `rstudio-pm.gcfg` R version number behavior from statically defined to dynamically filled on build. 
+
 # 2022.11.4-20
 
 - Mid-release, we accidentally bumped the version of R. To mitigate issues, we added another version of R,

@@ -2,7 +2,7 @@ on:
   schedule:
     - cron: 0 0 * * 2
 
-name: clean registries
+name: Clean Registries
 
 jobs:
   cleanup:

@@ -12,8 +12,8 @@ RSW_LICENSE := ""
 R_VERSION := "4.2.3"
 R_VERSION_ALT := "4.1.3"
 
-PYTHON_VERSION := "3.9.14"
-PYTHON_VERSION_ALT := "3.8.15"
+PYTHON_VERSION := "3.9.17"
+PYTHON_VERSION_ALT := "3.8.17"
 
 _make-default-tag OS=IMAGE_OS:
   echo "{{IMAGE_PREFIX}}{{PRODUCT}}:{{OS}}-$(just -f ../Justfile _get-tag-safe-version {{RSW_VERSION}})"
