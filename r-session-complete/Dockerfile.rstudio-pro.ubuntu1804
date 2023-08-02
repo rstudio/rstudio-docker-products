@@ -1,0 +1,81 @@
+ARG R_VERSION=4.2.3
+ARG R_VERSION_ALT=4.1.3
+ARG PYTHON_VERSION=3.9.14
+ARG PYTHON_VERSION_ALT=3.8.15
+ARG REGISTRY=ghcr.io
+FROM ${REGISTRY}/rstudio/product-base-pro:ubuntu1804-r${R_VERSION}_${R_VERSION_ALT}-py${PYTHON_VERSION}_${PYTHON_VERSION_ALT}
+LABEL maintainer="RStudio Docker <docker@rstudio.com>"
+
+ARG DEBIAN_FRONTEND=noninteractive
+ARG R_VERSION=4.2.3
+ARG R_VERSION_ALT=4.1.3
+ARG PYTHON_VERSION=3.9.14
+ARG PYTHON_VERSION_ALT=3.8.15
+ARG RSW_VERSION=2023.03.2+454.pro2
+ARG RSW_NAME=rstudio-workbench
+ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/bionic/amd64
+
+ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y \
+      krb5-user \
+      libcurl4-gnutls-dev \
+      libssl1.0.0 \
+      libuser \
+      libuser1-dev \
+      libpq-dev \
+      rrdtool \
+      subversion
+
+RUN curl -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION//+/-}-amd64.deb" \
+    && gpg --keyserver keyserver.ubuntu.com --recv-keys 3F32EE77E331692F \
+    && dpkg-sig --verify ./rstudio-workbench.deb \
+    && apt-get install -yq --no-install-recommends ./rstudio-workbench.deb \
+    && rm ./rstudio-workbench.deb \
+    && apt-get autoremove -y \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/lib/rstudio-server/r-versions \
+    && rm -rf /usr/lib/rstudio-server/bin/code-server \
+    && rm /usr/lib/rstudio-server/bin/rserver-saml \
+    && rm -rf /usr/lib/rstudio-server/bin/vscode-workbench-ext \
+    && rm /usr/lib/rstudio-server/bin/rserver-openid \
+    && rm /usr/lib/rstudio-server/bin/jupyter-session-run \
+    && rm /usr/lib/rstudio-server/bin/librclient.so \
+    && rm /usr/lib/rstudio-server/bin/librserver.so \
+    && rm /usr/lib/rstudio-server/bin/license-manager \
+    && rm /usr/lib/rstudio-server/bin/license-manager.conf \
+    && rm /usr/lib/rstudio-server/bin/locktester \
+    && rm /usr/lib/rstudio-server/bin/migrate.sh \
+    && rm /usr/lib/rstudio-server/bin/pamtester \ 
+    && rm /usr/lib/rstudio-server/bin/rpcsend \
+    && rm /usr/lib/rstudio-server/bin/rserver \
+    && rm /usr/lib/rstudio-server/bin/rserver-acls \
+    && rm /usr/lib/rstudio-server/bin/rserver-admin \
+    && rm /usr/lib/rstudio-server/bin/rserver-db \
+    && rm /usr/lib/rstudio-server/bin/rserver-encrypt \
+    && rm /usr/lib/rstudio-server/bin/rserver-http \
+    && rm /usr/lib/rstudio-server/bin/rserver-monitor \
+    && rm /usr/lib/rstudio-server/bin/rserver-pam \
+    && rm /usr/lib/rstudio-server/bin/rserver-session-reaper \
+    && rm /usr/lib/rstudio-server/bin/rstudio-kubernetes-launcher \
+    && rm /usr/lib/rstudio-server/bin/rstudio-launcher \
+    && rm /usr/lib/rstudio-server/bin/rstudio-launcher.sh \
+    && rm /usr/lib/rstudio-server/bin/rstudio-local-launcher \
+    && rm /usr/lib/rstudio-server/bin/rstudio-server \
+    && rm /usr/lib/rstudio-server/bin/rstudio-slurm-launcher \
+    && rm /usr/lib/rstudio-server/bin/run-diagnostics \
+    && rm /usr/lib/rstudio-server/bin/vscode-session-run \
+    && rm -rf /usr/lib/rstudio-server/www-admin \
+    && rm -rf /usr/lib/rstudio-server/www-launcher \
+    && rm -rf /usr/lib/rstudio-server/www-workspaces \
+    && rm -rf /usr/lib/rstudio-server/db \
+    && rm -rf /usr/lib/rstudio-server/conf \
+    && rm -rf /usr/lib/rstudio-server/extras
+
+ENV PATH="/opt/python/${PYTHON_VERSION}/bin:${PATH}"
+
+
+EXPOSE 8788/tcp
