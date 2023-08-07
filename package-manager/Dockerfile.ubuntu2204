@@ -19,6 +19,7 @@ RUN apt-get update --fix-missing \
     && apt-get upgrade -yq \
     && apt-get install -yq --no-install-recommends \
       ca-certificates \
+      gpg \
     && rm -rf /var/lib/apt/lists/*
 
 # Runtime settings ------------------------------------------------------------#
