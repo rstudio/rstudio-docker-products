@@ -5,6 +5,10 @@ changed in each image.
 
 This file only captures pervasive, repository-wide changes.
 
+# 2023-08-07
+
+- Removed base image Ubuntu 18.04 builds.
+
 # 2023-08-01
 - Overhauled the workflows for this repository to use official Github Actions over `just` targets for building, testing,
 scanning, and pushing images.

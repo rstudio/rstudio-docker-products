@@ -22,8 +22,6 @@ jobs:
         config:
           - {os: 'centos7', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
           - {os: 'centos7', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
-          - {os: 'ubuntu1804', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
-          - {os: 'ubuntu1804', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
           - {os: 'ubuntu2204', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
           - {os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
           - {os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
@@ -119,8 +117,6 @@ jobs:
         config:
           - {os: 'centos7', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
           - {os: 'centos7', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
-          - {os: 'ubuntu1804', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
-          - {os: 'ubuntu1804', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
           - {os: 'ubuntu2204', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
           - {os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
           - {os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
