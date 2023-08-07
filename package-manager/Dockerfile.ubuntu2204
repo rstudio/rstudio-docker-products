@@ -32,7 +32,7 @@ RUN apt-get update -qq && \
 ARG RSPM_VERSION=2023.04.0-6
 ARG RSPM_DOWNLOAD_URL=https://cdn.rstudio.com/package-manager/ubuntu22/amd64
 RUN apt-get update --fix-missing \
-    && apt-get install -y --no-install-recommends gdebi-core dpkg-sig \
+    && apt-get install -y --no-install-recommends ca-certificates gdebi-core gpg dpkg-sig \
     && curl -O ${RSPM_DOWNLOAD_URL}/rstudio-pm_${RSPM_VERSION}_amd64.deb \
     # Pre 7/25/23 packages
     && gpg --keyserver keyserver.ubuntu.com --recv-keys 3F32EE77E331692F \
@@ -41,7 +41,7 @@ RUN apt-get update --fix-missing \
     && dpkg-sig --verify rstudio-pm_${RSPM_VERSION}_amd64.deb \
     && RSTUDIO_INSTALL_NO_LICENSE_INITIALIZATION=1 gdebi -n rstudio-pm_${RSPM_VERSION}_amd64.deb \
     && rm rstudio-pm_${RSPM_VERSION}_amd64.deb \
-    && apt-get purge -y gdebi-core dpkg-sig \
+    && apt-get purge -y gdebi-core dpkg-sig gpg \
     && apt-get autoremove -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
