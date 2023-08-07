@@ -10,16 +10,26 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 ARG DEBIAN_FRONTEND=noninteractive
+ARG TINI_VERSION=0.18.0
 
 ENV PATH /opt/rstudio-pm/bin:$PATH
 
+# Upgrade/install packages ----------------------------------------------------#
+RUN apt-get update --fix-missing \
+    && apt-get upgrade -yq \
+    && apt-get install -yq --no-install-recommends \
+      ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
 # Runtime settings ------------------------------------------------------------#
-ARG TINI_VERSION=0.18.0
-RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini && \
-    chmod +x /usr/local/bin/tini
+ADD https://cdn.rstudio.com/platform/tini/v${TINI_VERSION}/tini-amd64 /tini
+ADD https://cdn.rstudio.com/platform/tini/v${TINI_VERSION}/tini-amd64.asc /tini.asc
+RUN gpg --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7 \
+    && gpg --batch --verify /tini.asc /tini \
+    && chmod +x /tini \
+    && ln -s /tini /usr/local/bin/tini
 
 # Add another R version -------------------------------------------------------#
-
 ARG R_VERSION_ALT=3.6.2
 RUN apt-get update -qq && \
     curl -O https://cdn.rstudio.com/r/ubuntu-2204/pkgs/r-${R_VERSION_ALT}_1_amd64.deb && \

@@ -10,16 +10,26 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 ARG DEBIAN_FRONTEND=noninteractive
+ARG TINI_VERSION=0.18.0
 
 ENV PATH /opt/rstudio-pm/bin:$PATH
 
+# Upgrade/install packages ----------------------------------------------------#
+RUN apt-get update --fix-missing \
+    && apt-get upgrade -yq \
+    && apt-get install -yq --no-install-recommends \
+      ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
 # Runtime settings ------------------------------------------------------------#
-ARG TINI_VERSION=0.18.0
-RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini && \
-    chmod +x /usr/local/bin/tini
+ADD https://cdn.rstudio.com/platform/tini/v${TINI_VERSION}/tini-amd64 /tini
+ADD https://cdn.rstudio.com/platform/tini/v${TINI_VERSION}/tini-amd64.asc /tini.asc
+RUN gpg --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7 \
+    && gpg --batch --verify /tini.asc /tini \
+    && chmod +x /tini \
+    && ln -s /tini /usr/local/bin/tini
 
 # Add another R version -------------------------------------------------------#
-
 ARG R_VERSION_ALT=3.6.2
 RUN apt-get update -qq && \
     curl -O https://cdn.rstudio.com/r/ubuntu-1804/pkgs/r-${R_VERSION_ALT}_1_amd64.deb && \
@@ -32,7 +42,7 @@ RUN apt-get update -qq && \
 ARG RSPM_VERSION=2023.04.0-6
 ARG RSPM_DOWNLOAD_URL=https://cdn.rstudio.com/package-manager/ubuntu/amd64
 RUN apt-get update --fix-missing \
-    && apt-get install -y --no-install-recommends ca-certificates gdebi-core gpg dpkg-sig \
+    && apt-get install -y --no-install-recommends gdebi-core gpg dpkg-sig \
     && curl -O ${RSPM_DOWNLOAD_URL}/rstudio-pm_${RSPM_VERSION}_amd64.deb \
     # Pre 7/25/23 packages
     && gpg --keyserver keyserver.ubuntu.com --recv-keys 3F32EE77E331692F \
