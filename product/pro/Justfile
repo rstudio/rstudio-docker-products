@@ -3,7 +3,7 @@ set positional-arguments
 BUILDX_PATH := ""
 
 PRODUCT := "product-base-pro"
-IMAGE_OS := "ubuntu12204"
+IMAGE_OS := "ubuntu2204"
 
 IMAGE_REGISTRY := "rstudio"
 
