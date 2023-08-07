@@ -4,7 +4,7 @@ BUILDX_PATH := ""
 
 IMAGE_PREFIX := "rstudio-"
 PRODUCT := "package-manager"
-IMAGE_OS := "ubuntu1804"
+IMAGE_OS := "ubuntu2204"
 
 RSPM_VERSION := "2023.04.0-6"
 RSPM_LICENSE := ""
@@ -22,7 +22,7 @@ PERSIST_LICENSE_DIR := join(justfile_directory(), "tmp-lic")
 _make-default-tag OS=IMAGE_OS:
   echo "{{IMAGE_PREFIX}}{{PRODUCT}}:{{OS}}-$(just -f ../Justfile _get-tag-safe-version {{RSPM_VERSION}})"
 
-# Build Package Manager image - just build ubuntu1804 2022.07.2-11 rstudio/rstudio-package-manager:ubuntu1804-2022.07.2-11
+# Build Package Manager image - just build ubuntu2204 2022.07.2-11 rstudio/rstudio-package-manager:ubuntu2204-2022.07.2-11
 build OS=IMAGE_OS VERSION=RSPM_VERSION *TAGS="":
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -50,7 +50,7 @@ build OS=IMAGE_OS VERSION=RSPM_VERSION *TAGS="":
     --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
     --file=./Dockerfile.$(just -f ../Justfile _parse-os {{OS}}) .
 
-# Test Package Manager image - just test rstudio/rstudio-package-manager:ubuntu1804-2022.07.2-11 2022.07.2-11
+# Test Package Manager image - just test rstudio/rstudio-package-manager:ubuntu2204-2022.07.2-11 2022.07.2-11
 test TAG=`just _make-default-tag` VERSION=RSPM_VERSION CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -62,11 +62,11 @@ test TAG=`just _make-default-tag` VERSION=RSPM_VERSION CMD="":
   R_VERSION_ALT="{{ R_VERSION_ALT }}" \
   docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
 
-# Test Package Manager image interactively - just test-i rstudio/rstudio-package-manager:ubuntu1804-2022.07.2-11 2022.07.2-11
+# Test Package Manager image interactively - just test-i rstudio/rstudio-package-manager:ubuntu2204-2022.07.2-11 2022.07.2-11
 test-i TAG=`just _make-default-tag` VERSION=RSPM_VERSION:
   just test {{ TAG }} {{ VERSION }} bash
 
-# Run Package Manager - just RSPM_LICENSE="<RSPM license>" run rstudio/rstudio-package-manager:ubuntu1804-2022.07.2-11
+# Run Package Manager - just RSPM_LICENSE="<RSPM license>" run rstudio/rstudio-package-manager:ubuntu2204-2022.07.2-11
 run TAG=`just _make-default-tag` CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail

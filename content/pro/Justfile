@@ -4,7 +4,7 @@ BUILDX_PATH := ""
 
 IMAGE_PREFIX := "rstudio/"
 PRODUCT := "content-pro"
-IMAGE_OS := "ubuntu1804"
+IMAGE_OS := "ubuntu2204"
 
 R_VERSION := "3.6.3"
 
@@ -15,7 +15,7 @@ DRIVERS_VERSION_RHEL := DRIVERS_VERSION + "-1"
 
 DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":r" + R_VERSION + "-py" + PYTHON_VERSION + "-" + IMAGE_OS
 
-# Build content pro image - just build ubuntu1804 3.6.3 3.9.5 rstudio/content-pro:r3.6.3-py3.9.5-bionic
+# Build content pro image - just build ubuntu2204 3.6.3 3.9.5 rstudio/content-pro:r3.6.3-py3.9.5-bionic
 build OS=IMAGE_OS _R_VERSION=R_VERSION _PYTHON_VERSION=PYTHON_VERSION +TAGS=DEFAULT_TAG:
   #!/usr/bin/env bash
   set -euxo pipefail
