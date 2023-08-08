@@ -82,6 +82,7 @@ runs:
         credentials_json: '${{ inputs.gcp-json }}'
 
     - name: Authenticate GCAR
+      shell: bash
       run: |
         if [[ "${{ inputs.gcp-json }}" != "" ]]; then
           gcloud auth configure-docker -q us-central1-docker.pkg.dev
