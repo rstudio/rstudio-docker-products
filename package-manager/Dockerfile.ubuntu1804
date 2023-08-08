@@ -28,6 +28,7 @@ RUN apt-get update --fix-missing \
 # Runtime settings ------------------------------------------------------------#
 ADD https://cdn.rstudio.com/platform/tini/v${TINI_VERSION}/tini-amd64 /tini
 ADD https://cdn.rstudio.com/platform/tini/v${TINI_VERSION}/tini-amd64.asc /tini.asc
+# Keys must be pulled using curl, gpg calls intermittently fail on 18.04 with "gpg: keyserver receive failed: Cannot assign requested address"
 RUN gpg --update-trustdb \
     && curl -sL -o /tmp/tini-key.asc "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x6380dc428747f6c393feaca59a84159d7001a4e5" \
     && gpg --import /tmp/tini-key.asc \
@@ -48,6 +49,7 @@ RUN apt-get update -qq && \
 # Download RStudio Package Manager ---------------------------------------------#
 ARG RSPM_VERSION=2023.04.0-6
 ARG RSPM_DOWNLOAD_URL=https://cdn.rstudio.com/package-manager/ubuntu/amd64
+# Keys must be pulled using curl, gpg calls intermittently fail on 18.04 with "gpg: keyserver receive failed: Cannot assign requested address"
 RUN apt-get update --fix-missing \
     && apt-get install -y --no-install-recommends gdebi-core gpg dpkg-sig \
     && curl -O ${RSPM_DOWNLOAD_URL}/rstudio-pm_${RSPM_VERSION}_amd64.deb \
