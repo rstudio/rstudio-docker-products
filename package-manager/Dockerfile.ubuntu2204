@@ -10,16 +10,30 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 ARG DEBIAN_FRONTEND=noninteractive
+ARG TINI_VERSION=0.19.0
 
 ENV PATH /opt/rstudio-pm/bin:$PATH
 
+# Upgrade/install packages ----------------------------------------------------#
+RUN apt-get update --fix-missing \
+    && apt-get upgrade -yq \
+    && apt-get install -yq --no-install-recommends \
+      ca-certificates \
+      dirmngr \
+      gpg \
+      gpg-agent \
+    && rm -rf /var/lib/apt/lists/*
+
 # Runtime settings ------------------------------------------------------------#
-ARG TINI_VERSION=0.18.0
-RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini && \
-    chmod +x /usr/local/bin/tini
+ADD https://cdn.rstudio.com/platform/tini/v${TINI_VERSION}/tini-amd64 /tini
+ADD https://cdn.rstudio.com/platform/tini/v${TINI_VERSION}/tini-amd64.asc /tini.asc
+RUN gpg --update-trustdb \
+    && gpg --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7 \
+    && gpg --batch --verify /tini.asc /tini \
+    && chmod +x /tini \
+    && ln -s /tini /usr/local/bin/tini
 
 # Add another R version -------------------------------------------------------#
-
 ARG R_VERSION_ALT=3.6.2
 RUN apt-get update -qq && \
     curl -O https://cdn.rstudio.com/r/ubuntu-2204/pkgs/r-${R_VERSION_ALT}_1_amd64.deb && \
@@ -41,7 +55,7 @@ RUN apt-get update --fix-missing \
     && dpkg-sig --verify rstudio-pm_${RSPM_VERSION}_amd64.deb \
     && RSTUDIO_INSTALL_NO_LICENSE_INITIALIZATION=1 gdebi -n rstudio-pm_${RSPM_VERSION}_amd64.deb \
     && rm rstudio-pm_${RSPM_VERSION}_amd64.deb \
-    && apt-get purge -y gdebi-core dpkg-sig gpg \
+    && apt-get purge -y gdebi-core dpkg-sig gpg gpg-agent \
     && apt-get autoremove -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
