@@ -12,6 +12,27 @@ RSW_LICENSE_SERVER := ""
 _make-default-tag:
   echo "${IMAGE_REGISTRY_NAME}:$(just -f ../Justfile _get-tag-safe-version "${RSW_VERSION}")"
 
+get-version:
+  echo "${RSW_VERSION}"
+
+get-build-args:
+  #!/usr/bin/env bash
+  printf "RSW_VERSION=${RSW_VERSION}
+  R_VERSION=${R_VERSION}
+  R_VERSION_ALT=${R_VERSION_ALT}
+  PYTHON_VERSION=${PYTHON_VERSION}
+  PYTHON_VERSION_ALT=${PYTHON_VERSION_ALT}
+  PYTHON_VERSION_JUPYTER=${PYTHON_VERSION_JUPYTER}
+  QUARTO_VERSION=${QUARTO_VERSION}
+  DRIVERS_VERSION=${DRIVERS_VERSION}
+  SRC_IMAGE_NAME=${SRC_IMAGE_NAME}
+  RSW_DOWNLOAD_URL=${RSW_DOWNLOAD_URL}"
+
+get-build-tags:
+  #!/usr/bin/env bash
+  echo ${IMAGE_REGISTRY_NAME}:${RSW_TAG_VERSION},\
+  ${IMAGE_REGISTRY_NAME}:latest
+
 # Build Workbench image - just build 2022.07.2+576.pro12 rstudio/rstudio-workbench-gcw:2022.07.2
 build *TAGS="":
   #!/usr/bin/env bash
@@ -45,7 +66,7 @@ build *TAGS="":
     --build-arg QUARTO_VERSION="${QUARTO_VERSION}" \
     --build-arg DRIVERS_VERSION="${DRIVERS_VERSION}" \
     --build-arg RSW_DOWNLOAD_URL="${RSW_DOWNLOAD_URL}" \
-    --file=./Dockerfile .
+    --file=./Dockerfile.ubuntu2004 .
 
   echo ${raw_tag_array[@]}
 

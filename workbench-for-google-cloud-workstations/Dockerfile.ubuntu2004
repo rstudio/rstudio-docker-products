@@ -1,4 +1,4 @@
-FROM us-central1-docker.pkg.dev/cloud-workstations-images/predefined/base:latest
+FROM us-central1-docker.pkg.dev/cloud-workstations-images/predefined/base:public-image-current
 
 ### ARG declarations ###
 ARG DEBIAN_FRONTEND=noninteractive
