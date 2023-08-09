@@ -1,0 +1,26 @@
+#%PAM-1.0
+
+# This allows root to su without passwords (this is required)
+# DO NOT use in the "rstudio" profile
+auth sufficient pam_rootok.so
+auth sufficient pam_sss.so forward_pass
+auth required pam_unix.so try_first_pass nullok
+auth optional pam_permit.so
+auth required pam_env.so
+
+account [default=bad success=ok user_unknown=ignore authinfo_unavail=ignore] pam_sss.so
+account required pam_unix.so
+account optional pam_permit.so
+account required pam_time.so
+
+password sufficient pam_sss.so use_authtok
+password required pam_unix.so try_first_pass nullok sha512 shadow
+password optional pam_permit.so
+
+session required pam_mkhomedir.so skel=/etc/skel umask=0022
+session required pam_env.so readenv=1
+session required pam_env.so readenv=1 envfile=/etc/default/locale
+session required pam_limits.so
+session required pam_unix.so
+session optional pam_sss.so
+session optional pam_permit.so
