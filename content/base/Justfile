@@ -4,17 +4,17 @@ BUILDX_PATH := ""
 
 IMAGE_PREFIX := "rstudio/"
 PRODUCT := "content-base"
-IMAGE_OS := "ubuntu1804"
+IMAGE_OS := "ubuntu2204"
 
 R_VERSION := "3.6.3"
 
 PYTHON_VERSION := "3.9.5"
 
-QUARTO_VERSION := "1.1.251"
+QUARTO_VERSION := "1.3.340"
 
 DEFAULT_TAG := IMAGE_PREFIX + PRODUCT + ":r" + R_VERSION + "-py" + PYTHON_VERSION + "-" + IMAGE_OS
 
-# Build content base image - just build ubuntu1804 3.6.3 3.9.5 rstudio/content-base:r3.6.3-py3.9.5-bionic
+# Build content base image - just build ubuntu2204 3.6.3 3.9.5 rstudio/content-base:r3.6.3-py3.9.5-bionic
 build OS=IMAGE_OS _R_VERSION=R_VERSION _PYTHON_VERSION=PYTHON_VERSION +TAGS="":
   #!/usr/bin/env bash
   set -euxo pipefail

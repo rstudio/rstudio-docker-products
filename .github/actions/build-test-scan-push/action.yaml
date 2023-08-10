@@ -1,0 +1,156 @@
+name: 'Build/Test/Scan/Push Image'
+inputs:
+  context:
+    description: Path to the directory of the Dockerfile
+    required: true
+    type: string
+  os:
+    description: Target OS to build, the same as the extension of the Dockerfile
+    default: ubuntu2204
+    type: string
+  product:
+    description: Product being built
+    type: string
+  build-args:
+    description: JSON list of build args for the built image
+    required: true
+    type: string
+  image-tags:
+    description: List of tags for the built image
+    required: true
+    type: string
+  test-image:
+    description: Flag to test image once built
+    default: true
+    type: boolean
+  snyk-token:
+    description: Username for authentication with Snyk for scanning images
+    type: string
+  snyk-org-id:
+    description: Snyk Organization ID to publish scans to
+    type: string
+  push-image:
+    description: Flag to push image once built
+    default: false
+    type: boolean
+  ghcr-token:
+    description: Username for authentication with GHCR.io
+    required: true
+    type: string
+  dockerhub-username:
+    description: Username for authentication with DockerHub
+    required: true
+    type: string
+  dockerhub-token:
+    description: Username for authentication with DockerHub
+    required: true
+    type: string
+  gcp-json:
+    description: JSON for authenticating Google Cloud Platform
+    default: ""
+    type: string
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Free Disk space
+      shell: bash
+      run: |
+        sudo rm -rf /usr/local/lib/android  # will release about 10 GB
+        sudo rm -rf /usr/share/dotnet # will release about 20GB
+
+    - name: Login to ghcr.io
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ inputs.ghcr-token }}
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ inputs.dockerhub-username }}
+        password: ${{ inputs.dockerhub-token }}
+
+    - name: Authenticate to Google Cloud
+      continue-on-error: true
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: '${{ inputs.gcp-json }}'
+
+    - name: Authenticate GCAR
+      shell: bash
+      run: |
+        if [ ! -z "${{ inputs.gcp-json }}" ]; then
+          gcloud auth configure-docker -q us-central1-docker.pkg.dev
+        fi
+
+    - name: Build
+      id: image-build
+      uses: docker/build-push-action@v4
+      with:
+        load: true
+        context: ${{ inputs.context }}
+        file: ${{ inputs.context }}/Dockerfile.${{ inputs.os }}
+        build-args: |
+          ${{ inputs.build-args }}
+        tags: ${{ inputs.image-tags }}
+
+    - name: Get first tag
+      shell: bash
+      id: first-tag
+      run: |
+        IMG_TAGS="${{ inputs.image-tags }}"
+        FIRST_TAG=$(cut -d "," -f 1 <<< "${IMG_TAGS//$'\n'/}")
+        echo "$FIRST_TAG"
+        echo "FIRST_TAG=$FIRST_TAG" >> $GITHUB_OUTPUT
+
+    # We have to use bash logic because step "if"s don't work in composite actions
+    - name: Test - ${{ inputs.test-image }}
+      shell: bash
+      run: |
+        if [[ "${{ inputs.test-image }}" == "true" ]]; then
+          echo "${{ inputs.build-args }}" > ${{ inputs.context }}/.env
+          echo "OS=${{ inputs.os }}" >> ${{ inputs.context }}/.env
+          cat ${{ inputs.context }}/.env
+          IMAGE_NAME=${{ steps.first-tag.outputs.FIRST_TAG }} docker-compose -f ${{ inputs.context }}/docker-compose.test.yml run sut
+        fi
+
+    - name: Evaluate Snyk command
+      id: eval-snyk-command
+      shell: bash
+      run: |
+        if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+          SNYK_COMMAND="monitor"
+        else
+          SNYK_COMMAND="test"
+        fi
+        echo "SNYK_COMMAND=$SNYK_COMMAND" >> $GITHUB_OUTPUT     
+
+    - name: Run Snyk ${{ steps.eval-snyk-command.outputs.SNYK_COMMAND }}
+      continue-on-error: true
+      uses: snyk/actions/docker@master
+      env:
+        SNYK_TOKEN: ${{ inputs.snyk-token }}
+      with:
+        image: ${{ steps.first-tag.outputs.FIRST_TAG }}
+        args: |
+          --file=${{ inputs.context }}/Dockerfile.${{ inputs.os }} \
+          --org=${{ inputs.snyk-org-id }} \
+          --project-name=${{ steps.first-tag.FIRST_TAG }} \
+          --tags=product=${{ inputs.product }},os=${{ inputs.os }} \
+          --exclude-base-image-vulns \
+          --app-vulns
+        command: ${{ steps.eval-snyk-command.outputs.SNYK_COMMAND }}
+
+    - name: Push - ${{ inputs.push-image }}
+      uses: docker/build-push-action@v4
+      with:
+        push: ${{ inputs.push-image }}
+        context: ${{ inputs.context }}
+        file: ${{ inputs.context }}/Dockerfile.${{ inputs.os }}
+        build-args: ${{ inputs.build-args }}
+        tags: ${{ inputs.image-tags }}

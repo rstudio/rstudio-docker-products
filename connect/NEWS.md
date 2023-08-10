@@ -1,3 +1,11 @@
+# 2023-08-01
+- BREAKING: Removed R 3.6.2, replaced with R 4.1.3.
+- Updated R 4.2.0 to 4.2.3.
+- Updated Python versions to 3.8.17 and 3.9.17 (latest fix versions).
+
+# 2023-07-25
+- Changed `rstudio-connect.gcfg` Python version numbers behavior from statically defined to dynamically filled on build. 
+
 # 2023-07-10
 
 - BREAKING: Deprecate the Ubuntu 18.04 (Bionic Beaver) images.

@@ -125,7 +125,7 @@ command:
     title: jupyter_python_version_matches
     exit-status: 0
     stdout: [
-        "{{.Env.JUPYTER_PYTHON_VERSION}}"
+        "{{.Env.PYTHON_VERSION_JUPYTER}}"
     ]
   "which openssl":
     title: uses_system_openssl

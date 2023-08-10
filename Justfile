@@ -6,18 +6,22 @@ sed_vars := if os() == "macos" { "-i ''" } else { "-i" }
 
 BUILDX_PATH := ""
 
-RSC_VERSION := "2023.06.0"
+RSC_VERSION := "2023.07.0"
 RSPM_VERSION := "2023.04.0-6"
 RSW_VERSION := "2023.06.1+524.pro1"
 
 DRIVERS_VERSION := "2023.05.0"
 DRIVERS_VERSION_RHEL := DRIVERS_VERSION + "-1"
 
-R_VERSION := "3.6.2"
-R_VERSION_ALT := "4.1.0"
+R_VERSION := "4.2.3"
+R_VERSION_ALT := "4.1.3"
 
-PYTHON_VERSION := "3.9.5"
-PYTHON_VERSION_ALT := "3.8.10"
+PYTHON_VERSION := "3.9.17"
+PYTHON_VERSION_ALT := "3.8.17"
+PYTHON_VERSION_RHEL := "3.9.14"
+PYTHON_VERSION_ALT_RHEL := "3.8.15"
+
+QUARTO_VERSION := "1.3.340"
 
 # just _get-tag-safe-version 2022.07.2+576.pro12
 _get-tag-safe-version $VERSION:
@@ -29,7 +33,7 @@ _get-clean-version $VERSION:
   #!/usr/bin/env bash
   echo -n "$VERSION" | sed 's/[+|-].*//g'
 
-# just _parse-os bionic
+# just _parse-os jammy
 _parse-os OS:
   #!/usr/bin/env bash
   if [[ "{{OS}}" == "bionic" ]]; then
@@ -40,7 +44,7 @@ _parse-os OS:
     echo "{{OS}}"
   fi
 
-# just _rev-parse-os ubuntu1804
+# just _rev-parse-os ubuntu2204
 _rev-parse-os OS:
   #!/usr/bin/env bash
   if [[ "{{OS}}" == "ubuntu1804" ]]; then
@@ -87,8 +91,11 @@ update-versions:
     R_VERSION_ALT={{R_VERSION_ALT}} \
     PYTHON_VERSION={{PYTHON_VERSION}} \
     PYTHON_VERSION_ALT={{PYTHON_VERSION_ALT}} \
+    PYTHON_VERSION_RHEL={{PYTHON_VERSION_RHEL}} \
+    PYTHON_VERSION_ALT_RHEL={{PYTHON_VERSION_ALT_RHEL}} \
     DRIVERS_VERSION={{DRIVERS_VERSION}} \
-    update-rsw-versions update-rspm-versions update-rsc-versions update-r-versions update-py-versions update-drivers-versions
+    QUARTO_VERSION={{QUARTO_VERSION}} \
+    update-rsw-versions update-rspm-versions update-rsc-versions update-r-versions update-py-versions update-drivers-versions update-quarto-versions
 
 # just RSW_VERSION=1.2.3 update-rsw-versions
 update-rsw-versions:
@@ -134,8 +141,6 @@ update-rsc-versions:
   set -euxo pipefail
   sed {{ sed_vars }} "s/RSC_VERSION=.*/RSC_VERSION={{ RSC_VERSION }}/g" \
     connect/.env \
-    connect/Dockerfile.ubuntu1804 \
-    connect-content-init/Dockerfile.ubuntu1804 \
     connect/Dockerfile.ubuntu2204 \
     connect-content-init/Dockerfile.ubuntu2204
   sed {{ sed_vars }} "s/RSC_VERSION:.*/RSC_VERSION: {{ RSC_VERSION }}/g" docker-compose.yml
@@ -153,34 +158,42 @@ update-r-versions:
   #!/usr/bin/env bash
   set -euxo pipefail
   # Update primary R versions
-  sed {{ sed_vars }} "s/^R_VERSION=.*/R_VERSION={{ R_VERSION }}/g" \
+  sed {{ sed_vars }} "s/R_VERSION=.*/R_VERSION={{ R_VERSION }}/g" \
     workbench/.env \
     connect/.env \
     package-manager/.env \
-    connect/Dockerfile.ubuntu1804 \
-    package-manager/Dockerfile.ubuntu1804 \
+    package-manager/Dockerfile.ubuntu* \
     workbench/Dockerfile.ubuntu2204 \
     connect/Dockerfile.ubuntu2204 \
-    package-manager/Dockerfile.ubuntu2204
-  sed {{ sed_vars }} "s|^RVersion.*=.*|RVersion = /opt/R/{{ R_VERSION }}/|g" package-manager/rstudio-pm.gcfg
+    product/base/Dockerfile.ubuntu* \
+    product/pro/Dockerfile.ubuntu*
   sed {{ sed_vars }} "s/^R_VERSION := .*/R_VERSION := \"{{ R_VERSION }}\"/g" \
     workbench/Justfile \
     workbench-for-microsoft-azure-ml/Justfile \
-    connect/Justfile package-manager/Justfile \
+    connect/Justfile \
+    package-manager/Justfile \
+    product/base/Justfile \
+    product/pro/Justfile \
     Justfile \
     ci.Justfile
 
   # Update alt R versions
-  sed {{ sed_vars }} "s/^R_VERSION_ALT=.*/R_VERSION_ALT={{ R_VERSION_ALT }}/g" \
+  sed {{ sed_vars }} "s/R_VERSION_ALT=.*/R_VERSION_ALT={{ R_VERSION_ALT }}/g" \
     workbench/.env \
     connect/.env \
-    connect/Dockerfile.ubuntu1804 \
+    package-manager/.env \
+    package-manager/Dockerfile.ubuntu* \
     workbench/Dockerfile.ubuntu2204 \
-    connect/Dockerfile.ubuntu2204
+    connect/Dockerfile.ubuntu2204 \
+    product/base/Dockerfile.ubuntu* \
+    product/pro/Dockerfile.ubuntu*
   sed {{ sed_vars }} "s/^R_VERSION_ALT := .*/R_VERSION_ALT := \"{{ R_VERSION_ALT }}\"/g" \
     workbench/Justfile \
     workbench-for-microsoft-azure-ml/Justfile \
     connect/Justfile \
+    package-manager/Justfile \
+    product/base/Justfile \
+    product/pro/Justfile \
     Justfile \
     ci.Justfile
 
@@ -189,33 +202,50 @@ update-py-versions:
   #!/usr/bin/env bash
   set -euxo pipefail
   # Update primary Python versions
-  sed {{ sed_vars }} "s/^PYTHON_VERSION=.*/PYTHON_VERSION={{ PYTHON_VERSION }}/g" \
+  sed {{ sed_vars }} "s/PYTHON_VERSION=.*/PYTHON_VERSION={{ PYTHON_VERSION }}/g" \
     workbench/Dockerfile.ubuntu2204 \
     workbench/.env \
-    connect/Dockerfile.ubuntu1804 \
     connect/Dockerfile.ubuntu2204 \
     connect/.env \
-    package-manager/Dockerfile.ubuntu1804 \
-    package-manager/Dockerfile.ubuntu2204 \
-    package-manager/.env
+    package-manager/Dockerfile.ubuntu* \
+    package-manager/.env \
+    product/base/Dockerfile.ubuntu* \
+    product/pro/Dockerfile.ubuntu* \
+    r-session-complete/Dockerfile.ubuntu2204
+  sed {{ sed_vars }} "s/PYTHON_VERSION=.*/PYTHON_VERSION={{ PYTHON_VERSION_RHEL }}/g" \
+    product/base/Dockerfile.centos7 \
+    product/pro/Dockerfile.centos7 \
+    r-session-complete/Dockerfile.centos7
   sed {{ sed_vars }} "s/^PYTHON_VERSION := .*/PYTHON_VERSION := \"{{ PYTHON_VERSION }}\"/g" \
     workbench/Justfile \
     workbench-for-microsoft-azure-ml/Justfile \
     connect/Justfile \
+    package-manager/Justfile \
+    product/base/Justfile \
+    product/pro/Justfile \
     Justfile \
     ci.Justfile
 
   # Update alt Python versions
-  sed {{ sed_vars }} "s/^PYTHON_VERSION_ALT=.*/PYTHON_VERSION_ALT={{ PYTHON_VERSION_ALT }}/g" \
+  sed {{ sed_vars }} "s/PYTHON_VERSION_ALT=.*/PYTHON_VERSION_ALT={{ PYTHON_VERSION_ALT }}/g" \
     workbench/Dockerfile.ubuntu2204 \
     workbench/.env \
-    connect/Dockerfile.ubuntu1804 \
     connect/Dockerfile.ubuntu2204 \
-    connect/.env
+    connect/.env \
+    product/base/Dockerfile.ubuntu* \
+    product/pro/Dockerfile.ubuntu* \
+    r-session-complete/Dockerfile.ubuntu2204
+  sed {{ sed_vars }} "s/PYTHON_VERSION_ALT=.*/PYTHON_VERSION_ALT={{ PYTHON_VERSION_ALT_RHEL }}/g" \
+    product/base/Dockerfile.centos7 \
+    product/pro/Dockerfile.centos7 \
+    r-session-complete/Dockerfile.centos7
   sed {{ sed_vars }} "s/^PYTHON_VERSION_ALT := .*/PYTHON_VERSION_ALT := \"{{ PYTHON_VERSION_ALT }}\"/g" \
     workbench/Justfile \
     workbench-for-microsoft-azure-ml/Justfile \
     connect/Justfile \
+    package-manager/Justfile \
+    product/base/Justfile \
+    product/pro/Justfile \
     Justfile \
     ci.Justfile
 
@@ -239,6 +269,23 @@ update-drivers-versions:
     product/pro/Justfile \
     ci.Justfile
 
+update-quarto-versions:
+  #!/usr/bin/env bash
+  set -euxo pipefail
+  sed {{ sed_vars }} "s/^QUARTO_VERSION := .*/QUARTO_VERSION := \"{{ QUARTO_VERSION }}\"/g" \
+    content/base/Justfile \
+    product/base/Justfile \
+    ci.Justfile \
+    Justfile
+  sed {{ sed_vars }} "s/^QUARTO_VERSION=.*/QUARTO_VERSION={{ QUARTO_VERSION }}/g" \
+    content/base/Dockerfile* \
+    product/base/Dockerfile*
+  sed {{ sed_vars }} "s/^Executable = \/opt\/quarto\/.*\/bin\/quarto/Executable = \/opt\/quarto\/{{ QUARTO_VERSION }}\/bin\/quarto/g" \
+    connect/rstudio-connect.gcfg
+  sed {{ sed_vars }} "s/qver=\${QUARTO_VERSION:-.*}/qver=\${QUARTO_VERSION:-{{ QUARTO_VERSION }}}/g" \
+    content/base/maybe_install_quarto.sh
+
+
 # just test-image preview workbench 12.0.11-8 tag1 tag2 tag3 ...
 test-image $PRODUCT $VERSION +IMAGES:
   #!/usr/bin/env bash
@@ -252,7 +299,7 @@ test-image $PRODUCT $VERSION +IMAGES:
     PYTHON_VERSION_ALT={{PYTHON_VERSION_ALT}} \
     $PRODUCT/test "${IMAGE_ARRAY[0]}" "$VERSION"
 
-# just lint workbench ubuntu1804
+# just lint workbench ubuntu2204
 lint $PRODUCT $OS:
   #!/usr/bin/env bash
   docker run --rm -i -v $PWD/hadolint.yaml:/.config/hadolint.yaml ghcr.io/hadolint/hadolint < $PRODUCT/Dockerfile.$(just _parse-os {{OS}})

@@ -2,22 +2,42 @@ ARG R_VERSION=4.2.0
 FROM rstudio/r-base:${R_VERSION}-bionic
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
+ARG R_VERSION=4.2.0
+
 # Locale configuration --------------------------------------------------------#
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 ARG DEBIAN_FRONTEND=noninteractive
+ARG TINI_VERSION=0.19.0
 
 ENV PATH /opt/rstudio-pm/bin:$PATH
 
+# Upgrade/install packages ----------------------------------------------------#
+RUN apt-get update --fix-missing \
+    && apt-get upgrade -yq \
+    && apt-get install -yq --no-install-recommends \
+      ca-certificates \
+      curl \
+      dirmngr \
+      gpg \
+      gpg-agent \
+    && rm -rf /var/lib/apt/lists/*
+
 # Runtime settings ------------------------------------------------------------#
-ARG TINI_VERSION=0.18.0
-RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini && \
-    chmod +x /usr/local/bin/tini
+ADD https://cdn.rstudio.com/platform/tini/v${TINI_VERSION}/tini-amd64 /tini
+ADD https://cdn.rstudio.com/platform/tini/v${TINI_VERSION}/tini-amd64.asc /tini.asc
+# Keys must be pulled using curl, gpg calls intermittently fail on 18.04 with "gpg: keyserver receive failed: Cannot assign requested address"
+RUN gpg --update-trustdb \
+    && curl -sL -o /tmp/tini-key.asc "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x6380dc428747f6c393feaca59a84159d7001a4e5" \
+    && gpg --import /tmp/tini-key.asc \
+    && rm /tmp/tini-key.asc \
+    && gpg --batch --verify /tini.asc /tini \
+    && chmod +x /tini \
+    && ln -s /tini /usr/local/bin/tini
 
 # Add another R version -------------------------------------------------------#
-
 ARG R_VERSION_ALT=3.6.2
 RUN apt-get update -qq && \
     curl -O https://cdn.rstudio.com/r/ubuntu-1804/pkgs/r-${R_VERSION_ALT}_1_amd64.deb && \
@@ -29,18 +49,29 @@ RUN apt-get update -qq && \
 # Download RStudio Package Manager ---------------------------------------------#
 ARG RSPM_VERSION=2023.04.0-6
 ARG RSPM_DOWNLOAD_URL=https://cdn.rstudio.com/package-manager/ubuntu/amd64
+# Keys must be pulled using curl, gpg calls intermittently fail on 18.04 with "gpg: keyserver receive failed: Cannot assign requested address"
 RUN apt-get update --fix-missing \
-    && apt-get install -y --no-install-recommends gdebi-core dpkg-sig \
+    && apt-get install -y --no-install-recommends gdebi-core gpg dpkg-sig \
     && curl -O ${RSPM_DOWNLOAD_URL}/rstudio-pm_${RSPM_VERSION}_amd64.deb \
-    && gpg --keyserver keyserver.ubuntu.com --recv-keys 3F32EE77E331692F \
+    # Pre 7/25/23 packages
+    && curl -sL -o /tmp/rstudio-key.asc "http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xfe8564cff1ab93f1728645193f32ee77e331692f" \
+    && gpg --import /tmp/rstudio-key.asc \
+    && rm /tmp/rstudio-key.asc \
+    # Post 7/25 packages
+    && curl -sL -o /tmp/posit-key.asc "https://keys.openpgp.org/vks/v1/by-fingerprint/8B65E5A107BBEFE3BA99C59751C0B5BB19F92D60" \
+    && gpg --import /tmp/posit-key.asc \
+    && rm /tmp/posit-key.asc \
     && dpkg-sig --verify rstudio-pm_${RSPM_VERSION}_amd64.deb \
     && RSTUDIO_INSTALL_NO_LICENSE_INITIALIZATION=1 gdebi -n rstudio-pm_${RSPM_VERSION}_amd64.deb \
     && rm rstudio-pm_${RSPM_VERSION}_amd64.deb \
-    && apt-get purge -y gdebi-core dpkg-sig \
+    && apt-get purge -y gdebi-core dpkg-sig gpg gpg-agent \
     && apt-get autoremove -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && ln -s /opt/rstudio-pm/bin/rspm /usr/local/bin/rspm
+
+# Set default R version symlink
+RUN ln -s /opt/R/${R_VERSION} /opt/R/default
 
 # Add run script and set permissions -------------------------------------------#
 COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
