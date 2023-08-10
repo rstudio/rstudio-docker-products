@@ -34,28 +34,16 @@ ENV DIAGNOSTIC_ONLY false
 ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
 
 COPY --chmod=0644 TurboActivate.dat /opt/rstudio-license/license-manager.conf
+COPY deps/* /
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN apt-get update --fix-missing \
+    && apt-get upgrade -yq \
+    && xargs -a /apt_packages.txt apt-get install -yq --no-install-recommends \
+    && rm /apt_packages.txt \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN apt-get update \
-    && apt-get install --no-install-recommends -y \
-      krb5-user \
-      libcap2 \
-      libcurl4-gnutls-dev \
-      libglib2.0-0 \
-      libnss-sss \
-      libpam-sss \
-      libpq-dev \
-      libpq5 \
-      libsm6 \
-      libuser \
-      libuser1-dev \
-      libxext6 \
-      libxrender1 \
-      oddjob-mkhomedir \
-      openssh-client \
-      rrdtool \
-      sssd \
-      supervisor \
     && curl -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION//+/-}-amd64.deb" \
     # Pre 7/25/23 packages
     && gpg --keyserver keyserver.ubuntu.com --recv-keys 3F32EE77E331692F \
@@ -66,8 +54,8 @@ RUN apt-get update \
     && rm ./rstudio-workbench.deb \
     && mkdir -p /opt/rstudio-license/ \
     && mkdir -p /var/lib/rstudio-workbench/ \
-    && curl -sL "https://s3.amazonaws.com/rstudio-ide-build/monitor/jammy/rsp-monitor-workbench-azureml-amd64-${RSW_VERSION//+/-}.tar.gz" |  \
-       tar xzvf - --strip 2 -C /opt/rstudio-license/ \
+    && curl -sL "https://s3.amazonaws.com/rstudio-ide-build/monitor/jammy/rsp-monitor-workbench-azureml-amd64-${RSW_VERSION//+/-}.tar.gz" \
+    | tar xzvf - --strip 2 -C /opt/rstudio-license/ \
     && chmod 0755 /opt/rstudio-license/license-manager \
     && mv /opt/rstudio-license/license-manager /opt/rstudio-license/license-manager-orig \
     && rm -f /usr/lib/rstudio-server/bin/license-manager \
@@ -83,14 +71,15 @@ COPY startup-launcher/* /startup/launcher/
 COPY startup/* /startup/base/
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 
-# Install R and R Packages
-COPY package-list.txt /tmp/package-list.txt
-COPY install-r.sh /tmp/install-r.sh
+### Install R and R Packages ###
 RUN apt-get update --fix-missing -qq \
-    && /tmp/install-r.sh \
+    && /install-r.sh \
+    && rm /install-r.sh \
+    && rm /r_packages.txt \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+### Install Jupyter and extensions ###
 RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyter \
     && /opt/python/jupyter/bin/pip install \
       jupyter \
@@ -115,6 +104,14 @@ RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyt
       ipykernel \
       virtualenv \
     && /opt/python/${PYTHON_VERSION_ALT}/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}"
+
+### Install basic data science packages for Python and R ###
+COPY deps/* /
+RUN /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install -r /py_packages.txt \
+    && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip cache purge \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install -r /py_packages.txt \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip cache purge \
+    && rm /py_packages.txt
 
 RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh \
     && chmod +x /usr/local/bin/wait-for-it.sh
