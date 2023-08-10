@@ -71,6 +71,8 @@ file:
     group: rstudio-server
   /usr/lib/rstudio-server/bin/code-server/bin/code-server:
     exists: true
+  /var/lib/rstudio-launcher/Local/jobs/buildkitsandbox:
+    exists: false
   /etc/rstudio/vscode.conf:
     exists: true
   /tmp/startup.log:
