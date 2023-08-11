@@ -1,5 +1,5 @@
 #!/bin/bash
-set -xe -o pipefail
+set -euxo pipefail
 
 UBUNTU_CODENAME=$(lsb_release -cs)
 
@@ -11,8 +11,6 @@ pp() {
 install_r_packages() {
   # given a one-per-line file of R packages, parses the file and installs those R
   # packages to the provided (or default) R installation.
-
-  local UBUNTU_CODENAME=$(lsb_release -cs)
 
   # passing a r binary as second arg will install with that R version
   local R_BIN=${2:-"/usr/lib/R/bin/R"}

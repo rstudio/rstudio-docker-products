@@ -34,13 +34,13 @@ ENV DIAGNOSTIC_ONLY false
 ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
 
 COPY --chmod=0644 TurboActivate.dat /opt/rstudio-license/license-manager.conf
-COPY deps/* /
+COPY deps/* /tmp
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update --fix-missing \
     && apt-get upgrade -yq \
-    && xargs -a /apt_packages.txt apt-get install -yq --no-install-recommends \
-    && rm /apt_packages.txt \
+    && xargs -a /tmp/apt_packages.txt apt-get install -yq --no-install-recommends \
+    && rm /tmp/apt_packages.txt \
     && rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update \
@@ -73,9 +73,9 @@ COPY supervisord.conf /etc/supervisor/supervisord.conf
 
 ### Install R and R Packages ###
 RUN apt-get update --fix-missing -qq \
-    && /install-r.sh \
-    && rm /install-r.sh \
-    && rm /r_packages.txt \
+    && /tmp/install-r.sh \
+    && rm /tmp/install-r.sh \
+    && rm /tmp/r_packages.txt \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -107,11 +107,11 @@ RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyt
 
 ### Install basic data science packages for Python and R ###
 COPY deps/* /
-RUN /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install -r /py_packages.txt \
+RUN /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install -r /tmp/py_packages.txt \
     && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip cache purge \
-    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install -r /py_packages.txt \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install -r /tmp/py_packages.txt \
     && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip cache purge \
-    && rm /py_packages.txt
+    && rm /tmp/py_packages.txt
 
 RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh \
     && chmod +x /usr/local/bin/wait-for-it.sh
