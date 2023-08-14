@@ -1,5 +1,7 @@
 #!/bin/bash
-set -xe -o pipefail
+set -euxo pipefail
+
+UBUNTU_CODENAME=$(lsb_release -cs)
 
 # quick way to call out specific logging lines in packer stdout
 pp() {
@@ -9,10 +11,6 @@ pp() {
 install_r_packages() {
   # given a one-per-line file of R packages, parses the file and installs those R
   # packages to the provided (or default) R installation.
-
-  set -xe
-
-  local UBUNTU_CODENAME=$(lsb_release -cs)
 
   # passing a r binary as second arg will install with that R version
   local R_BIN=${2:-"/usr/lib/R/bin/R"}
@@ -38,7 +36,5 @@ for rvers in 3.6.3 4.0.5 4.1.3 4.2.3 4.3.1; do
     rm -f ./r-${rvers}_1_amd64.deb
 
     # install packages
-    install_r_packages /tmp/package-list.txt /opt/R/${rvers}/bin/R https://packagemanager.rstudio.com/cran/__linux__/bionic/latest
+    install_r_packages /tmp/r_packages.txt /opt/R/${rvers}/bin/R https://packagemanager.rstudio.com/cran/__linux__/${UBUNTU_CODENAME}/latest
 done
-
-rm -f /tmp/package_list.txt

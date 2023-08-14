@@ -140,8 +140,6 @@ command:
     exit-status: 0
     stdout:
     {{range $pkg := $pkgs}}
-      {{ if not (and (eq $pkg "tidymodels") (eq $rver "/opt/R/3.5.3/bin/R")) }}
       - {{ $pkg }}
-      {{end}}
     {{end}}
   {{end}}
