@@ -1,6 +1,6 @@
 on:
   schedule:
-    - cron: '0 12 * * 1'  # If updating this value, be sure to update logic for all `push-image` arguments!
+    - cron: '0 12 * * 1'
   push:
     branches:
       - main
