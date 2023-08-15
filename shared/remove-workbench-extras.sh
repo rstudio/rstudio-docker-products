@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm -rf /var/lib/rstudio-server/r-versions
+rm -f /var/lib/rstudio-server/r-versions
 rm /usr/lib/rstudio-server/bin/rserver-saml
 rm /usr/lib/rstudio-server/bin/rserver-openid
 rm /usr/lib/rstudio-server/bin/librclient.so
