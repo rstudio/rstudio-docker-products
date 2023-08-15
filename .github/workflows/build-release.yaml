@@ -1,6 +1,6 @@
 on:
   schedule:
-    - cron: '0 12 * * 1'
+    - cron: '0 12 * * 1'  # If updating this value, be sure to update logic for all `push-image` arguments!
   push:
     branches:
       - main
@@ -74,7 +74,7 @@ jobs:
           product: product-base
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
           build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
-          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.event.schedule == '0 12 * * 1' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
           ghcr-token: ${{ secrets.BUILD_PAT }}
@@ -97,7 +97,7 @@ jobs:
           product: product-base
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
           build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
-          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.event.schedule == '0 12 * * 1' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
           ghcr-token: ${{ secrets.BUILD_PAT }}
@@ -173,7 +173,7 @@ jobs:
           product: product-base-pro
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
           build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
-          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.event.schedule == '0 12 * * 1' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
           ghcr-token: ${{ secrets.BUILD_PAT }}
@@ -196,7 +196,7 @@ jobs:
           product: product-base-pro
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
           build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
-          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.event.schedule == '0 12 * * 1' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
           ghcr-token: ${{ secrets.BUILD_PAT }}
@@ -287,7 +287,7 @@ jobs:
           product: ${{ matrix.config.product }}
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
           build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
-          push-image: ${{ github.ref == 'refs/heads/main' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 12 * * 1' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
           ghcr-token: ${{ secrets.BUILD_PAT }}
@@ -310,7 +310,7 @@ jobs:
           product: ${{ matrix.config.product }}
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
           build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
-          push-image: ${{ github.ref == 'refs/heads/main' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 12 * * 1' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
           ghcr-token: ${{ secrets.BUILD_PAT }}
@@ -368,7 +368,7 @@ jobs:
           product: workbench-for-google-cloud-workstations
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
           build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
-          push-image: ${{ github.ref == 'refs/heads/main' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 12 * * 1' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
           ghcr-token: ${{ secrets.BUILD_PAT }}
@@ -392,7 +392,7 @@ jobs:
           product: workbench-for-google-cloud-workstations
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
           build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
-          push-image: ${{ github.ref == 'refs/heads/main' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 12 * * 1' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
           ghcr-token: ${{ secrets.BUILD_PAT }}
