@@ -47,6 +47,8 @@ build OS=IMAGE_OS VERSION=RSW_VERSION *TAGS="":
     tag_array+=("-t" $tag)
   done
 
+  cp ../shared/remove-workbench-extras.sh ./
+
   docker buildx --builder="{{ BUILDX_PATH }}" build --load ${BUILDX_ARGS} \
     ${tag_array[@]} \
     --build-arg RSW_VERSION="{{ VERSION }}" \
@@ -56,6 +58,8 @@ build OS=IMAGE_OS VERSION=RSW_VERSION *TAGS="":
     --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
     --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
     --file=./Dockerfile.$(just -f ../Justfile _parse-os {{OS}}) .
+
+    rm remove-workbench-extras.sh
 
 # Test r-session-complete image - just test rstudio/r-session-complete:ubuntu1804-2022.07.2-576.pro12 2022.07.2+576.pro12
 test TAG=`just _make-default-tag` VERSION=RSW_VERSION CMD="":
