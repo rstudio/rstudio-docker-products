@@ -33,7 +33,7 @@ _get-clean-version $VERSION:
   #!/usr/bin/env bash
   echo -n "$VERSION" | sed 's/[+|-].*//g'
 
-# just _parse-os bionic
+# just _parse-os jammy
 _parse-os OS:
   #!/usr/bin/env bash
   if [[ "{{OS}}" == "bionic" ]]; then
@@ -44,7 +44,7 @@ _parse-os OS:
     echo "{{OS}}"
   fi
 
-# just _rev-parse-os ubuntu1804
+# just _rev-parse-os ubuntu2204
 _rev-parse-os OS:
   #!/usr/bin/env bash
   if [[ "{{OS}}" == "ubuntu1804" ]]; then
@@ -299,7 +299,7 @@ test-image $PRODUCT $VERSION +IMAGES:
     PYTHON_VERSION_ALT={{PYTHON_VERSION_ALT}} \
     $PRODUCT/test "${IMAGE_ARRAY[0]}" "$VERSION"
 
-# just lint workbench ubuntu1804
+# just lint workbench ubuntu2204
 lint $PRODUCT $OS:
   #!/usr/bin/env bash
   docker run --rm -i -v $PWD/hadolint.yaml:/.config/hadolint.yaml ghcr.io/hadolint/hadolint < $PRODUCT/Dockerfile.$(just _parse-os {{OS}})

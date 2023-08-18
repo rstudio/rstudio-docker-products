@@ -62,6 +62,7 @@ RUN apt-get update --fix-missing  \
         libxml2-dev \
         locales \
         make \
+        openssh-client \
         pandoc \
         perl \
         sudo \

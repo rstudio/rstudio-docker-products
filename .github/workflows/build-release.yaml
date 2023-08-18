@@ -1,6 +1,6 @@
 on:
   schedule:
-    - cron: '0 12 * * 1'
+    - cron: '0 12 * * 1'  # If updating this value, be sure to update logic for all `push-image` arguments!
   push:
     branches:
       - main
@@ -22,14 +22,19 @@ jobs:
         config:
           - {os: 'centos7', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
           - {os: 'centos7', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
-          - {os: 'ubuntu1804', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
-          - {os: 'ubuntu1804', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
           - {os: 'ubuntu2204', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
           - {os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
           - {os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
 
     steps:
+      - name: Check Out Repo - cron main
+        if: github.event.schedule == '0 12 * * 1'
+        uses: actions/checkout@v3
+        with:
+          ref: main
+
       - name: Check Out Repo
+        if: github.event.schedule != '0 12 * * 1'
         uses: actions/checkout@v3
 
       - name: Set up Just
@@ -76,7 +81,7 @@ jobs:
           product: product-base
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
           build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
-          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.event.schedule == '0 12 * * 1' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
           ghcr-token: ${{ secrets.BUILD_PAT }}
@@ -99,7 +104,7 @@ jobs:
           product: product-base
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
           build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
-          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.event.schedule == '0 12 * * 1' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
           ghcr-token: ${{ secrets.BUILD_PAT }}
@@ -119,8 +124,6 @@ jobs:
         config:
           - {os: 'centos7', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
           - {os: 'centos7', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
-          - {os: 'ubuntu1804', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
-          - {os: 'ubuntu1804', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
           - {os: 'ubuntu2204', r-primary: "4.2.0", r-alternate: "3.6.2", py-primary: "3.9.5", py-alternate: "3.8.10"}
           - {os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.14", py-alternate: "3.8.15"}
           - {os: 'ubuntu2204', r-primary: "4.2.3", r-alternate: "4.1.3", py-primary: "3.9.17", py-alternate: "3.8.17"}
@@ -130,7 +133,14 @@ jobs:
       cancel-in-progress: true
 
     steps:
+      - name: Check Out Repo - cron main
+        if: github.event.schedule == '0 12 * * 1'
+        uses: actions/checkout@v3
+        with:
+          ref: main
+
       - name: Check Out Repo
+        if: github.event.schedule != '0 12 * * 1'
         uses: actions/checkout@v3
 
       - name: Set up Just
@@ -177,7 +187,7 @@ jobs:
           product: product-base-pro
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
           build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
-          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.event.schedule == '0 12 * * 1' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
           ghcr-token: ${{ secrets.BUILD_PAT }}
@@ -200,7 +210,7 @@ jobs:
           product: product-base-pro
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
           build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
-          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.event.schedule == '0 12 * * 1' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
           ghcr-token: ${{ secrets.BUILD_PAT }}
@@ -232,7 +242,14 @@ jobs:
       cancel-in-progress: true
 
     steps:
+      - name: Check Out Repo - cron main
+        if: github.event.schedule == '0 12 * * 1'
+        uses: actions/checkout@v3
+        with:
+          ref: main
+
       - name: Check Out Repo
+        if: github.event.schedule != '0 12 * * 1'
         uses: actions/checkout@v3
 
       - name: Set up Just
@@ -291,7 +308,7 @@ jobs:
           product: ${{ matrix.config.product }}
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
           build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
-          push-image: ${{ github.ref == 'refs/heads/main' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 12 * * 1' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
           ghcr-token: ${{ secrets.BUILD_PAT }}
@@ -314,11 +331,101 @@ jobs:
           product: ${{ matrix.config.product }}
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
           build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
-          push-image: ${{ github.ref == 'refs/heads/main' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 12 * * 1' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
           ghcr-token: ${{ secrets.BUILD_PAT }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      # End retry logic
+
+  build-workbench-for-google-cloud-workstations:
+    needs: [ build-base, build-base-pro ]
+    runs-on: ubuntu-latest
+    name: build-workbench-for-google-cloud-workstations
+
+    concurrency:
+      group: build-products-${{ matrix.config.product }}-${{ matrix.config.os }}-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Check Out Repo - cron main
+        if: github.event.schedule == '0 12 * * 1'
+        uses: actions/checkout@v3
+        with:
+          ref: main
+
+      - name: Check Out Repo
+        if: github.event.schedule != '0 12 * * 1'
+        uses: actions/checkout@v3
+
+      - name: Set up Just
+        uses: extractions/setup-just@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get Version
+        id: get-version
+        run: |
+          VERSION=$(just workbench-for-google-cloud-workstations/get-version)
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Get build args
+        id: get-build-args
+        run: |
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          BUILD_ARGS=$(just workbench-for-google-cloud-workstations/get-build-args)
+          echo "BUILD_ARGS<<$EOF" >> $GITHUB_OUTPUT
+          echo "$BUILD_ARGS" >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
+
+      - name: Get tags
+        id: get-tags
+        run: |
+          IMAGE_TAGS=$(just workbench-for-google-cloud-workstations/get-build-tags)
+          echo "IMAGE_TAGS=$IMAGE_TAGS" >> $GITHUB_OUTPUT
+
+      - name: Build/Test/Scan/Push base pro image
+        id: build1
+        uses: ./.github/actions/build-test-scan-push
+        continue-on-error: true
+        with:
+          context: ./workbench-for-google-cloud-workstations
+          os: ubuntu2004
+          product: workbench-for-google-cloud-workstations
+          image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
+          build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 12 * * 1' }}
+          snyk-token: ${{ secrets.SNYK_TOKEN }}
+          snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
+          ghcr-token: ${{ secrets.BUILD_PAT }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+
+      # Begin retry logic
+
+      - name: Wait 60s on failure before retrying
+        if: steps.build1.outcome == 'failure'
+        run: sleep 60
+
+      - name: Retry - Build/Test/Scan/Push base pro image
+        id: build2
+        if: steps.build1.outcome == 'failure'
+        uses: ./.github/actions/build-test-scan-push
+        with:
+          context: ./workbench-for-google-cloud-workstations
+          os: ubuntu2004
+          product: workbench-for-google-cloud-workstations
+          image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
+          build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 12 * * 1' }}
+          snyk-token: ${{ secrets.SNYK_TOKEN }}
+          snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
+          ghcr-token: ${{ secrets.BUILD_PAT }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
       # End retry logic

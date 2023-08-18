@@ -22,6 +22,7 @@ RUN yum upgrade -y -q \
       libuser-devel \
       libxml2-devel \
       openssl-devel \
+      openssh-clients \
       pandoc \
       perl-Digest-MD5 \
       postgresql-libs \

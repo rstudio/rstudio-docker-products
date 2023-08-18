@@ -45,6 +45,10 @@ inputs:
     description: Username for authentication with DockerHub
     required: true
     type: string
+  gcp-json:
+    description: JSON for authenticating Google Cloud Platform
+    default: ""
+    type: string
 
 runs:
   using: "composite"
@@ -70,6 +74,19 @@ runs:
       with:
         username: ${{ inputs.dockerhub-username }}
         password: ${{ inputs.dockerhub-token }}
+
+    - name: Authenticate to Google Cloud
+      continue-on-error: true
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: '${{ inputs.gcp-json }}'
+
+    - name: Authenticate GCAR
+      shell: bash
+      run: |
+        if [ ! -z "${{ inputs.gcp-json }}" ]; then
+          gcloud auth configure-docker -q us-central1-docker.pkg.dev
+        fi
 
     - name: Build
       id: image-build

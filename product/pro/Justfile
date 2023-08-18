@@ -3,7 +3,7 @@ set positional-arguments
 BUILDX_PATH := ""
 
 PRODUCT := "product-base-pro"
-IMAGE_OS := "ubuntu1804"
+IMAGE_OS := "ubuntu2204"
 
 IMAGE_REGISTRY := "rstudio"
 
@@ -22,7 +22,7 @@ DRIVERS_VERSION_RHEL := DRIVERS_VERSION + "-1"
 _make-default-tag OS=IMAGE_OS:
   echo "{{IMAGE_REGISTRY}}/{{PRODUCT}}:{{OS}}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}}"
 
-# Build base pro image - just build ubuntu1804 rstudio/product-base-pro:ubuntu1804
+# Build base pro image - just build ubuntu2204 rstudio/product-base-pro:ubuntu2204
 build OS=IMAGE_OS *TAGS="":
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -58,7 +58,7 @@ build OS=IMAGE_OS *TAGS="":
     --build-arg DRIVERS_VERSION="${_DRIVERS_VERSION}" \
     --file=./Dockerfile.$(just -f ../../Justfile _parse-os {{OS}}) .
 
-# Test base image - just test rstudio/product-base-pro:ubuntu1804
+# Test base image - just test rstudio/product-base-pro:ubuntu2204
 test TAG=`just _make-default-tag` CMD="":
   #!/usr/bin/env bash
   set -euxo pipefail
@@ -74,6 +74,6 @@ test TAG=`just _make-default-tag` CMD="":
   OS="{{ IMAGE_OS }}" \
   docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
 
-# Test base image interactively - just test-i rstudio/product-base-pro:ubuntu1804
+# Test base image interactively - just test-i rstudio/product-base-pro:ubuntu2204
 test-i TAG=`just _make-default-tag`:
   just test {{ TAG }} bash

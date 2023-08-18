@@ -1,0 +1,8 @@
+azureml
+azureml-core
+azureml-dataset-runtime
+azure-ai-ml
+numpy
+scipy
+pandas
+matplotlib
