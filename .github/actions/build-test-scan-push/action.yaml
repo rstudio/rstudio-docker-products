@@ -86,6 +86,9 @@ runs:
       run: |
         if [ ! -z "${{ inputs.gcp-json }}" ]; then
           gcloud auth configure-docker -q us-central1-docker.pkg.dev
+          gcloud auth configure-docker -q us-docker.pkg.dev
+          gcloud auth configure-docker -q asia-docker.pkg.dev
+          gcloud auth configure-docker -q europe-docker.pkg.dev
         fi
 
     - name: Build
