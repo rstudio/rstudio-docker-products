@@ -1,9 +1,11 @@
 #!/bin/bash
 
-export LICENSE_MANAGER_PATH=${LICENSE_MANAGER_PATH:-/opt/rstudio-license}
-
 set -e
-set -x
+if [[ "${STARTUP_DEBUG_MODE}" -eq 1 ]]; then
+  set -x
+fi
+
+export LICENSE_MANAGER_PATH=${LICENSE_MANAGER_PATH:-/opt/rstudio-license}
 
 # Deactivate license when the process exits
 deactivate() {

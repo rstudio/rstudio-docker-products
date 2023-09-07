@@ -19,6 +19,7 @@ ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/jammy/amd64
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Set default env values
+ENV STARTUP_DEBUG_MODE 0
 ENV RSW_LICENSE ""
 ENV RSW_LICENSE_SERVER ""
 ENV USER_NAME azureuser
