@@ -1,8 +1,11 @@
 #!/bin/bash
 
-export LICENSE_MANAGER_PATH=${LICENSE_MANAGER_PATH:-/opt/rstudio-license}
+set -e
+if [[ "${STARTUP_DEBUG_MODE:-0}" -eq 1 ]]; then
+  set -x
+fi
 
-set -ex
+export LICENSE_MANAGER_PATH=${LICENSE_MANAGER_PATH:-/opt/rstudio-license}
 
 # Uncomment to get a log for this script
 #exec >/startup.log 2>&1
@@ -25,8 +28,6 @@ verify_installation(){
    rstudio-server verify-installation --verify-user=$RSW_TESTUSER | tee $DIAGNOSTIC_DIR/verify.log
 }
 
-set +x
-
 # Support RSP_ or RSW_ prefix
 RSP_LICENSE=${RSP_LICENSE:-${RSW_LICENSE}}
 RSP_LICENSE_SERVER=${RSP_LICENSE_SERVER:-${RSW_LICENSE_SERVER}}
@@ -46,8 +47,6 @@ unset RSP_LICENSE
 unset RSP_LICENSE_SERVER
 unset RSW_LICENSE
 unset RSW_LICENSE_SERVER
-
-set -x
 
 # Start Launcher
 if [ "$RSW_LAUNCHER" == "true" ]; then

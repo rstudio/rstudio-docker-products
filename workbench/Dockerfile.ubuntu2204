@@ -17,6 +17,7 @@ ARG RSW_VERSION=2023.06.2+561.pro5
 ARG RSW_NAME=rstudio-workbench
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/jammy/amd64
 
+ENV STARTUP_DEBUG_MODE 0
 ENV RSW_LICENSE ""
 ENV RSW_LICENSE_SERVER ""
 ENV RSW_TESTUSER rstudio
