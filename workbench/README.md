@@ -137,7 +137,7 @@ docker run -it \
     -v $PWD/data/rsp:/home \
     -v $PWD/server-pro/conf/:/etc/rstudio \
     -v $PWD/sssd.conf:/etc/sssd/conf.d/sssd.conf \
-    -e RSP_LICENSE=$RSP_LICENSE \
+    -e RSW_LICENSE=$RSW_LICENSE \
     rstudio/rstudio-workbench:ubuntu1804
 ```
 
