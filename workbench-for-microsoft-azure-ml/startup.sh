@@ -1,7 +1,7 @@
 #!/bin/bash
 
 set -e
-if [[ "${STARTUP_DEBUG_MODE}" -eq 1 ]]; then
+if [[ "${STARTUP_DEBUG_MODE:-0}" -eq 1 ]]; then
   set -x
 fi
 
