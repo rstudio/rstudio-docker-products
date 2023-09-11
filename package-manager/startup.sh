@@ -1,7 +1,9 @@
 #!/bin/bash
 
 set -e
-set -x
+if [[ "${STARTUP_DEBUG_MODE:-0}" -eq 1 ]]; then
+  set -x
+fi
 
 # Deactivate license when it exists
 deactivate() {

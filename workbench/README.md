@@ -7,7 +7,7 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`jammy`, `ubuntu2204`, `jammy-2023.06.1`, `ubuntu2204-2023.06.1`](https://github.com/rstudio/rstudio-docker-products/blob/main/workbench/Dockerfile.ubuntu2204)
+* [`jammy`, `ubuntu2204`, `jammy-2023.06.2`, `ubuntu2204-2023.06.2`](https://github.com/rstudio/rstudio-docker-products/blob/main/workbench/Dockerfile.ubuntu2204)
 
 # What is RStudio Workbench?
 
@@ -137,7 +137,7 @@ docker run -it \
     -v $PWD/data/rsp:/home \
     -v $PWD/server-pro/conf/:/etc/rstudio \
     -v $PWD/sssd.conf:/etc/sssd/conf.d/sssd.conf \
-    -e RSP_LICENSE=$RSP_LICENSE \
+    -e RSW_LICENSE=$RSW_LICENSE \
     rstudio/rstudio-workbench:ubuntu1804
 ```
 
