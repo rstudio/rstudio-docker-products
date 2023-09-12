@@ -43,7 +43,7 @@ services:
       context: ./package-manager
       dockerfile: "Dockerfile.${IMAGE_OS:-ubuntu1804}"
       args:
-        RSPM_VERSION: 2023.04.0-6
+        RSPM_VERSION: 2023.08.0-16
     image: rstudio/rstudio-package-manager:2023.04.0
     environment:
       RSPM_LICENSE: ${RSPM_LICENSE}
