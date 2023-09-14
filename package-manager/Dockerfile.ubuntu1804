@@ -48,8 +48,8 @@ RUN apt-get update -qq && \
     && rm -rf /var/lib/apt/lists/*
 
 # Download RStudio Package Manager ---------------------------------------------#
-ARG RSPM_VERSION=2023.04.0-6
-ARG RSPM_DOWNLOAD_URL=https://cdn.rstudio.com/package-manager/ubuntu/amd64
+ARG RSPM_VERSION=2023.08.0-16
+ARG RSPM_DOWNLOAD_URL=https://cdn.rstudio.com/package-manager/deb/amd64
 # Keys must be pulled using curl, gpg calls intermittently fail on 18.04 with "gpg: keyserver receive failed: Cannot assign requested address"
 RUN apt-get update --fix-missing \
     && apt-get install -y --no-install-recommends gdebi-core gpg dpkg-sig \
