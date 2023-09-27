@@ -6,7 +6,7 @@ IMAGE_PREFIX := "rstudio-"
 PRODUCT := "workbench"
 IMAGE_OS := "ubuntu2204"
 
-RSW_VERSION := "2023.06.2+561.pro5"
+RSW_VERSION := "2023.09.0+463.pro11"
 RSW_LICENSE := ""
 RSW_LICENSE_SERVER := ""
 
