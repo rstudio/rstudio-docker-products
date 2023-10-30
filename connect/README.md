@@ -2,16 +2,16 @@
 
 * Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
 * Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues)
-* RStudio Connect image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-connect)
-* RStudio Connect Content Init image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-connect-content-init)
+* Posit Connect image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-connect)
+* Posit Connect Content Init image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-connect-content-init)
 
 # Supported tags and respective Dockerfile links
 
 * [`jammy`, `ubuntu2204`, `jammy-2023.09.0`, `ubuntu2204-2023.09.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.2204)
 
-# What is RStudio Connect?
+# What is Posit Connect?
 
-RStudio Connect connects you and the work you do with others as never before. Only RStudio Connect provides:
+Posit Connect connects you and the work you do with others as never before. Only Posit Connect provides:
 
 * "One button" deployment into a single environment for Shiny applications, R Markdown documents, Plumber APIs, 
   Python Jupyter notebooks, Quarto documents and projects, or any static R plot or graph.
@@ -21,8 +21,8 @@ RStudio Connect connects you and the work you do with others as never before. On
   with you.
 * "Hands free" scheduling of updates to your documents and automatic email distribution.
 
-For more information on running RStudio Connect in your organization please visit 
-https://www.rstudio.com/products/connect/.
+For more information on running Posit Connect in your organization please visit 
+https://posit.co/products/enterprise/connect/.
 
 # Notice for support
 
@@ -57,8 +57,8 @@ Once running, open [http://localhost:3939](http://localhost:3939) to access RStu
 ## Overview
 
 This Docker container is built following
-the [RStudio Connect admin guide](https://docs.rstudio.com/connect/admin/index.html), please
-see [Server Guide/Docker](https://docs.rstudio.com/connect/admin/server-management/#docker) for more details on the
+the [Posit Connect admin guide](https://docs.posit.co/connect/admin/index.html), please
+see [Server Guide/Docker](https://docs.posit.co/connect/admin/server-management/#docker) for more details on the
 requirements and how to extend this image.
 
 This container includes:
@@ -66,19 +66,19 @@ This container includes:
 1. Two versions of R
 2. Two versions of Python
 3. Posit Professional Drivers
-4. RStudio Connect
+4. Posit Connect
 
-Note that running the RStudio Connect Docker image requires the container to run using the `--privileged` flag and a
-valid RStudio Connect license.
+Note that running the Posit Connect Docker image requires the container to run using the `--privileged` flag and a
+valid Posit Connect license.
 
-> IMPORTANT: to use RStudio Connect with more than one user, you will need to
+> IMPORTANT: to use Posit Connect with more than one user, you will need to
 > define `Server.Address` in the `rstudio-connect.gcfg` file. To do so, update
 > your configuration file with the URL that users will use to visit Connect.
 > Then start or restart the container.
 
 ## Configuration
 
-The configuration of RStudio Connect is made on the `/etc/rstudio-connect/rstudio-connect.gcfg` file, mount this file as
+The configuration of Posit Connect is made on the `/etc/rstudio-connect/rstudio-connect.gcfg` file, mount this file as
 volume with an external file on the host machine to change the configuration and restart the container for changes to
 take effect.
 
@@ -103,11 +103,11 @@ orchestration system to be available at `/data`. Should you wish to move this to
 
 ### Licensing
 
-Using the RStudio Connect docker image requires to have a valid License. You can set the RSC license in three ways:
+Using the Posit Connect docker image requires to have a valid License. You can set the license in three ways:
 
 1. Setting the `RSC_LICENSE` environment variable to a valid license key inside the container
 2. Setting the `RSC_LICENSE_SERVER` environment variable to a valid license server / port inside the container
-3. Mounting a `/etc/rstudio-connect/license.lic` single file that contains a valid license for RStudio Connect
+3. Mounting a `/etc/rstudio-connect/license.lic` single file that contains a valid license for Posit Connect
 
 **NOTE:** the "offline activation process" is not supported by this image today. Offline installations will need
 to explore using a license server, license file, or custom image with manual intervention.
@@ -116,14 +116,14 @@ to explore using a license server, license file, or custom image with manual int
 
 | Variable | Description | Default |
 |-----|---|---|
-| `RSC_LICENSE` | License key for RStudio Connect, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None |
+| `RSC_LICENSE` | License key for Posit Connect, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None |
 | `RSC_LICENSE_SERVER` | Floating license server, format should be: `my.url.com:port` | None |
 
 ### Ports
 
 | Variable | Description |
 |-----|---|
-| `3939` | Default HTTP Port for RStudio Connect |
+| `3939` | Default HTTP Port for Posit Connect |
 
 ### Example usage
 
@@ -147,7 +147,7 @@ docker run -it --privileged \
     rstudio/rstudio-connect:ubuntu2204
 ```
 
-Open [http://localhost:3939](http://localhost:3939) to access RStudio Connect.
+Open [http://localhost:3939](http://localhost:3939) to access Posit Connect.
 
 ## Caveats of product licensing in containers
 
@@ -187,7 +187,7 @@ While neither of these solutions will eliminate the problem, they should help mi
 long-term solution.
 
 # Licensing
-The license associated with the RStudio Docker Products repository is located 
+The license associated with the Posit Docker Products repository is located 
 [in LICENSE.md](https://github.com/rstudio/rstudio-docker-products/blob/main/LICENSE.md).
 
 As is the case with all container images, the images themselves also contain other software which may be under other
