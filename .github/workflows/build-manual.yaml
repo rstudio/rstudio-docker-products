@@ -59,6 +59,10 @@ jobs:
     runs-on: ubuntu-latest
     name: manual-build
 
+    permissions:
+      contents: read
+      packages: write
+
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v3

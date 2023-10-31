@@ -18,6 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     name: build-${{ matrix.config.type }}-${{ matrix.config.product }}-${{ matrix.config.os }}
 
+    permissions:
+      contents: read
+      packages: write
+
     strategy:
       fail-fast: false
       matrix:
