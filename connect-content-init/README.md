@@ -9,7 +9,7 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`jammy`, `ubuntu2204`, `jammy-2023.09.0`, `ubuntu2204-2023.09.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.2204)
+* [`jammy`, `ubuntu2204`, `jammy-2023.10.0`, `ubuntu2204-2023.10.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.2204)
 
 # RStudio Connect Content Init Container
 
@@ -31,7 +31,7 @@ The version of the release package to use can be overridden with the
 `RSC_VERSION` build arg.
 
 ```console
-just build ubuntu2204 2023.09.0
+just build ubuntu2204 2023.10.0
 ```
 
 ## Testing
@@ -56,7 +56,7 @@ just test
 You can see the different layers that make up the image:
 
 ```console
-docker history rstudio/rstudio-connect-content-init-preview:2023.09.0-dev-326
+docker history rstudio/rstudio-connect-content-init-preview:2023.10.0-dev-326
 ```
 
 NOTE: almost all the image size is pandoc.
