@@ -18,6 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     name: build-${{ matrix.config.type }}-${{ matrix.config.product }}-${{ matrix.config.os }}
 
+    permissions:
+      contents: read
+      packages: write
+
     strategy:
       fail-fast: false
       matrix:
@@ -112,6 +116,7 @@ jobs:
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
       # Begin retry logic
 
@@ -135,5 +140,6 @@ jobs:
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
       # End retry logic
