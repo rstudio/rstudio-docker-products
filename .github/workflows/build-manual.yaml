@@ -59,6 +59,10 @@ jobs:
     runs-on: ubuntu-latest
     name: manual-build
 
+    permissions:
+      contents: read
+      packages: write
+
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v3
@@ -133,4 +137,5 @@ jobs:
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
