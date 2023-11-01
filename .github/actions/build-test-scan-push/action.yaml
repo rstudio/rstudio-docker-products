@@ -63,37 +63,53 @@ runs:
         sudo rm -rf /usr/share/dotnet # will release about 20GB
 
     - name: Login to ghcr.io
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ inputs.ghcr-token }}
 
     - name: Login to Docker Hub
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         username: ${{ inputs.dockerhub-username }}
         password: ${{ inputs.dockerhub-token }}
 
-    - name: Authenticate to Google Cloud
+    - name: Login to GCAR us-central1
       continue-on-error: true
-      uses: google-github-actions/auth@v1
+      uses: docker/login-action@v3
       with:
-        credentials_json: '${{ inputs.gcp-json }}'
+        registry: us-central1-docker.pkg.dev
+        username: _json_key
+        password: '${{ inputs.gcp-json }}'
 
-    - name: Authenticate GCAR
-      shell: bash
-      run: |
-        if [[ "${{ inputs.gcp-json != '' }}" == "true" ]]; then
-          gcloud auth configure-docker -q us-central1-docker.pkg.dev
-          gcloud auth configure-docker -q us-docker.pkg.dev
-          gcloud auth configure-docker -q asia-docker.pkg.dev
-          gcloud auth configure-docker -q europe-docker.pkg.dev
-        fi
+    - name: Login to GCAR us
+      continue-on-error: true
+      uses: docker/login-action@v3
+      with:
+        registry: us-docker.pkg.dev
+        username: _json_key
+        password: '${{ inputs.gcp-json }}'
+
+    - name: Login to GCAR asia
+      continue-on-error: true
+      uses: docker/login-action@v3
+      with:
+        registry: asia-docker.pkg.dev
+        username: _json_key
+        password: '${{ inputs.gcp-json }}'
+
+    - name: Login to GCAR europe
+      continue-on-error: true
+      uses: docker/login-action@v3
+      with:
+        registry: europe-docker.pkg.dev
+        username: _json_key
+        password: '${{ inputs.gcp-json }}'
 
     - name: Build
       id: image-build
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v5
       with:
         load: true
         context: ${{ inputs.context }}
@@ -150,7 +166,7 @@ runs:
         command: ${{ steps.eval-snyk-command.outputs.SNYK_COMMAND }}
 
     - name: Push - ${{ inputs.push-image }}
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v5
       with:
         push: ${{ inputs.push-image }}
         context: ${{ inputs.context }}
