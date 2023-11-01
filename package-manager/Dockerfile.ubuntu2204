@@ -1,8 +1,8 @@
-ARG R_VERSION=4.2.0
+ARG R_VERSION=4.2.3
 FROM rstudio/r-base:${R_VERSION}-jammy
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
-ARG R_VERSION=4.2.0
+ARG R_VERSION=4.2.3
 
 # Locale configuration --------------------------------------------------------#
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
@@ -35,7 +35,7 @@ RUN gpg --update-trustdb \
     && ln -s /tini /usr/local/bin/tini
 
 # Add another R version -------------------------------------------------------#
-ARG R_VERSION_ALT=3.6.2
+ARG R_VERSION_ALT=4.1.3
 RUN apt-get update -qq && \
     curl -O https://cdn.rstudio.com/r/ubuntu-2204/pkgs/r-${R_VERSION_ALT}_1_amd64.deb && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y ./r-${R_VERSION_ALT}_1_amd64.deb && \
@@ -44,7 +44,7 @@ RUN apt-get update -qq && \
     && rm -rf /var/lib/apt/lists/*
 
 # Download RStudio Package Manager ---------------------------------------------#
-ARG RSPM_VERSION=2023.08.0-16
+ARG RSPM_VERSION=2023.08.4-20
 ARG RSPM_DOWNLOAD_URL=https://cdn.rstudio.com/package-manager/deb/amd64
 RUN apt-get update --fix-missing \
     && apt-get install -y --no-install-recommends ca-certificates gdebi-core gpg dpkg-sig \
