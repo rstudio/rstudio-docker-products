@@ -6,9 +6,9 @@ sed_vars := if os() == "macos" { "-i ''" } else { "-i" }
 
 BUILDX_PATH := ""
 
-RSC_VERSION := "2023.09.0"
-RSPM_VERSION := "2023.08.0-16"
-RSW_VERSION := "2023.09.0+463.pro11"
+RSC_VERSION := "2023.10.0"
+RSPM_VERSION := "2023.08.4-20"
+RSW_VERSION := "2023.09.1+494.pro2"
 
 DRIVERS_VERSION := "2023.05.0"
 DRIVERS_VERSION_RHEL := DRIVERS_VERSION + "-1"

@@ -6,7 +6,7 @@ IMAGE_PREFIX := "rstudio-"
 PRODUCT := "package-manager"
 IMAGE_OS := "ubuntu2204"
 
-RSPM_VERSION := "2023.08.0-16"
+RSPM_VERSION := "2023.08.4-20"
 RSPM_LICENSE := ""
 RSPM_LICENSE_SERVER := ""
 

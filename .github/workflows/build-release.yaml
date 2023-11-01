@@ -12,6 +12,11 @@ jobs:
   build-base:
     runs-on: ubuntu-latest
     name: product-base-build-${{ matrix.config.os }}-r${{ matrix.config.r-primary }}_${{ matrix.config.r-alternate }}-py${{ matrix.config.py-primary }}_${{ matrix.config.py-alternate }}
+
+    permissions:
+      contents: read
+      packages: write
+
     concurrency:
       group: base-build-${{ matrix.config.os }}-r${{ matrix.config.r-primary }}_${{ matrix.config.r-alternate }}-py${{ matrix.config.py-primary }}_${{ matrix.config.py-alternate }}-${{ github.ref }}
       cancel-in-progress: true
@@ -84,9 +89,10 @@ jobs:
           push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.event.schedule == '0 12 * * 1' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
-          ghcr-token: ${{ secrets.BUILD_PAT }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
       # Begin retry logic
 
@@ -107,9 +113,10 @@ jobs:
           push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.event.schedule == '0 12 * * 1' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
-          ghcr-token: ${{ secrets.BUILD_PAT }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
       # End retry logic
 
@@ -117,6 +124,10 @@ jobs:
     needs: build-base
     runs-on: ubuntu-latest
     name: product-base-pro-build-${{ matrix.config.os }}-r${{ matrix.config.r-primary }}_${{ matrix.config.r-alternate }}-py${{ matrix.config.py-primary }}_${{ matrix.config.py-alternate }}
+
+    permissions:
+      contents: read
+      packages: write
 
     strategy:
       fail-fast: false
@@ -190,9 +201,10 @@ jobs:
           push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.event.schedule == '0 12 * * 1' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
-          ghcr-token: ${{ secrets.BUILD_PAT }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
       # Begin retry logic
 
@@ -213,9 +225,10 @@ jobs:
           push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.event.schedule == '0 12 * * 1' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
-          ghcr-token: ${{ secrets.BUILD_PAT }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
       # End retry logic
 
@@ -223,6 +236,10 @@ jobs:
     needs: [ build-base, build-base-pro ]
     runs-on: ubuntu-latest
     name: build-${{ matrix.config.product }}-${{ matrix.config.os }}
+
+    permissions:
+      contents: read
+      packages: write
 
     strategy:
       fail-fast: false
@@ -311,9 +328,10 @@ jobs:
           push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 12 * * 1' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
-          ghcr-token: ${{ secrets.BUILD_PAT }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
       # Begin retry logic
 
@@ -334,9 +352,10 @@ jobs:
           push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 12 * * 1' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
-          ghcr-token: ${{ secrets.BUILD_PAT }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
       # End retry logic
 
@@ -344,6 +363,10 @@ jobs:
     needs: [ build-base, build-base-pro ]
     runs-on: ubuntu-latest
     name: build-workbench-for-google-cloud-workstations
+
+    permissions:
+      contents: read
+      packages: write
 
     concurrency:
       group: build-products-${{ matrix.config.product }}-${{ matrix.config.os }}-${{ github.ref }}
@@ -399,7 +422,7 @@ jobs:
           push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 12 * * 1' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
-          ghcr-token: ${{ secrets.BUILD_PAT }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
@@ -423,7 +446,7 @@ jobs:
           push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 12 * * 1' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
-          ghcr-token: ${{ secrets.BUILD_PAT }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'

@@ -22,6 +22,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: matrix
     name: content-base-${{ matrix.config.os }}-r${{ matrix.config.r }}-py${{ matrix.config.py }}--${{ github.ref }}
+
+    permissions:
+      contents: read
+      packages: write
+
     concurrency:
       group: content-base-${{ matrix.config.os }}-r${{ matrix.config.r }}-py${{ matrix.config.py }}-${{ github.ref }}
       cancel-in-progress: true
@@ -81,9 +86,10 @@ jobs:
           push-image: ${{ github.ref == 'refs/heads/main' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
-          ghcr-token: ${{ secrets.BUILD_PAT }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
       # Begin retry logic
 
@@ -105,9 +111,10 @@ jobs:
           push-image: ${{ github.ref == 'refs/heads/main' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
-          ghcr-token: ${{ secrets.BUILD_PAT }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
       # End retry logic
 
@@ -175,9 +182,10 @@ jobs:
           push-image: ${{ github.ref == 'refs/heads/main' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
-          ghcr-token: ${{ secrets.BUILD_PAT }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
       # Begin retry logic
 
@@ -199,8 +207,9 @@ jobs:
           push-image: ${{ github.ref == 'refs/heads/main' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
-          ghcr-token: ${{ secrets.BUILD_PAT }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
       # End retry logic
