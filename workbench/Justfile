@@ -7,6 +7,7 @@ PRODUCT := "workbench"
 IMAGE_OS := "ubuntu2204"
 
 RSW_VERSION := "2023.09.1+494.pro2"
+RSW_RELEASE_TYPE := "release"
 RSW_LICENSE := ""
 RSW_LICENSE_SERVER := ""
 
@@ -19,11 +20,8 @@ PYTHON_VERSION_ALT := "3.8.17"
 PERSIST_LICENSE := "false"
 PERSIST_LICENSE_DIR := join(justfile_directory(), "tmp-lic")
 
-_get-download-url OS=IMAGE_OS:
-  echo "https://download2.rstudio.org/server/$(just -f ../Justfile _rev-parse-os {{OS}})/amd64"
-
-_make-default-tag OS=IMAGE_OS:
-  echo "{{IMAGE_PREFIX}}{{PRODUCT}}:{{OS}}-$(just -f ../Justfile _get-tag-safe-version {{RSW_VERSION}})"
+_make-default-tag OS=IMAGE_OS VERSION=RSW_VERSION:
+  echo "{{IMAGE_PREFIX}}{{PRODUCT}}:{{OS}}-$(just -f ../Justfile _get-tag-safe-version {{VERSION}})"
 
 # Build Workbench image - just build ubuntu2204 2022.07.2+576.pro12 rstudio/rstudio-workbench:ubuntu2204-2022.07.2-576.pro12
 build OS=IMAGE_OS VERSION=RSW_VERSION *TAGS="":
@@ -35,7 +33,7 @@ build OS=IMAGE_OS VERSION=RSW_VERSION *TAGS="":
   fi
 
   if [[ "{{TAGS}}" == "" ]]; then
-    raw_tag_array=($(just _make-default-tag {{OS}}))
+    raw_tag_array=($(just _make-default-tag {{OS}} {{VERSION}}))
   else
     raw_tag_array=("{{TAGS}}")
   fi
@@ -53,7 +51,7 @@ build OS=IMAGE_OS VERSION=RSW_VERSION *TAGS="":
     --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
     --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
     --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
-    --build-arg RSW_DOWNLOAD_URL="$(just _get-download-url {{OS}})" \
+    --build-arg RSW_DOWNLOAD_URL="$(just -f ../ci.Justfile _get-rsw-download-url {{RSW_RELEASE_TYPE}} {{OS}})" \
     --file=./Dockerfile.$(just -f ../Justfile _parse-os {{OS}}) .
 
 # Test Workbench image - just test rstudio/rstudio-workbench:ubuntu2204-2022.07.2-576.pro12 2022.07.2+576.pro12

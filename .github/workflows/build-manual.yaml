@@ -42,6 +42,11 @@ on:
           - preview
           - daily
           - release
+      use_s3_download_url:
+        description: "Force build to download binaries directly from S3 where applicable."
+        required: false
+        default: false
+        type: boolean
       version:
         description: "The version to build. Use 'auto' to target the latest build."
         required: false
@@ -89,8 +94,12 @@ jobs:
         run: |
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
           ARGS_CMD=""
+          USE_S3_DOWNLOAD_URL=""
           if [[ "${{ inputs.type }}" == "release" ]]; then
             ARGS_CMD="get-product-args"
+            if [[ "${{ inputs.use_s3_download_url }}" == "true" ]]; then
+              USE_S3_DOWNLOAD_URL="${{ inputs.use_s3_download_url }}"
+            fi
           else
             ARGS_CMD="get-prerelease-args ${{inputs.type}}"
           fi
@@ -100,6 +109,7 @@ jobs:
               ${{ inputs.product }} \
               ${{ inputs.os }} \
               ${{ steps.get-version.outputs.VERSION }} \
+              ${USE_S3_DOWNLOAD_URL} \
           )
           echo "BUILD_ARGS<<$EOF" >> $GITHUB_OUTPUT
           echo "$BUILD_ARGS" >> $GITHUB_OUTPUT
