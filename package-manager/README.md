@@ -6,7 +6,6 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`2023.08.4`, `bionic`, `ubuntu1804`, `bionic-2023.08.4`, `ubuntu1804-2023.08.4`](https://github.com/rstudio/rstudio-docker-products/blob/main/package-manager/Dockerfile.ubuntu1804)
 * [`jammy`, `ubuntu2204`, `jammy-2023.08.4`, `ubuntu2204-2023.08.4`](https://github.com/rstudio/rstudio-docker-products/blob/main/package-manager/Dockerfile.ubuntu2204)
 
 # What is RStudio Package Manager?
@@ -50,7 +49,7 @@ export RSPM_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 docker run -it \
     -p 4242:4242 \
     -e RSPM_LICENSE=$RSPM_LICENSE \
-    rstudio/rstudio-package-manager:ubuntu1804
+    rstudio/rstudio-package-manager:ubuntu2204
 ```
 Open [http://localhost:4242](http://localhost:4242) to access RStudio Package Manager UI.
 
@@ -60,8 +59,9 @@ Note that running the RStudio Package Manager Docker image requires a valid RStu
 
 This container includes:
 
-1. One version of R
-2. RStudio Package Manager
+1. Two versions of R
+2. Two versions of Python
+3. RStudio Package Manager
 
 > NOTE: Package Manager is currently not very particular about R version. Changing the R version is rarely necessary.
 
@@ -128,7 +128,7 @@ docker run -it \
     -p 4242:4242 \
     -v $PWD/package-manager/rstudio-pm.gcfg:/etc/rstudio-pm/rstudio-pm.gcfg \
     -e RSPM_LICENSE=$RSPM_LICENSE \
-    rstudio/rstudio-package-manager:ubuntu1804
+    rstudio/rstudio-package-manager:ubuntu2204
 
 # Run with persistent data and using an external configuration
 docker run -it \
@@ -136,7 +136,7 @@ docker run -it \
     -v $PWD/data/rspm:/data \
     -v $PWD/package-manager/rstudio-pm.gcfg:/etc/rstudio-pm/rstudio-pm.gcfg \
     -e RSPM_LICENSE=$RSPM_LICENSE \
-    rstudio/rstudio-package-manager:ubuntu1804
+    rstudio/rstudio-package-manager:ubuntu2204
 ```
 
 Open [http://localhost:4242](http://localhost:4242) to access RStudio Package Manager UI.

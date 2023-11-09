@@ -1,3 +1,8 @@
+# 2023-11-13
+- Add Python
+- Update R to 4.2.3
+- Deprecate Ubuntu 18.04
+
 # 2023-07-25
 - Changed `rstudio-pm.gcfg` R version number behavior from statically defined to dynamically filled on build. 
 
