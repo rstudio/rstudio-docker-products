@@ -34,6 +34,10 @@ RUN yum install -y subversion \
     && yum clean all \
     && rm -rf /var/lib/rstudio-server/r-versions
 
+COPY maybe_install_vs_code.sh /tmp/maybe_install_vs_code.sh
+RUN /tmp/maybe_install_vs_code.sh \
+    && rm /tmp/maybe_install_vs_code.sh
+
 RUN /opt/python/"${PYTHON_VERSION}"/bin/pip3 install \
       jupyter \
       jupyterlab=="${JUPYTERLAB_VERSION}" \
