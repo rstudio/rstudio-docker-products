@@ -31,7 +31,7 @@ get-build-args:
 get-build-tags:
   #!/usr/bin/env bash
   set -eu
-  regions=("us-central-1" "asia" "europe" "us")
+  regions=("us-central1" "asia" "europe" "us")
   tag_array=()
   for region in "${regions[@]}"; do
     tag_array+=("$region-docker.pkg.dev/posit-images/cloud-workstations/workbench:${RSW_TAG_VERSION}")
