@@ -80,17 +80,9 @@ a persistent volume. The included configuration file expects a persistent volume
 orchestration system to be available at `/var/lib/rstudio-pm`. Should you wish to move this to a different path, you can change the
 `Server.DataDir` option.
 
-When changing `Server.DataDir` to a custom location, we also recommend setting `Server.LauncherDir`
-to a consistent location within `Server.DataDir`, such as `{Server.DataDir}/launcher_internal`.
-The default location of `Server.LauncherDir` depends on the container's hostname, which may be
-different each time the container restarts.
-
 ```ini
 [Server]
 DataDir = /mnt/rspm/data
-; Use a consistent location for the Launcher directory. The default location
-; is based on the hostname, and the hostname may be different in each container.
-LauncherDir = /mnt/rspm/data/launcher_internal
 ```
 
 ### Licensing
