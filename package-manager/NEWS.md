@@ -1,3 +1,6 @@
+# 2023-11-15
+- Removed Launcher references. Package manager no longer uses the Job Launcher for building git packages.
+
 # 2023-11-13
 - Add Python
 - Update R to 4.2.3
