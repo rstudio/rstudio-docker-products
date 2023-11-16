@@ -1,3 +1,6 @@
+# 2023-11-15
+- Removed Launcher references. Package manager no longer uses the Job Launcher for building git packages.
+
 # 2023-07-25
 - Changed `rstudio-pm.gcfg` R version number behavior from statically defined to dynamically filled on build. 
 
