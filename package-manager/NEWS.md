@@ -1,7 +1,10 @@
-# 2023-11-13
+# 2023-11-20
 - Add Python
 - Update R to 4.2.3
 - Deprecate Ubuntu 18.04
+
+# 2023-11-15
+- Removed Launcher references. Package manager no longer uses the Job Launcher for building git packages.
 
 # 2023-07-25
 - Changed `rstudio-pm.gcfg` R version number behavior from statically defined to dynamically filled on build. 
