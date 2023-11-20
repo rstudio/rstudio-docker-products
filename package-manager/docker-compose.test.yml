@@ -10,6 +10,8 @@ services:
       - RSPM_VERSION
       - R_VERSION
       - R_VERSION_ALT
+      - PYTHON_VERSION
+      - PYTHON_VERSION_ALT
       - RSPM_LICENSE
       - RSPM_LICENSE_SERVER
     volumes:

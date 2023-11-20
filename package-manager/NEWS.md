@@ -1,3 +1,8 @@
+# 2023-11-20
+- Add Python
+- Update R to 4.2.3
+- Deprecate Ubuntu 18.04
+
 # 2023-11-15
 - Removed Launcher references. Package manager no longer uses the Job Launcher for building git packages.
 

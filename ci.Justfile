@@ -134,6 +134,12 @@ get-product-args $PRODUCT $OS $VERSION $USE_S3="false" $BRANCH=`git branch --sho
     else
       SRC_IMAGE_NAME="product-base-pro-dev"
     fi
+  elif [[ $PRODUCT == "package-manager" ]]; then
+    if [[ $BRANCH == "main" ]]; then
+      SRC_IMAGE_NAME="product-base"
+    else
+      SRC_IMAGE_NAME="product-base-dev"
+    fi
   fi
 
   if [[ "${OS}" == "centos7" ]]; then
@@ -216,6 +222,12 @@ get-prerelease-args $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
       SRC_IMAGE_NAME="product-base-pro"
     else
       SRC_IMAGE_NAME="product-base-pro-dev"
+    fi
+  elif [[ $PRODUCT == "package-manager" ]]; then
+    if [[ $BRANCH == "main" ]]; then
+      SRC_IMAGE_NAME="product-base"
+    else
+      SRC_IMAGE_NAME="product-base-dev"
     fi
   fi
 

@@ -41,7 +41,7 @@ services:
     container_name: rstudio-package-manager
     build:
       context: ./package-manager
-      dockerfile: "Dockerfile.${IMAGE_OS:-ubuntu1804}"
+      dockerfile: "Dockerfile.${IMAGE_OS:-ubuntu2204}"
       args:
         RSPM_VERSION: 2023.08.4-20
     image: rstudio/rstudio-package-manager:2023.08.4
