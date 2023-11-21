@@ -23,7 +23,6 @@ jobs:
           - {product: 'workbench', os: 'ubuntu2204'}
           - {product: 'connect', os: 'ubuntu2204'}
           - {product: 'connect-content-init', os: 'ubuntu2204'}
-          - {product: 'package-manager', os: 'ubuntu1804'}
           - {product: 'package-manager', os: 'ubuntu2204'}
           - {product: 'r-session-complete', os: 'centos7'}
           - {product: 'r-session-complete', os: 'ubuntu2204'}

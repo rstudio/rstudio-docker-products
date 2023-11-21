@@ -109,10 +109,14 @@ get-base-tags $OS $TYPE="base" $BRANCH=`git branch --show`:
   ghcr.io/rstudio/${IMAGE_NAME}:${OS}
 
 # just get-product-args connect ubuntu2204 2023.05.0
-get-product-args $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`git rev-parse --short HEAD`:
+get-product-args $PRODUCT $OS $VERSION $USE_S3="false" $BRANCH=`git branch --show` $SHA_SHORT=`git rev-parse --short HEAD`:
   #!/usr/bin/env bash
   set -euxo pipefail
+
   RSW_DOWNLOAD_URL=$(just -f ci.Justfile _get-rsw-download-url release $OS)
+  if [[ "${USE_S3}" == "true" ]]; then
+    RSW_DOWNLOAD_URL=$(just -f ci.Justfile _get-rsw-download-url preview $OS)
+  fi
 
   if [[ $PRODUCT == "workbench" || $PRODUCT == "r-session-complete" || $PRODUCT == "workbench-for-microsoft-azure-ml" ]]; then
     SHORT_NAME="RSW"
@@ -129,6 +133,12 @@ get-product-args $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`g
       SRC_IMAGE_NAME="product-base-pro"
     else
       SRC_IMAGE_NAME="product-base-pro-dev"
+    fi
+  elif [[ $PRODUCT == "package-manager" ]]; then
+    if [[ $BRANCH == "main" ]]; then
+      SRC_IMAGE_NAME="product-base"
+    else
+      SRC_IMAGE_NAME="product-base-dev"
     fi
   fi
 
@@ -212,6 +222,12 @@ get-prerelease-args $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
       SRC_IMAGE_NAME="product-base-pro"
     else
       SRC_IMAGE_NAME="product-base-pro-dev"
+    fi
+  elif [[ $PRODUCT == "package-manager" ]]; then
+    if [[ $BRANCH == "main" ]]; then
+      SRC_IMAGE_NAME="product-base"
+    else
+      SRC_IMAGE_NAME="product-base-dev"
     fi
   fi
 

@@ -43,6 +43,10 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/rstudio-server/r-versions
 
+COPY maybe_install_vs_code.sh /tmp/maybe_install_vs_code.sh
+RUN /tmp/maybe_install_vs_code.sh \
+    && rm /tmp/maybe_install_vs_code.sh
+
 RUN /opt/python/"${PYTHON_VERSION}"/bin/pip install \
       jupyter \
       jupyterlab=="${JUPYTERLAB_VERSION}" \
