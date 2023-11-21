@@ -1,5 +1,7 @@
+# NOTE: This Dockerfile has been provided by the community and is not officially built or supported by Posit.
+
 FROM rockylinux:9
-LABEL maintainer="Posit <docker@posit.co>"
+LABEL maintainer="Posit Docker <docker@posit.co>"
 
 ### ARG declarations ###
 ARG R_VERSION=4.2.3
