@@ -1,3 +1,6 @@
+# 2024-01-11
+- Update Python to 3.12.1
+
 # 2023-11-20
 - Add Python
 - Update R to 4.2.3
@@ -7,7 +10,7 @@
 - Removed Launcher references. Package manager no longer uses the Job Launcher for building git packages.
 
 # 2023-07-25
-- Changed `rstudio-pm.gcfg` R version number behavior from statically defined to dynamically filled on build. 
+- Changed `rstudio-pm.gcfg` R version number behavior from statically defined to dynamically filled on build.
 
 # 2022.11.4-20
 
