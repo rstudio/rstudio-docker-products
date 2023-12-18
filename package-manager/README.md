@@ -6,8 +6,7 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`2023.08.4`, `bionic`, `ubuntu1804`, `bionic-2023.08.4`, `ubuntu1804-2023.08.4`](https://github.com/rstudio/rstudio-docker-products/blob/main/package-manager/Dockerfile.ubuntu1804)
-* [`jammy`, `ubuntu2204`, `jammy-2023.08.4`, `ubuntu2204-2023.08.4`](https://github.com/rstudio/rstudio-docker-products/blob/main/package-manager/Dockerfile.ubuntu2204)
+* [`jammy`, `ubuntu2204`, `jammy-2023.12.0`, `ubuntu2204-2023.12.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/package-manager/Dockerfile.ubuntu2204)
 
 # What is RStudio Package Manager?
 
