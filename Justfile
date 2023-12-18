@@ -7,7 +7,7 @@ sed_vars := if os() == "macos" { "-i ''" } else { "-i" }
 BUILDX_PATH := ""
 
 RSC_VERSION := "2023.10.0"
-RSPM_VERSION := "2023.08.4-20"
+RSPM_VERSION := "2023.12.0-13"
 RSW_VERSION := "2023.09.1+494.pro2"
 
 DRIVERS_VERSION := "2023.05.0"
@@ -126,7 +126,6 @@ update-rspm-versions:
   set -euxo pipefail
   sed {{ sed_vars }} "s/RSPM_VERSION=.*/RSPM_VERSION={{ RSPM_VERSION }}/g" \
     package-manager/.env \
-    package-manager/Dockerfile.ubuntu1804 \
     package-manager/Dockerfile.ubuntu2204
   sed {{ sed_vars }} "s/RSPM_VERSION:.*/RSPM_VERSION: {{ RSPM_VERSION }}/g" docker-compose.yml
   sed {{ sed_vars }} "s/rstudio\/rstudio-package-manager:.*/rstudio\/rstudio-package-manager:$(just _get-clean-version {{ RSPM_VERSION }})/g" docker-compose.yml
