@@ -20,7 +20,7 @@ RUN /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install --no-cache-dir buil
 RUN /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install --no-cache-dir build virtualenv
 
 # Download RStudio Package Manager ---------------------------------------------#
-ARG RSPM_VERSION=2023.08.4-20
+ARG RSPM_VERSION=2023.12.0-13
 ARG RSPM_DOWNLOAD_URL=https://cdn.rstudio.com/package-manager/deb/amd64
 RUN curl -O ${RSPM_DOWNLOAD_URL}/rstudio-pm_${RSPM_VERSION}_amd64.deb \
     # Pre 7/25/23 packages
