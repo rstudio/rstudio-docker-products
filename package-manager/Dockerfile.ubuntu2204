@@ -44,7 +44,7 @@ RUN apt-get update -qq && \
     && rm -rf /var/lib/apt/lists/*
 
 # Download RStudio Package Manager ---------------------------------------------#
-ARG RSPM_VERSION=2023.08.4-20
+ARG RSPM_VERSION=2023.12.0-13
 ARG RSPM_DOWNLOAD_URL=https://cdn.rstudio.com/package-manager/deb/amd64
 RUN apt-get update --fix-missing \
     && apt-get install -y --no-install-recommends ca-certificates gdebi-core gpg dpkg-sig \
