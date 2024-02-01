@@ -5,6 +5,10 @@ changed in each image.
 
 This file only captures pervasive, repository-wide changes.
 
+# 2024-02-01
+
+- Update Pro Drivers to 2023.12.1
+
 # 2023-08-07
 
 - Removed base image Ubuntu 18.04 builds.
