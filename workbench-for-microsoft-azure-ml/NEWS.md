@@ -1,3 +1,7 @@
+# 2024.02.1
+- Remove R 3.6.3 from image
+- Bump R versions to latest patches
+
 # 2023.03.1
 - No changes
 
