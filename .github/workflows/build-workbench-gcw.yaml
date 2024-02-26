@@ -5,7 +5,6 @@ on:
     branches:
       - main
       - dev
-      - workbench-gcw-push-errors  # TODO: remove this branch once we've fixed the push errors
   pull_request:
 
 name: Workbench for GCW - Build, Test, Scan, and Push
@@ -69,7 +68,7 @@ jobs:
           product: workbench-for-google-cloud-workstations
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
           build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
-          push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 14 * * 1' || github.ref == 'refs/heads/workbench-gcw-push-errors' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 14 * * 1' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
@@ -93,7 +92,7 @@ jobs:
           product: workbench-for-google-cloud-workstations
           image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
           build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
-          push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 14 * * 1' || github.ref == 'refs/heads/workbench-gcw-push-errors' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 14 * * 1' }}
           snyk-token: ${{ secrets.SNYK_TOKEN }}
           snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}

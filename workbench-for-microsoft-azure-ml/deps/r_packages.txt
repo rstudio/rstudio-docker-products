@@ -46,7 +46,6 @@ readr
 readxl
 renv
 reticulate
-rgdal
 rlang
 rmarkdown
 roxygen2
