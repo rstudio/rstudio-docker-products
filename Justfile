@@ -6,9 +6,9 @@ sed_vars := if os() == "macos" { "-i ''" } else { "-i" }
 
 BUILDX_PATH := ""
 
-RSC_VERSION := "2023.10.0"
-RSPM_VERSION := "2023.08.4-20"
-RSW_VERSION := "2023.09.1+494.pro2"
+RSC_VERSION := "2024.01.0"
+RSPM_VERSION := "2023.12.0-13"
+RSW_VERSION := "2023.12.1+402.pro1"
 
 DRIVERS_VERSION := "2023.05.0"
 DRIVERS_VERSION_RHEL := DRIVERS_VERSION + "-1"
@@ -21,7 +21,7 @@ PYTHON_VERSION_ALT := "3.8.17"
 PYTHON_VERSION_RHEL := "3.9.14"
 PYTHON_VERSION_ALT_RHEL := "3.8.15"
 
-QUARTO_VERSION := "1.3.340"
+QUARTO_VERSION := "1.3.450"
 
 # just _get-tag-safe-version 2022.07.2+576.pro12
 _get-tag-safe-version $VERSION:
@@ -126,7 +126,6 @@ update-rspm-versions:
   set -euxo pipefail
   sed {{ sed_vars }} "s/RSPM_VERSION=.*/RSPM_VERSION={{ RSPM_VERSION }}/g" \
     package-manager/.env \
-    package-manager/Dockerfile.ubuntu1804 \
     package-manager/Dockerfile.ubuntu2204
   sed {{ sed_vars }} "s/RSPM_VERSION:.*/RSPM_VERSION: {{ RSPM_VERSION }}/g" docker-compose.yml
   sed {{ sed_vars }} "s/rstudio\/rstudio-package-manager:.*/rstudio\/rstudio-package-manager:$(just _get-clean-version {{ RSPM_VERSION }})/g" docker-compose.yml

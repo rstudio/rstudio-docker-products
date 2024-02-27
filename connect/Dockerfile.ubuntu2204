@@ -13,7 +13,7 @@ ARG R_VERSION=4.2.3
 ARG R_VERSION_ALT=4.1.3
 ARG PYTHON_VERSION=3.9.17
 ARG PYTHON_VERSION_ALT=3.8.17
-ARG RSC_VERSION=2023.10.0
+ARG RSC_VERSION=2024.01.0
 SHELL [ "/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update --fix-missing \
     && apt-get install -yq --no-install-recommends \
