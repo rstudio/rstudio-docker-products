@@ -61,6 +61,8 @@ runs:
       run: |
         sudo rm -rf /usr/local/lib/android  # will release about 10 GB
         sudo rm -rf /usr/share/dotnet # will release about 20GB
+        sudo rm -f /mnt/swapfile  # will release about 4GB
+        sudo docker image prune --all --force  # start fresh, unknown how much space this will release
 
     - name: Login to ghcr.io
       uses: docker/login-action@v3

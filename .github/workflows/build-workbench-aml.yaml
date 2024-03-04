@@ -25,6 +25,14 @@ jobs:
       packages: write
 
     steps:
+
+      - name: Free Disk space
+        shell: bash
+        run: |
+          sudo rm -rf /usr/local/lib/android  # will release about 10 GB
+          sudo rm -rf /usr/share/dotnet # will release about 20GB
+          sudo rm -f /mnt/swapfile  # will release about 4GB
+
       - name: Check Out Repo - cron main
         if: github.event.schedule == '0 14 * * 1'
         uses: actions/checkout@v3
