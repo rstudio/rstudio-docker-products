@@ -24,10 +24,6 @@ jobs:
       contents: read
       packages: write
 
-    concurrency:
-      group: build-products-${{ env.product }}-${{ env.os }}-${{ github.ref }}
-      cancel-in-progress: true
-
     steps:
       - name: Check Out Repo - cron main
         if: github.event.schedule == '0 14 * * 1'
