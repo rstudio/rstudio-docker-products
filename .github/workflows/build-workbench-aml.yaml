@@ -26,12 +26,16 @@ jobs:
 
     steps:
 
-      - name: Free Disk space
-        shell: bash
-        run: |
-          sudo rm -rf /usr/local/lib/android  # will release about 10 GB
-          sudo rm -rf /usr/share/dotnet # will release about 20GB
-          sudo rm -f /mnt/swapfile  # will release about 4GB
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          docker-images: true
+          swap-storage: true
 
       - name: Check Out Repo - cron main
         if: github.event.schedule == '0 14 * * 1'
