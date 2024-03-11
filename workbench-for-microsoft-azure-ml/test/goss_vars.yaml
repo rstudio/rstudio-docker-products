@@ -1,5 +1,4 @@
 packages:
-  - rgdal
   - ggplot2
   - mlflow
   - odbc
