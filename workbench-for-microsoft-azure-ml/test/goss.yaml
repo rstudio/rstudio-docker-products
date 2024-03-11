@@ -130,7 +130,7 @@ command:
     ]
 
   # test all R versions and packages
-  {{ $rvers := mkSlice "/opt/R/4.1.3/bin/R" "/opt/R/4.2.3/bin/R"}}
+  {{ $rvers := mkSlice "/opt/R/4.0.5/bin/R" "/opt/R/4.1.3/bin/R" "/opt/R/4.2.3/bin/R" "/opt/R/4.3.2/bin/R"}}
   {{ $pkgs := .Vars.packages}}
   # loops the library command for each R version to ensure expected libraries exist for all.
   # notably, it also ensures that each expected R version exists and is runnable
