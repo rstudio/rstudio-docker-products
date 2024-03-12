@@ -81,8 +81,6 @@ group "default" {
         "package-manager", 
         "r-session-complete",
         "workbench", 
-        "workbench-for-google-cloud-workstations", 
-        "workbench-for-microsoft-azure-ml",
     ]
 }
 

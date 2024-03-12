@@ -9,6 +9,13 @@ name: Build Docker Images with Bake
 jobs:
   build:
     runs-on: ubuntu-latest-4x
+    strategy:
+      matrix:
+        targets: [
+            "default",
+            "workbench-for-google-cloud-workstations",
+            "workbench-for-microsoft-azure-ml",
+        ]
     steps:
      - name: Checkout
        uses: actions/checkout@v4
