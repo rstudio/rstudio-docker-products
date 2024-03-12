@@ -1,0 +1,23 @@
+on:
+    push:
+      branches:
+        - main
+        - dev
+    pull_request:
+  
+name: Build Docker Images with Bake
+jobs:
+  build:
+    runs-on: ubuntu-latest-4x
+    steps:
+     - name: Checkout
+       uses: actions/checkout@v4
+
+     - name: Set up Docker Buildx
+       uses: docker/setup-buildx-action@v3         
+     
+     - name: Build and push
+       uses: docker/bake-action@v4
+       with:
+         push: false    
+
