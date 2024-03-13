@@ -150,9 +150,19 @@ RUN grep -v "DatabaseMirror" /etc/clamav/freshclam.conf > /etc/clamav/freshclam.
 # Update ClamAV
 RUN freshclam --log="/var/log/clamav/clamupdate.log"
 
-# Scan all but /sys for viruses. If this fails, the Docker build will
-# fail.
-RUN clamscan --recursive --infected --exclude-dir="^/sys" --log "/var/log/clamav/clamscan.log" /
+# Scan all but /sys for viruses. If this fails, the Docker build will fail.
+#
+# --exclude options are false positives per rstudio/rstudio-docker-products#704.
+# They can likely be removed in the future after ClamAV's database is updated.
+RUN clamscan \
+    --recursive \
+    --infected \
+    --exclude-dir="^/sys" \
+    --exclude="/opt/az/lib/python3.11/ensurepip/_bundled/pip-23.2.1-py3-none-any.whl" \
+    --exclude="/opt/az/lib/python3.11/site-packages/pip/_vendor/distlib/w32.exe" \
+    --exclude="/opt/az/lib/python3.11/site-packages/pip/_vendor/distlib/w64-arm.exe" \
+    --exclude="/opt/az/lib/python3.11/site-packages/pip/_vendor/distlib/t64-arm.exe" \
+    --log "/var/log/clamav/clamscan.log" /
 
 
 # Ignore the intermediate 'clamav' multi-stage build step so we don't distribute
