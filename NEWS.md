@@ -5,6 +5,10 @@ changed in each image.
 
 This file only captures pervasive, repository-wide changes.
 
+# 2024-03-14
+
+- Update Professional Drivers to 2024.03.0
+
 # 2024-03-01
 
 - BREAKING: Update Quarto version to 1.4.550
