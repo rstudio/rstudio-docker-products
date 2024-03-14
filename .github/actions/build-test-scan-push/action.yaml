@@ -125,12 +125,14 @@ runs:
 
     - name: Get first tag
       shell: bash
-      id: first-tag
+      id: tag-slice
       run: |
         IMG_TAGS="${{ inputs.image-tags }}"
         FIRST_TAG=$(cut -d "," -f 1 <<< "${IMG_TAGS//$'\n'/}")
         echo "$FIRST_TAG"
         echo "FIRST_TAG=$FIRST_TAG" >> $GITHUB_OUTPUT
+        LAST_TAG=${IMG_TAGS##*,}
+        echo "LAST_TAG=$LAST_TAG" >> $GITHUB_OUTPUT
 
     # We have to use bash logic because step "if"s don't work in composite actions
     - name: Test - ${{ inputs.test-image }}
@@ -140,7 +142,7 @@ runs:
           echo "${{ inputs.build-args }}" > ${{ inputs.context }}/.env
           echo "OS=${{ inputs.os }}" >> ${{ inputs.context }}/.env
           cat ${{ inputs.context }}/.env
-          IMAGE_NAME=${{ steps.first-tag.outputs.FIRST_TAG }} docker-compose -f ${{ inputs.context }}/docker-compose.test.yml run sut
+          IMAGE_NAME=${{ steps.tag-slice.outputs.FIRST_TAG }} docker-compose -f ${{ inputs.context }}/docker-compose.test.yml run sut
         fi
 
     - name: Evaluate Snyk command
@@ -160,14 +162,13 @@ runs:
       env:
         SNYK_TOKEN: ${{ inputs.snyk-token }}
       with:
-        image: ${{ steps.first-tag.outputs.FIRST_TAG }}
+        image: ${{ steps.tag-slice.outputs.LAST_TAG }}
         args: |
           --file=${{ inputs.context }}/Dockerfile.${{ inputs.os }} \
           --org=${{ inputs.snyk-org-id }} \
-          --project-name=${{ steps.first-tag.FIRST_TAG }} \
-          --tags=product=${{ inputs.product }},os=${{ inputs.os }} \
-          --exclude-base-image-vulns \
-          --app-vulns
+          --project-name=${{ steps.tag-slice.LAST_TAG }} \
+          --project-tags=product=${{ inputs.product }},os=${{ inputs.os }} \
+          --exclude-app-vulns
         command: ${{ steps.eval-snyk-command.outputs.SNYK_COMMAND }}
 
     - name: Push - ${{ inputs.push-image }}
