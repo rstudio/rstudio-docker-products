@@ -6,7 +6,7 @@ sed_vars := if os() == "macos" { "-i ''" } else { "-i" }
 
 BUILDX_PATH := ""
 
-RSC_VERSION := "2024.01.0"
+RSC_VERSION := "2024.02.0"
 RSPM_VERSION := "2023.12.0-13"
 RSW_VERSION := "2023.12.1+402.pro1"
 
@@ -21,7 +21,7 @@ PYTHON_VERSION_ALT := "3.8.17"
 PYTHON_VERSION_RHEL := "3.9.14"
 PYTHON_VERSION_ALT_RHEL := "3.8.15"
 
-QUARTO_VERSION := "1.3.450"
+QUARTO_VERSION := "1.4.550"
 
 # just _get-tag-safe-version 2022.07.2+576.pro12
 _get-tag-safe-version $VERSION:
