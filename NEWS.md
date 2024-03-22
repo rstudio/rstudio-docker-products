@@ -9,10 +9,6 @@ This file only captures pervasive, repository-wide changes.
 
 - Update Professional Drivers to 2024.03.0
 
-# 2024-03-01
-
-- BREAKING: Update Quarto version to 1.4.550
-
 # 2024-02-01
 
 - Update Pro Drivers to 2023.12.1

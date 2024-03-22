@@ -1,7 +1,3 @@
-# 2024-03-01
-
-- BREAKING: Update Quarto version to 1.4.550
-
 # 2023-04-26
 
 - Use the Quarto release 1.3.340 in jammy images.
