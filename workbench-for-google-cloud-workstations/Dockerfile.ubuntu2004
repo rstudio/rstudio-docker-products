@@ -32,7 +32,8 @@ ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
 COPY deps/* /
 
 ### Update/upgrade system packages ###
-RUN apt-get update --fix-missing  \
+RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add - \
+    && apt-get update --fix-missing  \
     && apt-get upgrade -yq \
     && xargs -a /apt_packages.txt apt-get install -yq --no-install-recommends \
     && rm /apt_packages.txt \
