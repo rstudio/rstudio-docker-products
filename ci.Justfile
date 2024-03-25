@@ -189,12 +189,12 @@ get-product-tags $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`g
   for os_name in ${OS_ALIASES[@]};
   do
     tag_array+=(
-      "rstudio/${IMAGE_PREFIX}${PRODUCT}:${os_name}-${TAG_CLEAN_VERSION}--${SHA_SHORT}"
-      "rstudio/${IMAGE_PREFIX}${PRODUCT}:${os_name}-${TAG_CLEAN_VERSION}"
-      "rstudio/${IMAGE_PREFIX}${PRODUCT}:${os_name}"
       "ghcr.io/rstudio/${IMAGE_PREFIX}${PRODUCT}:${os_name}-${TAG_CLEAN_VERSION}--${SHA_SHORT}"
+      "rstudio/${IMAGE_PREFIX}${PRODUCT}:${os_name}-${TAG_CLEAN_VERSION}--${SHA_SHORT}"
       "ghcr.io/rstudio/${IMAGE_PREFIX}${PRODUCT}:${os_name}-${TAG_CLEAN_VERSION}"
+      "rstudio/${IMAGE_PREFIX}${PRODUCT}:${os_name}-${TAG_CLEAN_VERSION}"
       "ghcr.io/rstudio/${IMAGE_PREFIX}${PRODUCT}:${os_name}"
+      "rstudio/${IMAGE_PREFIX}${PRODUCT}:${os_name}"
     )
   done
   tags=$(IFS="," ; echo "${tag_array[*]}")
