@@ -1,3 +1,6 @@
+# 2024-03-28
+- Updated to Quarto 1.4.552.
+
 # 2023-08-01
 - BREAKING: Removed R 3.6.2, replaced with R 4.1.3.
 - Updated R 4.2.0 to 4.2.3.
