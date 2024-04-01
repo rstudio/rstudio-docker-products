@@ -15,6 +15,21 @@ package:
   {{end}}
 
 file:
+  /opt/positscripts/apt.sh:
+    exists: true
+    mode: "0775"
+  /opt/positscripts/install_drivers.sh:
+    exists: true
+    mode: "0775"
+  /opt/positscripts/install_python.sh:
+    exists: true
+    mode: "0775"
+  /opt/positscripts/install_quarto.sh:
+    exists: true
+    mode: "0775"
+  /opt/positscripts/install_r.sh:
+    exists: true
+    mode: "0775"
   /opt/R/{{.Env.R_VERSION}}/bin/R:
     exists: true
   /opt/R/{{.Env.R_VERSION_ALT}}/bin/R:
