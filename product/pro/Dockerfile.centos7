@@ -8,7 +8,7 @@ ARG DRIVERS_VERSION=2024.03.0-1
 
 ARG SCRIPTS_DIR=/opt/positscripts
 
-COPY r_packages.txt /tmp/r_packages.txt
+COPY deps/r_packages.txt /tmp/r_packages.txt
 RUN ${SCRIPTS_DIR}/yum.sh --update upgrade \
     && ${SCRIPTS_DIR}/yum.sh install unixODBC unixODBC-devel \
     && DRIVERS_VERSION=${DRIVERS_VERSION} ${SCRIPTS_DIR}/install_drivers.sh \

@@ -13,10 +13,10 @@ ARG SCRIPTS_DIR=/opt/positscripts
 COPY scripts/rhel/* ${SCRIPTS_DIR}/
 
 ### Update/upgrade system packages ###
-COPY centos7_packages.txt /tmp/packages.txt
+COPY deps/centos7_packages.txt /tmp/packages.txt
 RUN ${SCRIPTS_DIR}/yum.sh --update upgrade \
     && ${SCRIPTS_DIR}/yum.sh install epel-release \
-    && ${SCRIPTS_DIR}/yum.sh install $(cat /tmp/packages.txt) \
+    && ${SCRIPTS_DIR}/yum.sh install "$(cat /tmp/packages.txt)" \
     && ${SCRIPTS_DIR}/yum.sh --clean
 
 ### Install tini ###
@@ -47,7 +47,7 @@ RUN R_VERSION=${R_VERSION} ${SCRIPTS_DIR}/install_r.sh \
     && ln -s /opt/R/default/bin/Rscript /usr/local/bin/Rscript
 
 ### Install Python versions ###
-COPY requirements.txt /tmp/requirements.txt
+COPY deps/requirements.txt /tmp/requirements.txt
 RUN PYTHON_VERSION=${PYTHON_VERSION} ${SCRIPTS_DIR}/install_python.sh -r /tmp/requirements.txt \
     && PYTHON_VERSION=${PYTHON_VERSION_ALT} ${SCRIPTS_DIR}/install_python.sh -r /tmp/requirements.txt \
     && ln -s /opt/python/${PYTHON_VERSION} /opt/python/default \
@@ -58,7 +58,6 @@ RUN localedef -i en_US -f UTF-8 en_US.UTF-8
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
-
 
 LABEL posit.r.version="${R_VERSION}" \
       posit.r.version_alt="${R_VERSION_ALT}" \

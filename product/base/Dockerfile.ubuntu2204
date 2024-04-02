@@ -14,10 +14,10 @@ ARG SCRIPTS_DIR=/opt/positscripts
 COPY scripts/ubuntu/* ${SCRIPTS_DIR}/
 
 ### Update/upgrade system packages ###
-COPY ubuntu2204_packages.txt /tmp/apt_packages.txt
+COPY deps/ubuntu2204_packages.txt /tmp/apt_packages.txt
 RUN ${SCRIPTS_DIR}/apt.sh --update install lsof \
     && ${SCRIPTS_DIR}/apt.sh --update upgrade \
-    && ${SCRIPTS_DIR}/apt.sh install $(cat /tmp/apt_packages.txt) \
+    && ${SCRIPTS_DIR}/apt.sh install "$(cat /tmp/apt_packages.txt)" \
     && ${SCRIPTS_DIR}/apt.sh --clean \
     && rm -f /tmp/apt_packages.txt
 
@@ -49,7 +49,7 @@ RUN R_VERSION=${R_VERSION} ${SCRIPTS_DIR}/install_r.sh \
     && ln -s /opt/R/default/bin/Rscript /usr/local/bin/Rscript
 
 ### Install Python versions ###
-COPY requirements.txt /tmp/requirements.txt
+COPY deps/requirements.txt /tmp/requirements.txt
 RUN PYTHON_VERSION=${PYTHON_VERSION} ${SCRIPTS_DIR}/install_python.sh -r /tmp/requirements.txt \
     && PYTHON_VERSION=${PYTHON_VERSION_ALT} ${SCRIPTS_DIR}/install_python.sh -r /tmp/requirements.txt \
     && ln -s /opt/python/${PYTHON_VERSION} /opt/python/default \
@@ -61,7 +61,6 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 ENV TZ=UTC
-
 
 LABEL posit.r.version="${R_VERSION}" \
       posit.r.version_alt="${R_VERSION_ALT}" \
