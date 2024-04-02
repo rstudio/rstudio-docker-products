@@ -14,9 +14,10 @@ COPY scripts/rhel/* ${SCRIPTS_DIR}/
 
 ### Update/upgrade system packages ###
 COPY deps/centos7_packages.txt /tmp/packages.txt
+# hadolint ignore=SC2046
 RUN ${SCRIPTS_DIR}/yum.sh --update upgrade \
     && ${SCRIPTS_DIR}/yum.sh install epel-release \
-    && ${SCRIPTS_DIR}/yum.sh install "$(cat /tmp/packages.txt)" \
+    && ${SCRIPTS_DIR}/yum.sh install $(cat /tmp/packages.txt) \
     && ${SCRIPTS_DIR}/yum.sh --clean
 
 ### Install tini ###

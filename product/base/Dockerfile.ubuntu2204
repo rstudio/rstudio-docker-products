@@ -15,9 +15,10 @@ COPY scripts/ubuntu/* ${SCRIPTS_DIR}/
 
 ### Update/upgrade system packages ###
 COPY deps/ubuntu2204_packages.txt /tmp/apt_packages.txt
+# hadolint ignore=SC2046
 RUN ${SCRIPTS_DIR}/apt.sh --update install lsof \
     && ${SCRIPTS_DIR}/apt.sh --update upgrade \
-    && ${SCRIPTS_DIR}/apt.sh install "$(cat /tmp/apt_packages.txt)" \
+    && ${SCRIPTS_DIR}/apt.sh install $(cat /tmp/apt_packages.txt) \
     && ${SCRIPTS_DIR}/apt.sh --clean \
     && rm -f /tmp/apt_packages.txt
 
