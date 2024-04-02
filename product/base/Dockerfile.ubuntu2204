@@ -11,11 +11,7 @@ ARG QUARTO_VERSION=1.3.340
 
 ARG SCRIPTS_DIR=/opt/positscripts
 
-COPY scripts/ubuntu/apt.sh ${SCRIPTS_DIR}/apt.sh
-COPY scripts/ubuntu/install_drivers.sh ${SCRIPTS_DIR}/install_drivers.sh
-COPY scripts/ubuntu/install_python.sh ${SCRIPTS_DIR}/install_python.sh
-COPY scripts/ubuntu/install_quarto.sh ${SCRIPTS_DIR}/install_quarto.sh
-COPY scripts/ubuntu/install_r.sh ${SCRIPTS_DIR}/install_r.sh
+COPY scripts/ubuntu/* ${SCRIPTS_DIR}/
 
 ### Update/upgrade system packages ###
 COPY ubuntu2204_packages.txt /tmp/apt_packages.txt
@@ -42,11 +38,15 @@ RUN curl -sL "https://yihui.org/tinytex/install-bin-unix.sh" | sh \
     && /opt/TinyTeX/bin/*/tlmgr path add
 
 ### Install Quarto ###
-RUN QUARTO_VERSION=${QUARTO_VERSION} ${SCRIPTS_DIR}/install_quarto.sh
+RUN QUARTO_VERSION=${QUARTO_VERSION} ${SCRIPTS_DIR}/install_quarto.sh \
+    && ln -s /opt/quarto/${QUARTO_VERSION}/bin/quarto /usr/local/bin/quarto
 
 ### Install R versions ###
 RUN R_VERSION=${R_VERSION} ${SCRIPTS_DIR}/install_r.sh \
-    && R_VERSION=${R_VERSION_ALT} ${SCRIPTS_DIR}/install_r.sh
+    && R_VERSION=${R_VERSION_ALT} ${SCRIPTS_DIR}/install_r.sh \
+    && ln -s /opt/R/${R_VERSION} /opt/R/default \
+    && ln -s /opt/R/default/bin/R /usr/local/bin/R \
+    && ln -s /opt/R/default/bin/Rscript /usr/local/bin/Rscript
 
 ### Install Python versions ###
 COPY requirements.txt /tmp/requirements.txt

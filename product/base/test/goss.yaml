@@ -15,9 +15,16 @@ package:
   {{end}}
 
 file:
+  {{if .Env.OS | regexMatch "ubuntu.*"}}
   /opt/positscripts/apt.sh:
     exists: true
     mode: "0775"
+  {{end}}
+  {{if .Env.OS | regexMatch "centos.*"}}
+  /opt/positscripts/yum.sh:
+    exists: true
+    mode: "0775"
+  {{end}}
   /opt/positscripts/install_drivers.sh:
     exists: true
     mode: "0775"

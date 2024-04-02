@@ -8,30 +8,16 @@ ARG PYTHON_VERSION_ALT=3.8.15
 ARG TINI_VERSION=0.19.0
 ARG QUARTO_VERSION=1.3.340
 
+ARG SCRIPTS_DIR=/opt/positscripts
+
+COPY scripts/rhel/* ${SCRIPTS_DIR}/
+
 ### Update/upgrade system packages ###
-RUN yum upgrade -y -q \
-    && yum install -y -q \
-      epel-release \
-    && yum install -y -q \
-      bzip2 \
-      git \
-      gpg \
-      gpg-agent \
-      libcurl-devel \
-      libuser-devel \
-      libxml2-devel \
-      openssl-devel \
-      openssh-clients \
-      pandoc \
-      perl-Digest-MD5 \
-      postgresql-libs \
-      rrdtool \
-      sudo \
-      unixODBC \
-      unixODBC-devel \
-      wget \
-      which \
-    && yum clean all
+COPY centos7_packages.txt /tmp/packages.txt
+RUN ${SCRIPTS_DIR}/yum.sh --update upgrade \
+    && ${SCRIPTS_DIR}/yum.sh install epel-release \
+    && ${SCRIPTS_DIR}/yum.sh install $(cat /tmp/packages.txt) \
+    && ${SCRIPTS_DIR}/yum.sh --clean
 
 ### Install tini ###
 ADD https://cdn.rstudio.com/platform/tini/v${TINI_VERSION}/tini-amd64 /tini
@@ -50,37 +36,22 @@ RUN curl -sL "https://yihui.org/tinytex/install-bin-unix.sh" | sh \
     && /opt/TinyTeX/bin/*/tlmgr path add
 
 ### Install Quarto ###
-RUN curl -o quarto.tar.gz -L https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.tar.gz \
-    && mkdir -p /opt/quarto/${QUARTO_VERSION} \
-    && tar -zxvf quarto.tar.gz -C "/opt/quarto/${QUARTO_VERSION}" --strip-components=1 \
-    && rm -f quarto.tar.gz \
+RUN QUARTO_VERSION=${QUARTO_VERSION} ${SCRIPTS_DIR}/install_quarto.sh \
     && ln -s /opt/quarto/${QUARTO_VERSION}/bin/quarto /usr/local/bin/quarto
 
 ### Install R versions ###
-RUN curl -O https://cdn.rstudio.com/r/centos-7/pkgs/R-${R_VERSION}-1-1.x86_64.rpm \
-    && curl -O https://cdn.rstudio.com/r/centos-7/pkgs/R-${R_VERSION_ALT}-1-1.x86_64.rpm \
-    && yum install -y R-${R_VERSION}-1-1.x86_64.rpm \
-    && yum install -y R-${R_VERSION_ALT}-1-1.x86_64.rpm \
-    && yum clean all \
-    && rm -rf R-${R_VERSION}-1-1.x86_64.rpm \
-    && rm -rf R-${R_VERSION_ALT}-1-1.x86_64.rpm \
+RUN R_VERSION=${R_VERSION} ${SCRIPTS_DIR}/install_r.sh \
+    && R_VERSION=${R_VERSION_ALT} ${SCRIPTS_DIR}/install_r.sh \
     && ln -s /opt/R/${R_VERSION} /opt/R/default \
     && ln -s /opt/R/default/bin/R /usr/local/bin/R \
     && ln -s /opt/R/default/bin/Rscript /usr/local/bin/Rscript
 
 ### Install Python versions ###
-RUN curl -O https://cdn.rstudio.com/python/centos-7/pkgs/python-${PYTHON_VERSION}-1-1.x86_64.rpm \
-    && curl -O https://cdn.rstudio.com/python/centos-7/pkgs/python-${PYTHON_VERSION_ALT}-1-1.x86_64.rpm \
-    && yum install -y python-${PYTHON_VERSION}-1-1.x86_64.rpm \
-    && yum install -y python-${PYTHON_VERSION_ALT}-1-1.x86_64.rpm \
-    && yum clean all \
-    && rm -rf python-${PYTHON_VERSION}-1-1.x86_64.rpm \
-    && rm -rf python-${PYTHON_VERSION_ALT}-1-1.x86_64.rpm \
-    && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install 'virtualenv<20' \
-    && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install --upgrade setuptools \
-    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install 'virtualenv<20' \
-    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install --upgrade setuptools \
-    && ln -s /opt/python/${PYTHON_VERSION} /opt/python/default
+COPY requirements.txt /tmp/requirements.txt
+RUN PYTHON_VERSION=${PYTHON_VERSION} ${SCRIPTS_DIR}/install_python.sh -r /tmp/requirements.txt \
+    && PYTHON_VERSION=${PYTHON_VERSION_ALT} ${SCRIPTS_DIR}/install_python.sh -r /tmp/requirements.txt \
+    && ln -s /opt/python/${PYTHON_VERSION} /opt/python/default \
+    && rm -f /tmp/requirements.txt
 
 ### Locale configuration ###
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
