@@ -105,10 +105,12 @@ group "default" {
     ]
 }
 
-group "build-test-base" {
+group "base-images" {
     targets = [
         "product-base",
         "test-product-base",
+        "product-base-pro",
+        "test-product-base-pro",
     ]
 }
 
@@ -143,7 +145,7 @@ target "product-base" {
 }
 
 target "test-product-base" {
-    inherits = ["product-base"]
+    inherits = ["product-base-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"]
     target = "test"
 
     name = "test-product-base-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
@@ -191,7 +193,7 @@ target "product-base-pro" {
 }
 
 target "test-product-base-pro" {
-    inherits = ["product-base-pro"]
+    inherits = ["product-base-pro-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"]
     target = "test"
 
     name = "product-base-pro-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
