@@ -114,11 +114,20 @@ group "base-images" {
     ]
 }
 
+group "package-manager-images" {
+    targets = [
+        "package-manager",
+        "test-package-manager",
+    ]
+}
+
+### Base Images ###
+
 target "base" {
     labels = {
         "maintainer" = "Posit Docker <docker@posit.co>"
     }
-}   
+}
 
 target "product-base" {
     inherits = ["base"]
@@ -220,9 +229,11 @@ target "test-product-base-pro" {
     }
 }
 
+### Package Manager ###
 
 target "package-manager" {
-    inherits = ["base"]
+    inherits = ["product-base-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"]
+    target = "build"
 
     name = "package-manager-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
     tags = [
@@ -235,6 +246,29 @@ target "package-manager" {
     contexts = {
         baseapp = "target:product-base-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
     }
+
+    matrix = PACKAGE_MANAGER_BUILD_MATRIX
+    args = {
+        R_VERSION = builds.r_primary
+        R_VERSION_ALT = builds.r_alternate
+        PYTHON_VERSION = builds.py_primary
+        PYTHON_VERSION_ALT = builds.py_alternate
+        RSPM_VERSION = PACKAGE_MANAGER_VERSION
+    }
+}
+
+target "test-package-manager" {
+    inherits = ["package-manager-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"]
+    target = "test"
+
+    name = "package-manager-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+    tags = [
+        "ghcr.io/rstudio/product-package-manager:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
+        "docker.io/rstudio/product-package-manager:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
+    ]
+
+    dockerfile = "Dockerfile.${builds.os}"
+    context = "package-manager"
 
     matrix = PACKAGE_MANAGER_BUILD_MATRIX
     args = {

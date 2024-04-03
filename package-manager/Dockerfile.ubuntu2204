@@ -4,7 +4,7 @@ ARG PYTHON_VERSION=3.12.1
 ARG PYTHON_VERSION_ALT=3.11.7
 ARG SRC_IMAGE_NAME=product-base
 ARG REGISTRY=ghcr.io
-FROM ${REGISTRY}/rstudio/${SRC_IMAGE_NAME}:ubuntu2204-r${R_VERSION}_${R_VERSION_ALT}-py${PYTHON_VERSION}_${PYTHON_VERSION_ALT}
+FROM ${REGISTRY}/rstudio/${SRC_IMAGE_NAME}:ubuntu2204-r${R_VERSION}_${R_VERSION_ALT}-py${PYTHON_VERSION}_${PYTHON_VERSION_ALT} as build
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 ARG PYTHON_VERSION=3.9.17
@@ -50,3 +50,15 @@ RUN license-manager initialize --userspace || true
 
 ENTRYPOINT ["tini", "--"]
 CMD ["/usr/local/bin/startup.sh"]
+
+FROM build as test
+
+ARG R_VERSION=4.2.3
+ARG R_VERSION_ALT=4.1.3
+ARG PYTHON_VERSION=3.12.1
+ARG PYTHON_VERSION_ALT=3.11.7
+ARG RSPM_VERSION=2023.12.0-13
+ARG OS=ubuntu2204
+
+RUN --mount=type=bind,target=/tmp/test,source=test/ \
+    /tmp/test/run_tests.sh
