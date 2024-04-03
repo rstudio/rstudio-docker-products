@@ -135,6 +135,13 @@ group "connect-content-init-images" {
     ]
 }
 
+group "r-session-complete-images" {
+    targets = [
+        "r-session-complete",
+        "test-r-session-complete",
+    ]
+}
+
 ### Base Image targets ###
 
 target "base" {
@@ -370,7 +377,8 @@ target "test-connect-content-init" {
 ### Workbench targets ###
 
 target "r-session-complete" {
-    inherits = ["base"]
+    inherits = ["product-base-pro-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"]
+    target = "build"
 
     name = "r-session-complete-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
     tags = [
@@ -383,6 +391,28 @@ target "r-session-complete" {
     contexts = {
         baseapp = "target:product-base-pro-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
     }
+
+    matrix = R_SESSION_COMPLETE_BUILD_MATRIX
+    args = {
+        R_VERSION = builds.r_primary
+        R_VERSION_ALT = builds.r_alternate
+        PYTHON_VERSION = builds.py_primary
+        PYTHON_VERSION_ALT = builds.py_alternate
+        JUPYTERLAB_VERSION = "3.6.5"
+        RSW_VERSION = WORKBENCH_VERSION
+        RSW_NAME = builds.os == "centos7" ? "rstudio-workbench-rhel" : "rstudio-workbench"
+        RSW_DOWNLOAD_URL = builds.os == "centos7" ? "https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x86_64" : "https://download2.rstudio.org/server/jammy/amd64"
+    }
+}
+
+target "test-r-session-complete" {
+    inherits = ["r-session-complete-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"]
+    target = "test"
+
+    name = "test-r-session-complete-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+
+    dockerfile = "Dockerfile.${builds.os}"
+    context = "r-session-complete"
 
     matrix = R_SESSION_COMPLETE_BUILD_MATRIX
     args = {
