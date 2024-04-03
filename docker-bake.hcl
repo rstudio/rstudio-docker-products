@@ -121,7 +121,21 @@ group "package-manager-images" {
     ]
 }
 
-### Base Images ###
+group "connect-images" {
+    targets = [
+        "connect",
+        "test-connect",
+    ]
+}
+
+group "connect-content-init-images" {
+    targets = [
+        "connect-content-init",
+        "test-connect-content-init",
+    ]
+}
+
+### Base Image targets ###
 
 target "base" {
     labels = {
@@ -205,17 +219,10 @@ target "test-product-base-pro" {
     inherits = ["product-base-pro-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"]
     target = "test"
 
-    name = "product-base-pro-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
-    tags = [
-        "ghcr.io/rstudio/product-base-pro:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
-        "docker.io/rstudio/product-base-pro:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
-    ]
+    name = "test-product-base-pro-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "product/pro"
-    contexts = {
-        baseapp = "target:product-base-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
-    }
 
     matrix = PRO_BUILD_MATRIX
     args = {
@@ -229,7 +236,7 @@ target "test-product-base-pro" {
     }
 }
 
-### Package Manager ###
+### Package Manager targets ###
 
 target "package-manager" {
     inherits = ["product-base-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"]
@@ -237,8 +244,8 @@ target "package-manager" {
 
     name = "package-manager-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
     tags = [
-        "ghcr.io/rstudio/product-package-manager:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
-        "docker.io/rstudio/product-package-manager:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
+        "ghcr.io/rstudio/rstudio-package-manager:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
+        "docker.io/rstudio/rstudio-package-manager:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
     ]    
 
     dockerfile = "Dockerfile.${builds.os}"
@@ -261,11 +268,7 @@ target "test-package-manager" {
     inherits = ["package-manager-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"]
     target = "test"
 
-    name = "package-manager-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
-    tags = [
-        "ghcr.io/rstudio/product-package-manager:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
-        "docker.io/rstudio/product-package-manager:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
-    ]
+    name = "test-package-manager-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "package-manager"
@@ -280,13 +283,16 @@ target "test-package-manager" {
     }
 }
 
+### Connect targets ###
+
 target "connect" {
-    inherits = ["base"]
+    inherits = ["product-base-pro-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"]
+    target = "build"
 
     name = "connect-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
     tags = [
-        "ghcr.io/rstudio/product-connect:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
-        "docker.io/rstudio/product-connect:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
+        "ghcr.io/rstudio/rstudio-connect:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
+        "docker.io/rstudio/rstudio-connect:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
     ]    
 
     dockerfile = "Dockerfile.${builds.os}"
@@ -305,8 +311,29 @@ target "connect" {
     }
 }
 
+# FIXME: This target requires a privileged environment which bake cannot provide
+target "test-connect" {
+    inherits = ["connect-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"]
+    target = "test"
+
+    name = "test-connect-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+
+    dockerfile = "Dockerfile.${builds.os}"
+    context = "connect"
+
+    matrix = CONNECT_BUILD_MATRIX
+    args = {
+        R_VERSION = builds.r_primary
+        R_VERSION_ALT = builds.r_alternate
+        PYTHON_VERSION = builds.py_primary
+        PYTHON_VERSION_ALT = builds.py_alternate
+        RSC_VERSION = CONNECT_VERSION
+    }
+}
+
 target "connect-content-init" {
     inherits = ["base"]
+    target = "build"
 
     name = "connect-content-init-${builds.os}"
     tags = [
@@ -323,6 +350,24 @@ target "connect-content-init" {
         RSC_VERSION = CONNECT_VERSION
     }
 }
+
+target "test-connect-content-init" {
+    inherits = ["connect-content-init-${builds.os}"]
+    target = "test"
+
+    name = "test-connect-content-init-${builds.os}"
+
+    dockerfile = "Dockerfile.${builds.os}"
+    context = "connect-content-init"
+
+    matrix = CONNECT_CONTENT_INIT_BUILD_MATRIX
+
+    args = {
+        RSC_VERSION = CONNECT_VERSION
+    }
+}
+
+### Workbench targets ###
 
 target "r-session-complete" {
     inherits = ["base"]
@@ -379,6 +424,8 @@ target "workbench" {
         RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/jammy/amd64"
     }        
 }
+
+### Specialty image targets ###
 
 target "workbench-for-google-cloud-workstations" {
     inherits = ["base"]

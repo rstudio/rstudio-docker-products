@@ -1,5 +1,5 @@
 # Tag from https://hub.docker.com/_/ubuntu/
-FROM ubuntu:22.04
+FROM ubuntu:22.04 as build
 LABEL maintainer="RStudio Connect <rsconnect@rstudio.com>"
 
 # Install required tools:
@@ -23,3 +23,10 @@ RUN mkdir -p /rsc-staging && \
 
 COPY --chmod=755 entrypoint.sh /usr/local/bin/entrypoint.sh
 CMD ["/usr/local/bin/entrypoint.sh"]
+
+FROM build as test
+
+ARG RSC_VERSION=2024.02.0
+
+RUN --mount=type=bind,target=/tmp/test,source=test/ \
+    /tmp/test/run_tests.sh
