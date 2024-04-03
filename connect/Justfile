@@ -45,22 +45,15 @@ build OS=IMAGE_OS VERSION=RSC_VERSION +TAGS=DEFAULT_TAG:
     --file=./Dockerfile.$(just -f ../Justfile _parse-os {{OS}}) .
 
 # Test Connect image - just test rstudio/rstudio-connect:ubuntu2204-2022.10.0 2022.10.0
-test TAG=DEFAULT_TAG VERSION=RSC_VERSION CMD="":
+test OS="ubuntu2204" VERSION=RSC_VERSION:
   #!/usr/bin/env bash
-  set -euxo pipefail
-  IMAGE_NAME="{{ TAG }}" \
-  RSC_VERSION="{{ VERSION }}" \
-  RSC_LICENSE="{{ RSC_LICENSE }}" \
-  RSC_LICENSE_SERVER="{{ RSC_LICENSE_SERVER }}" \
-  R_VERSION="{{ R_VERSION }}" \
-  R_VERSION_ALT="{{ R_VERSION_ALT }}" \
-  PYTHON_VERSION="{{ PYTHON_VERSION }}" \
-  PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
-  docker-compose -f ./docker-compose.test.yml run sut {{ CMD }}
-
-# Test Connect image interactively - just test-i rstudio/rstudio-connect:ubuntu2204-2022.10.0 2022.10.0
-test-i TAG=DEFAULT_TAG VERSION=RSC_VERSION:
-  just test {{ TAG }} {{ VERSION }} bash
+  docker buildx --builder="{{ BUILDX_PATH }}" build ${BUILDX_ARGS} --allow security.insecure --target test \
+    --build-arg RSC_VERSION="{{ VERSION }}" \
+    --build-arg R_VERSION="{{ R_VERSION }}" \
+    --build-arg R_VERSION_ALT="{{ R_VERSION_ALT }}" \
+    --build-arg PYTHON_VERSION="{{ PYTHON_VERSION }}" \
+    --build-arg PYTHON_VERSION_ALT="{{ PYTHON_VERSION_ALT }}" \
+    --file=./Dockerfile.$(just -f ../Justfile _parse-os {{OS}}) .
 
 # Run Connect - just RSC_LICENSE="<RSC license>" run rstudio/rstudio-connect:ubuntu2204-2022.10.0
 run TAG=DEFAULT_TAG CMD="":
