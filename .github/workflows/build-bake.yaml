@@ -9,13 +9,6 @@ name: Build Docker Images with Bake
 jobs:
   build:
     runs-on: ubuntu-latest-4x
-    strategy:
-      matrix:
-        targets: [
-            "default",
-            "workbench-for-google-cloud-workstations",
-            "workbench-for-microsoft-azure-ml",
-        ]
     steps:
      - name: Checkout
        uses: actions/checkout@v4
@@ -26,6 +19,6 @@ jobs:
      - name: Build and push
        uses: docker/bake-action@v4
        with:
-         targets: "${{ matrix.targets }}"
-         push: false    
+         targets: "build-test"
+         push: false
 

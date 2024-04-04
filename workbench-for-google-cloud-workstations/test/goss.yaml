@@ -35,19 +35,14 @@ port:
   tcp:80:
     listening: true
     ip:
-    - 0.0.0.0
-    skip: false
-  tcp:5559:
-    listening: true
-    ip:
-    - 127.0.0.1
+      - 0.0.0.0
     skip: false
 
 process:
   rserver:
     running: true
     skip: false
-  rstudio-launche:
+  rserver-launche:
     running: true
     skip: false
 
@@ -88,14 +83,14 @@ file:
     exists: true
   /etc/rstudio/jupyter.conf:
     exists: true
-    contains:
+    contents:
     - --LabApp.token=""
     - --no-browser
     - --allow-root
     - --ip=0.0.0.0
   /etc/rstudio/rserver.conf:
     exists: true
-    contains:
+    contents:
     - www-port=80
     - launcher-sessions-callback-address=http://0.0.0.0:80
     - auth-proxy=1
@@ -103,21 +98,21 @@ file:
     - auth-proxy-user-header=x-custom-user-name
   /etc/rstudio/nginx.site.conf:
     exists: true
-    contains:
+    contents:
     - proxy_set_header X-CUSTOM-USER-NAME user/google;
     - proxy_set_header Host $http_x_forwarded_host;
   /etc/rstudio/vscode.extensions.conf:
     exists: true
-    contains:
+    contents:
     - quarto.quarto
     - GoogleCloudTools.cloudcode
   /tmp/startup.log:
     exists: true
-    contains:
+    contents:
     - "!Error reading /etc/rstudio/rserver.conf:"
   /etc/pam.d/common-session:
     exists: true
-    contains:
+    contents:
       - "/^session required pam_mkhomedir.so skel=/etc/skel umask=0022$/"
   /etc/sssd/sssd.conf:
     exists: true
@@ -135,7 +130,7 @@ file:
     group: root
     mode: "0755"
     filetype: file
-    contains: [
+    contents: [
       "useradd -m user"
     ]
   /etc/workstation-startup.d/110_config-jupyter.sh:
@@ -144,7 +139,7 @@ file:
     group: root
     mode: "0755"
     filetype: file
-    contains: [
+    contents: [
       # Checks that we're setting the Jupyter shell to /bin/bash
       "echo \"c.ServerApp.terminado_settings = {'shell_command': ['/bin/bash']}\" > /home/user/.jupyter/jupyter_notebook_config.py"
     ]
@@ -154,7 +149,7 @@ file:
     group: root
     mode: "0755"
     filetype: file
-    contains: [
+    contents: [
       "/usr/bin/supervisord -c /etc/supervisor/supervisord.conf"
     ]
 

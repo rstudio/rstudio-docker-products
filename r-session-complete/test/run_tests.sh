@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# install goss
-
 GOSS_FILE=${GOSS_FILE:-/tmp/test/goss.yaml}
 GOSS_VERSION=${GOSS_VERSION:-0.4.6}
 GOSS_MAX_CONCURRENT=${GOSS_MAX_CONCURRENT:-50}
