@@ -55,9 +55,6 @@ jobs:
           targets: "build"
           push: true
 
-      - name: Print Metadata
-        run: echo "${{ steps.push.outputs.metadata }}"
-
   build-content:
     runs-on: ubuntu-latest-4x
 
@@ -92,6 +89,3 @@ jobs:
             *.cache-to=type=gha,compression=zstd
           workdir: content/.
           push: true
-
-      - name: Print Metadata
-        run: echo "${{ steps.push.outputs.metadata }}"
