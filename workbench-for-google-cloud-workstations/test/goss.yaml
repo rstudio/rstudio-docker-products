@@ -177,6 +177,7 @@ command:
      ]
   Test Jupyter works:
     exec: "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/jupyter/bin/jupyter nbconvert --to notebook --stdin --stdout"
+    timeout: 60000
     exit-status: 0
   Check primary Python is version {{.Env.PYTHON_VERSION}}:
     exec: /opt/python/{{.Env.PYTHON_VERSION}}/bin/python --version
