@@ -54,11 +54,13 @@ jobs:
       - name: Build and push
         uses: docker/bake-action@v4
         with:
+          workdir: content/.
           push: false
 
       - name: Build and push
         if: github.ref == 'refs/heads/main'
         uses: docker/bake-action@v4
         with:
+          workdir: content/.
           push: true
 
