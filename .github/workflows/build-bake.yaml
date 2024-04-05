@@ -25,7 +25,8 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push
+      - name: Build and test
+        id: build
         uses: docker/bake-action@v4
         with:
           targets: "build-test"
@@ -35,12 +36,16 @@ jobs:
         run: |
           just -f build.justfile test-connect
 
-      - name: Build and push
+      - name: Push
+        id: push
         if: github.ref == 'refs/heads/main'
         uses: docker/bake-action@v4
         with:
           targets: "build"
           push: true
+
+      - name: Print Metadata
+        run: echo "${{ steps.push.outputs.metadata }}"
 
   build-content:
     runs-on: ubuntu-latest-4x
@@ -51,16 +56,20 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push
+      - name: Build
+        id: build
         uses: docker/bake-action@v4
         with:
           workdir: content/.
           push: false
 
-      - name: Build and push
+      - name: Push
+        id: push
         if: github.ref == 'refs/heads/main'
         uses: docker/bake-action@v4
         with:
           workdir: content/.
           push: true
 
+      - name: Print Metadata
+        run: echo "${{ steps.push.outputs.metadata }}"
