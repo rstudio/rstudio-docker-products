@@ -40,7 +40,7 @@ target "base" {
       "docker.io.io/rstudio/content-base:r${builds.r}-py${builds.py}-${builds.os_alt}",
   ]
   output = [
-      "type=cacheonly",
+    "type=image",
   ]
 
   dockerfile = "Dockerfile.${builds.os}"
@@ -64,7 +64,7 @@ target "pro" {
       "docker.io.io/rstudio/content-pro:r${builds.r}-py${builds.py}-${builds.os_alt}",
   ]
   output = [
-      "type=cacheonly",
+    "type=image",
   ]
 
   contexts = {
