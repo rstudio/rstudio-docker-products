@@ -9,6 +9,11 @@ name: Bake Docker Images
 jobs:
   build:
     runs-on: ubuntu-latest-4x
+
+    concurrency:
+      group: bake-${{ github.ref }}
+      cancel-in-progress: true
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,6 +34,9 @@ jobs:
         id: build
         uses: docker/bake-action@v4
         with:
+          set: |
+            *.cache-from=type=gha
+            *.cache-to=type=gha,compression=zstd
           targets: "build-test"
           push: false
 
@@ -41,6 +49,9 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: docker/bake-action@v4
         with:
+          set: |
+            *.cache-from=type=gha
+            *.cache-to=type=gha,compression=zstd
           targets: "build"
           push: true
 
@@ -49,6 +60,11 @@ jobs:
 
   build-content:
     runs-on: ubuntu-latest-4x
+
+    concurrency:
+      group: bake-content-${{ github.ref }}
+      cancel-in-progress: true
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -60,6 +76,9 @@ jobs:
         id: build
         uses: docker/bake-action@v4
         with:
+          set: |
+            *.cache-from=type=gha
+            *.cache-to=type=gha,compression=zstd
           workdir: content/.
           push: false
 
@@ -68,6 +87,9 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: docker/bake-action@v4
         with:
+          set: |
+            *.cache-from=type=gha
+            *.cache-to=type=gha,compression=zstd
           workdir: content/.
           push: true
 
