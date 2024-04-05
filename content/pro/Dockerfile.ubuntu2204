@@ -1,7 +1,4 @@
-ARG PYTHON_VERSION
-ARG R_VERSION
-ARG REGISTRY=ghcr.io
-FROM ${REGISTRY}/rstudio/content-base:r${R_VERSION}-py${PYTHON_VERSION}-ubuntu2204
+FROM content-base
 
 LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
