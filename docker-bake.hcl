@@ -221,6 +221,7 @@ target "base" {
     labels = {
         "maintainer" = "Posit Docker <docker@posit.co>"
     }
+    output = ["type=cacheonly"]
 }
 
 target "product-base" {
@@ -231,6 +232,9 @@ target "product-base" {
     tags = [
         "ghcr.io/rstudio/product-base:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
         "docker.io/rstudio/product-base:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
+    ]
+    output = [
+        "type=cacheonly",
     ]
     
     dockerfile = "Dockerfile.${builds.os}"
@@ -269,7 +273,10 @@ target "product-base-pro" {
     tags = [
         "ghcr.io/rstudio/product-base-pro:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
         "docker.io/rstudio/product-base-pro:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
-    ]    
+    ]
+    output = [
+        "type=cacheonly",
+    ]
 
     dockerfile = "Dockerfile.${builds.os}"   
     context = "product/pro"
@@ -354,9 +361,10 @@ target "connect" {
         "ghcr.io/rstudio/rstudio-connect:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
         "docker.io/rstudio/rstudio-connect:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
     ]
+    # We output Connect to OCI so it can be pulled in for testing later on.
     output = [
         "type=cacheonly",
-        "type=docker",
+        "type=oci,tar=false,dest=./.out/connect-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
     ]
 
     dockerfile = "Dockerfile.${builds.os}"

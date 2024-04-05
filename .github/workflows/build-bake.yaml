@@ -5,20 +5,40 @@ on:
         - dev
     pull_request:
   
-name: Build Docker Images with Bake
+name: Bake Docker Images
 jobs:
   build:
     runs-on: ubuntu-latest-4x
     steps:
-     - name: Checkout
-       uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-     - name: Set up Docker Buildx
-       uses: docker/setup-buildx-action@v3         
-     
-     - name: Build and push
-       uses: docker/bake-action@v4
-       with:
-         targets: "build-test"
-         push: false
+      - name: Set up Just
+        uses: extractions/setup-just@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/bake-action@v4
+        with:
+          targets: "build-test"
+          push: false
+
+      - name: Test Connect (privileged container)
+        run: |
+          just -f build.justfile test-connect
+
+      - name: Build and push
+        if: github.ref == 'refs/heads/main'
+        uses: docker/bake-action@v4
+        with:
+          targets: "build"
+          push: true
 
