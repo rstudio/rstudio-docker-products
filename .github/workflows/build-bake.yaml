@@ -1,13 +1,14 @@
 on:
-    push:
-      branches:
-        - main
-        - dev
-    pull_request:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
   
-name: Bake Docker Images
+name: Release - Build, Test, and Push
 jobs:
   build:
+    name: Build and Test images
     runs-on: ubuntu-latest-4x
 
     concurrency:

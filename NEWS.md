@@ -5,6 +5,10 @@ changed in each image.
 
 This file only captures pervasive, repository-wide changes.
 
+# 2024-04-08
+
+- Change build orchestration to use `docker buildx bake` for all images.
+
 # 2024-03-14
 
 - Update Professional Drivers to 2024.03.0

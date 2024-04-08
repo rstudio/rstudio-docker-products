@@ -19,9 +19,49 @@ variable DEFAULT_QUARTO_VERSION {
     default = "1.4.553"
 }
 
+function workbench_version_clean {
+    params = []
+    result = split("+", WORKBENCH_VERSION)[0]
+}
+
+function get_os_alt_name {
+    params = [os]
+    result = os == "ubuntu2204" ? "jammy" : os
+}
+
 function get_drivers_version {
     params = [os]
     result = os == "centos7" ? "${DRIVERS_VERSION}-1" : DRIVERS_VERSION
+}
+
+function get_centos_tags {
+    params = [os, product, product_version]
+    result = [
+        "ghcr.io/rstudio/${product}:${os}",
+        "ghcr.io/rstudio/${product}:${os}-${product_version}",
+        "docker.io/rstudio/${product}:${os}",
+        "docker.io/rstudio/${product}:${os}-${product_version}",
+    ]
+}
+
+function get_ubuntu_tags {
+    params = [os, product, product_version]
+    result = [
+        "ghcr.io/rstudio/${product}:${os}",
+        "ghcr.io/rstudio/${product}:${get_os_alt_name(os)}",
+        "ghcr.io/rstudio/${product}:${os}-${product_version}",
+        "ghcr.io/rstudio/${product}:${get_os_alt_name(os)}-${product_version}",
+        "docker.io/rstudio/${product}:${os}",
+        "docker.io/rstudio/${product}:${get_os_alt_name(os)}",
+        "docker.io/rstudio/${product}:${os}-${product_version}",
+        "docker.io/rstudio/${product}:${get_os_alt_name(os)}-${product_version}",
+    ]
+}
+
+# FIXME: There's an obnoxious amount of hardcoding here due to restrictions with what bake can actually interpret from HCL.
+function get_tags {
+    params = [os, product, product_version]
+    result = os == "ubuntu2204" ? get_ubuntu_tags(os, product, product_version) : get_centos_tags(os, product, product_version)
 }
 
 ### Build matrices ###
@@ -313,11 +353,8 @@ target "package-manager" {
     inherits = ["base"]
     target = "build"
 
-    name = "package-manager-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
-    tags = [
-        "ghcr.io/rstudio/rstudio-package-manager:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
-        "docker.io/rstudio/rstudio-package-manager:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
-    ]    
+    name = "package-manager-${builds.os}-${replace(PACKAGE_MANAGER_VERSION, ".", "-")}"
+    tags = get_tags(builds.os, "package-manager", PACKAGE_MANAGER_VERSION)
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "package-manager"
@@ -336,14 +373,14 @@ target "package-manager" {
 }
 
 target "test-package-manager" {
-    inherits = ["package-manager-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"]
+    inherits = ["package-manager-${builds.os}-${replace(PACKAGE_MANAGER_VERSION, ".", "-")}"]
     target = "test"
 
-    name = "test-package-manager-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+    name = "test-package-manager-${builds.os}-${replace(PACKAGE_MANAGER_VERSION, ".", "-")}"
     tags = []
 
     contexts = {
-        build = "target:package-manager-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+        build = "target:package-manager-${builds.os}-${replace(PACKAGE_MANAGER_VERSION, ".", "-")}"
     }
 
     matrix = PACKAGE_MANAGER_BUILD_MATRIX
@@ -354,15 +391,13 @@ target "connect" {
     inherits = ["base"]
     target = "build"
 
-    name = "connect-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
-    tags = [
-        "ghcr.io/rstudio/rstudio-connect:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
-        "docker.io/rstudio/rstudio-connect:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
-    ]
+    name = "connect-${builds.os}-${replace(CONNECT_VERSION, ".", "-")}"
+    tags = get_tags(builds.os, "rstudio-connect", CONNECT_VERSION)
+
     # We output Connect to OCI so it can be pulled in for testing later on.
     output = [
         "type=image",
-        "type=oci,tar=false,dest=./.out/connect-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+        "type=oci,tar=false,dest=./.out/connect-${builds.os}-${replace(CONNECT_VERSION, ".", "-")}"
     ]
 
     dockerfile = "Dockerfile.${builds.os}"
@@ -383,14 +418,14 @@ target "connect" {
 
 # FIXME: This target requires a privileged environment which bake cannot provide
 target "test-connect" {
-    inherits = ["connect-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"]
+    inherits = ["connect-${builds.os}-${replace(CONNECT_VERSION, ".", "-")}"]
     target = "test"
 
-    name = "test-connect-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+    name = "test-connect-${builds.os}-${replace(CONNECT_VERSION, ".", "-")}"
     tags = []
 
     contexts = {
-        build = "target:connect-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+        build = "target:connect-${builds.os}-${replace(CONNECT_VERSION, ".", "-")}"
     }
 
     matrix = CONNECT_BUILD_MATRIX
@@ -401,12 +436,7 @@ target "connect-content-init" {
     target = "build"
 
     name = "connect-content-init-${builds.os}-${replace(CONNECT_VERSION, ".", "-")}"
-    tags = [
-        "ghcr.io/rstudio/product-connect-content-init:${builds.os}",
-        "ghcr.io/rstudio/product-connect-content-init:${builds.os}-${CONNECT_VERSION}",
-        "docker.io/rstudio/product-connect-content-init:${builds.os}",
-        "docker.io/rstudio/product-connect-content-init:${builds.os}-${CONNECT_VERSION}",
-    ]    
+    tags = get_tags(builds.os, "rstudio-connect-content-init", CONNECT_VERSION)
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "connect-content-init"
@@ -437,11 +467,8 @@ target "r-session-complete" {
     inherits = ["base"]
     target = "build"
 
-    name = "r-session-complete-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
-    tags = [
-        "ghcr.io/rstudio/product-r-session-complete:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
-        "docker.io/rstudio/product-r-session-complete:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
-    ]    
+    name = "r-session-complete-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
+    tags = get_tags(builds.os, "r-session-complete", workbench_version_clean())
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "r-session-complete"
@@ -463,14 +490,14 @@ target "r-session-complete" {
 }
 
 target "test-r-session-complete" {
-    inherits = ["r-session-complete-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"]
+    inherits = ["r-session-complete-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"]
     target = "test"
 
-    name = "test-r-session-complete-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+    name = "test-r-session-complete-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
     tags = []
 
     contexts = {
-        build = "target:r-session-complete-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+        build = "target:r-session-complete-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
     }
 
     matrix = R_SESSION_COMPLETE_BUILD_MATRIX
@@ -479,11 +506,8 @@ target "test-r-session-complete" {
 target "workbench" {
     inherits = ["base"]
 
-    name = "workbench-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
-    tags = [
-        "ghcr.io/rstudio/product-workbench:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
-        "docker.io/rstudio/product-workbench:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
-    ]    
+    name = "workbench-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
+    tags = get_tags(builds.os, "rstudio-workbench", workbench_version_clean())
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "workbench"
@@ -505,13 +529,13 @@ target "workbench" {
 }
 
 target "test-workbench" {
-    inherits = ["workbench-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"]
+    inherits = ["workbench-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"]
 
-    name = "test-workbench-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+    name = "test-workbench-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
     tags = []
 
     contexts = {
-        build = "target:workbench-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+        build = "target:workbench-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
     }
 
     matrix = WORKBENCH_BUILD_MATRIX
@@ -521,10 +545,16 @@ target "test-workbench" {
 target "workbench-for-google-cloud-workstations" {
     inherits = ["base"]
 
-    name = "workbench-for-google-cloud-workstation-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+    name = "workbench-for-google-cloud-workstation-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
     tags = [
-        "ghcr.io/rstudio/workbench-for-google-cloud-workstation:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
-        "docker.io/rstudio/workbench-for-google-cloud-workstation:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
+        "us-central1-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
+        "us-central1-docker.pkg.dev/posit-images/cloud-workstations/workbench:${workbench_version_clean()}",
+        "us-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
+        "us-docker.pkg.dev/posit-images/cloud-workstations/workbench:${workbench_version_clean()}",
+        "europe-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
+        "europe-docker.pkg.dev/posit-images/cloud-workstations/workbench:${workbench_version_clean()}",
+        "asia-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
+        "asia-docker.pkg.dev/posit-images/cloud-workstations/workbench:${workbench_version_clean()}",
     ]    
 
     dockerfile = "Dockerfile.${builds.os}"
@@ -547,13 +577,13 @@ target "workbench-for-google-cloud-workstations" {
 }
 
 target "test-workbench-for-google-cloud-workstations" {
-    inherits = ["workbench-for-google-cloud-workstation-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"]
+    inherits = ["workbench-for-google-cloud-workstation-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"]
 
-    name = "test-workbench-for-google-cloud-workstation-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+    name = "test-workbench-for-google-cloud-workstation-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
     tags = []
 
     contexts = {
-        build = "target:workbench-for-google-cloud-workstation-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+        build = "target:workbench-for-google-cloud-workstation-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
     }
 
     matrix = WORKBENCH_GOOGLE_CLOUD_WORKSTATION_BUILD_MATRIX
@@ -565,7 +595,7 @@ target "build-workbench-for-microsoft-azure-ml" {
     inherits = ["base"]
     target = "build"
 
-    name = "build-workbench-for-microsoft-azure-ml-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+    name = "build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "workbench-for-microsoft-azure-ml"
@@ -588,44 +618,41 @@ target "build-workbench-for-microsoft-azure-ml" {
 }
 
 target "scan-workbench-for-microsoft-azure-ml" {
-    inherits = ["build-workbench-for-microsoft-azure-ml-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"]
+    inherits = ["build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"]
     target = "clamav"
 
-    name = "scan-workbench-for-microsoft-azure-ml-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+    name = "scan-workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
 
     contexts = {
-        build = "target:build-workbench-for-microsoft-azure-ml-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+        build = "target:build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
     }
 
     matrix = WORKBENCH_MICROSOFT_AZURE_ML_BUILD_MATRIX
 }
 
 target "test-workbench-for-microsoft-azure-ml" {
-    inherits = ["build-workbench-for-microsoft-azure-ml-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"]
+    inherits = ["build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"]
     target = "test"
 
-    name = "test-workbench-for-microsoft-azure-ml-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+    name = "test-workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
 
     contexts = {
-        build = "target:build-workbench-for-microsoft-azure-ml-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+        build = "target:build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
     }
 
     matrix = WORKBENCH_MICROSOFT_AZURE_ML_BUILD_MATRIX
 }
 
 target "workbench-for-microsoft-azure-ml" {
-    inherits = ["build-workbench-for-microsoft-azure-ml-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"]
+    inherits = ["build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"]
     target = "final"
 
-    name = "workbench-for-microsoft-azure-ml-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
-    tags = [
-        "ghcr.io/rstudio/product-workbench-for-microsoft-azure-ml:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
-        "docker.io/rstudio/product-workbench-for-microsoft-azure-ml:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
-    ]
+    name = "workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
+    tags = get_tags(builds.os, "rstudio-workbench-for-microsoft-azure-ml", workbench_version_clean())
 
     contexts = {
-        build = "target:build-workbench-for-microsoft-azure-ml-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
-        clamav = "target:scan-workbench-for-microsoft-azure-ml-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+        build = "target:build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
+        clamav = "target:scan-workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
     }
 
     matrix = WORKBENCH_MICROSOFT_AZURE_ML_BUILD_MATRIX
