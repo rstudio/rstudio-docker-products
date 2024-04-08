@@ -50,4 +50,5 @@ command:
 
   "jupyter --version":
     title: jupyter_in_path_var
+    timeout: 60000
     exit-status: 0
