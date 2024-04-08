@@ -72,6 +72,7 @@ jobs:
             *.cache-to=type=gha,compression=zstd
           targets: "build-test"
           push: false
+          files: docker-bake.preview.hcl
 
       - name: Test Connect (privileged container)
         run: |
@@ -93,4 +94,4 @@ jobs:
             *.cache-to=type=gha,compression=zstd
           targets: "build"
           push: true
-          
+          files: docker-bake.preview.hcl
