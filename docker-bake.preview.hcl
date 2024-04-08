@@ -27,6 +27,15 @@ variable DEFAULT_QUARTO_VERSION {
     default = "1.4.553"
 }
 
+variable RSW_PREVIEW_URL_BASE  {
+    default = "https://s3.amazonaws.com/rstudio-ide-build/server/"
+}
+
+function get_rsw_download_url {
+    params = [os]
+    result = os == "centos7" ? "${RSW_PREVIEW_URL_BASE}centos7/x86_64" : "${RSW_PREVIEW_URL_BASE}jammy/amd64"
+}
+
 function tag_safe_version {
     params = [version]
     result = replace(version, "+", "-")
@@ -482,7 +491,7 @@ target "r-session-complete-daily" {
         JUPYTERLAB_VERSION = "3.6.5"
         RSW_VERSION = WORKBENCH_DAILY_VERSION
         RSW_NAME = builds.os == "centos7" ? "rstudio-workbench-rhel" : "rstudio-workbench"
-        RSW_DOWNLOAD_URL = builds.os == "centos7" ? "https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x86_64" : "https://download2.rstudio.org/server/jammy/amd64"
+        RSW_DOWNLOAD_URL = get_rsw_download_url(builds.os)
     }
 }
 
@@ -522,7 +531,7 @@ target "r-session-complete-preview" {
         JUPYTERLAB_VERSION = "3.6.5"
         RSW_VERSION = WORKBENCH_PREVIEW_VERSION
         RSW_NAME = builds.os == "centos7" ? "rstudio-workbench-rhel" : "rstudio-workbench"
-        RSW_DOWNLOAD_URL = builds.os == "centos7" ? "https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x86_64" : "https://download2.rstudio.org/server/jammy/amd64"
+        RSW_DOWNLOAD_URL = get_rsw_download_url(builds.os)
     }
 }
 
@@ -561,7 +570,7 @@ target "workbench-daily" {
         PYTHON_VERSION_JUPYTER = builds.py_alternate
         RSW_VERSION = WORKBENCH_DAILY_VERSION
         RSW_NAME = "rstudio-workbench"
-        RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/jammy/amd64"
+        RSW_DOWNLOAD_URL = get_rsw_download_url(builds.os)
     }
 }
 
@@ -599,7 +608,7 @@ target "workbench-preview" {
         PYTHON_VERSION_JUPYTER = builds.py_alternate
         RSW_VERSION = WORKBENCH_PREVIEW_VERSION
         RSW_NAME = "rstudio-workbench"
-        RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/jammy/amd64"
+        RSW_DOWNLOAD_URL = get_rsw_download_url(builds.os)
     }
 }
 
