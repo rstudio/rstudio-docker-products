@@ -83,7 +83,7 @@ variable WORKBENCH_BUILD_MATRIX {
 variable WORKBENCH_GOOGLE_CLOUD_WORKSTATION_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2004", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.12.1", py_alternate = "3.11.7"},
+            {os = "ubuntu2004", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.11.7", py_alternate = "3.10.13"},
         ]
     }
 }

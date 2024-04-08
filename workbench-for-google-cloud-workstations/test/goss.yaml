@@ -181,18 +181,21 @@ command:
     exit-status: 0
   Check primary Python is version {{.Env.PYTHON_VERSION}}:
     exec: /opt/python/{{.Env.PYTHON_VERSION}}/bin/python --version
+    timeout: 60000
     exit-status: 0
     stdout: [
       "{{.Env.PYTHON_VERSION}}"
     ]
   Check alternate Python is version {{.Env.PYTHON_VERSION_ALT}}:
     exec: /opt/python/{{.Env.PYTHON_VERSION_ALT}}/bin/python --version
+    timeout: 60000
     exit-status: 0
     stdout: [
         "{{.Env.PYTHON_VERSION_ALT}}"
     ]
   Check Jupyter venv uses Python {{.Env.PYTHON_VERSION_JUPYTER}}:
     exec: /opt/python/jupyter/bin/python --version
+    timeout: 60000
     exit-status: 0
     stdout: [
         "{{.Env.PYTHON_VERSION_JUPYTER}}"
@@ -209,9 +212,11 @@ command:
   {{- range $py_package_list }}
   Check Python {{ $python_version }} has "{{.}}" installed:
     exec: /opt/python/{{$python_version}}/bin/pip show {{.}}
+    timeout: 60000
     exit-status: 0
   Check Python {{ $python_version_alt }} has "{{.}}" installed:
     exec: /opt/python/{{$python_version_alt}}/bin/pip show {{.}}
+    timeout: 60000
     exit-status: 0
   {{end}}
   {{ $r_version := .Env.R_VERSION }}
