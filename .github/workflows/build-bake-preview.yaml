@@ -72,8 +72,14 @@ jobs:
 
       - name: Push
         id: push
-        if: github.ref == 'refs/heads/main'
+        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
         uses: docker/bake-action@v4
+        env:
+          WORKBENCH_DAILY_VERSION: ${{ steps.get-version.outputs.WORKBENCH_DAILY_VERSION }}
+          WORKBENCH_PREVIEW_VERSION: ${{ steps.get-version.outputs.WORKBENCH_PREVIEW_VERSION }}
+          PACKAGE_MANAGER_DAILY_VERSION: ${{ steps.get-version.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
+          CONNECT_DAILY_VERSION: ${{ steps.get-version.outputs.CONNECT_DAILY_VERSION }}
+          BRANCH: ${{ github.head_ref || github.ref_name }}
         with:
           set: |
             *.cache-from=type=gha
