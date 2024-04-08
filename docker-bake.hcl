@@ -354,7 +354,7 @@ target "package-manager" {
     target = "build"
 
     name = "package-manager-${builds.os}-${replace(PACKAGE_MANAGER_VERSION, ".", "-")}"
-    tags = get_tags(builds.os, "package-manager", PACKAGE_MANAGER_VERSION)
+    tags = get_tags(builds.os, "rstudio-package-manager", PACKAGE_MANAGER_VERSION)
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "package-manager"

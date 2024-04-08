@@ -12,10 +12,11 @@ parser = argparse.ArgumentParser(
 parser.add_argument("image_name")
 parser.add_argument("operating_system")
 parser.add_argument("--builder", default="posit-builder")
+parser.add_argument("--file", default="docker-bake.hcl")
 
 
-def get_bake_plan():
-    cmd = ["docker", "buildx", "bake", "-f", str(PROJECT_DIR / "docker-bake.hcl"), "--print"]
+def get_bake_plan(bake_file="docker-bake.hcl"):
+    cmd = ["docker", "buildx", "bake", "-f", str(PROJECT_DIR / bake_file), "--print"]
     p = subprocess.run(cmd, capture_output=True)
     if p.returncode != 0:
         print(f"Failed to get bake plan: {p.stderr}")
@@ -53,7 +54,7 @@ def build_test_command(target_name, target_spec, builder):
 
 def main():
     args = parser.parse_args()
-    plan = get_bake_plan()
+    plan = get_bake_plan(args.file)
     targets = get_targets(plan, args.image_name, args.operating_system)
     for target_name, target_spec in targets.items():
         cmd = build_test_command(target_name, target_spec, args.builder)

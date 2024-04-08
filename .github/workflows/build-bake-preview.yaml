@@ -1,0 +1,83 @@
+on:
+  schedule:
+    - cron: '0 8 * * *'
+    - cron: '0 9 * * *'
+  push:
+    branches:
+      - main
+      - dev
+      - dev-rspm
+  pull_request:
+
+name: Preview - Build, Test, and Push
+jobs:
+  build-preview:
+    runs-on: ubuntu-latest-4x
+
+    concurrency:
+      group: bake-preview-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Check Out main Branch
+        if: github.event.schedule == '0 8 * * *'
+        uses: actions/checkout@v3
+        with:
+          ref: 'main'
+
+      - name: Check Out Repo at Triggered Branch
+        if: github.event.schedule != '0 8 * * *'
+        uses: actions/checkout@v3
+
+      - name: Set up Just
+        uses: extractions/setup-just@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Get Version
+        id: get-version
+        run: |
+          WORKBENCH_DAILY_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local)
+          echo "WORKBENCH_DAILY_VERSION=$WORKBENCH_DAILY_VERSION" >> $GITHUB_OUTPUT
+          WORKBENCH_PREVIEW_VERSION=$(just -f ci.Justfile get-version workbench --type=preview --local)
+          echo "WORKBENCH_PREVIEW_VERSION=$WORKBENCH_PREVIEW_VERSION" >> $GITHUB_OUTPUT
+          PACKAGE_MANAGER_DAILY_VERSION=$(just -f ci.Justfile get-version package-manager --type=daily --local)
+          echo "PACKAGE_MANAGER_DAILY_VERSION=$PACKAGE_MANAGER_DAILY_VERSION" >> $GITHUB_OUTPUT
+          CONNECT_DAILY_VERSION=$(just -f ci.Justfile get-version connect --type=daily --local)
+          echo "CONNECT_DAILY_VERSION=$CONNECT_DAILY_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Build and test
+        id: build
+        uses: docker/bake-action@v4
+        env:
+          WORKBENCH_DAILY_VERSION: ${{ steps.get-version.outputs.WORKBENCH_DAILY_VERSION }}
+          WORKBENCH_PREVIEW_VERSION: ${{ steps.get-version.outputs.WORKBENCH_PREVIEW_VERSION }}
+          PACKAGE_MANAGER_DAILY_VERSION: ${{ steps.get-version.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
+          CONNECT_DAILY_VERSION: ${{ steps.get-version.outputs.CONNECT_DAILY_VERSION }}
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+        with:
+          set: |
+            *.cache-from=type=gha
+            *.cache-to=type=gha,compression=zstd
+          targets: "build-test"
+          push: false
+
+      - name: Test Connect (privileged container)
+        run: |
+          just -f build.justfile test-connect-preview
+
+      - name: Push
+        id: push
+        if: github.ref == 'refs/heads/main'
+        uses: docker/bake-action@v4
+        with:
+          set: |
+            *.cache-from=type=gha
+            *.cache-to=type=gha,compression=zstd
+          targets: "build"
+          push: true
+          
