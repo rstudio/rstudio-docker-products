@@ -38,6 +38,10 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Install Python dependencies
+        run: |
+          pip install requests
+
       - name: Get Version
         id: get-version
         run: |
