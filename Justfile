@@ -112,13 +112,11 @@ update-rsw-versions:
   sed {{ sed_vars }} "s/RSW_VERSION:.*/RSW_VERSION: {{ RSW_VERSION }}/g" docker-compose.yml
   sed {{ sed_vars }} "s/rstudio\/rstudio-workbench:.*/rstudio\/rstudio-workbench:$(just _get-clean-version {{ RSW_VERSION }})/g" docker-compose.yml
   sed {{ sed_vars }} "s/^RSW_VERSION := .*/RSW_VERSION := \"{{ RSW_VERSION }}\"/g" \
-    r-session-complete/Justfile \
-    workbench/Justfile \
-    workbench-for-microsoft-azure-ml/Justfile \
     Justfile
   sed {{ sed_vars }} "s/[0-9]\{4\}\.[0-9]\{1,2\}\.[0-9]\{1,2\}/`just _get-clean-version {{ RSW_VERSION }}`/g" \
     workbench/README.md \
     r-session-complete/README.md
+  sed -i '/variable WORKBENCH_VERSION/!b;n;c\ \ \ \ default = "{{ RSW_VERSION }}"' docker-bake.hcl
 
 # just RSPM_VERSION=1.2.3 update-rspm-versions
 update-rspm-versions:
@@ -133,6 +131,7 @@ update-rspm-versions:
     package-manager/Justfile \
     Justfile
   sed {{ sed_vars }} -E "s/[0-9]{4}\.[0-9]{1,2}\.[0-9]{1,2}/`just _get-clean-version {{ RSPM_VERSION }}`/g" package-manager/README.md
+  sed -i '/variable PACKAGE_MANAGER_VERSION/!b;n;c\ \ \ \ default = "{{ RSPM_VERSION }}"' docker-bake.hcl
 
 # just RSC_VERSION=1.2.3 update-rsc-versions
 update-rsc-versions:
@@ -151,9 +150,11 @@ update-rsc-versions:
   sed {{ sed_vars }} -E "s/[0-9]{4}\.[0-9]{1,2}\.[0-9]{1,2}/`just _get-clean-version {{ RSC_VERSION }}`/g" \
     connect/README.md \
     connect-content-init/README.md
+  sed -i '/variable CONNECT_VERSION/!b;n;c\ \ \ \ default = "{{ RSC_VERSION }}"' docker-bake.hcl
 
 # just R_VERSION=3.2.1 R_VERSION_ALT=4.1.0 update-r-versions
-update-r-versions:
+update-r-versions: update-default-r-versions
+update-default-r-versions:
   #!/usr/bin/env bash
   set -euxo pipefail
   # Update primary R versions
@@ -197,7 +198,8 @@ update-r-versions:
     ci.Justfile
 
 # just PYTHON_VERSION=3.9.5 PYTHON_VERSION_ALT=3.8.10 update-py-versions
-update-py-versions:
+update-py-versions: update-default-py-versions
+update-default-py-versions:
   #!/usr/bin/env bash
   set -euxo pipefail
   # Update primary Python versions
@@ -267,6 +269,7 @@ update-drivers-versions:
     r-session-complete/Justfile \
     product/pro/Justfile \
     ci.Justfile
+  sed -i '/variable DRIVERS_VERSION/!b;n;c\ \ \ \ default = "{{ RSC_VERSION }}"' docker-bake.hcl
 
 update-quarto-versions:
   #!/usr/bin/env bash
@@ -283,20 +286,7 @@ update-quarto-versions:
     connect/rstudio-connect.gcfg
   sed {{ sed_vars }} "s/qver=\${QUARTO_VERSION:-.*}/qver=\${QUARTO_VERSION:-{{ QUARTO_VERSION }}}/g" \
     content/base/maybe_install_quarto.sh
-
-
-# just test-image preview workbench 12.0.11-8 tag1 tag2 tag3 ...
-test-image $PRODUCT $VERSION +IMAGES:
-  #!/usr/bin/env bash
-  set -euxo pipefail
-  IMAGES="{{IMAGES}}"
-  read -ra IMAGE_ARRAY <<<"$IMAGES"
-  just \
-    R_VERSION={{R_VERSION}} \
-    R_VERSION_ALT={{R_VERSION_ALT}} \
-    PYTHON_VERSION={{PYTHON_VERSION}} \
-    PYTHON_VERSION_ALT={{PYTHON_VERSION_ALT}} \
-    $PRODUCT/test "${IMAGE_ARRAY[0]}" "$VERSION"
+  sed -i '/variable DEFAULT_QUARTO_VERSION/!b;n;c\ \ \ \ default = "{{ QUARTO_VERSION }}"' docker-bake.hcl
 
 # just lint workbench ubuntu2204
 lint $PRODUCT $OS:

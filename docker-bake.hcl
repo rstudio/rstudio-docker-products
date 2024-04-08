@@ -15,6 +15,10 @@ variable DRIVERS_VERSION {
     default = "2024.03.0"
 }
 
+variable DEFAULT_QUARTO_VERSION {
+    default = "1.4.553"
+}
+
 function get_drivers_version {
     params = [os]
     result = os == "centos7" ? "${DRIVERS_VERSION}-1" : DRIVERS_VERSION
@@ -534,7 +538,7 @@ target "workbench-for-google-cloud-workstations" {
         PYTHON_VERSION_ALT = builds.py_alternate
         PYTHON_VERSION_JUPYTER = builds.py_alternate
         JUPYTERLAB_VERSION = "3.6.5"
-        QUARTO_VERSION = "1.4.550"
+        QUARTO_VERSION = DEFAULT_QUARTO_VERSION
         DRIVERS_VERSION = get_drivers_version(builds.os)
         RSW_VERSION = WORKBENCH_VERSION
         RSW_NAME = "rstudio-workbench"
