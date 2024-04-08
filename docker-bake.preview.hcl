@@ -370,14 +370,14 @@ target "package-manager-daily" {
 }
 
 target "test-package-manager-daily" {
-    inherits = ["package-manager-preview-${builds.os}-${replace(PACKAGE_MANAGER_DAILY_VERSION, ".", "-")}"]
+    inherits = ["package-manager-daily-${builds.os}-${replace(PACKAGE_MANAGER_DAILY_VERSION, ".", "-")}"]
     target = "test"
 
-    name = "test-package-manager-preview-${builds.os}-${replace(PACKAGE_MANAGER_DAILY_VERSION, ".", "-")}"
+    name = "test-package-manager-daily-${builds.os}-${replace(PACKAGE_MANAGER_DAILY_VERSION, ".", "-")}"
     tags = []
 
     contexts = {
-        build = "target:package-manager-preview-${builds.os}-${replace(PACKAGE_MANAGER_DAILY_VERSION, ".", "-")}"
+        build = "target:package-manager-daily-${builds.os}-${replace(PACKAGE_MANAGER_DAILY_VERSION, ".", "-")}"
     }
 
     matrix = PACKAGE_MANAGER_BUILD_MATRIX
@@ -445,7 +445,7 @@ target "connect-content-init-daily" {
     }
 }
 
-target "test-connect-content-init" {
+target "test-connect-content-init-daily" {
     inherits = ["connect-content-init-daily-${builds.os}-${replace(tag_safe_version(CONNECT_DAILY_VERSION), ".", "-")}"]
     target = "test"
 
@@ -566,13 +566,13 @@ target "workbench-daily" {
 }
 
 target "test-workbench-daily" {
-    inherits = ["workbench-daily-${builds.os}-${replace(tag_safe_version(WORKBENCH_PREVIEW_VERSION), ".", "-")}"]
+    inherits = ["workbench-daily-${builds.os}-${replace(tag_safe_version(WORKBENCH_DAILY_VERSION), ".", "-")}"]
 
-    name = "test-workbench-daily-${builds.os}-${replace(tag_safe_version(WORKBENCH_PREVIEW_VERSION), ".", "-")}"
+    name = "test-workbench-daily-${builds.os}-${replace(tag_safe_version(WORKBENCH_DAILY_VERSION), ".", "-")}"
     tags = []
 
     contexts = {
-        build = "target:workbench-daily-${builds.os}-${replace(tag_safe_version(WORKBENCH_PREVIEW_VERSION), ".", "-")}"
+        build = "target:workbench-daily-${builds.os}-${replace(tag_safe_version(WORKBENCH_DAILY_VERSION), ".", "-")}"
     }
 
     matrix = WORKBENCH_BUILD_MATRIX
