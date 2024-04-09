@@ -298,6 +298,8 @@ target "test-product-base" {
 
     name = "test-product-base-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
     tags = []
+    output = []
+    no-cache = true
 
     contexts = {
         build = "target:product-base-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
@@ -340,6 +342,8 @@ target "test-product-base-pro" {
 
     name = "test-product-base-pro-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
     tags = []
+    output = []
+    no-cache = true
 
     contexts = {
         build = "target:product-base-pro-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
@@ -378,6 +382,8 @@ target "test-package-manager" {
 
     name = "test-package-manager-${builds.os}-${replace(PACKAGE_MANAGER_VERSION, ".", "-")}"
     tags = []
+    output = []
+    no-cache = true
 
     contexts = {
         build = "target:package-manager-${builds.os}-${replace(PACKAGE_MANAGER_VERSION, ".", "-")}"
@@ -423,6 +429,8 @@ target "test-connect" {
 
     name = "test-connect-${builds.os}-${replace(CONNECT_VERSION, ".", "-")}"
     tags = []
+    output = []
+    no-cache = true
 
     contexts = {
         build = "target:connect-${builds.os}-${replace(CONNECT_VERSION, ".", "-")}"
@@ -454,6 +462,8 @@ target "test-connect-content-init" {
 
     name = "test-connect-content-init-${builds.os}-${replace(CONNECT_VERSION, ".", "-")}"
     tags = []
+    output = []
+    no-cache = true
 
     contexts = {
         build = "target:connect-content-init-${builds.os}-${replace(CONNECT_VERSION, ".", "-")}"
@@ -495,6 +505,8 @@ target "test-r-session-complete" {
 
     name = "test-r-session-complete-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
     tags = []
+    output = []
+    no-cache = true
 
     contexts = {
         build = "target:r-session-complete-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
@@ -533,6 +545,8 @@ target "test-workbench" {
 
     name = "test-workbench-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
     tags = []
+    output = []
+    no-cache = true
 
     contexts = {
         build = "target:workbench-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
@@ -581,6 +595,8 @@ target "test-workbench-for-google-cloud-workstations" {
 
     name = "test-workbench-for-google-cloud-workstation-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
     tags = []
+    output = []
+    no-cache = true
 
     contexts = {
         build = "target:workbench-for-google-cloud-workstation-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
@@ -635,6 +651,8 @@ target "test-workbench-for-microsoft-azure-ml" {
     target = "test"
 
     name = "test-workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
+    output = []
+    no-cache = true
 
     contexts = {
         build = "target:build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
