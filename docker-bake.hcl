@@ -37,24 +37,24 @@ function get_drivers_version {
 function get_centos_tags {
     params = [os, product, product_version]
     result = [
-        "ghcr.io/rstudio/${product}:${os}",
         "ghcr.io/rstudio/${product}:${os}-${product_version}",
-        "docker.io/rstudio/${product}:${os}",
+        "ghcr.io/rstudio/${product}:${os}",
         "docker.io/rstudio/${product}:${os}-${product_version}",
+        "docker.io/rstudio/${product}:${os}",
     ]
 }
 
 function get_ubuntu_tags {
     params = [os, product, product_version]
     result = [
-        "ghcr.io/rstudio/${product}:${os}",
-        "ghcr.io/rstudio/${product}:${get_os_alt_name(os)}",
         "ghcr.io/rstudio/${product}:${os}-${product_version}",
         "ghcr.io/rstudio/${product}:${get_os_alt_name(os)}-${product_version}",
-        "docker.io/rstudio/${product}:${os}",
-        "docker.io/rstudio/${product}:${get_os_alt_name(os)}",
-        "docker.io/rstudio/${product}:${os}-${product_version}",
+        "ghcr.io/rstudio/${product}:${os}",
+        "ghcr.io/rstudio/${product}:${get_os_alt_name(os)}",
         "docker.io/rstudio/${product}:${get_os_alt_name(os)}-${product_version}",
+        "docker.io/rstudio/${product}:${os}-${product_version}",
+        "docker.io/rstudio/${product}:${get_os_alt_name(os)}",
+        "docker.io/rstudio/${product}:${os}",
     ]
 }
 
@@ -399,14 +399,14 @@ target "workbench-for-google-cloud-workstations" {
 
     name = "workbench-for-google-cloud-workstation-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
     tags = [
-        "us-central1-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
         "us-central1-docker.pkg.dev/posit-images/cloud-workstations/workbench:${workbench_version_clean()}",
-        "us-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
+        "us-central1-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
         "us-docker.pkg.dev/posit-images/cloud-workstations/workbench:${workbench_version_clean()}",
-        "europe-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
+        "us-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
         "europe-docker.pkg.dev/posit-images/cloud-workstations/workbench:${workbench_version_clean()}",
-        "asia-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
+        "europe-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
         "asia-docker.pkg.dev/posit-images/cloud-workstations/workbench:${workbench_version_clean()}",
+        "asia-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
     ]
 
     dockerfile = "Dockerfile.${builds.os}"
