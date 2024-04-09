@@ -59,7 +59,7 @@ jobs:
           CONNECT_DAILY_VERSION=$(just -f ci.Justfile get-version connect --type=daily --local)
           echo "CONNECT_DAILY_VERSION=$CONNECT_DAILY_VERSION" >> $GITHUB_OUTPUT
 
-      - name: Build and test
+      - name: Build
         id: build
         uses: docker/bake-action@v4
         env:
@@ -72,13 +72,13 @@ jobs:
           set: |
             *.cache-from=type=gha
             *.cache-to=type=gha,compression=zstd
-          targets: "build-test"
+          targets: "build"
           push: false
           files: docker-bake.preview.hcl
 
       - name: Test Connect (privileged container)
         run: |
-          just -f build.justfile test-connect-preview
+          just -f build.justfile preview-test
 
       - name: Push
         id: push

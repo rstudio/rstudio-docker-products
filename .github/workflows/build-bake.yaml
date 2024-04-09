@@ -33,19 +33,19 @@ jobs:
         with:
           buildkitd-config: ./share/buildkitd.toml
 
-      - name: Build and test
+      - name: Build
         id: build
         uses: docker/bake-action@v4
         with:
           set: |
             *.cache-from=type=gha
             *.cache-to=type=gha,compression=zstd
-          targets: "build-test"
+          targets: "build"
           push: false
 
-      - name: Test Connect (privileged container)
+      - name: Test
         run: |
-          just -f build.justfile test-connect
+          just -f build.justfile test
 
       - name: Push
         id: push
