@@ -16,6 +16,8 @@ wait-for-it.sh localhost:8787 -t $RSW_TIMEOUT
 wait-for-it.sh localhost:5559 -t $RSW_TIMEOUT
 echo "--> Startup complete"
 
+ps aux | grep rs
+
 GOSS_FILE=${GOSS_FILE:-/tmp/test/goss.yaml}
 GOSS_VERSION=${GOSS_VERSION:-0.4.6}
 GOSS_MAX_CONCURRENT=${GOSS_MAX_CONCURRENT:-5}
