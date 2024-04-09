@@ -78,7 +78,6 @@ file:
     exists: true
   {{ end }}
   /var/lib/rstudio-launcher/Local/jobs/buildkitsandbox:
-    skip: {{ .Env.DOCKER_TEST_STAGE }}  # This file is present during the build stage, but not after
     exists: false
   /etc/rstudio/vscode.conf:
     exists: true

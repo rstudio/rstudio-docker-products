@@ -16,7 +16,16 @@ wait-for-it.sh localhost:8787 -t $RSW_TIMEOUT
 wait-for-it.sh localhost:5559 -t $RSW_TIMEOUT
 echo "--> Startup complete"
 
-GOSS_FILE=${GOSS_FILE:-/tmp/test/goss.yaml}
+if [ -f /etc/debian_version ]; then
+  OS="ubuntu"
+elif [ -f /etc/centos-release ]; then
+  OS="centos"
+else
+  echo "OS not supported. Exiting"
+  exit 1
+fi
+
+GOSS_FILE=${GOSS_FILE:-/test/goss.yaml}
 GOSS_VARS_FILE=${GOSS_VARS_FILE:-/tmp/test/goss_vars.yaml}
 GOSS_VERSION=${GOSS_VERSION:-0.4.6}
 GOSS_MAX_CONCURRENT=${GOSS_MAX_CONCURRENT:-5}
@@ -26,4 +35,4 @@ curl -sL https://github.com/aelsabbahy/goss/releases/download/v$GOSS_VERSION/gos
   && chmod +x /tmp/goss \
   && GOSS=/tmp/goss
 
-GOSS_FILE=$GOSS_FILE GOSS_VARS=$GOSS_VARS_FILE $GOSS v --format documentation --max-concurrent $GOSS_MAX_CONCURRENT
+OS=$OS GOSS_FILE=$GOSS_FILE GOSS_VARS=$GOSS_VARS_FILE $GOSS v --format documentation --max-concurrent $GOSS_MAX_CONCURRENT

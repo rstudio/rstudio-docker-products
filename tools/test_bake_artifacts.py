@@ -9,9 +9,6 @@ PROJECT_DIR = Path(__file__).resolve().parents[1]
 parser = argparse.ArgumentParser(
     description="Extract a test command from a bake plan"
 )
-parser.add_argument("image_name")
-parser.add_argument("operating_system")
-parser.add_argument("--builder", default="posit-builder")
 parser.add_argument("--file", default="docker-bake.hcl")
 
 
@@ -32,33 +29,42 @@ def get_targets(plan, image_name, operating_system):
     return targets
 
 
-def build_test_command(target_name, target_spec, builder):
+def build_test_command(target_name, target_spec):
+    context_path = PROJECT_DIR / target_spec["context"]
+    test_path = context_path / "test"
     cmd = [
         "docker",
-        "buildx",
-        "--builder",
-        builder,
-        "build",
-        "--allow",
-        "security.insecure",
-        "--target",
-        "test",
+        "run",
+        "-t",
+        "--rm",
+        "--privileged",
+        f"--mount=type=bind,source={test_path},destination=/test",
     ]
-    cmd.extend(["--build-context", f"build=oci-layout://{PROJECT_DIR / '.out' / target_name}"])
     for name, value in target_spec["args"].items():
-        cmd.extend(["--build-arg", f'{name}="{value}"'])
-    cmd.extend(["--file", str(PROJECT_DIR / target_spec["context"] / target_spec["dockerfile"])])
-    cmd.append(str(PROJECT_DIR / target_spec["context"]))
+        cmd.extend(["--env", f'{name}="{value}"'])
+    cmd.append(target_spec["tags"][0])
+    cmd.extend(["/test/run_tests.sh"])
     return cmd
+
+
+def run_cmd(target_name, cmd):
+    p = subprocess.run(" ".join(cmd), shell=True)
+    if p.returncode != 0:
+        print(f"{target_name} test failed with exit code {p.returncode}")
+    return p.returncode
 
 
 def main():
     args = parser.parse_args()
     plan = get_bake_plan(args.file)
-    targets = get_targets(plan, args.image_name, args.operating_system)
-    for target_name, target_spec in targets.items():
-        cmd = build_test_command(target_name, target_spec, args.builder)
+    result = 0
+    for target_name, target_spec in plan["target"].items():
+        cmd = build_test_command(target_name, target_spec)
         print(" ".join(cmd))
+        return_code = run_cmd(target_name, cmd)
+        if return_code != 0:
+            result = 1
+    exit(result)
 
 
 if __name__ == "__main__":

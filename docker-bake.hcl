@@ -221,7 +221,7 @@ target "base" {
     labels = {
         "maintainer" = "Posit Docker <docker@posit.co>"
     }
-    output = ["type=image"]
+    output = ["type=image", "type=docker"]
 }
 
 target "product-base" {
@@ -307,12 +307,6 @@ target "connect" {
 
     name = "connect-${builds.os}-${replace(CONNECT_VERSION, ".", "-")}"
     tags = get_tags(builds.os, "rstudio-connect", CONNECT_VERSION)
-
-    # We output Connect to OCI so it can be pulled in for testing later on.
-    output = [
-        "type=image",
-        "type=oci,tar=false,dest=./.out/connect-${builds.os}-${replace(CONNECT_VERSION, ".", "-")}"
-    ]
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "connect"
@@ -413,7 +407,7 @@ target "workbench-for-google-cloud-workstations" {
         "europe-docker.pkg.dev/posit-images/cloud-workstations/workbench:${workbench_version_clean()}",
         "asia-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
         "asia-docker.pkg.dev/posit-images/cloud-workstations/workbench:${workbench_version_clean()}",
-    ]    
+    ]
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "workbench-for-google-cloud-workstations"

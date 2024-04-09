@@ -238,6 +238,12 @@ target "product-base-dev" {
         "docker.io/rstudio/product-base-dev:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
     ]
 
+    # We output to an OCI so it can be pulled in for testing later on.
+    output = [
+        "type=image",
+        "type=oci,tar=false,dest=./.out/preview/product-base-dev-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+    ]
+
     dockerfile = "Dockerfile.${builds.os}"
     context = "product/base"
 
@@ -260,6 +266,12 @@ target "product-base-pro-dev" {
     tags = [
         "ghcr.io/rstudio/product-base-pro-dev:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
         "docker.io/rstudio/product-base-pro-dev:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
+    ]
+
+    # We output to an OCI so it can be pulled in for testing later on.
+    output = [
+        "type=image",
+        "type=oci,tar=false,dest=./.out/preview/product-base-pro-dev-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
     ]
 
     dockerfile = "Dockerfile.${builds.os}"
@@ -288,6 +300,12 @@ target "package-manager-daily" {
     name = "package-manager-daily-${builds.os}-${replace(PACKAGE_MANAGER_DAILY_VERSION, ".", "-")}"
     tags = get_tags(builds.os, "rstudio-package-manager-preview", PACKAGE_MANAGER_DAILY_VERSION, "daily")
 
+    # We output to an OCI so it can be pulled in for testing later on.
+    output = [
+        "type=image",
+        "type=oci,tar=false,dest=./.out/preview/package-manager-daily-${builds.os}-${replace(PACKAGE_MANAGER_DAILY_VERSION, ".", "-")}"
+    ]
+
     dockerfile = "Dockerfile.${builds.os}"
     context = "package-manager"
     contexts = {
@@ -312,10 +330,10 @@ target "connect-daily" {
     name = "connect-daily-${builds.os}-${replace(tag_safe_version(CONNECT_DAILY_VERSION), ".", "-")}"
     tags = get_tags(builds.os, "rstudio-connect-preview", CONNECT_DAILY_VERSION, "daily")
 
-    # We output Connect to OCI so it can be pulled in for testing later on.
+    # We output to an OCI so it can be pulled in for testing later on.
     output = [
         "type=image",
-        "type=oci,tar=false,dest=./.out/connect-daily-${builds.os}-${replace(tag_safe_version(CONNECT_DAILY_VERSION), ".", "-")}"
+        "type=oci,tar=false,dest=./.out/preview/connect-daily-${builds.os}-${replace(tag_safe_version(CONNECT_DAILY_VERSION), ".", "-")}"
     ]
 
     dockerfile = "Dockerfile.${builds.os}"
@@ -341,6 +359,12 @@ target "connect-content-init-daily" {
     name = "connect-content-init-daily-${builds.os}-${replace(tag_safe_version(CONNECT_DAILY_VERSION), ".", "-")}"
     tags = get_tags(builds.os, "rstudio-connect-content-init-preview", CONNECT_DAILY_VERSION, "daily")
 
+    # We output to an OCI so it can be pulled in for testing later on.
+    output = [
+        "type=image",
+        "type=oci,tar=false,dest=./.out/preview/connect-content-init-daily-${builds.os}-${replace(tag_safe_version(CONNECT_DAILY_VERSION), ".", "-")}"
+    ]
+
     dockerfile = "Dockerfile.${builds.os}"
     context = "connect-content-init"
 
@@ -358,6 +382,12 @@ target "r-session-complete-daily" {
 
     name = "r-session-complete-daily-${builds.os}-${replace(tag_safe_version(WORKBENCH_DAILY_VERSION), ".", "-")}"
     tags = get_tags(builds.os, "r-session-complete-preview", WORKBENCH_DAILY_VERSION, "daily")
+
+    # We output to an OCI so it can be pulled in for testing later on.
+    output = [
+        "type=image",
+        "type=oci,tar=false,dest=./.out/preview/r-session-complete-daily-${builds.os}-${replace(tag_safe_version(WORKBENCH_DAILY_VERSION), ".", "-")}"
+    ]
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "r-session-complete"
@@ -385,6 +415,12 @@ target "r-session-complete-preview" {
     name = "r-session-complete-preview-${builds.os}-${replace(tag_safe_version(WORKBENCH_PREVIEW_VERSION), ".", "-")}"
     tags = get_tags(builds.os, "r-session-complete-preview", WORKBENCH_PREVIEW_VERSION, "preview")
 
+    # We output to an OCI so it can be pulled in for testing later on.
+    output = [
+        "type=image",
+        "type=oci,tar=false,dest=./.out/preview/r-session-complete-preview-${builds.os}-${replace(tag_safe_version(WORKBENCH_PREVIEW_VERSION), ".", "-")}"
+    ]
+
     dockerfile = "Dockerfile.${builds.os}"
     context = "r-session-complete"
     contexts = {
@@ -410,6 +446,12 @@ target "workbench-daily" {
     name = "workbench-daily-${builds.os}-${replace(tag_safe_version(WORKBENCH_DAILY_VERSION), ".", "-")}"
     tags = get_tags(builds.os, "rstudio-workbench-preview", WORKBENCH_DAILY_VERSION, "daily")
 
+    # We output to an OCI so it can be pulled in for testing later on.
+    output = [
+        "type=image",
+        "type=oci,tar=false,dest=./.out/preview/workbench-daily-${builds.os}-${replace(tag_safe_version(WORKBENCH_DAILY_VERSION), ".", "-")}"
+    ]
+
     dockerfile = "Dockerfile.${builds.os}"
     context = "workbench"
     contexts = {
@@ -434,6 +476,12 @@ target "workbench-preview" {
 
     name = "workbench-preview-${builds.os}-${replace(tag_safe_version(WORKBENCH_PREVIEW_VERSION), ".", "-")}"
     tags = get_tags(builds.os, "rstudio-workbench-preview", WORKBENCH_PREVIEW_VERSION, "preview")
+
+    # We output to an OCI so it can be pulled in for testing later on.
+    output = [
+        "type=image",
+        "type=oci,tar=false,dest=./.out/preview/workbench-preview-${builds.os}-${replace(tag_safe_version(WORKBENCH_PREVIEW_VERSION), ".", "-")}"
+    ]
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "workbench"
