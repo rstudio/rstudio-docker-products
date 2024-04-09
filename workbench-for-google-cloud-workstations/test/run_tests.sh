@@ -9,7 +9,7 @@ trap 'err=$?; echo >&2 "run_tests.sh encountered an error: $err"; cat /tmp/start
 # start rstudio-server
 echo "--> Starting RStudio Workbench"
 /usr/bin/supervisord -c /etc/supervisor/supervisord.conf > /tmp/startup.log 2>&1 &
-sleep 10
+sleep 15
 
 netstat -tulpn
 

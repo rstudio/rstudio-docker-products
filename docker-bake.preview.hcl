@@ -304,6 +304,8 @@ target "test-product-base-dev" {
 
     name = "test-product-base-dev-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
     tags = []
+    output = []
+    no-cache = true
 
     contexts = {
         build = "target:product-base-dev-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
@@ -346,6 +348,8 @@ target "test-product-base-pro-dev" {
 
     name = "test-product-base-pro-dev-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
     tags = []
+    output = []
+    no-cache = true
 
     contexts = {
         build = "target:product-base-pro-dev-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
@@ -384,6 +388,8 @@ target "test-package-manager-daily" {
 
     name = "test-package-manager-daily-${builds.os}-${replace(PACKAGE_MANAGER_DAILY_VERSION, ".", "-")}"
     tags = []
+    output = []
+    no-cache = true
 
     contexts = {
         build = "target:package-manager-daily-${builds.os}-${replace(PACKAGE_MANAGER_DAILY_VERSION, ".", "-")}"
@@ -429,6 +435,8 @@ target "test-connect-daily" {
 
     name = "test-connect-${builds.os}-${replace(tag_safe_version(CONNECT_DAILY_VERSION), ".", "-")}"
     tags = []
+    output = []
+    no-cache = true
 
     contexts = {
         build = "target:connect-daily-${builds.os}-${replace(tag_safe_version(CONNECT_DAILY_VERSION), ".", "-")}"
@@ -460,6 +468,8 @@ target "test-connect-content-init-daily" {
 
     name = "test-connect-content-init-daily-${builds.os}-${replace(tag_safe_version(CONNECT_DAILY_VERSION), ".", "-")}"
     tags = []
+    output = []
+    no-cache = true
 
     contexts = {
         build = "target:connect-content-init-daily-${builds.os}-${replace(tag_safe_version(CONNECT_DAILY_VERSION), ".", "-")}"
@@ -501,6 +511,8 @@ target "test-r-session-complete-daily" {
 
     name = "test-r-session-complete-daily-${builds.os}-${replace(tag_safe_version(WORKBENCH_DAILY_VERSION), ".", "-")}"
     tags = []
+    output = []
+    no-cache = true
 
     contexts = {
         build = "target:r-session-complete-daily-${builds.os}-${replace(tag_safe_version(WORKBENCH_DAILY_VERSION), ".", "-")}"
@@ -541,6 +553,8 @@ target "test-r-session-complete-preview" {
 
     name = "test-r-session-complete-preview-${builds.os}-${replace(tag_safe_version(WORKBENCH_PREVIEW_VERSION), ".", "-")}"
     tags = []
+    output = []
+    no-cache = true
 
     contexts = {
         build = "target:r-session-complete-preview-${builds.os}-${replace(tag_safe_version(WORKBENCH_PREVIEW_VERSION), ".", "-")}"
@@ -579,6 +593,8 @@ target "test-workbench-daily" {
 
     name = "test-workbench-daily-${builds.os}-${replace(tag_safe_version(WORKBENCH_DAILY_VERSION), ".", "-")}"
     tags = []
+    output = []
+    no-cache = true
 
     contexts = {
         build = "target:workbench-daily-${builds.os}-${replace(tag_safe_version(WORKBENCH_DAILY_VERSION), ".", "-")}"
@@ -617,6 +633,8 @@ target "test-workbench-preview" {
 
     name = "test-workbench-preview-${builds.os}-${replace(tag_safe_version(WORKBENCH_PREVIEW_VERSION), ".", "-")}"
     tags = []
+    output = []
+    no-cache = true
 
     contexts = {
         build = "target:workbench-preview-${builds.os}-${replace(tag_safe_version(WORKBENCH_PREVIEW_VERSION), ".", "-")}"
