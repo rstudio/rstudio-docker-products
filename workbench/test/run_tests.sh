@@ -12,6 +12,7 @@ echo "--> Starting RStudio Workbench"
 
 echo "--> Waiting for workbench to startup... with RSW_TIMEOUT: $RSW_TIMEOUT"
 wait-for-it.sh localhost:8787 -t $RSW_TIMEOUT
+wait-for-it.sh localhost:5559 -t $RSW_TIMEOUT
 echo "--> Startup complete"
 
 GOSS_FILE=${GOSS_FILE:-/tmp/test/goss.yaml}
