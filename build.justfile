@@ -53,35 +53,6 @@ preview-build branch="$(git branch --show-current)":
   BRANCH="{{branch}}" \
   just -f {{justfile()}} bake preview-build
 
-# just test
-test:
-  just -f {{justfile()}} bake test
-  just -f {{justfile()}} test-connect ubuntu2204
-
-# just preview-test
-preview-test branch="$(git branch --show-current)":
-  WORKBENCH_DAILY_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local) \
-  WORKBENCH_PREVIEW_VERSION=$(just -f ci.Justfile get-version workbench --type=preview --local) \
-  PACKAGE_MANAGER_DAILY_VERSION=$(just -f ci.Justfile get-version package-manager --type=daily --local) \
-  CONNECT_DAILY_VERSION=$(just -f ci.Justfile get-version connect --type=daily --local) \
-  BRANCH="{{branch}}" \
-  just -f {{justfile()}} bake preview-test
-  WORKBENCH_DAILY_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local) \
-  WORKBENCH_PREVIEW_VERSION=$(just -f ci.Justfile get-version workbench --type=preview --local) \
-  PACKAGE_MANAGER_DAILY_VERSION=$(just -f ci.Justfile get-version package-manager --type=daily --local) \
-  CONNECT_DAILY_VERSION=$(just -f ci.Justfile get-version connect --type=daily --local) \
-  BRANCH="{{branch}}" \
-  just -f {{justfile()}} test-connect-preview ubuntu2204
-
-# just build-test
-build-test:
-  just -f {{justfile()}} build
-  just -f {{justfile()}} test
-
-preview-build-test:
-  just -f {{justfile()}} preview-build
-  just -f {{justfile()}} preview-test
-
 # Run tests
 
 # just test-connect ubuntu2204

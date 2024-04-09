@@ -181,70 +181,28 @@ group "build" {
     ]
 }
 
-group "build-test" {
-    targets = [
-        "product-base-dev",
-        "product-base-pro-dev",
-        "connect-daily",
-        "connect-content-init-daily",
-        "package-manager-daily",
-        "r-session-complete-preview",
-        "r-session-complete-daily",
-        "workbench-preview",
-        "workbench-daily",
-        "test-product-base-dev",
-        "test-product-base-pro-dev",
-        # "test-connect",  # FIXME: This target requires a privileged environment which bake cannot provide
-        "test-connect-content-init-daily",
-        "test-package-manager-daily",
-        "test-r-session-complete-daily",
-        "test-r-session-complete-preview",
-        "test-workbench-daily",
-        "test-workbench-preview",
-    ]
-}
-
-group "test" {
-    targets = [
-        "test-product-base-dev",
-        "test-product-base-pro-dev",
-        # "test-connect",  # FIXME: This target requires a privileged environment which bake cannot provide
-        "test-connect-content-init-daily",
-        "test-package-manager-daily",
-        "test-r-session-complete-daily",
-        "test-r-session-complete-preview",
-        "test-workbench-daily",
-        "test-workbench-preview",
-    ]
-}
-
 group "base-dev-images" {
     targets = [
         "product-base-dev",
-        "test-product-base-dev",
         "product-base-pro-dev",
-        "test-product-base-pro-dev",
     ]
 }
 
 group "package-manager-daily-images" {
     targets = [
         "package-manager-daily",
-        "test-package-manager-daily",
     ]
 }
 
 group "connect-daily-images" {
     targets = [
         "connect-daily",
-        # "test-connect",  # FIXME: This target requires a privileged environment which bake cannot provide
     ]
 }
 
 group "connect-content-init-daily-images" {
     targets = [
         "connect-content-init-daily",
-        "test-connect-content-init-daily",
     ]
 }
 
@@ -252,8 +210,6 @@ group "r-session-complete-images" {
     targets = [
         "r-session-complete-daily",
         "r-session-complete-preview",
-        "test-r-session-complete-daily",
-        "test-r-session-complete-preview",
     ]
 }
 
@@ -261,8 +217,6 @@ group "workbench-images" {
     targets = [
         "workbench-daily",
         "workbench-preview",
-        "test-workbench-daily",
-        "test-workbench-preview",
     ]
 }
 
@@ -298,22 +252,6 @@ target "product-base-dev" {
     }
 }
 
-target "test-product-base-dev" {
-    inherits = ["product-base-dev-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"]
-    target = "test"
-
-    name = "test-product-base-dev-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
-    tags = []
-    output = []
-    no-cache = true
-
-    contexts = {
-        build = "target:product-base-dev-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
-    }
-
-    matrix = BASE_BUILD_MATRIX
-}
-
 target "product-base-pro-dev" {
     inherits = ["base"]
     target = "build"
@@ -342,22 +280,6 @@ target "product-base-pro-dev" {
     }
 }
 
-target "test-product-base-pro-dev" {
-    inherits = ["product-base-pro-dev-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"]
-    target = "test"
-
-    name = "test-product-base-pro-dev-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
-    tags = []
-    output = []
-    no-cache = true
-
-    contexts = {
-        build = "target:product-base-pro-dev-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
-    }
-
-    matrix = PRO_BUILD_MATRIX
-}
-
 ### Package Manager targets ###
 target "package-manager-daily" {
     inherits = ["base"]
@@ -380,22 +302,6 @@ target "package-manager-daily" {
         PYTHON_VERSION_ALT = builds.py_alternate
         RSPM_VERSION = PACKAGE_MANAGER_DAILY_VERSION
     }
-}
-
-target "test-package-manager-daily" {
-    inherits = ["package-manager-daily-${builds.os}-${replace(PACKAGE_MANAGER_DAILY_VERSION, ".", "-")}"]
-    target = "test"
-
-    name = "test-package-manager-daily-${builds.os}-${replace(PACKAGE_MANAGER_DAILY_VERSION, ".", "-")}"
-    tags = []
-    output = []
-    no-cache = true
-
-    contexts = {
-        build = "target:package-manager-daily-${builds.os}-${replace(PACKAGE_MANAGER_DAILY_VERSION, ".", "-")}"
-    }
-
-    matrix = PACKAGE_MANAGER_BUILD_MATRIX
 }
 
 ### Connect targets ###
@@ -428,23 +334,6 @@ target "connect-daily" {
     }
 }
 
-# FIXME: This target requires a privileged environment which bake cannot provide
-target "test-connect-daily" {
-    inherits = ["connect-${builds.os}-${replace(tag_safe_version(CONNECT_DAILY_VERSION), ".", "-")}"]
-    target = "test"
-
-    name = "test-connect-${builds.os}-${replace(tag_safe_version(CONNECT_DAILY_VERSION), ".", "-")}"
-    tags = []
-    output = []
-    no-cache = true
-
-    contexts = {
-        build = "target:connect-daily-${builds.os}-${replace(tag_safe_version(CONNECT_DAILY_VERSION), ".", "-")}"
-    }
-
-    matrix = CONNECT_BUILD_MATRIX
-}
-
 target "connect-content-init-daily" {
     inherits = ["base"]
     target = "build"
@@ -460,22 +349,6 @@ target "connect-content-init-daily" {
     args = {
         RSC_VERSION = CONNECT_DAILY_VERSION
     }
-}
-
-target "test-connect-content-init-daily" {
-    inherits = ["connect-content-init-daily-${builds.os}-${replace(tag_safe_version(CONNECT_DAILY_VERSION), ".", "-")}"]
-    target = "test"
-
-    name = "test-connect-content-init-daily-${builds.os}-${replace(tag_safe_version(CONNECT_DAILY_VERSION), ".", "-")}"
-    tags = []
-    output = []
-    no-cache = true
-
-    contexts = {
-        build = "target:connect-content-init-daily-${builds.os}-${replace(tag_safe_version(CONNECT_DAILY_VERSION), ".", "-")}"
-    }
-
-    matrix = CONNECT_CONTENT_INIT_BUILD_MATRIX
 }
 
 ### Workbench targets ###
@@ -505,22 +378,6 @@ target "r-session-complete-daily" {
     }
 }
 
-target "test-r-session-complete-daily" {
-    inherits = ["r-session-complete-daily-${builds.os}-${replace(tag_safe_version(WORKBENCH_DAILY_VERSION), ".", "-")}"]
-    target = "test"
-
-    name = "test-r-session-complete-daily-${builds.os}-${replace(tag_safe_version(WORKBENCH_DAILY_VERSION), ".", "-")}"
-    tags = []
-    output = []
-    no-cache = true
-
-    contexts = {
-        build = "target:r-session-complete-daily-${builds.os}-${replace(tag_safe_version(WORKBENCH_DAILY_VERSION), ".", "-")}"
-    }
-
-    matrix = R_SESSION_COMPLETE_BUILD_MATRIX
-}
-
 target "r-session-complete-preview" {
     inherits = ["base"]
     target = "build"
@@ -545,22 +402,6 @@ target "r-session-complete-preview" {
         RSW_NAME = builds.os == "centos7" ? "rstudio-workbench-rhel" : "rstudio-workbench"
         RSW_DOWNLOAD_URL = get_rsw_download_url(builds.os)
     }
-}
-
-target "test-r-session-complete-preview" {
-    inherits = ["r-session-complete-preview-${builds.os}-${replace(tag_safe_version(WORKBENCH_PREVIEW_VERSION), ".", "-")}"]
-    target = "test"
-
-    name = "test-r-session-complete-preview-${builds.os}-${replace(tag_safe_version(WORKBENCH_PREVIEW_VERSION), ".", "-")}"
-    tags = []
-    output = []
-    no-cache = true
-
-    contexts = {
-        build = "target:r-session-complete-preview-${builds.os}-${replace(tag_safe_version(WORKBENCH_PREVIEW_VERSION), ".", "-")}"
-    }
-
-    matrix = R_SESSION_COMPLETE_BUILD_MATRIX
 }
 
 target "workbench-daily" {
@@ -588,21 +429,6 @@ target "workbench-daily" {
     }
 }
 
-target "test-workbench-daily" {
-    inherits = ["workbench-daily-${builds.os}-${replace(tag_safe_version(WORKBENCH_DAILY_VERSION), ".", "-")}"]
-
-    name = "test-workbench-daily-${builds.os}-${replace(tag_safe_version(WORKBENCH_DAILY_VERSION), ".", "-")}"
-    tags = []
-    output = []
-    no-cache = true
-
-    contexts = {
-        build = "target:workbench-daily-${builds.os}-${replace(tag_safe_version(WORKBENCH_DAILY_VERSION), ".", "-")}"
-    }
-
-    matrix = WORKBENCH_BUILD_MATRIX
-}
-
 target "workbench-preview" {
     inherits = ["base"]
 
@@ -626,19 +452,4 @@ target "workbench-preview" {
         RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = get_rsw_download_url(builds.os)
     }
-}
-
-target "test-workbench-preview" {
-    inherits = ["workbench-preview-${builds.os}-${replace(tag_safe_version(WORKBENCH_PREVIEW_VERSION), ".", "-")}"]
-
-    name = "test-workbench-preview-${builds.os}-${replace(tag_safe_version(WORKBENCH_PREVIEW_VERSION), ".", "-")}"
-    tags = []
-    output = []
-    no-cache = true
-
-    contexts = {
-        build = "target:workbench-preview-${builds.os}-${replace(tag_safe_version(WORKBENCH_PREVIEW_VERSION), ".", "-")}"
-    }
-
-    matrix = WORKBENCH_BUILD_MATRIX
 }

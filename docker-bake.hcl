@@ -165,89 +165,46 @@ group "build" {
     ]
 }
 
-group "build-test" {
-    targets = [
-        "product-base",
-        "product-base-pro",
-        "connect",
-        "connect-content-init",
-        "package-manager",
-        "r-session-complete",
-        "workbench",
-        "test-product-base",
-        "test-product-base-pro",
-        # "test-connect",  # FIXME: This target requires a privileged environment which bake cannot provide
-        "test-connect-content-init",
-        "test-package-manager",
-        "test-r-session-complete",
-        "test-workbench",
-        "test-workbench-for-google-cloud-workstations",
-        "test-workbench-for-microsoft-azure-ml",
-    ]
-}
-
-group "test" {
-    targets = [
-        "test-product-base",
-        "test-product-base-pro",
-        # "test-connect",  # FIXME: This target requires a privileged environment which bake cannot provide
-        "test-connect-content-init",
-        "test-package-manager",
-        "test-r-session-complete",
-        "test-workbench",
-        "test-workbench-for-google-cloud-workstations",
-        "test-workbench-for-microsoft-azure-ml",
-    ]
-}
-
 group "base-images" {
     targets = [
         "product-base",
-        "test-product-base",
-        "product-base-pro",
-        "test-product-base-pro",
+        "product-base-pro"
     ]
 }
 
 group "package-manager-images" {
     targets = [
         "package-manager",
-        "test-package-manager",
     ]
 }
 
 group "connect-images" {
     targets = [
         "connect",
-        # "test-connect",  # FIXME: This target requires a privileged environment which bake cannot provide
     ]
 }
 
 group "connect-content-init-images" {
     targets = [
         "connect-content-init",
-        "test-connect-content-init",
     ]
 }
 
 group "r-session-complete-images" {
     targets = [
         "r-session-complete",
-        "test-r-session-complete",
     ]
 }
 
 group "workbench-images" {
     targets = [
         "workbench",
-        "test-workbench",
     ]
 }
 
 group "wgcw-images" {
     targets = [
         "workbench-for-google-cloud-workstations",
-        "test-workbench-for-google-cloud-workstations",
     ]
 }
 
@@ -255,7 +212,6 @@ group "waml-images" {
     targets = [
         "build-workbench-for-microsoft-azure-ml",
         "scan-workbench-for-microsoft-azure-ml",
-        "test-workbench-for-microsoft-azure-ml",
         "workbench-for-microsoft-azure-ml",
     ]
 }
@@ -292,22 +248,6 @@ target "product-base" {
     }    
 }
 
-target "test-product-base" {
-    inherits = ["product-base-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"]
-    target = "test"
-
-    name = "test-product-base-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
-    tags = []
-    output = []
-    no-cache = true
-
-    contexts = {
-        build = "target:product-base-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
-    }
-
-    matrix = BASE_BUILD_MATRIX
-}
-
 target "product-base-pro" {
     inherits = ["base"]
     target = "build"
@@ -336,22 +276,6 @@ target "product-base-pro" {
     }    
 }
 
-target "test-product-base-pro" {
-    inherits = ["product-base-pro-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"]
-    target = "test"
-
-    name = "test-product-base-pro-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
-    tags = []
-    output = []
-    no-cache = true
-
-    contexts = {
-        build = "target:product-base-pro-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
-    }
-
-    matrix = PRO_BUILD_MATRIX
-}
-
 ### Package Manager targets ###
 target "package-manager" {
     inherits = ["base"]
@@ -374,22 +298,6 @@ target "package-manager" {
         PYTHON_VERSION_ALT = builds.py_alternate
         RSPM_VERSION = PACKAGE_MANAGER_VERSION
     }
-}
-
-target "test-package-manager" {
-    inherits = ["package-manager-${builds.os}-${replace(PACKAGE_MANAGER_VERSION, ".", "-")}"]
-    target = "test"
-
-    name = "test-package-manager-${builds.os}-${replace(PACKAGE_MANAGER_VERSION, ".", "-")}"
-    tags = []
-    output = []
-    no-cache = true
-
-    contexts = {
-        build = "target:package-manager-${builds.os}-${replace(PACKAGE_MANAGER_VERSION, ".", "-")}"
-    }
-
-    matrix = PACKAGE_MANAGER_BUILD_MATRIX
 }
 
 ### Connect targets ###
@@ -422,23 +330,6 @@ target "connect" {
     }
 }
 
-# FIXME: This target requires a privileged environment which bake cannot provide
-target "test-connect" {
-    inherits = ["connect-${builds.os}-${replace(CONNECT_VERSION, ".", "-")}"]
-    target = "test"
-
-    name = "test-connect-${builds.os}-${replace(CONNECT_VERSION, ".", "-")}"
-    tags = []
-    output = []
-    no-cache = true
-
-    contexts = {
-        build = "target:connect-${builds.os}-${replace(CONNECT_VERSION, ".", "-")}"
-    }
-
-    matrix = CONNECT_BUILD_MATRIX
-}
-
 target "connect-content-init" {
     inherits = ["base"]
     target = "build"
@@ -454,22 +345,6 @@ target "connect-content-init" {
     args = {
         RSC_VERSION = CONNECT_VERSION
     }
-}
-
-target "test-connect-content-init" {
-    inherits = ["connect-content-init-${builds.os}-${replace(CONNECT_VERSION, ".", "-")}"]
-    target = "test"
-
-    name = "test-connect-content-init-${builds.os}-${replace(CONNECT_VERSION, ".", "-")}"
-    tags = []
-    output = []
-    no-cache = true
-
-    contexts = {
-        build = "target:connect-content-init-${builds.os}-${replace(CONNECT_VERSION, ".", "-")}"
-    }
-
-    matrix = CONNECT_CONTENT_INIT_BUILD_MATRIX
 }
 
 ### Workbench targets ###
@@ -499,22 +374,6 @@ target "r-session-complete" {
     }
 }
 
-target "test-r-session-complete" {
-    inherits = ["r-session-complete-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"]
-    target = "test"
-
-    name = "test-r-session-complete-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
-    tags = []
-    output = []
-    no-cache = true
-
-    contexts = {
-        build = "target:r-session-complete-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
-    }
-
-    matrix = R_SESSION_COMPLETE_BUILD_MATRIX
-}
-
 target "workbench" {
     inherits = ["base"]
 
@@ -538,21 +397,6 @@ target "workbench" {
         RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/jammy/amd64"
     }        
-}
-
-target "test-workbench" {
-    inherits = ["workbench-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"]
-
-    name = "test-workbench-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
-    tags = []
-    output = []
-    no-cache = true
-
-    contexts = {
-        build = "target:workbench-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
-    }
-
-    matrix = WORKBENCH_BUILD_MATRIX
 }
 
 ### Workbench for Google Cloud Workstations targets ###
@@ -590,21 +434,6 @@ target "workbench-for-google-cloud-workstations" {
     } 
 }
 
-target "test-workbench-for-google-cloud-workstations" {
-    inherits = ["workbench-for-google-cloud-workstation-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"]
-
-    name = "test-workbench-for-google-cloud-workstation-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
-    tags = []
-    output = []
-    no-cache = true
-
-    contexts = {
-        build = "target:workbench-for-google-cloud-workstation-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
-    }
-
-    matrix = WORKBENCH_GOOGLE_CLOUD_WORKSTATION_BUILD_MATRIX
-}
-
 ### Workbench for Microsoft Azure ML targets ###
 
 target "build-workbench-for-microsoft-azure-ml" {
@@ -638,21 +467,6 @@ target "scan-workbench-for-microsoft-azure-ml" {
     target = "clamav"
 
     name = "scan-workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
-
-    contexts = {
-        build = "target:build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
-    }
-
-    matrix = WORKBENCH_MICROSOFT_AZURE_ML_BUILD_MATRIX
-}
-
-target "test-workbench-for-microsoft-azure-ml" {
-    inherits = ["build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"]
-    target = "test"
-
-    name = "test-workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
-    output = []
-    no-cache = true
 
     contexts = {
         build = "target:build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
