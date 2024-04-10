@@ -58,12 +58,15 @@ def main():
     args = parser.parse_args()
     plan = get_bake_plan(args.file)
     result = 0
+    failed_targets = []
     for target_name, target_spec in plan["target"].items():
         cmd = build_test_command(target_name, target_spec)
         print(" ".join(cmd))
         return_code = run_cmd(target_name, cmd)
         if return_code != 0:
+            failed_targets.append(target_name)
             result = 1
+    print(f"Failed targets: {failed_targets}")
     exit(result)
 
 
