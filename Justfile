@@ -54,6 +54,11 @@ preview-bake target branch="$(git branch --show-current)":
   BRANCH="{{branch}}" \
   docker buildx bake --builder=posit-builder -f docker-bake.preview.hcl {{target}}
 
+content-bake:
+  just -f {{justfile()}} create-builder || true
+  cd {{justfile_directory()}}/content && docker buildx bake --builder=posit-builder
+  cd {{justfile_directory()}}
+
 # just plan
 plan:
   docker buildx bake -f docker-bake.hcl --print
