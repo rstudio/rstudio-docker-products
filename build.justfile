@@ -51,12 +51,33 @@ preview-build branch="$(git branch --show-current)":
   PACKAGE_MANAGER_DAILY_VERSION=$(just -f ci.Justfile get-version package-manager --type=daily --local) \
   CONNECT_DAILY_VERSION=$(just -f ci.Justfile get-version connect --type=daily --local) \
   BRANCH="{{branch}}" \
-  just -f {{justfile()}} bake preview-build
+  just -f {{justfile()}} preview-bake build
 
 # Run tests
 
 test:
   python3 {{justfile_directory()}}/tools/test_bake_artifacts.py
 
-preview-test:
+preview-test branch="$(git branch --show-current)":
+  #!/bin/bash
+  if [ -z "$WORKBENCH_DAILY_VERSION" ]; then
+    WORKBENCH_DAILY_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local)
+  fi
+  if [ -z "$WORKBENCH_PREVIEW_VERSION" ]; then
+    WORKBENCH_PREVIEW_VERSION=$(just -f ci.Justfile get-version workbench --type=preview --local)
+  fi
+  if [ -z "$PACKAGE_MANAGER_DAILY_VERSION" ]; then
+    PACKAGE_MANAGER_DAILY_VERSION=$(just -f ci.Justfile get-version package-manager --type=daily --local)
+  fi
+  if [ -z "$CONNECT_DAILY_VERSION" ]; then
+    CONNECT_DAILY_VERSION=$(just -f ci.Justfile get-version connect --type=daily --local)
+  fi
+  if [ -z "$BRANCH" ]; then
+    BRANCH="{{branch}}"
+  fi
+  WORKBENCH_DAILY_VERSION="${WORKBENCH_DAILY_VERSION}" \
+  WORKBENCH_PREVIEW_VERSION="${WORKBENCH_PREVIEW_VERSION}" \
+  PACKAGE_MANAGER_DAILY_VERSION="${PACKAGE_MANAGER_DAILY_VERSION}" \
+  CONNECT_DAILY_VERSION="${CONNECT_DAILY_VERSION}" \
+  BRANCH="${BRANCH}" \
   python3 {{justfile_directory()}}/tools/test_bake_artifacts.py --file docker-bake.preview.hcl

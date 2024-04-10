@@ -76,7 +76,13 @@ jobs:
           push: false
           files: docker-bake.preview.hcl
 
-      - name: Test Connect (privileged container)
+      - name: Test
+        env:
+          WORKBENCH_DAILY_VERSION: ${{ steps.get-version.outputs.WORKBENCH_DAILY_VERSION }}
+          WORKBENCH_PREVIEW_VERSION: ${{ steps.get-version.outputs.WORKBENCH_PREVIEW_VERSION }}
+          PACKAGE_MANAGER_DAILY_VERSION: ${{ steps.get-version.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
+          CONNECT_DAILY_VERSION: ${{ steps.get-version.outputs.CONNECT_DAILY_VERSION }}
+          BRANCH: ${{ github.head_ref || github.ref_name }}
         run: |
           just -f build.justfile preview-test
 
