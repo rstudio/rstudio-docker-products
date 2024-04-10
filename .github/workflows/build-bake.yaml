@@ -87,7 +87,7 @@ jobs:
           set: |
             *.cache-from=type=gha
             *.cache-to=type=gha,compression=zstd
-          targets: "build"
+          targets: "default"
           push: false
 
       - name: Test
@@ -102,5 +102,5 @@ jobs:
           set: |
             *.cache-from=type=gha
             *.cache-to=type=gha,compression=zstd
-          targets: "build"
+          targets: "default"
           push: true
