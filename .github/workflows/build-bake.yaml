@@ -1,4 +1,6 @@
 on:
+  schedule:
+    - cron: '0 8 * * 1'  # Every Monday at 8:00 UTC for automatic rebuilds (pull in OS updates, security patches, etc.)
   push:
     branches:
       - main
@@ -9,7 +11,7 @@ name: Release - Build, Test, and Push
 jobs:
   build:
     name: Build, Test, and Push images
-    runs-on: ubuntu-latest-4x
+    runs-on: ubuntu-latest-8x
 
     concurrency:
       group: bake-${{ github.ref }}
@@ -101,55 +103,4 @@ jobs:
             *.cache-from=type=gha
             *.cache-to=type=gha,compression=zstd
           targets: "build"
-          push: true
-
-  build-content:
-    name: Build content images
-    runs-on: ubuntu-latest-4x
-
-    concurrency:
-      group: bake-content-${{ github.ref }}
-      cancel-in-progress: true
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          buildkitd-config: ./share/buildkitd.toml
-
-      - name: Login to ghcr.io
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-
-      - name: Build
-        id: build
-        uses: docker/bake-action@v4
-        with:
-          set: |
-            *.cache-from=type=gha
-            *.cache-to=type=gha,compression=zstd
-          workdir: content/.
-          push: false
-
-      - name: Push
-        id: push
-        if: github.ref == 'refs/heads/main'
-        uses: docker/bake-action@v4
-        with:
-          set: |
-            *.cache-from=type=gha
-            *.cache-to=type=gha,compression=zstd
-          workdir: content/.
           push: true

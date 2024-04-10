@@ -1,3 +1,7 @@
+# 2024-04-10
+
+- Change build orchestration to `buildx bake`
+
 # 2023-04-26
 
 - Use the Quarto release 1.3.340 in jammy images.

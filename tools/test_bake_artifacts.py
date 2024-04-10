@@ -1,9 +1,11 @@
 import argparse
 import json
+import re
 import subprocess
 from pathlib import Path
 
 PROJECT_DIR = Path(__file__).resolve().parents[1]
+SKIP = ["^content.*"]  # Content images don't have tests right now!
 
 
 parser = argparse.ArgumentParser(
@@ -19,14 +21,6 @@ def get_bake_plan(bake_file="docker-bake.hcl"):
         print(f"Failed to get bake plan: {p.stderr}")
         exit(1)
     return json.loads(p.stdout.decode("utf-8"))
-
-
-def get_targets(plan, image_name, operating_system):
-    targets = {}
-    for target_name, target_spec in plan["target"].items():
-        if target_name.startswith(f"{image_name}-{operating_system}"):
-            targets[target_name] = target_spec
-    return targets
 
 
 def build_test_command(target_name, target_spec):
@@ -58,14 +52,20 @@ def main():
     args = parser.parse_args()
     plan = get_bake_plan(args.file)
     result = 0
+    skip_targets = []
     failed_targets = []
     for target_name, target_spec in plan["target"].items():
+        if any(re.search(pattern, target_name) is not None for pattern in SKIP):
+            print(f"Skipping {target_name}")
+            skip_targets.append(target_name)
+            continue
         cmd = build_test_command(target_name, target_spec)
         print(" ".join(cmd))
         return_code = run_cmd(target_name, cmd)
         if return_code != 0:
             failed_targets.append(target_name)
             result = 1
+    print(f"Skipped targets: {skip_targets}")
     print(f"Failed targets: {failed_targets}")
     exit(result)
 
