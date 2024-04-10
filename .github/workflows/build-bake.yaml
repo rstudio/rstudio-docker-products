@@ -90,7 +90,7 @@ jobs:
 
       - name: Test
         run: |
-          just -f build.justfile test
+          just test
 
       - name: Push
         id: push

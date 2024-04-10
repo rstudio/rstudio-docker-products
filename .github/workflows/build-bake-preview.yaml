@@ -98,7 +98,7 @@ jobs:
           CONNECT_DAILY_VERSION: ${{ steps.get-version.outputs.CONNECT_DAILY_VERSION }}
           BRANCH: ${{ github.head_ref || github.ref_name }}
         run: |
-          just -f build.justfile preview-test
+          just preview-test
 
       - name: Push
         id: push
