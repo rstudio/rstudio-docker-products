@@ -153,58 +153,10 @@ group "default" {
     ]
 }
 
-group "build" {
-    targets = [
-        "product-base",
-        "product-base-pro",
-        "connect",
-        "connect-content-init",
-        "package-manager",
-        "r-session-complete",
-        "workbench",
-    ]
-}
-
 group "base-images" {
     targets = [
         "product-base",
         "product-base-pro"
-    ]
-}
-
-group "package-manager-images" {
-    targets = [
-        "package-manager",
-    ]
-}
-
-group "connect-images" {
-    targets = [
-        "connect",
-    ]
-}
-
-group "connect-content-init-images" {
-    targets = [
-        "connect-content-init",
-    ]
-}
-
-group "r-session-complete-images" {
-    targets = [
-        "r-session-complete",
-    ]
-}
-
-group "workbench-images" {
-    targets = [
-        "workbench",
-    ]
-}
-
-group "wgcw-images" {
-    targets = [
-        "workbench-for-google-cloud-workstations",
     ]
 }
 

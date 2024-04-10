@@ -167,42 +167,10 @@ group "default" {
     ]
 }
 
-group "build" {
-    targets = [
-        "product-base-dev",
-        "product-base-pro-dev",
-        "connect-daily",
-        "connect-content-init-daily",
-        "package-manager-daily",
-        "r-session-complete-preview",
-        "r-session-complete-daily",
-        "workbench-preview",
-        "workbench-daily",
-    ]
-}
-
 group "base-dev-images" {
     targets = [
         "product-base-dev",
         "product-base-pro-dev",
-    ]
-}
-
-group "package-manager-daily-images" {
-    targets = [
-        "package-manager-daily",
-    ]
-}
-
-group "connect-daily-images" {
-    targets = [
-        "connect-daily",
-    ]
-}
-
-group "connect-content-init-daily-images" {
-    targets = [
-        "connect-content-init-daily",
     ]
 }
 

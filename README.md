@@ -122,41 +122,41 @@ own containers fairly simply with the provided Justfiles. If you're unfamiliar w
 most targets in each Justfile can be copy/pasted into your shell and ran there with variables replaced where 
 appropriate.
 
-We now orchestrate all our builds using `docker buildx bake`. You can learn more about the tool on 
-[Docker's buildx bake page](https://docs.docker.com/build/bake/), however no additional background knowledge is needed
-on the tool in order to use it.
+We orchestrate all our builds using `docker buildx bake`. You can learn more about the tool on 
+[Docker's buildx bake page](https://docs.docker.com/build/bake/), however no additional background knowledge is needed on the tool in order 
+to use it.
 
 To build all images:
 ```bash
 just build
 ```
-Individual images or groups of images can also be built:
+Individual images or groups of images can also be built. For example, you can build `connect` by running:
 ```bash
-just bake connect-images
+just bake connect
 ```
 
 Here are the available targets and groups in bake. To build one, use `just bake <target>`:
 - `build` - Builds all images
 - `base-images` - Builds `product/base` and `product/pro`
-- `package-manager-images` - Builds `package-manager`
-- `connect-images` - Builds `connect`
-- `workbench-images` - Builds `workbench`
-- `connect-content-images` - Builds `connect-content-init`
-- `r-session-complete-images` - Builds `r-session-complete`
-- `wgcw-images` - Builds `workbench-for-google-cloud-workstations`
-- `waml-images` - Builds `workbench-for-microsoft-azure-ml`
+- `package-manager` - Builds `package-manager`
+- `connect` - Builds `connect`
+- `workbench` - Builds `workbench`
+- `connect-content-init` - Builds `connect-content-init`
+- `r-session-complete` - Builds `r-session-complete`
+- `workbench-for-google-cloud-workstations` - Builds `workbench-for-google-cloud-workstations`
+- `waml-images` - Builds `workbench-for-microsoft-azure-ml` stack (build, scan, and final)
 
 Preview images and content images are also available to build through the `docker-bake.preview.hcl` and 
 `content/docker-bake.hcl` files respectively or use `just preview-bake` and `just content-bake`. 
 
 You can alter what exactly is built by changing `workbench/Dockerfile.$OS`, `connect/Dockerfile.$OS`,
 and `package-manager/Dockerfile.$OS`. Keep in mind that `product/base` or `product/pro` also impact what our default
-images contain.
+image builds contain.
 
-You can then run what you've built to test out with the `run` commands. For instance, to run the workbench container
+You can then run what you've built to test out with the `run` target. For instance, to run the workbench container
 you have built:
 ```
-just workbench/run
+just RSW_LICENSE="<license key>" run workbench
 ```
 
 Note you must have a license in place, and all other instructions in separate sections are still relevant.

@@ -24,6 +24,10 @@ PYTHON_VERSION_ALT_RHEL := "3.8.15"
 
 QUARTO_VERSION := "1.3.450"
 
+export RSC_LICENSE := ""
+export RSPM_LICENSE := ""
+export RSW_LICENSE := ""
+
 # Targets for managing the buildx builder for Posit images
 
 # just create-builder
@@ -40,11 +44,15 @@ delete-builder:
 # Build and bake
 
 # just bake workbench-images
+build:
+  just bake "default"
 bake target:
   just -f {{justfile()}} create-builder || true
   docker buildx bake --builder=posit-builder -f docker-bake.hcl {{target}}
 
 # just preview-bake workbench-images dev
+preview-build:
+  just preview-bake "default"
 preview-bake target branch="$(git branch --show-current)":
   just -f {{justfile()}} create-builder || true
   WORKBENCH_DAILY_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local) \
@@ -71,19 +79,6 @@ preview-plan branch="$(git branch --show-current)":
   CONNECT_DAILY_VERSION=$(just -f ci.Justfile get-version connect --type=daily --local) \
   BRANCH="{{branch}}" \
   docker buildx bake -f docker-bake.preview.hcl --print
-
-# just build
-build:
-  just -f {{justfile()}} bake build
-
-# just preview-build dev
-preview-build branch="$(git branch --show-current)":
-  WORKBENCH_DAILY_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local) \
-  WORKBENCH_PREVIEW_VERSION=$(just -f ci.Justfile get-version workbench --type=preview --local) \
-  PACKAGE_MANAGER_DAILY_VERSION=$(just -f ci.Justfile get-version package-manager --type=daily --local) \
-  CONNECT_DAILY_VERSION=$(just -f ci.Justfile get-version connect --type=daily --local) \
-  BRANCH="{{branch}}" \
-  just -f {{justfile()}} preview-bake build
 
 # Run tests
 
@@ -120,6 +115,26 @@ preview-test branch="$(git branch --show-current)":
 lint $PRODUCT $OS:
   #!/usr/bin/env bash
   docker run --rm -i -v $PWD/hadolint.yaml:/.config/hadolint.yaml ghcr.io/hadolint/hadolint < $PRODUCT/Dockerfile.$(just _parse-os {{OS}})
+
+# Run targets
+
+run product tag="":
+  #!/bin/bash
+  RSC_VERSION="ubuntu2204"
+  RSW_VERSION="ubuntu2204"
+  RSPM_VERSION="ubuntu2204"
+  if [ "{{product}}" = "workbench" ] && [ -z "{{tag}}" ]; then
+    RSW_VERSION="{{tag}}"
+  elif [ "{{product}}" = "connect" ] && [ -z "{{tag}}" ]; then
+    RSC_VERSION="{{tag}}"
+  elif [ "{{product}}" = "package-manager" ] && [ -z "{{tag}}" ]; then
+    RSPM_VERSION="{{tag}}"
+  fi
+  docker compose run \
+    -e RSW_VERSION="${RSW_VERSION}" \
+    -e RSC_VERSION="${RSC_VERSION}" \
+    -e RSPM_VERSION="${RSPM_VERSION}" \
+    {{product}}
 
 # Helper targets
 
