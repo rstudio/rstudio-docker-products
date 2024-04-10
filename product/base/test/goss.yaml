@@ -18,25 +18,25 @@ file:
   {{if .Env.OS | regexMatch "ubuntu.*"}}
   /opt/positscripts/apt.sh:
     exists: true
-    mode: "0775"
+    mode: "0755"
   {{end}}
   {{if .Env.OS | regexMatch "centos.*"}}
   /opt/positscripts/yum.sh:
     exists: true
-    mode: "0775"
+    mode: "0755"
   {{end}}
   /opt/positscripts/install_drivers.sh:
     exists: true
-    mode: "0775"
+    mode: "0755"
   /opt/positscripts/install_python.sh:
     exists: true
-    mode: "0775"
+    mode: "0755"
   /opt/positscripts/install_quarto.sh:
     exists: true
-    mode: "0775"
+    mode: "0755"
   /opt/positscripts/install_r.sh:
     exists: true
-    mode: "0775"
+    mode: "0755"
   /opt/R/{{.Env.R_VERSION}}/bin/R:
     exists: true
   /opt/R/{{.Env.R_VERSION_ALT}}/bin/R:
