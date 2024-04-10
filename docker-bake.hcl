@@ -19,14 +19,14 @@ variable DEFAULT_QUARTO_VERSION {
     default = "1.4.553"
 }
 
-function workbench_version_clean {
-    params = []
-    result = split("+", WORKBENCH_VERSION)[0]
+function tag_safe_version {
+    params = [version]
+    result = replace(version, "+", "-")
 }
 
-function get_os_alt_name {
-    params = [os]
-    result = os == "ubuntu2204" ? "jammy" : os
+function clean_version {
+    params = [version]
+    result = regex_replace(version, "[+|-].*", "")
 }
 
 function get_drivers_version {
@@ -34,12 +34,17 @@ function get_drivers_version {
     result = os == "centos7" ? "${DRIVERS_VERSION}-1" : DRIVERS_VERSION
 }
 
+function get_os_alt_name {
+    params = [os]
+    result = os == "ubuntu2204" ? "jammy" : os
+}
+
 function get_centos_tags {
     params = [os, product, product_version]
     result = [
-        "ghcr.io/rstudio/${product}:${os}-${product_version}",
+        "ghcr.io/rstudio/${product}:${os}-${tag_safe_version(product_version)}",
         "ghcr.io/rstudio/${product}:${os}",
-        "docker.io/rstudio/${product}:${os}-${product_version}",
+        "docker.io/rstudio/${product}:${os}-${tag_safe_version(product_version)}",
         "docker.io/rstudio/${product}:${os}",
     ]
 }
@@ -47,12 +52,12 @@ function get_centos_tags {
 function get_ubuntu_tags {
     params = [os, product, product_version]
     result = [
-        "ghcr.io/rstudio/${product}:${os}-${product_version}",
-        "ghcr.io/rstudio/${product}:${get_os_alt_name(os)}-${product_version}",
+        "ghcr.io/rstudio/${product}:${os}-${tag_safe_version(product_version)}",
+        "ghcr.io/rstudio/${product}:${get_os_alt_name(os)}-${tag_safe_version(product_version)}",
         "ghcr.io/rstudio/${product}:${os}",
         "ghcr.io/rstudio/${product}:${get_os_alt_name(os)}",
-        "docker.io/rstudio/${product}:${get_os_alt_name(os)}-${product_version}",
-        "docker.io/rstudio/${product}:${os}-${product_version}",
+        "docker.io/rstudio/${product}:${get_os_alt_name(os)}-${tag_safe_version(product_version)}",
+        "docker.io/rstudio/${product}:${os}-${tag_safe_version(product_version)}",
         "docker.io/rstudio/${product}:${get_os_alt_name(os)}",
         "docker.io/rstudio/${product}:${os}",
     ]
@@ -382,8 +387,8 @@ target "r-session-complete" {
     inherits = ["base"]
     target = "build"
 
-    name = "r-session-complete-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
-    tags = get_tags(builds.os, "r-session-complete", workbench_version_clean())
+    name = "r-session-complete-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"
+    tags = get_tags(builds.os, "r-session-complete", WORKBENCH_VERSION)
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "r-session-complete"
@@ -407,8 +412,8 @@ target "r-session-complete" {
 target "workbench" {
     inherits = ["base"]
 
-    name = "workbench-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
-    tags = get_tags(builds.os, "rstudio-workbench", workbench_version_clean())
+    name = "workbench-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"
+    tags = get_tags(builds.os, "rstudio-workbench", WORKBENCH_VERSION)
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "workbench"
@@ -433,15 +438,15 @@ target "workbench" {
 target "workbench-for-google-cloud-workstations" {
     inherits = ["base"]
 
-    name = "workbench-for-google-cloud-workstation-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
+    name = "workbench-for-google-cloud-workstation-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"
     tags = [
-        "us-central1-docker.pkg.dev/posit-images/cloud-workstations/workbench:${workbench_version_clean()}",
+        "us-central1-docker.pkg.dev/posit-images/cloud-workstations/workbench:${tag_safe_version(WORKBENCH_VERSION)}",
         "us-central1-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
-        "us-docker.pkg.dev/posit-images/cloud-workstations/workbench:${workbench_version_clean()}",
+        "us-docker.pkg.dev/posit-images/cloud-workstations/workbench:${tag_safe_version(WORKBENCH_VERSION)}",
         "us-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
-        "europe-docker.pkg.dev/posit-images/cloud-workstations/workbench:${workbench_version_clean()}",
+        "europe-docker.pkg.dev/posit-images/cloud-workstations/workbench:${tag_safe_version(WORKBENCH_VERSION)}",
         "europe-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
-        "asia-docker.pkg.dev/posit-images/cloud-workstations/workbench:${workbench_version_clean()}",
+        "asia-docker.pkg.dev/posit-images/cloud-workstations/workbench:${tag_safe_version(WORKBENCH_VERSION)}",
         "asia-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
     ]
 
@@ -470,7 +475,7 @@ target "build-workbench-for-microsoft-azure-ml" {
     inherits = ["base"]
     target = "build"
 
-    name = "build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
+    name = "build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "workbench-for-microsoft-azure-ml"
@@ -493,28 +498,28 @@ target "build-workbench-for-microsoft-azure-ml" {
 }
 
 target "scan-workbench-for-microsoft-azure-ml" {
-    inherits = ["build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"]
+    inherits = ["build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"]
     target = "clamav"
 
-    name = "scan-workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
+    name = "scan-workbench-for-microsoft-azure-ml-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"
 
     contexts = {
-        build = "target:build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
+        build = "target:build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"
     }
 
     matrix = WORKBENCH_MICROSOFT_AZURE_ML_BUILD_MATRIX
 }
 
 target "workbench-for-microsoft-azure-ml" {
-    inherits = ["build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"]
+    inherits = ["build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"]
     target = "final"
 
-    name = "workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
-    tags = get_tags(builds.os, "rstudio-workbench-for-microsoft-azure-ml", workbench_version_clean())
+    name = "workbench-for-microsoft-azure-ml-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"
+    tags = get_tags(builds.os, "rstudio-workbench-for-microsoft-azure-ml", WORKBENCH_VERSION)
 
     contexts = {
-        build = "target:build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
-        clamav = "target:scan-workbench-for-microsoft-azure-ml-${builds.os}-${replace(workbench_version_clean(), ".", "-")}"
+        build = "target:build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"
+        clamav = "target:scan-workbench-for-microsoft-azure-ml-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"
     }
 
     matrix = WORKBENCH_MICROSOFT_AZURE_ML_BUILD_MATRIX
