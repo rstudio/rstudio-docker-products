@@ -8,7 +8,7 @@ on:
 name: Release - Build, Test, and Push
 jobs:
   build:
-    name: Build and Test images
+    name: Build, Test, and Push images
     runs-on: ubuntu-latest-4x
 
     concurrency:
@@ -32,6 +32,51 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           buildkitd-config: ./share/buildkitd.toml
+
+      - name: Login to ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Login to GCAR us-central1
+        continue-on-error: true
+        uses: docker/login-action@v3
+        with:
+          registry: us-central1-docker.pkg.dev
+          username: _json_key
+          password: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+
+      - name: Login to GCAR us
+        continue-on-error: true
+        uses: docker/login-action@v3
+        with:
+          registry: us-docker.pkg.dev
+          username: _json_key
+          password: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+
+      - name: Login to GCAR asia
+        continue-on-error: true
+        uses: docker/login-action@v3
+        with:
+          registry: asia-docker.pkg.dev
+          username: _json_key
+          password: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+
+      - name: Login to GCAR europe
+        continue-on-error: true
+        uses: docker/login-action@v3
+        with:
+          registry: europe-docker.pkg.dev
+          username: _json_key
+          password: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
       - name: Build
         id: build
@@ -59,6 +104,7 @@ jobs:
           push: true
 
   build-content:
+    name: Build content images
     runs-on: ubuntu-latest-4x
 
     concurrency:
@@ -73,6 +119,19 @@ jobs:
         uses: docker/setup-buildx-action@v3
         with:
           buildkitd-config: ./share/buildkitd.toml
+
+      - name: Login to ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Build
         id: build
