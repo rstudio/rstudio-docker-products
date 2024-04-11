@@ -105,7 +105,6 @@ jobs:
         uses: ./.github/actions/bake-test-push
         with:
           target: ${{ env.target }}
-          builder: ${{ needs.pre.outputs.buildkit-builder }}
           push-image: ${{ github.ref == 'refs/heads/main' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
@@ -157,7 +156,6 @@ jobs:
         uses: ./.github/actions/bake-test-push
         with:
           target: ${{ env.target }}
-          builder: ${{ needs.pre.outputs.buildkit-builder }}
           push-image: ${{ github.ref == 'refs/heads/main' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
@@ -189,7 +187,6 @@ jobs:
         uses: ./.github/actions/bake-test-push
         with:
           target: ${{ env.target }}
-          builder: ${{ needs.pre.outputs.buildkit-builder }}
           push-image: ${{ github.ref == 'refs/heads/main' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
@@ -241,7 +238,6 @@ jobs:
         uses: ./.github/actions/bake-test-push
         with:
           target: ${{ env.target }}
-          builder: ${{ needs.pre.outputs.buildkit-builder }}
           push-image: ${{ github.ref == 'refs/heads/main' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
@@ -293,7 +289,6 @@ jobs:
         uses: ./.github/actions/bake-test-push
         with:
           target: ${{ env.target }}
-          builder: ${{ needs.pre.outputs.buildkit-builder }}
           push-image: ${{ github.ref == 'refs/heads/main' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
@@ -345,7 +340,6 @@ jobs:
         uses: ./.github/actions/bake-test-push
         with:
           target: ${{ env.target }}
-          builder: ${{ needs.pre.outputs.buildkit-builder }}
           push-image: ${{ github.ref == 'refs/heads/main' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
@@ -377,7 +371,6 @@ jobs:
         uses: ./.github/actions/bake-test-push
         with:
           target: ${{ env.target }}
-          builder: ${{ needs.pre.outputs.buildkit-builder }}
           push-image: ${{ github.ref == 'refs/heads/main' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
@@ -429,7 +422,6 @@ jobs:
         uses: ./.github/actions/bake-test-push
         with:
           target: ${{ env.target }}
-          builder: ${{ needs.pre.outputs.buildkit-builder }}
           push-image: ${{ github.ref == 'refs/heads/main' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
