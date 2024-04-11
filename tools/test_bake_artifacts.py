@@ -12,10 +12,11 @@ parser = argparse.ArgumentParser(
     description="Extract a test command from a bake plan"
 )
 parser.add_argument("--file", default="docker-bake.hcl")
+parser.add_argument("--target", default="default")
 
 
-def get_bake_plan(bake_file="docker-bake.hcl"):
-    cmd = ["docker", "buildx", "bake", "-f", str(PROJECT_DIR / bake_file), "--print"]
+def get_bake_plan(bake_file="docker-bake.hcl", target="default"):
+    cmd = ["docker", "buildx", "bake", "-f", str(PROJECT_DIR / bake_file), "--print", target]
     p = subprocess.run(cmd, capture_output=True)
     if p.returncode != 0:
         print(f"Failed to get bake plan: {p.stderr}")
@@ -50,10 +51,11 @@ def run_cmd(target_name, cmd):
 
 def main():
     args = parser.parse_args()
-    plan = get_bake_plan(args.file)
+    plan = get_bake_plan(args.file, args.target)
     result = 0
     skip_targets = []
     failed_targets = []
+    print(f"Testing {len(plan['target'].keys())} targets: {plan['target'].keys()}")
     for target_name, target_spec in plan["target"].items():
         if any(re.search(pattern, target_name) is not None for pattern in SKIP):
             print(f"Skipping {target_name}")

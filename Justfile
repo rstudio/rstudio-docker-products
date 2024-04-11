@@ -82,12 +82,12 @@ preview-plan branch="$(git branch --show-current)":
 
 # Run tests
 
-# just test
-test:
-  python3 {{justfile_directory()}}/tools/test_bake_artifacts.py
+# just test workbench
+test target="default":
+  python3 {{justfile_directory()}}/tools/test_bake_artifacts.py --target "{{target}}"
 
-# just preview-test dev
-preview-test branch="$(git branch --show-current)":
+# just preview-test connect dev
+preview-test target="default" branch="$(git branch --show-current)":
   #!/bin/bash
   if [ -z "$WORKBENCH_DAILY_VERSION" ]; then
     WORKBENCH_DAILY_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local)
@@ -109,7 +109,7 @@ preview-test branch="$(git branch --show-current)":
   PACKAGE_MANAGER_DAILY_VERSION="${PACKAGE_MANAGER_DAILY_VERSION}" \
   CONNECT_DAILY_VERSION="${CONNECT_DAILY_VERSION}" \
   BRANCH="${BRANCH}" \
-  python3 {{justfile_directory()}}/tools/test_bake_artifacts.py --file docker-bake.preview.hcl
+  python3 {{justfile_directory()}}/tools/test_bake_artifacts.py --file docker-bake.preview.hcl --target "{{target}}"
 
 # just lint workbench ubuntu2204
 lint $PRODUCT $OS:

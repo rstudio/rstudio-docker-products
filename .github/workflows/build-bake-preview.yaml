@@ -7,7 +7,7 @@ on:
       - main
       - dev
       - dev-rspm
-  pull_request:
+  #pull_request:
 
 name: Preview - Build, Test, and Push
 jobs:

@@ -9,98 +9,97 @@ on:
   
 name: Release - Build, Test, and Push
 jobs:
-  build:
-    name: Build, Test, and Push images
-    runs-on: ubuntu-latest-8x
+  pre:
+    name: Pre-Run Setup
+    runs-on: ubuntu-latest-4x
+
+    outputs:
+      buildkit-builder: ${{ steps.setup-buildx.outputs.name }}
 
     concurrency:
-      group: bake-${{ github.ref }}
+      group: bake-pre-${{ github.ref }}
       cancel-in-progress: true
+
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+          cleanup: false
+
+  base:
+    needs: [pre]
+    name: Base Images
+    runs-on: ubuntu-latest-4x
+
+    concurrency:
+      group: bake-base-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      target: base-images
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Just
-        uses: extractions/setup-just@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/setup-python@v5
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
         with:
-          python-version: '3.12'
+          target: ${{ env.target }}
+          builder: ${{ needs.pre.outputs.buildkit-builder }}
+          push-image: ${{ github.ref == 'refs/heads/main' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+  workbench:
+    name: Workbench
+    runs-on: ubuntu-latest-4x
+
+    needs: [pre, base]
+
+    concurrency:
+      group: bake-workbench-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      target: workbench
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
         with:
-          buildkitd-config: ./share/buildkitd.toml
+          target: ${{ env.target }}
+          builder: ${{ needs.pre.outputs.buildkit-builder }}
+          push-image: ${{ github.ref == 'refs/heads/main' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
-      - name: Login to ghcr.io
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+  post:
+    if: ${{ always() }}
+    needs: [pre, base, workbench]
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+    name: Post-Run Cleanup
+    runs-on: ubuntu-latest-4x
 
-      - name: Login to GCAR us-central1
-        continue-on-error: true
-        uses: docker/login-action@v3
-        with:
-          registry: us-central1-docker.pkg.dev
-          username: _json_key
-          password: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+    concurrency:
+      group: bake-post-${{ github.ref }}
+      cancel-in-progress: true
 
-      - name: Login to GCAR us
-        continue-on-error: true
-        uses: docker/login-action@v3
-        with:
-          registry: us-docker.pkg.dev
-          username: _json_key
-          password: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+    env:
+      target: post-images
 
-      - name: Login to GCAR asia
-        continue-on-error: true
-        uses: docker/login-action@v3
-        with:
-          registry: asia-docker.pkg.dev
-          username: _json_key
-          password: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
-
-      - name: Login to GCAR europe
-        continue-on-error: true
-        uses: docker/login-action@v3
-        with:
-          registry: europe-docker.pkg.dev
-          username: _json_key
-          password: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
-
-      - name: Build
-        id: build
-        uses: docker/bake-action@v4
-        with:
-          set: |
-            *.cache-from=type=gha
-            *.cache-to=type=gha,compression=zstd
-          targets: "default"
-          push: false
-
-      - name: Test
+    steps:
+      - name: Cleanup buildx builder
         run: |
-          just test
-
-      - name: Push
-        id: push
-        if: github.ref == 'refs/heads/main'
-        uses: docker/bake-action@v4
-        with:
-          set: |
-            *.cache-from=type=gha
-            *.cache-to=type=gha,compression=zstd
-          targets: "default"
-          push: true
+          docker buildx stop ${{ needs.pre.outputs.buildkit-builder }}
+          docker buildx prune ${{ needs.pre.outputs.buildkit-builder }}
+          docker buildx rm ${{ needs.pre.outputs.buildkit-builder }}
