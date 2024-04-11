@@ -7,9 +7,11 @@ Export bake artifacts as tar files for later reuse.
 
 import argparse
 import json
+import logging
 import subprocess
 from pathlib import Path
 
+LOGGER = logging.getLogger(__name__)
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 
 
@@ -25,7 +27,7 @@ def get_bake_plan(bake_file="docker-bake.hcl", target="default"):
     cmd = ["docker", "buildx", "bake", "-f", str(PROJECT_DIR / bake_file), "--print", target]
     p = subprocess.run(cmd, capture_output=True)
     if p.returncode != 0:
-        print(f"Failed to get bake plan: {p.stderr}")
+        LOGGER.error(f"Failed to get bake plan: {p.stderr}")
         exit(1)
     return json.loads(p.stdout.decode("utf-8"))
 
@@ -46,7 +48,7 @@ def build_export_command(target_name, target_spec, output_path):
 def run_cmd(target_name, cmd):
     p = subprocess.run(" ".join(cmd), shell=True)
     if p.returncode != 0:
-        print(f"{target_name} failed to export: {p.returncode}")
+        LOGGER.error(f"{target_name} failed to export: {p.returncode}")
     return p.returncode
 
 
@@ -56,9 +58,9 @@ def main():
     output = args.output_path
     if not Path(output).exists():
         Path(output).mkdir(parents=True)
-    print(f"Exporting {len(plan['target'].keys())} targets: {plan['target'].keys()}")
+    LOGGER.info(f"Exporting {len(plan['target'].keys())} targets: {plan['target'].keys()}")
     for target_name, target_spec in plan["target"].items():
-        print(f"Exporting {target_name}")
+        LOGGER.info(f"Exporting {target_name}")
         cmd = build_export_command(target_name, target_spec, output)
         run_cmd(target_name, cmd)
 

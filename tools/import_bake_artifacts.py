@@ -6,10 +6,11 @@ Run tests against bake artifacts by group/target and build definition.
 """
 
 import argparse
-import json
+import logging
 import subprocess
 from pathlib import Path
 
+LOGGER = logging.getLogger(__name__)
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 
 
@@ -23,11 +24,11 @@ def main():
     args = parser.parse_args()
     if args.archive_path:
         for archive in args.archive_path.glob("*.tar"):
-            print(f"Importing {archive}")
+            LOGGER.info(f"Importing {archive}")
             cmd = ["docker", "image", "load", "--input", archive]
             p = subprocess.run(cmd)
             if p.returncode != 0:
-                print(f"Failed to import {archive}: {p.returncode}")
+                LOGGER.error(f"Failed to import {archive}: {p.returncode}")
 
 
 if __name__ == "__main__":
