@@ -12,7 +12,7 @@ jobs:
 
   base:
     name: Base Images
-    runs-on: ubuntu-latest-4x
+    runs-on: ubuntu-latest-8x
 
     concurrency:
       group: bake-base-${{ github.ref }}
@@ -164,7 +164,7 @@ jobs:
 
   content:
     name: Content Images
-    runs-on: ubuntu-latest-4x
+    runs-on: ubuntu-latest-8x
 
     concurrency:
       group: bake-content-${{ github.ref }}
@@ -247,7 +247,7 @@ jobs:
   r-session-complete:
     needs: [base]
     name: R Session Complete
-    runs-on: ubuntu-latest-4x
+    runs-on: ubuntu-latest-8x
 
     concurrency:
       group: bake-r-session-complete-${{ github.ref }}
@@ -348,7 +348,7 @@ jobs:
 
   workbench-for-google-cloud-workstations:
     name: Workbench for Google Cloud Workstations
-    runs-on: ubuntu-latest-4x
+    runs-on: ubuntu-latest-8x
 
     concurrency:
       group: bake-wgcw-${{ github.ref }}
@@ -380,7 +380,7 @@ jobs:
   workbench-for-microsoft-azure-ml:
     needs: [base]
     name: Workbench for Microsoft Azure ML
-    runs-on: ubuntu-latest-4x
+    runs-on: ubuntu-latest-8x
 
     concurrency:
       group: bake-waml-${{ github.ref }}
