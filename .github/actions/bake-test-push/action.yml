@@ -97,9 +97,6 @@ runs:
       id: build
       uses: docker/bake-action@v4
       with:
-        set: |
-          *.cache-from=type=gha
-          *.cache-to=type=gha,compression=zstd
         targets: "${{ inputs.target }}"
         push: false
 
@@ -111,8 +108,5 @@ runs:
     - name: Push - ${{ inputs.push-image }}
       uses: docker/bake-action@v4
       with:
-        set: |
-          *.cache-from=type=gha
-          *.cache-to=type=gha,compression=zstd
         targets: "${{ inputs.target }}"
         push: ${{ inputs.push-image }}

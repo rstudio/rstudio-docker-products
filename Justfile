@@ -136,6 +136,14 @@ run product tag="":
     -e RSPM_VERSION="${RSPM_VERSION}" \
     {{product}}
 
+# Export/import targets
+
+export-artifacts target build_definition="docker-bake.hcl":
+  python3 {{justfile_directory()}}/tools/export_bake_artifacts.py --target "{{target}}" --file "{{build_definition}}"
+
+import-artifacts:
+  python3 {{justfile_directory()}}/tools/import_bake_artifacts.py
+
 # Helper targets
 
 # just _get-tag-safe-version 2022.07.2+576.pro12

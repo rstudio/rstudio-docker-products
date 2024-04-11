@@ -1,3 +1,10 @@
+#!/usr/bin/env python3
+"""
+Run tests against bake artifacts by group/target and build definition.
+
+./test_bake_artifacts.py --file <build definition> --target <build target or group>
+"""
+
 import argparse
 import json
 import re
