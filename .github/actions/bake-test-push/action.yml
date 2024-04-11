@@ -4,10 +4,6 @@ inputs:
     description: Target or group to bake
     required: true
     type: string
-  builder:
-    description: Name of the builder to use
-    required: true
-    type: string
   env-vars:
     description: A semicolon delimited list of environment variables to set as overrides for the bake definition
     required: false
@@ -44,7 +40,7 @@ runs:
     - name: Set up Just
       uses: extractions/setup-just@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.ghcr-token }}
 
     - uses: actions/setup-python@v5
       with:
@@ -101,7 +97,6 @@ runs:
       id: build
       uses: docker/bake-action@v4
       with:
-        builder: ${{ inputs.builder }}
         set: |
           *.cache-from=type=gha
           *.cache-to=type=gha,compression=zstd
@@ -115,7 +110,6 @@ runs:
     - name: Push - ${{ inputs.push-image }}
       uses: docker/bake-action@v4
       with:
-        builder: ${{ inputs.builder }}
         set: |
           *.cache-from=type=gha
           *.cache-to=type=gha,compression=zstd
