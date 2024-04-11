@@ -104,6 +104,7 @@ runs:
         push: false
 
     - name: Test
+      shell: bash
       run: |
         just test "${{ inputs.target }}"
 
