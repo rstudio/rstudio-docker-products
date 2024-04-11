@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest-4x
 
     concurrency:
-      group: bake-${{ env.target }}-${{ github.ref }}
+      group: bake-base-${{ github.ref }}
       cancel-in-progress: true
 
     env:
@@ -47,7 +47,7 @@ jobs:
     runs-on: ubuntu-latest-4x
 
     concurrency:
-      group: bake-${{ env.target }}-${{ github.ref }}
+      group: bake-connect-${{ github.ref }}
       cancel-in-progress: true
 
     env:
@@ -80,7 +80,7 @@ jobs:
     runs-on: ubuntu-latest-4x
 
     concurrency:
-      group: bake-${{ env.target }}-${{ github.ref }}
+      group: bake-connect-content-init-${{ github.ref }}
       cancel-in-progress: true
 
     env:
@@ -112,7 +112,7 @@ jobs:
     runs-on: ubuntu-latest-4x
 
     concurrency:
-      group: bake-${{ env.target }}-${{ github.ref }}
+      group: bake-content-${{ github.ref }}
       cancel-in-progress: true
 
     env:
@@ -145,7 +145,7 @@ jobs:
     runs-on: ubuntu-latest-4x
 
     concurrency:
-      group: bake-${{ env.target }}-${{ github.ref }}
+      group: bake-package-manager-${{ github.ref }}
       cancel-in-progress: true
 
     env:
@@ -178,7 +178,7 @@ jobs:
     runs-on: ubuntu-latest-4x
 
     concurrency:
-      group: bake-${{ env.target }}-${{ github.ref }}
+      group: bake-r-session-complete-${{ github.ref }}
       cancel-in-progress: true
 
     env:
@@ -211,7 +211,7 @@ jobs:
     runs-on: ubuntu-latest-4x
 
     concurrency:
-      group: bake-${{ env.target }}-${{ github.ref }}
+      group: bake-workbench-${{ github.ref }}
       cancel-in-progress: true
 
     env:
@@ -244,7 +244,7 @@ jobs:
     runs-on: ubuntu-latest-4x
 
     concurrency:
-      group: bake-${{ env.target }}-${{ github.ref }}
+      group: bake-wgcw-${{ github.ref }}
       cancel-in-progress: true
 
     env:
@@ -277,7 +277,7 @@ jobs:
     runs-on: ubuntu-latest-4x
 
     concurrency:
-      group: bake-${{ env.target }}-${{ github.ref }}
+      group: bake-waml-${{ github.ref }}
       cancel-in-progress: true
 
     env:
