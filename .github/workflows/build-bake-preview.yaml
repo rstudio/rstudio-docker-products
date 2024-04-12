@@ -64,7 +64,7 @@ jobs:
       WORKBENCH_DAILY_VERSION: ${{ needs.versions.outputs.WORKBENCH_DAILY_VERSION }}
       WORKBENCH_PREVIEW_VERSION: ${{ needs.versions.outputs.WORKBENCH_PREVIEW_VERSION }}
       PACKAGE_MANAGER_DAILY_VERSION: ${{ needs.versions.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
-      CONNECT_DAILY_VERSION: ${{ needs.versions.CONNECT_DAILY_VERSION }}
+      CONNECT_DAILY_VERSION: ${{ needs.versions.outputs.CONNECT_DAILY_VERSION }}
       BRANCH: ${{ github.head_ref || github.ref_name }}
 
     concurrency:
@@ -107,7 +107,7 @@ jobs:
       WORKBENCH_DAILY_VERSION: ${{ needs.versions.outputs.WORKBENCH_DAILY_VERSION }}
       WORKBENCH_PREVIEW_VERSION: ${{ needs.versions.outputs.WORKBENCH_PREVIEW_VERSION }}
       PACKAGE_MANAGER_DAILY_VERSION: ${{ needs.versions.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
-      CONNECT_DAILY_VERSION: ${{ needs.versions.CONNECT_DAILY_VERSION }}
+      CONNECT_DAILY_VERSION: ${{ needs.versions.outputs.CONNECT_DAILY_VERSION }}
       BRANCH: ${{ github.head_ref || github.ref_name }}
 
     concurrency:
@@ -144,7 +144,7 @@ jobs:
       WORKBENCH_DAILY_VERSION: ${{ needs.versions.outputs.WORKBENCH_DAILY_VERSION }}
       WORKBENCH_PREVIEW_VERSION: ${{ needs.versions.outputs.WORKBENCH_PREVIEW_VERSION }}
       PACKAGE_MANAGER_DAILY_VERSION: ${{ needs.versions.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
-      CONNECT_DAILY_VERSION: ${{ needs.versions.CONNECT_DAILY_VERSION }}
+      CONNECT_DAILY_VERSION: ${{ needs.versions.outputs.CONNECT_DAILY_VERSION }}
       BRANCH: ${{ github.head_ref || github.ref_name }}
 
     concurrency:
@@ -181,7 +181,7 @@ jobs:
       WORKBENCH_DAILY_VERSION: ${{ needs.versions.outputs.WORKBENCH_DAILY_VERSION }}
       WORKBENCH_PREVIEW_VERSION: ${{ needs.versions.outputs.WORKBENCH_PREVIEW_VERSION }}
       PACKAGE_MANAGER_DAILY_VERSION: ${{ needs.versions.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
-      CONNECT_DAILY_VERSION: ${{ needs.versions.CONNECT_DAILY_VERSION }}
+      CONNECT_DAILY_VERSION: ${{ needs.versions.outputs.CONNECT_DAILY_VERSION }}
       BRANCH: ${{ github.head_ref || github.ref_name }}
 
     concurrency:
@@ -218,7 +218,7 @@ jobs:
       WORKBENCH_DAILY_VERSION: ${{ needs.versions.outputs.WORKBENCH_DAILY_VERSION }}
       WORKBENCH_PREVIEW_VERSION: ${{ needs.versions.outputs.WORKBENCH_PREVIEW_VERSION }}
       PACKAGE_MANAGER_DAILY_VERSION: ${{ needs.versions.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
-      CONNECT_DAILY_VERSION: ${{ needs.versions.CONNECT_DAILY_VERSION }}
+      CONNECT_DAILY_VERSION: ${{ needs.versions.outputs.CONNECT_DAILY_VERSION }}
       BRANCH: ${{ github.head_ref || github.ref_name }}
 
     concurrency:
@@ -255,7 +255,7 @@ jobs:
       WORKBENCH_DAILY_VERSION: ${{ needs.versions.outputs.WORKBENCH_DAILY_VERSION }}
       WORKBENCH_PREVIEW_VERSION: ${{ needs.versions.outputs.WORKBENCH_PREVIEW_VERSION }}
       PACKAGE_MANAGER_DAILY_VERSION: ${{ needs.versions.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
-      CONNECT_DAILY_VERSION: ${{ needs.versions.CONNECT_DAILY_VERSION }}
+      CONNECT_DAILY_VERSION: ${{ needs.versions.outputs.CONNECT_DAILY_VERSION }}
       BRANCH: ${{ github.head_ref || github.ref_name }}
 
     concurrency:
@@ -292,7 +292,7 @@ jobs:
       WORKBENCH_DAILY_VERSION: ${{ needs.versions.outputs.WORKBENCH_DAILY_VERSION }}
       WORKBENCH_PREVIEW_VERSION: ${{ needs.versions.outputs.WORKBENCH_PREVIEW_VERSION }}
       PACKAGE_MANAGER_DAILY_VERSION: ${{ needs.versions.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
-      CONNECT_DAILY_VERSION: ${{ needs.versions.CONNECT_DAILY_VERSION }}
+      CONNECT_DAILY_VERSION: ${{ needs.versions.outputs.CONNECT_DAILY_VERSION }}
       BRANCH: ${{ github.head_ref || github.ref_name }}
 
     concurrency:
@@ -329,7 +329,7 @@ jobs:
       WORKBENCH_DAILY_VERSION: ${{ needs.versions.outputs.WORKBENCH_DAILY_VERSION }}
       WORKBENCH_PREVIEW_VERSION: ${{ needs.versions.outputs.WORKBENCH_PREVIEW_VERSION }}
       PACKAGE_MANAGER_DAILY_VERSION: ${{ needs.versions.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
-      CONNECT_DAILY_VERSION: ${{ needs.versions.CONNECT_DAILY_VERSION }}
+      CONNECT_DAILY_VERSION: ${{ needs.versions.outputs.CONNECT_DAILY_VERSION }}
       BRANCH: ${{ github.head_ref || github.ref_name }}
 
     concurrency:
