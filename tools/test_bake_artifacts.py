@@ -8,6 +8,7 @@ Run tests against bake artifacts by group/target and build definition.
 import argparse
 import json
 import logging
+import os
 import re
 import subprocess
 import sys
@@ -32,7 +33,8 @@ parser.add_argument("--target", default="default")
 
 def get_bake_plan(bake_file="docker-bake.hcl", target="default"):
     cmd = ["docker", "buildx", "bake", "-f", str(PROJECT_DIR / bake_file), "--print", target]
-    p = subprocess.run(cmd, capture_output=True)
+    run_env = os.environ.copy()
+    p = subprocess.run(cmd, capture_output=True, env=run_env)
     if p.returncode != 0:
         LOGGER.error(f"Failed to get bake plan: {p.stderr}")
         exit(1)
@@ -86,8 +88,9 @@ def main():
     result = 0
     skip_targets = []
     failed_targets = []
+    targets = {k: plan["target"][k] for k in plan["group"][args.target]["targets"]}
     LOGGER.info(f"Testing {len(plan['target'].keys())} targets: {plan['target'].keys()}")
-    for target_name, target_spec in plan["target"].items():
+    for target_name, target_spec in targets.items():
         if any(re.search(pattern, target_name) is not None for pattern in SKIP):
             LOGGER.info(f"Skipping {target_name}")
             skip_targets.append(target_name)
