@@ -51,6 +51,7 @@ def build_test_command(target_name, target_spec):
         "docker",
         "run",
         "-t",
+        "--init",
         "--rm",
         "--entrypoint=''",
         "--privileged",
