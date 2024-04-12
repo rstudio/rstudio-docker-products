@@ -10,11 +10,17 @@ import json
 import logging
 import re
 import subprocess
+import sys
 from pathlib import Path
 
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 LOGGER = logging.getLogger(__name__)
+
 PROJECT_DIR = Path(__file__).resolve().parents[1]
-SKIP = ["^content.*"]  # Content images don't have tests right now!
+SKIP = [
+    "^content.*",                              # Content images don't have tests right now!
+    "(build|scan)-workbench-for-microsoft.*",  # Intermediary WAML layers aren't exported or tested
+]
 
 
 parser = argparse.ArgumentParser(
@@ -66,6 +72,8 @@ def build_test_command(target_name, target_spec):
 
 
 def run_cmd(target_name, cmd):
+    LOGGER.info(f"Running tests for {target_name}")
+    LOGGER.info(f"{' '.join(cmd)}")
     p = subprocess.run(" ".join(cmd), shell=True)
     if p.returncode != 0:
         LOGGER.error(f"{target_name} test failed with exit code {p.returncode}")
