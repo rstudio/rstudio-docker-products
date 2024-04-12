@@ -98,7 +98,7 @@ jobs:
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
   connect-daily:
-    needs: [versions, base]
+    needs: [versions]
     name: Connect Image - Daily
     runs-on: ubuntu-latest-4x
 
@@ -135,7 +135,7 @@ jobs:
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
   connect-content-init-daily:
-    needs: [versions, base]
+    needs: [versions]
     name: Connect Content Init - Daily
     runs-on: ubuntu-latest-4x
 
@@ -172,7 +172,7 @@ jobs:
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
   package-manager-daily:
-    needs: [versions, base]
+    needs: [versions]
     name: Package Manager - Daily
     runs-on: ubuntu-latest-4x
 
@@ -209,7 +209,7 @@ jobs:
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
   r-session-complete-preview:
-    needs: [versions, base]
+    needs: [versions]
     name: R Session Complete - Preview
     runs-on: ubuntu-latest-4x
 
@@ -246,7 +246,7 @@ jobs:
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
   r-session-complete-daily:
-    needs: [versions, base]
+    needs: [versions]
     name: R Session Complete - Daily
     runs-on: ubuntu-latest-4x
 
@@ -283,7 +283,7 @@ jobs:
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
   workbench-preview:
-    needs: [versions, base]
+    needs: [versions]
     name: Workbench - Preview
     runs-on: ubuntu-latest-4x
 
@@ -320,7 +320,7 @@ jobs:
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
   workbench-daily:
-    needs: [versions, base]
+    needs: [versions]
     name: Workbench - Daily
     runs-on: ubuntu-latest-4x
 
