@@ -33,6 +33,17 @@ def get_bake_plan(bake_file="docker-bake.hcl", target="default"):
     return json.loads(p.stdout.decode("utf-8"))
 
 
+def custom_options(target_name, context_path):
+    opts = []
+    if "workbench-for-google-cloud-workstation" in target_name:
+        deps_path = context_path / "deps"
+        opts.extend([
+            "--mount=type=bind,source=/var/run/docker.sock,destination=/var/run/docker.sock",
+            f"--mount=type=bind,source={deps_path},destination=/tmp/deps",
+        ])
+    return opts
+
+
 def build_test_command(target_name, target_spec):
     context_path = PROJECT_DIR / target_spec["context"]
     test_path = context_path / "test"
@@ -41,9 +52,11 @@ def build_test_command(target_name, target_spec):
         "run",
         "-t",
         "--rm",
+        "--entrypoint=''",
         "--privileged",
         f"--mount=type=bind,source={test_path},destination=/test",
     ]
+    cmd.extend(custom_options(target_name, context_path))
     for name, value in target_spec["args"].items():
         cmd.extend(["--env", f'{name}="{value}"'])
     cmd.append(target_spec["tags"][0])
