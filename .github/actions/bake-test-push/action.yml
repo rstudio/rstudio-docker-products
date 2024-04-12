@@ -4,6 +4,11 @@ inputs:
     description: Target or group to bake
     required: true
     type: string
+  bakefile:
+    description: Path to the bakefile
+    required: true
+    default: "docker-bake.hcl"
+    type: string
   env-vars:
     description: A semicolon delimited list of environment variables to set as overrides for the bake definition
     required: false
@@ -99,14 +104,16 @@ runs:
       with:
         targets: "${{ inputs.target }}"
         push: false
+        files: ${{ inputs.bakefile }}
 
     - name: Test
       shell: bash
       run: |
-        just test "${{ inputs.target }}"
+        just test "${{ inputs.target }}" "${{ inputs.bakefile }}"
 
     - name: Push - ${{ inputs.push-image }}
       uses: docker/bake-action@v4
       with:
         targets: "${{ inputs.target }}"
         push: ${{ inputs.push-image }}
+        files: ${{ inputs.bakefile }}

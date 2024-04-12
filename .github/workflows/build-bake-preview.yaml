@@ -96,26 +96,15 @@ jobs:
         with:
           buildkitd-config: ./share/buildkitd.toml
 
-      - name: Build
-        id: build
-        uses: docker/bake-action@v4
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
         with:
-          targets: ${{ env.target }}
-          push: false
-          files: docker-bake.preview.hcl
-
-      - name: Test
-        run: |
-          just preview-test "${{ env.target }}"
-
-      - name: Push
-        id: push
-        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
-        uses: docker/bake-action@v4
-        with:
-          targets: ${{ env.target }}
-          push: true
-          files: docker-bake.preview.hcl
+          target: ${{ env.target }}
+          bakefile: docker-bake.preview.hcl
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Export artifacts
         run: |
