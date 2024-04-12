@@ -59,6 +59,8 @@ jobs:
         with:
           name: base-images
           path: ./.out
+          compression-level: 1
+          overwrite: true
 
   connect:
     needs: [base]
