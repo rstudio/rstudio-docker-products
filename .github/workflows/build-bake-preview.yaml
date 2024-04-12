@@ -82,15 +82,6 @@ jobs:
         if: github.event.schedule != '0 8 * * *'
         uses: actions/checkout@v3
 
-      - name: Set up Just
-        uses: extractions/setup-just@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
@@ -105,18 +96,6 @@ jobs:
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-
-      - name: Export artifacts
-        run: |
-          just export-artifacts ${{ env.target }} docker-bake.preview.hcl
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.target }}
-          path: ./.out
-          compression-level: 1
-          overwrite: true
 
   connect-daily:
     needs: [versions, base]
@@ -145,45 +124,15 @@ jobs:
         with:
           buildkitd-config: ./share/buildkitd.toml
 
-      - name: Set up Just
-        uses: extractions/setup-just@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/setup-python@v5
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
         with:
-          python-version: '3.12'
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: base-dev-images
-          path: ./.out
-
-      - name: Import artifacts
-        run: |
-          just import-artifacts
-
-      - name: Build
-        id: build
-        uses: docker/bake-action@v4
-        with:
-          targets: ${{ env.target }}
-          push: false
-          files: docker-bake.preview.hcl
-
-      - name: Test
-        run: |
-          just preview-test "${{ env.target }}"
-
-      - name: Push
-        id: push
-        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
-        uses: docker/bake-action@v4
-        with:
-          targets: ${{ env.target }}
-          push: true
-          files: docker-bake.preview.hcl
+          target: ${{ env.target }}
+          bakefile: docker-bake.preview.hcl
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
   connect-content-init-daily:
     needs: [versions, base]
@@ -212,45 +161,15 @@ jobs:
         with:
           buildkitd-config: ./share/buildkitd.toml
 
-      - name: Set up Just
-        uses: extractions/setup-just@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/setup-python@v5
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
         with:
-          python-version: '3.12'
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: base-dev-images
-          path: ./.out
-
-      - name: Import artifacts
-        run: |
-          just import-artifacts
-
-      - name: Build
-        id: build
-        uses: docker/bake-action@v4
-        with:
-          targets: ${{ env.target }}
-          push: false
-          files: docker-bake.preview.hcl
-
-      - name: Test
-        run: |
-          just preview-test "${{ env.target }}"
-
-      - name: Push
-        id: push
-        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
-        uses: docker/bake-action@v4
-        with:
-          targets: ${{ env.target }}
-          push: true
-          files: docker-bake.preview.hcl
+          target: ${{ env.target }}
+          bakefile: docker-bake.preview.hcl
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
   package-manager-daily:
     needs: [versions, base]
@@ -279,45 +198,15 @@ jobs:
         with:
           buildkitd-config: ./share/buildkitd.toml
 
-      - name: Set up Just
-        uses: extractions/setup-just@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/setup-python@v5
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
         with:
-          python-version: '3.12'
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: base-dev-images
-          path: ./.out
-
-      - name: Import artifacts
-        run: |
-          just import-artifacts
-
-      - name: Build
-        id: build
-        uses: docker/bake-action@v4
-        with:
-          targets: ${{ env.target }}
-          push: false
-          files: docker-bake.preview.hcl
-
-      - name: Test
-        run: |
-          just preview-test "${{ env.target }}"
-
-      - name: Push
-        id: push
-        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
-        uses: docker/bake-action@v4
-        with:
-          targets: ${{ env.target }}
-          push: true
-          files: docker-bake.preview.hcl
+          target: ${{ env.target }}
+          bakefile: docker-bake.preview.hcl
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
   r-session-complete-preview:
     needs: [versions, base]
@@ -346,45 +235,15 @@ jobs:
         with:
           buildkitd-config: ./share/buildkitd.toml
 
-      - name: Set up Just
-        uses: extractions/setup-just@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/setup-python@v5
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
         with:
-          python-version: '3.12'
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: base-dev-images
-          path: ./.out
-
-      - name: Import artifacts
-        run: |
-          just import-artifacts
-
-      - name: Build
-        id: build
-        uses: docker/bake-action@v4
-        with:
-          targets: ${{ env.target }}
-          push: false
-          files: docker-bake.preview.hcl
-
-      - name: Test
-        run: |
-          just preview-test "${{ env.target }}"
-
-      - name: Push
-        id: push
-        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
-        uses: docker/bake-action@v4
-        with:
-          targets: ${{ env.target }}
-          push: true
-          files: docker-bake.preview.hcl
+          target: ${{ env.target }}
+          bakefile: docker-bake.preview.hcl
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
   r-session-complete-daily:
     needs: [versions, base]
@@ -413,45 +272,15 @@ jobs:
         with:
           buildkitd-config: ./share/buildkitd.toml
 
-      - name: Set up Just
-        uses: extractions/setup-just@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/setup-python@v5
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
         with:
-          python-version: '3.12'
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: base-dev-images
-          path: ./.out
-
-      - name: Import artifacts
-        run: |
-          just import-artifacts
-
-      - name: Build
-        id: build
-        uses: docker/bake-action@v4
-        with:
-          targets: ${{ env.target }}
-          push: false
-          files: docker-bake.preview.hcl
-
-      - name: Test
-        run: |
-          just preview-test "${{ env.target }}"
-
-      - name: Push
-        id: push
-        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
-        uses: docker/bake-action@v4
-        with:
-          targets: ${{ env.target }}
-          push: true
-          files: docker-bake.preview.hcl
+          target: ${{ env.target }}
+          bakefile: docker-bake.preview.hcl
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
   workbench-preview:
     needs: [versions, base]
@@ -480,45 +309,15 @@ jobs:
         with:
           buildkitd-config: ./share/buildkitd.toml
 
-      - name: Set up Just
-        uses: extractions/setup-just@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/setup-python@v5
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
         with:
-          python-version: '3.12'
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: base-dev-images
-          path: ./.out
-
-      - name: Import artifacts
-        run: |
-          just import-artifacts
-
-      - name: Build
-        id: build
-        uses: docker/bake-action@v4
-        with:
-          targets: ${{ env.target }}
-          push: false
-          files: docker-bake.preview.hcl
-
-      - name: Test
-        run: |
-          just preview-test "${{ env.target }}"
-
-      - name: Push
-        id: push
-        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
-        uses: docker/bake-action@v4
-        with:
-          targets: ${{ env.target }}
-          push: true
-          files: docker-bake.preview.hcl
+          target: ${{ env.target }}
+          bakefile: docker-bake.preview.hcl
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
   workbench-daily:
     needs: [versions, base]
@@ -547,44 +346,12 @@ jobs:
         with:
           buildkitd-config: ./share/buildkitd.toml
 
-      - name: Set up Just
-        uses: extractions/setup-just@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/setup-python@v5
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
         with:
-          python-version: '3.12'
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: base-dev-images
-          path: ./.out
-
-      - name: Import artifacts
-        run: |
-          just import-artifacts
-
-      - name: Build
-        id: build
-        uses: docker/bake-action@v4
-        with:
-          targets: ${{ env.target }}
-          push: false
-          files: docker-bake.preview.hcl
-
-      - name: Test
-        run: |
-          just preview-test "${{ env.target }}"
-
-      - name: Push
-        id: push
-        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
-        uses: docker/bake-action@v4
-        with:
-          targets: ${{ env.target }}
-          push: true
-          files: docker-bake.preview.hcl
-
-
+          target: ${{ env.target }}
+          bakefile: docker-bake.preview.hcl
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
