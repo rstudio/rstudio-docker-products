@@ -25,15 +25,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Just
-        uses: extractions/setup-just@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         id: setup-buildx
@@ -50,20 +41,7 @@ jobs:
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
-      - name: Export artifacts
-        run: |
-          just export-artifacts ${{ env.target }}
-
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.target }}
-          path: ./.out
-          compression-level: 1
-          overwrite: true
-
   connect:
-    needs: [base]
     name: Connect
     runs-on: ubuntu-latest-4x
 
@@ -84,25 +62,6 @@ jobs:
         with:
           buildkitd-config: ./share/buildkitd.toml
 
-      - name: Set up Just
-        uses: extractions/setup-just@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: base-images
-          path: ./.out
-
-      - name: Import artifacts
-        run: |
-          just import-artifacts
-
       - name: Build, Test, and Push
         uses: ./.github/actions/bake-test-push
         with:
@@ -114,7 +73,6 @@ jobs:
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
   connect-content-init:
-    needs: [base]
     name: Connect Content Init
     runs-on: ubuntu-latest-4x
 
@@ -134,25 +92,6 @@ jobs:
         id: setup-buildx
         with:
           buildkitd-config: ./share/buildkitd.toml
-
-      - name: Set up Just
-        uses: extractions/setup-just@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: base-images
-          path: ./.out
-
-      - name: Import artifacts
-        run: |
-          just import-artifacts
 
       - name: Build, Test, and Push
         uses: ./.github/actions/bake-test-push
@@ -196,7 +135,6 @@ jobs:
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
   package-manager:
-    needs: [base]
     name: Package Manager
     runs-on: ubuntu-latest-4x
 
@@ -217,25 +155,6 @@ jobs:
         with:
           buildkitd-config: ./share/buildkitd.toml
 
-      - name: Set up Just
-        uses: extractions/setup-just@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: base-images
-          path: ./.out
-
-      - name: Import artifacts
-        run: |
-          just import-artifacts
-
       - name: Build, Test, and Push
         uses: ./.github/actions/bake-test-push
         with:
@@ -247,7 +166,6 @@ jobs:
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
   r-session-complete:
-    needs: [base]
     name: R Session Complete
     runs-on: ubuntu-latest-8x
 
@@ -268,25 +186,6 @@ jobs:
         with:
           buildkitd-config: ./share/buildkitd.toml
 
-      - name: Set up Just
-        uses: extractions/setup-just@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: base-images
-          path: ./.out
-
-      - name: Import artifacts
-        run: |
-          just import-artifacts
-
       - name: Build, Test, and Push
         uses: ./.github/actions/bake-test-push
         with:
@@ -298,7 +197,6 @@ jobs:
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
   workbench:
-    needs: [base]
     name: Workbench
     runs-on: ubuntu-latest-4x
 
@@ -318,25 +216,6 @@ jobs:
         id: setup-buildx
         with:
           buildkitd-config: ./share/buildkitd.toml
-
-      - name: Set up Just
-        uses: extractions/setup-just@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: base-images
-          path: ./.out
-
-      - name: Import artifacts
-        run: |
-          just import-artifacts
 
       - name: Build, Test, and Push
         uses: ./.github/actions/bake-test-push
@@ -380,7 +259,6 @@ jobs:
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
   workbench-for-microsoft-azure-ml:
-    needs: [base]
     name: Workbench for Microsoft Azure ML
     runs-on: ubuntu-latest-8x
 
@@ -400,25 +278,6 @@ jobs:
         id: setup-buildx
         with:
           buildkitd-config: ./share/buildkitd.toml
-
-      - name: Set up Just
-        uses: extractions/setup-just@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: base-images
-          path: ./.out
-
-      - name: Import artifacts
-        run: |
-          just import-artifacts
 
       - name: Build, Test, and Push
         uses: ./.github/actions/bake-test-push
