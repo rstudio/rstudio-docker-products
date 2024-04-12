@@ -1,11 +1,4 @@
-ARG R_VERSION=4.2.0
-ARG R_VERSION_ALT=3.6.2
-ARG PYTHON_VERSION=3.9.14
-ARG PYTHON_VERSION_ALT=3.8.15
-ARG SRC_IMAGE_NAME=product-base
-ARG REGISTRY=ghcr.io
 FROM product-base as build
-LABEL maintainer="Posit Docker <docker@posit.co>"
 
 ARG R_VERSION=4.2.0
 ARG R_VERSION_ALT=3.6.2

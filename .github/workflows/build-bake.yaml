@@ -52,12 +52,12 @@ jobs:
 
       - name: Export artifacts
         run: |
-          just export-artifacts base-images
+          just export-artifacts ${{ env.target }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: base-images
+          name: ${{ env.target }}
           path: ./.out
           compression-level: 1
           overwrite: true
@@ -94,7 +94,7 @@ jobs:
           python-version: '3.12'
 
       - name: Download artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: base-images
           path: ./.out
@@ -145,7 +145,7 @@ jobs:
           python-version: '3.12'
 
       - name: Download artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: base-images
           path: ./.out
@@ -227,7 +227,7 @@ jobs:
           python-version: '3.12'
 
       - name: Download artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: base-images
           path: ./.out
@@ -278,7 +278,7 @@ jobs:
           python-version: '3.12'
 
       - name: Download artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: base-images
           path: ./.out
@@ -329,7 +329,7 @@ jobs:
           python-version: '3.12'
 
       - name: Download artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: base-images
           path: ./.out
@@ -411,7 +411,7 @@ jobs:
           python-version: '3.12'
 
       - name: Download artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: base-images
           path: ./.out

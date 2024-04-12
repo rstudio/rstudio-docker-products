@@ -1,5 +1,4 @@
 FROM centos:7 as build
-LABEL maintainer="Posit Docker <docker@posit.co>"
 
 ### ARG declarations ###
 ARG R_VERSION=4.2.0
