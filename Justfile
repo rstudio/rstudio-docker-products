@@ -43,10 +43,10 @@ delete-builder:
 
 # Build and bake
 
+# just build
+alias build := bake
 # just bake workbench-images
-build:
-  just bake "default"
-bake target:
+bake target="default":
   just -f {{justfile()}} create-builder || true
   docker buildx bake --builder=posit-builder -f docker-bake.hcl {{target}}
 
