@@ -46,7 +46,7 @@ file:
     exists: true
   /tmp/startup.log:
     exists: true
-    contains:
+    contents:
     - "!Error: Couldn't read configuration file "
   # Check that `cracklib-runtime` is present so `chpasswd` works
   /var/cache/cracklib/cracklib_dict.pwd:
@@ -58,7 +58,7 @@ command:
     title: connect_version_matches
     exit-status: 0
     stdout: [
-       "{{ .Env.RSC_VERSION }}"
+      "{{ .Env.RSC_VERSION }}"
     ]
 # Ensure correct R version
   "/opt/R/{{ .Env.R_VERSION }}/bin/R --version":

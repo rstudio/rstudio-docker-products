@@ -1,5 +1,7 @@
 failure-threshold: warning
 ignored:
+  # Suppresses warning for not explicitly tagging FROM images. Docker buildx bake is handling FROM image injection.
+  - DL3006
     # Suppresses warning for version pinning on apt installs. We currently do not practice this approach.
   - DL3008
     # Suppresses warning for version pinning on yum installs. We currently do not practice this approach.

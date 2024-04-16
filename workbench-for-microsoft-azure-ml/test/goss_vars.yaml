@@ -19,7 +19,6 @@ syspkgs:
   - libglib2.0-0
   - libpq5
   - libsm6
-  - libssl-dev
   - openssl
   - libssl-dev
   - libuser

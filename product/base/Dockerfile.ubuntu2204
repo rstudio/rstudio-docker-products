@@ -1,5 +1,4 @@
-FROM ubuntu:22.04
-LABEL maintainer="Posit Docker <docker@posit.co>"
+FROM ubuntu:22.04 as build
 
 ### ARG declarations ###
 ARG DEBIAN_FRONTEND=noninteractive

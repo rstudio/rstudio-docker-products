@@ -89,20 +89,17 @@ DEBUG=1 ./scripts/build-image.sh \
 
 ## Build matrix
 
-The json defined in `matrix.json` is loaded by the Github Action to
+The `CONTENT_BUILD_MATRIX` variable defined in [the buildx bake definition](../docker-bake.hcl) is used to
 determine which combinations of R and Python to use when building
 our `content-base` and `content-pro` images. To add a new R and Python
 version combination, simply update the matrix and the Github Action will publish
-the new image combinations to our registries upon the next push to `main`
+the new image combinations to our registries upon the next push to `main`.
 
-**NOTE** This combination should be kept in sync with the `build-images.sh` script, as the
-file `matrix.json` is used by Github Actions as described above, but the `build-images.sh` script
-is used when the developer is validating the ability to build the new images locally.
+To build content images locally, use `just bake content-images` from the repository root.
 
 ## Github Actions
 
-Because of the dependency on the content-base images, the github actions that build the pro images
-depend on completion of the base image builds in [build-content](../.github/workflows/build-content.yaml)
+Content base and pro images are built in [build-bake](../.github/workflows/build-bake.yaml).
 
 # Licensing
 

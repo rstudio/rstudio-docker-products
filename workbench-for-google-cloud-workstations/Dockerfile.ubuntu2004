@@ -1,4 +1,4 @@
-FROM us-central1-docker.pkg.dev/cloud-workstations-images/predefined/base:public-image-current
+FROM us-central1-docker.pkg.dev/cloud-workstations-images/predefined/base:public-image-current as build
 
 ### ARG declarations ###
 ARG DEBIAN_FRONTEND=noninteractive
@@ -147,8 +147,7 @@ RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyt
     && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip cache purge \
     && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip cache purge
 
-RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh \
-    && chmod +x /usr/local/bin/wait-for-it.sh
+ADD --chmod=755 https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh /usr/local/bin/wait-for-it.sh
 
 RUN mkdir -p /var/lib/rstudio-server/monitor/log \
     && chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor \

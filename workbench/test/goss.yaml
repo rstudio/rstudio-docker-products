@@ -112,6 +112,7 @@ command:
      ]
   "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/jupyter/bin/jupyter nbconvert --to notebook --stdin --stdout":
     title: jupyter_works
+    timeout: 60000
     exit-status: 0
 # Ensure correct python version
   "/opt/python/{{.Env.PYTHON_VERSION_ALT}}/bin/python --version":

@@ -1,55 +1,31 @@
-version: "3.5"
+version: "3"
 
 services:
-  rstudio-workbench:
+  workbench:
     container_name: rstudio-workbench
-    build:
-      context: ./workbench
-      dockerfile: "Dockerfile.${IMAGE_OS:-ubuntu2204}"
-      args:
-        RSW_VERSION: 2023.12.1+402.pro1
-    image: rstudio/rstudio-workbench:2023.12.0
+    image: rstudio/rstudio-workbench:${RSW_VERSION:-ubuntu2204}
     environment:
       RSW_LICENSE: ${RSW_LICENSE}
       LICENSE_SERVER: ${RSW_LICENSE_SERVER}
     ports:
-      - 8787:8787
-      - 5559:5559
-    volumes:
-      - ./workbench/conf/:/etc/rstudio
-      - ./data/rsw:/home
+      - "127.0.0.1:8787:8787"
+      - "127.0.0.1:5559:5559"
 
-  rstudio-connect:
+  connect:
     container_name: rstudio-connect
-    build:
-      context: ./connect
-      dockerfile: "Dockerfile.${IMAGE_OS:-ubuntu1804}"
-      args:
-        RSC_VERSION: 2024.02.0
-    image: rstudio/rstudio-connect:2024.02.0
+    image: rstudio/rstudio-connect:${RSC_VERSION:-ubuntu2204}
     privileged: true
     environment:
       RSC_LICENSE: ${RSC_LICENSE}
       LICENSE_SERVER: ${RSC_LICENSE_SERVER}
     ports:
-      - 3939:3939
-    volumes:
-      - ./connect/rstudio-connect.gcfg:/etc/rstudio-connect/rstudio-connect.gcfg
-      - ./data/rsc:/data
+      - "127.0.0.1:3939:3939"
 
-  rstudio-package-manager:
+  package-manager:
     container_name: rstudio-package-manager
-    build:
-      context: ./package-manager
-      dockerfile: "Dockerfile.${IMAGE_OS:-ubuntu2204}"
-      args:
-        RSPM_VERSION: 2023.12.0-13
-    image: rstudio/rstudio-package-manager:2023.12.0
+    image: rstudio/rstudio-package-manager:${RSPM_VERSION:-ubuntu2204}
     environment:
       RSPM_LICENSE: ${RSPM_LICENSE}
       LICENSE_SERVER: ${RSPM_LICENSE_SERVER}
     ports:
-      - 4242:4242
-    volumes:
-      - ./package-manager/rstudio-pm.gcfg:/etc/rstudio-pm/rstudio-pm.gcfg
-      - ./data/rspm:/data
+      - "127.0.0.1:4242:4242"
