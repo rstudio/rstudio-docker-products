@@ -130,10 +130,9 @@ run product tag="":
   elif [ "{{product}}" = "package-manager" ] && [ -z "{{tag}}" ]; then
     RSPM_VERSION="{{tag}}"
   fi
-  docker compose run \
-    -e RSW_VERSION="${RSW_VERSION}" \
-    -e RSC_VERSION="${RSC_VERSION}" \
-    -e RSPM_VERSION="${RSPM_VERSION}" \
+  RSW_VERSION="${RSW_VERSION}" RSC_VERSION="${RSC_VERSION}" RSPM_VERSION="${RSPM_VERSION}" \
+    docker compose up \
+    --no-build \
     {{product}}
 
 # Export/import targets

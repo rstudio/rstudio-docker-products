@@ -93,7 +93,7 @@ def main():
         for target_name, target_spec in plan["target"].items():
             if target_name.startswith(k):
                 targets[target_name] = target_spec
-    LOGGER.info(f"Testing {len(plan['target'].keys())} targets: {plan['target'].keys()}")
+    LOGGER.info(f"Testing {len(targets.keys())} targets: {targets.keys()}")
     for target_name, target_spec in targets.items():
         if any(re.search(pattern, target_name) is not None for pattern in SKIP):
             LOGGER.info(f"Skipping {target_name}")

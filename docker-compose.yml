@@ -1,4 +1,4 @@
-version: "3.5"
+version: "3"
 
 services:
   workbench:
@@ -8,11 +8,8 @@ services:
       RSW_LICENSE: ${RSW_LICENSE}
       LICENSE_SERVER: ${RSW_LICENSE_SERVER}
     ports:
-      - "8787:8787"
-      - "5559:5559"
-    volumes:
-      - ./workbench/conf/:/etc/rstudio
-      - ./data/rsw:/home
+      - "127.0.0.1:8787:8787"
+      - "127.0.0.1:5559:5559"
 
   connect:
     container_name: rstudio-connect
@@ -22,10 +19,7 @@ services:
       RSC_LICENSE: ${RSC_LICENSE}
       LICENSE_SERVER: ${RSC_LICENSE_SERVER}
     ports:
-      - "3939:3939"
-    volumes:
-      - ./connect/rstudio-connect.gcfg:/etc/rstudio-connect/rstudio-connect.gcfg
-      - ./data/rsc:/data
+      - "127.0.0.1:3939:3939"
 
   package-manager:
     container_name: rstudio-package-manager
@@ -34,7 +28,4 @@ services:
       RSPM_LICENSE: ${RSPM_LICENSE}
       LICENSE_SERVER: ${RSPM_LICENSE_SERVER}
     ports:
-      - "4242:4242"
-    volumes:
-      - ./package-manager/rstudio-pm.gcfg:/etc/rstudio-pm/rstudio-pm.gcfg
-      - ./data/rspm:/data
+      - "127.0.0.1:4242:4242"
