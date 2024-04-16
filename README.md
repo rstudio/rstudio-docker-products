@@ -159,6 +159,12 @@ you have built:
 just RSW_LICENSE="<license key>" run workbench
 ```
 
+You can also run validation tests on the image using [Goss](https://github.com/goss-org/goss). To run the tests, use 
+the `test` target. For example, to test Connect you can run:
+```
+just test connect
+```
+
 Note you must have a license in place, and all other instructions in separate sections are still relevant.
 
 If you have created an image you want to use yourself, you can push to your own image repository system. The images are
