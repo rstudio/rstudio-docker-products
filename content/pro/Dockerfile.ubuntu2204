@@ -1,7 +1,5 @@
 FROM content-base
 
-LABEL maintainer="RStudio Docker <docker@rstudio.com>"
-
 # Install RStudio Professional Drivers ----------------------------------------#
 ARG DRIVERS_VERSION=2024.03.0
 ARG R_VERSION

@@ -82,12 +82,12 @@ preview-plan branch="$(git branch --show-current)":
 
 # Run tests
 
-# just test
-test:
-  python3 {{justfile_directory()}}/tools/test_bake_artifacts.py
+# just test workbench
+test target="default" file="docker-bake.hcl":
+  python3 {{justfile_directory()}}/tools/test_bake_artifacts.py --target "{{target}}" --file "{{file}}"
 
-# just preview-test dev
-preview-test branch="$(git branch --show-current)":
+# just preview-test connect dev
+preview-test target="default" branch="$(git branch --show-current)":
   #!/bin/bash
   if [ -z "$WORKBENCH_DAILY_VERSION" ]; then
     WORKBENCH_DAILY_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local)
@@ -109,7 +109,7 @@ preview-test branch="$(git branch --show-current)":
   PACKAGE_MANAGER_DAILY_VERSION="${PACKAGE_MANAGER_DAILY_VERSION}" \
   CONNECT_DAILY_VERSION="${CONNECT_DAILY_VERSION}" \
   BRANCH="${BRANCH}" \
-  python3 {{justfile_directory()}}/tools/test_bake_artifacts.py --file docker-bake.preview.hcl
+  python3 {{justfile_directory()}}/tools/test_bake_artifacts.py --file docker-bake.preview.hcl --target "{{target}}"
 
 # just lint workbench ubuntu2204
 lint $PRODUCT $OS:
@@ -135,6 +135,14 @@ run product tag="":
     -e RSC_VERSION="${RSC_VERSION}" \
     -e RSPM_VERSION="${RSPM_VERSION}" \
     {{product}}
+
+# Export/import targets
+
+export-artifacts target build_definition="docker-bake.hcl":
+  python3 {{justfile_directory()}}/tools/export_bake_artifacts.py --target "{{target}}" --file "{{build_definition}}"
+
+import-artifacts:
+  python3 {{justfile_directory()}}/tools/import_bake_artifacts.py
 
 # Helper targets
 

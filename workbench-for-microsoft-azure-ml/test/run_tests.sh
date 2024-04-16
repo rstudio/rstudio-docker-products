@@ -26,7 +26,7 @@ else
 fi
 
 GOSS_FILE=${GOSS_FILE:-/test/goss.yaml}
-GOSS_VARS_FILE=${GOSS_VARS_FILE:-/tmp/test/goss_vars.yaml}
+GOSS_VARS_FILE=${GOSS_VARS_FILE:-/test/goss_vars.yaml}
 GOSS_VERSION=${GOSS_VERSION:-0.4.6}
 GOSS_MAX_CONCURRENT=${GOSS_MAX_CONCURRENT:-5}
 

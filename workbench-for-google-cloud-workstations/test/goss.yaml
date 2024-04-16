@@ -208,7 +208,7 @@ command:
     ]
   {{ $python_version := .Env.PYTHON_VERSION }}
   {{ $python_version_alt := .Env.PYTHON_VERSION_ALT }}
-  {{ $py_package_list := readFile "/tmp/py_packages.txt" | splitList "\n" }}
+  {{ $py_package_list := readFile "/tmp/deps/py_packages.txt" | splitList "\n" }}
   {{- range $py_package_list }}
   Check Python {{ $python_version }} has "{{.}}" installed:
     exec: /opt/python/{{$python_version}}/bin/pip show {{.}}
@@ -221,7 +221,7 @@ command:
   {{end}}
   {{ $r_version := .Env.R_VERSION }}
   {{ $r_version_alt := .Env.R_VERSION_ALT }}
-  {{ $r_package_list := readFile "/tmp/r_packages.txt" | splitList "\n" }}
+  {{ $r_package_list := readFile "/tmp/deps/r_packages.txt" | splitList "\n" }}
   {{- range $r_package_list }}
   Check R {{ $r_version }} has "{{.}}" installed:
     exec: /opt/R/{{$r_version}}/bin/R --slave -e "library(\"{{.}}\")"

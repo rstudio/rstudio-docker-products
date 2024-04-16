@@ -1,6 +1,5 @@
 # Tag from https://hub.docker.com/_/ubuntu/
 FROM ubuntu:22.04 as build
-LABEL maintainer="RStudio Connect <rsconnect@rstudio.com>"
 
 # Install required tools:
 # - ca-certificates installs necessary certificates to use cURL with HTTPS websites

@@ -11,47 +11,28 @@ on:
 
 name: Preview - Build, Test, and Push
 jobs:
-  build-preview:
-    name: Build, Test, and Push Preview images
-    runs-on: ubuntu-latest-4x
+  versions:
+    name: Fetch product daily/preview versions
+    runs-on: ubuntu-latest
 
     concurrency:
-      group: bake-preview-${{ github.ref }}
-      cancel-in-progress: true
+        group: fetch-versions-${{ github.ref }}
+        cancel-in-progress: true
+
+    outputs:
+      WORKBENCH_DAILY_VERSION: ${{ steps.get-version.outputs.WORKBENCH_DAILY_VERSION }}
+      WORKBENCH_PREVIEW_VERSION: ${{ steps.get-version.outputs.WORKBENCH_PREVIEW_VERSION }}
+      PACKAGE_MANAGER_DAILY_VERSION: ${{ steps.get-version.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
+      CONNECT_DAILY_VERSION: ${{ steps.get-version.outputs.CONNECT_DAILY_VERSION }}
 
     steps:
-      - name: Check Out main Branch
-        if: github.event.schedule == '0 8 * * *'
-        uses: actions/checkout@v3
-        with:
-          ref: 'main'
-
-      - name: Check Out Repo at Triggered Branch
-        if: github.event.schedule != '0 8 * * *'
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Set up Just
-        uses: extractions/setup-just@v1
+        uses: extractions/setup-just@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          buildkitd-config: ./share/buildkitd.toml
-
-      - name: Login to ghcr.io
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - uses: actions/setup-python@v5
         with:
@@ -73,47 +54,304 @@ jobs:
           CONNECT_DAILY_VERSION=$(just -f ci.Justfile get-version connect --type=daily --local)
           echo "CONNECT_DAILY_VERSION=$CONNECT_DAILY_VERSION" >> $GITHUB_OUTPUT
 
-      - name: Build
-        id: build
-        uses: docker/bake-action@v4
-        env:
-          WORKBENCH_DAILY_VERSION: ${{ steps.get-version.outputs.WORKBENCH_DAILY_VERSION }}
-          WORKBENCH_PREVIEW_VERSION: ${{ steps.get-version.outputs.WORKBENCH_PREVIEW_VERSION }}
-          PACKAGE_MANAGER_DAILY_VERSION: ${{ steps.get-version.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
-          CONNECT_DAILY_VERSION: ${{ steps.get-version.outputs.CONNECT_DAILY_VERSION }}
-          BRANCH: ${{ github.head_ref || github.ref_name }}
-        with:
-          set: |
-            *.cache-from=type=gha
-            *.cache-to=type=gha,compression=zstd
-          targets: "default"
-          push: false
-          files: docker-bake.preview.hcl
+  base:
+    needs: [versions]
+    name: Base Image Previews
+    runs-on: ubuntu-latest-4x
 
-      - name: Test
-        env:
-          WORKBENCH_DAILY_VERSION: ${{ steps.get-version.outputs.WORKBENCH_DAILY_VERSION }}
-          WORKBENCH_PREVIEW_VERSION: ${{ steps.get-version.outputs.WORKBENCH_PREVIEW_VERSION }}
-          PACKAGE_MANAGER_DAILY_VERSION: ${{ steps.get-version.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
-          CONNECT_DAILY_VERSION: ${{ steps.get-version.outputs.CONNECT_DAILY_VERSION }}
-          BRANCH: ${{ github.head_ref || github.ref_name }}
-        run: |
-          just preview-test
+    env:
+      target: "base-dev-images"
+      WORKBENCH_DAILY_VERSION: ${{ needs.versions.outputs.WORKBENCH_DAILY_VERSION }}
+      WORKBENCH_PREVIEW_VERSION: ${{ needs.versions.outputs.WORKBENCH_PREVIEW_VERSION }}
+      PACKAGE_MANAGER_DAILY_VERSION: ${{ needs.versions.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
+      CONNECT_DAILY_VERSION: ${{ needs.versions.outputs.CONNECT_DAILY_VERSION }}
+      BRANCH: ${{ github.head_ref || github.ref_name }}
 
-      - name: Push
-        id: push
-        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
-        uses: docker/bake-action@v4
-        env:
-          WORKBENCH_DAILY_VERSION: ${{ steps.get-version.outputs.WORKBENCH_DAILY_VERSION }}
-          WORKBENCH_PREVIEW_VERSION: ${{ steps.get-version.outputs.WORKBENCH_PREVIEW_VERSION }}
-          PACKAGE_MANAGER_DAILY_VERSION: ${{ steps.get-version.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
-          CONNECT_DAILY_VERSION: ${{ steps.get-version.outputs.CONNECT_DAILY_VERSION }}
-          BRANCH: ${{ github.head_ref || github.ref_name }}
+    concurrency:
+      group: bake-base-preview-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Check Out main Branch
+        if: github.event.schedule == '0 8 * * *'
+        uses: actions/checkout@v3
         with:
-          set: |
-            *.cache-from=type=gha
-            *.cache-to=type=gha,compression=zstd
-          targets: "default"
-          push: true
-          files: docker-bake.preview.hcl
+          ref: 'main'
+
+      - name: Check Out Repo at Triggered Branch
+        if: github.event.schedule != '0 8 * * *'
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          bakefile: docker-bake.preview.hcl
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+  connect-daily:
+    needs: [versions]
+    name: Connect Image - Daily
+    runs-on: ubuntu-latest-4x
+
+    env:
+      target: "connect-daily"
+      WORKBENCH_DAILY_VERSION: ${{ needs.versions.outputs.WORKBENCH_DAILY_VERSION }}
+      WORKBENCH_PREVIEW_VERSION: ${{ needs.versions.outputs.WORKBENCH_PREVIEW_VERSION }}
+      PACKAGE_MANAGER_DAILY_VERSION: ${{ needs.versions.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
+      CONNECT_DAILY_VERSION: ${{ needs.versions.outputs.CONNECT_DAILY_VERSION }}
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+
+    concurrency:
+      group: bake-connect-daily-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          bakefile: docker-bake.preview.hcl
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+  connect-content-init-daily:
+    needs: [versions]
+    name: Connect Content Init - Daily
+    runs-on: ubuntu-latest-4x
+
+    env:
+      target: "connect-content-init-daily"
+      WORKBENCH_DAILY_VERSION: ${{ needs.versions.outputs.WORKBENCH_DAILY_VERSION }}
+      WORKBENCH_PREVIEW_VERSION: ${{ needs.versions.outputs.WORKBENCH_PREVIEW_VERSION }}
+      PACKAGE_MANAGER_DAILY_VERSION: ${{ needs.versions.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
+      CONNECT_DAILY_VERSION: ${{ needs.versions.outputs.CONNECT_DAILY_VERSION }}
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+
+    concurrency:
+      group: bake-connect-content-init-daily-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          bakefile: docker-bake.preview.hcl
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+  package-manager-daily:
+    needs: [versions]
+    name: Package Manager - Daily
+    runs-on: ubuntu-latest-4x
+
+    env:
+      target: "package-manager-daily"
+      WORKBENCH_DAILY_VERSION: ${{ needs.versions.outputs.WORKBENCH_DAILY_VERSION }}
+      WORKBENCH_PREVIEW_VERSION: ${{ needs.versions.outputs.WORKBENCH_PREVIEW_VERSION }}
+      PACKAGE_MANAGER_DAILY_VERSION: ${{ needs.versions.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
+      CONNECT_DAILY_VERSION: ${{ needs.versions.outputs.CONNECT_DAILY_VERSION }}
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+
+    concurrency:
+      group: bake-package-manager-daily-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          bakefile: docker-bake.preview.hcl
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+  r-session-complete-preview:
+    needs: [versions]
+    name: R Session Complete - Preview
+    runs-on: ubuntu-latest-4x
+
+    env:
+      target: "r-session-complete-preview"
+      WORKBENCH_DAILY_VERSION: ${{ needs.versions.outputs.WORKBENCH_DAILY_VERSION }}
+      WORKBENCH_PREVIEW_VERSION: ${{ needs.versions.outputs.WORKBENCH_PREVIEW_VERSION }}
+      PACKAGE_MANAGER_DAILY_VERSION: ${{ needs.versions.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
+      CONNECT_DAILY_VERSION: ${{ needs.versions.outputs.CONNECT_DAILY_VERSION }}
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+
+    concurrency:
+      group: bake-r-session-complete-preview-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          bakefile: docker-bake.preview.hcl
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+  r-session-complete-daily:
+    needs: [versions]
+    name: R Session Complete - Daily
+    runs-on: ubuntu-latest-4x
+
+    env:
+      target: "r-session-complete-daily"
+      WORKBENCH_DAILY_VERSION: ${{ needs.versions.outputs.WORKBENCH_DAILY_VERSION }}
+      WORKBENCH_PREVIEW_VERSION: ${{ needs.versions.outputs.WORKBENCH_PREVIEW_VERSION }}
+      PACKAGE_MANAGER_DAILY_VERSION: ${{ needs.versions.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
+      CONNECT_DAILY_VERSION: ${{ needs.versions.outputs.CONNECT_DAILY_VERSION }}
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+
+    concurrency:
+      group: bake-r-session-complete-daily-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          bakefile: docker-bake.preview.hcl
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+  workbench-preview:
+    needs: [versions]
+    name: Workbench - Preview
+    runs-on: ubuntu-latest-4x
+
+    env:
+      target: "workbench-preview"
+      WORKBENCH_DAILY_VERSION: ${{ needs.versions.outputs.WORKBENCH_DAILY_VERSION }}
+      WORKBENCH_PREVIEW_VERSION: ${{ needs.versions.outputs.WORKBENCH_PREVIEW_VERSION }}
+      PACKAGE_MANAGER_DAILY_VERSION: ${{ needs.versions.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
+      CONNECT_DAILY_VERSION: ${{ needs.versions.outputs.CONNECT_DAILY_VERSION }}
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+
+    concurrency:
+      group: bake-workbench-preview-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          bakefile: docker-bake.preview.hcl
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+  workbench-daily:
+    needs: [versions]
+    name: Workbench - Daily
+    runs-on: ubuntu-latest-4x
+
+    env:
+      target: "workbench-daily"
+      WORKBENCH_DAILY_VERSION: ${{ needs.versions.outputs.WORKBENCH_DAILY_VERSION }}
+      WORKBENCH_PREVIEW_VERSION: ${{ needs.versions.outputs.WORKBENCH_PREVIEW_VERSION }}
+      PACKAGE_MANAGER_DAILY_VERSION: ${{ needs.versions.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
+      CONNECT_DAILY_VERSION: ${{ needs.versions.outputs.CONNECT_DAILY_VERSION }}
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+
+    concurrency:
+      group: bake-workbench-daily-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          bakefile: docker-bake.preview.hcl
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
