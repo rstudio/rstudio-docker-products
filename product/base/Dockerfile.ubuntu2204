@@ -30,6 +30,7 @@ RUN apt-get update --fix-missing  \
         gpg-agent \
         gsfonts \
         imagemagick \
+        libarchive-dev \
         libcairo2-dev \
         libcurl4-openssl-dev \
         libev-dev \
