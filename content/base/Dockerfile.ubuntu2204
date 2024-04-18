@@ -39,6 +39,7 @@ RUN apt-get update \
       git \
       gsfonts \
       imagemagick \
+      libarchive-dev \
       libcairo2-dev \
       libcurl4-openssl-dev \
       libfontconfig1-dev \
