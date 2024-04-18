@@ -106,3 +106,11 @@ command:
     stdout: [
       "{{ .Env.QUARTO_VERSION }}"
     ]
+
+# Ensure Quarto works
+  "/opt/quarto/{{ .Env.QUARTO_VERSION }}/bin/quarto check --quiet":
+    title: quarto_check
+    exit-status: 0
+  "/usr/local/bin/quarto check --quiet":
+    title: quarto_check
+    exit-status: 0
