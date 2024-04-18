@@ -53,6 +53,8 @@ RUN apt-get update \
     && gpg --keyserver keys.openpgp.org --recv-keys 51C0B5BB19F92D60 \
     && dpkg-sig --verify ./rstudio-workbench.deb \
     && apt-get install -yq --no-install-recommends ./rstudio-workbench.deb \
+    # a wild hack to ensure that workbench can install _and start_ completely before shutdown
+    && sleep 30 \
     && rm ./rstudio-workbench.deb \
     && apt-get autoremove -y \
     && apt-get clean \
