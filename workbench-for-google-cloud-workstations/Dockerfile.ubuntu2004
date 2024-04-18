@@ -13,6 +13,7 @@ ARG DRIVERS_VERSION=2023.05.0
 ARG RSW_VERSION=2023.12.1+402.pro1
 ARG RSW_NAME=rstudio-workbench
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/focal/amd64
+ARG SCRIPTS_DIR=/opt/positscripts
 
 ENV STARTUP_DEBUG_MODE 0
 ENV RSW_LICENSE ""
