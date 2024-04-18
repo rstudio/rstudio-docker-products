@@ -14,10 +14,6 @@ ARG SCRIPTS_DIR=/opt/positscripts
 
 ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
 
-### Install Quarto ###
-RUN QUARTO_VERSION=${QUARTO_VERSION} ${SCRIPTS_DIR}/install_quarto.sh \
-    && ln -s /opt/quarto/${QUARTO_VERSION}/bin/quarto /usr/local/bin/quarto
-
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
@@ -41,6 +37,9 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/rstudio-server/r-versions
+
+### Install Quarto to PATH ###
+RUN ln -s /lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto
 
 COPY maybe_install_vs_code.sh /tmp/maybe_install_vs_code.sh
 RUN /tmp/maybe_install_vs_code.sh \

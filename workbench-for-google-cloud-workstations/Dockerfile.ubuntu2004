@@ -84,12 +84,8 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-### Install Quarto ###
-RUN curl -o quarto-linux-amd64.deb -L https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.deb \
-    && apt-get update \
-    && apt-get install -yq ./quarto-linux-amd64.deb \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm quarto-linux-amd64.deb
+### Install Quarto to PATH ###
+RUN ln -s /lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto
 
 ### Install Pro Drivers ###
 RUN apt-get update \

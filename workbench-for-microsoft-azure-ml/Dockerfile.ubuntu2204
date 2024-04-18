@@ -38,10 +38,6 @@ RUN apt-get update --fix-missing \
     && rm /tmp/apt_packages.txt \
     && rm -rf /var/lib/apt/lists/*
 
-### Install Quarto ###
-RUN QUARTO_VERSION=${QUARTO_VERSION} ${SCRIPTS_DIR}/install_quarto.sh \
-    && ln -s /opt/quarto/${QUARTO_VERSION}/bin/quarto /usr/local/bin/quarto
-
 RUN apt-get update \
     && curl -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION//+/-}-amd64.deb" \
     # Pre 7/25/23 packages
@@ -62,6 +58,9 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/rstudio-server/r-versions
+
+### Install Quarto to PATH ###
+RUN ln -s /lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto
 
 COPY --chmod=0755 license-manager-shim /opt/rstudio-license/license-manager
 COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
