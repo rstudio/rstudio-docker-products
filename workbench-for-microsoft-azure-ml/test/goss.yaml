@@ -86,6 +86,11 @@ file:
     exists: true
     contains:
     - "!Error reading /etc/rstudio/rserver.conf:"
+  /opt/quarto/{{.Env.QUARTO_VERSION}}/bin/quarto:
+    exists: true
+  /usr/local/bin/quarto:
+    exists: true
+    filetype: symlink
 
 command:
   "su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'":
@@ -143,3 +148,17 @@ command:
       - {{ $pkg }}
     {{end}}
   {{end}}
+
+# Ensure correct Quarto version
+  "/opt/quarto/{{ .Env.QUARTO_VERSION }}/bin/quarto --version":
+    title: quarto_version_matches
+    exit-status: 0
+    stdout: [
+      "{{ .Env.QUARTO_VERSION }}"
+    ]
+  "/usr/local/bin/quarto --version":
+    title: quarto_symlink_version_matches
+    exit-status: 0
+    stdout: [
+      "{{ .Env.QUARTO_VERSION }}"
+    ]

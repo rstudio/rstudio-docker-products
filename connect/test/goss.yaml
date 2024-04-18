@@ -44,6 +44,11 @@ file:
     exists: true
   /opt/python/{{.Env.PYTHON_VERSION_ALT}}/bin/python:
     exists: true
+  /opt/quarto/{{.Env.QUARTO_VERSION}}/bin/quarto:
+    exists: true
+  /usr/local/bin/quarto:
+    exists: true
+    filetype: symlink
   /tmp/startup.log:
     exists: true
     contents:
@@ -86,4 +91,18 @@ command:
     exit-status: 0
     stdout: [
       "{{ .Env.PYTHON_VERSION_ALT }}"
+    ]
+
+# Ensure correct Quarto version
+  "/opt/quarto/{{ .Env.QUARTO_VERSION }}/bin/quarto --version":
+    title: quarto_version_matches
+    exit-status: 0
+    stdout: [
+      "{{ .Env.QUARTO_VERSION }}"
+    ]
+  "/usr/local/bin/quarto --version":
+    title: quarto_symlink_version_matches
+    exit-status: 0
+    stdout: [
+      "{{ .Env.QUARTO_VERSION }}"
     ]

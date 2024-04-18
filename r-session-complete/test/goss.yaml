@@ -18,6 +18,11 @@ file:
    filetype: directory
   /var/lib/rstudio-server/r-versions:
     exists: false
+  /opt/quarto/{{.Env.QUARTO_VERSION}}/bin/quarto:
+    exists: true
+  /usr/local/bin/quarto:
+    exists: true
+    filetype: symlink
 
 command:
   "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/{{.Env.PYTHON_VERSION}}/bin/jupyter nbconvert --to notebook --stdin --stdout":
@@ -52,3 +57,17 @@ command:
     title: jupyter_in_path_var
     timeout: 60000
     exit-status: 0
+
+# Ensure correct Quarto version
+  "/opt/quarto/{{ .Env.QUARTO_VERSION }}/bin/quarto --version":
+    title: quarto_version_matches
+    exit-status: 0
+    stdout: [
+      "{{ .Env.QUARTO_VERSION }}"
+    ]
+  "/usr/local/bin/quarto --version":
+    title: quarto_symlink_version_matches
+    exit-status: 0
+    stdout: [
+      "{{ .Env.QUARTO_VERSION }}"
+    ]

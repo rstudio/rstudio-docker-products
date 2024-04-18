@@ -25,6 +25,10 @@ ENV DIAGNOSTIC_ONLY false
 
 ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
 
+### Install Quarto ###
+RUN QUARTO_VERSION=${QUARTO_VERSION} ${SCRIPTS_DIR}/install_quarto.sh \
+    && ln -s /opt/quarto/${QUARTO_VERSION}/bin/quarto /usr/local/bin/quarto
+
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \

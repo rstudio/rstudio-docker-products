@@ -38,10 +38,6 @@ RUN curl -sL "https://yihui.org/tinytex/install-bin-unix.sh" | sh \
     && /opt/TinyTeX/bin/*/tlmgr option sys_bin /usr/local/bin \
     && /opt/TinyTeX/bin/*/tlmgr path add
 
-### Install Quarto ###
-RUN QUARTO_VERSION=${QUARTO_VERSION} ${SCRIPTS_DIR}/install_quarto.sh \
-    && ln -s /opt/quarto/${QUARTO_VERSION}/bin/quarto /usr/local/bin/quarto
-
 ### Install R versions ###
 RUN R_VERSION=${R_VERSION} ${SCRIPTS_DIR}/install_r.sh \
     && R_VERSION=${R_VERSION_ALT} ${SCRIPTS_DIR}/install_r.sh \

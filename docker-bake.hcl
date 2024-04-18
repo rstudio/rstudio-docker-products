@@ -1,6 +1,6 @@
 ### Variable definitions ###
 variable CONNECT_VERSION {
-    default = "2024.02.0"
+    default = "2024.03.0"
 }
 
 variable PACKAGE_MANAGER_VERSION {
@@ -101,7 +101,7 @@ variable PACKAGE_MANAGER_BUILD_MATRIX {
 variable CONNECT_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.9.17", py_alternate = "3.8.17"},
+            {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.9.17", py_alternate = "3.8.17", quarto = "1.4.552"},
         ]
     }
 }
@@ -145,8 +145,8 @@ variable CONTENT_BUILD_MATRIX {
 variable R_SESSION_COMPLETE_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "centos7", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.9.14", py_alternate = "3.8.15"},
-            {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.9.14", py_alternate = "3.8.15"},
+            {os = "centos7", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.9.14", py_alternate = "3.8.15", quarto = "1.3.340"},
+            {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.9.14", py_alternate = "3.8.15", quarto = "1.3.340"},
         ]
     }
 }
@@ -154,7 +154,7 @@ variable R_SESSION_COMPLETE_BUILD_MATRIX {
 variable WORKBENCH_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.9.14", py_alternate = "3.8.15"},
+            {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.9.14", py_alternate = "3.8.15", quarto = "1.3.340"},
         ]
     }
 }
@@ -162,7 +162,7 @@ variable WORKBENCH_BUILD_MATRIX {
 variable WORKBENCH_GOOGLE_CLOUD_WORKSTATION_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2004", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.11.7", py_alternate = "3.10.13"},
+            {os = "ubuntu2004", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.11.7", py_alternate = "3.10.13", quarto = "1.4.552"},
         ]
     }
 }
@@ -170,7 +170,7 @@ variable WORKBENCH_GOOGLE_CLOUD_WORKSTATION_BUILD_MATRIX {
 variable WORKBENCH_MICROSOFT_AZURE_ML_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.9.14", py_alternate = "3.8.15"},
+            {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.9.14", py_alternate = "3.8.15", quarto = "1.3.340"},
         ]
     }
 }
@@ -268,8 +268,7 @@ target "product-base-pro" {
         PYTHON_VERSION_ALT = builds.py_alternate
         DRIVERS_VERSION = get_drivers_version(builds.os)
         TINI_VERSION = "0.19.0"
-        QUARTO_VERSION = "1.3.340"
-    }    
+    }
 }
 
 ### Package Manager targets ###
@@ -317,6 +316,7 @@ target "connect" {
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
         RSC_VERSION = CONNECT_VERSION
+        QUARTO_VERSION = builds.quarto
     }
 }
 
@@ -408,6 +408,7 @@ target "r-session-complete" {
         RSW_VERSION = WORKBENCH_VERSION
         RSW_NAME = builds.os == "centos7" ? "rstudio-workbench-rhel" : "rstudio-workbench"
         RSW_DOWNLOAD_URL = builds.os == "centos7" ? "https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x86_64" : "https://download2.rstudio.org/server/jammy/amd64"
+        QUARTO_VERSION = builds.quarto
     }
 }
 
@@ -433,6 +434,7 @@ target "workbench" {
         RSW_VERSION = WORKBENCH_VERSION
         RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/jammy/amd64"
+        QUARTO_VERSION = builds.quarto
     }        
 }
 
@@ -468,6 +470,7 @@ target "workbench-for-google-cloud-workstations" {
         RSW_VERSION = WORKBENCH_VERSION
         RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/focal/amd64"
+        QUARTO_VERSION = builds.quarto
     } 
 }
 
@@ -496,6 +499,7 @@ target "build-workbench-for-microsoft-azure-ml" {
         RSW_VERSION = WORKBENCH_VERSION
         RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/jammy/amd64"
+        QUARTO_VERSION = builds.quarto
     } 
 }
 
