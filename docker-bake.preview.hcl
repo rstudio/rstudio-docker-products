@@ -138,7 +138,6 @@ variable CONNECT_CONTENT_INIT_BUILD_MATRIX {
 variable R_SESSION_COMPLETE_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "centos7", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.11.9", py_alternate = "3.10.14"},
             {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.11.9", py_alternate = "3.10.14"},
         ]
     }
@@ -335,7 +334,7 @@ target "r-session-complete-daily" {
         PYTHON_VERSION_ALT = builds.py_alternate
         JUPYTERLAB_VERSION = "3.6.5"
         RSW_VERSION = WORKBENCH_DAILY_VERSION
-        RSW_NAME = builds.os == "centos7" ? "rstudio-workbench-rhel" : "rstudio-workbench"
+        RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = get_rsw_download_url(builds.os)
     }
 }
@@ -361,7 +360,7 @@ target "r-session-complete-preview" {
         PYTHON_VERSION_ALT = builds.py_alternate
         JUPYTERLAB_VERSION = "3.6.5"
         RSW_VERSION = WORKBENCH_PREVIEW_VERSION
-        RSW_NAME = builds.os == "centos7" ? "rstudio-workbench-rhel" : "rstudio-workbench"
+        RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = get_rsw_download_url(builds.os)
     }
 }

@@ -141,7 +141,6 @@ variable CONTENT_BUILD_MATRIX {
 variable R_SESSION_COMPLETE_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "centos7", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.9.14", py_alternate = "3.8.15"},
             {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.9.14", py_alternate = "3.8.15"},
         ]
     }
@@ -402,8 +401,8 @@ target "r-session-complete" {
         PYTHON_VERSION_ALT = builds.py_alternate
         JUPYTERLAB_VERSION = "3.6.5"
         RSW_VERSION = WORKBENCH_VERSION
-        RSW_NAME = builds.os == "centos7" ? "rstudio-workbench-rhel" : "rstudio-workbench"
-        RSW_DOWNLOAD_URL = builds.os == "centos7" ? "https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x86_64" : "https://download2.rstudio.org/server/jammy/amd64"
+        RSW_NAME = "rstudio-workbench"
+        RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/jammy/amd64"
     }
 }
 
