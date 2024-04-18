@@ -13,7 +13,7 @@ services:
 
   connect:
     container_name: rstudio-connect
-    image: rstudio/rstudio-connect:${RSC_VERSION:-ubuntu2204}
+   image: rstudio/rstudio-connect:${RSC_VERSION:-ubuntu2204}
     privileged: true
     environment:
       RSC_LICENSE: ${RSC_LICENSE}
