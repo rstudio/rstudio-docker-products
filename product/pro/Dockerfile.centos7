@@ -6,14 +6,15 @@ ARG PYTHON_VERSION=3.9.14
 ARG PYTHON_VERSION_ALT=3.8.15
 ARG DRIVERS_VERSION=2024.03.0-1
 
-RUN yum update -y \
-    && yum install -y unixODBC unixODBC-devel \
-    && curl -O https://cdn.rstudio.com/drivers/7C152C12/installer/rstudio-drivers-${DRIVERS_VERSION}.el.x86_64.rpm \
-    && yum install -y ./rstudio-drivers-${DRIVERS_VERSION}.el.x86_64.rpm \
-    && yum clean all \
-    && rm -f rstudio-drivers-${DRIVERS_VERSION}.el.x86_64.rpm \
-    && cp /opt/rstudio-drivers/odbcinst.ini.sample /etc/odbcinst.ini \
-    && "/opt/R/${R_VERSION}/bin/R" -e 'install.packages("odbc", repos="https://packagemanager.rstudio.com/cran/__linux__/centos7/latest")'
+ARG SCRIPTS_DIR=/opt/positscripts
+
+COPY deps/r_packages.txt /tmp/r_packages.txt
+RUN ${SCRIPTS_DIR}/yum.sh --update upgrade \
+    && ${SCRIPTS_DIR}/yum.sh install unixODBC unixODBC-devel \
+    && DRIVERS_VERSION=${DRIVERS_VERSION} ${SCRIPTS_DIR}/install_drivers.sh \
+    && ${SCRIPTS_DIR}/yum.sh --clean \
+    && R_VERSION=${R_VERSION} ${SCRIPTS_DIR}/install_r.sh -r /tmp/r_packages.txt \
+    && rm -f /tmp/r_packages.txt
 
 LABEL rstudio.pro-drivers.version="${DRIVERS_VERSION}"
 
