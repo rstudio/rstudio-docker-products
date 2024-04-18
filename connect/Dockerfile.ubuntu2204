@@ -43,7 +43,8 @@ ENV RSC_LICENSE_SERVER ""
 ENV STARTUP_DEBUG_MODE 0
 COPY rstudio-connect.gcfg /etc/rstudio-connect/rstudio-connect.gcfg
 RUN sed -i "s/{{PYTHON_VERSION}}/${PYTHON_VERSION}/g" /etc/rstudio-connect/rstudio-connect.gcfg \
-    && sed -i "s/{{PYTHON_VERSION_ALT}}/${PYTHON_VERSION_ALT}/g" /etc/rstudio-connect/rstudio-connect.gcfg
+    && sed -i "s/{{PYTHON_VERSION_ALT}}/${PYTHON_VERSION_ALT}/g" /etc/rstudio-connect/rstudio-connect.gcfg \
+    && sed -i "s/{{QUARTO_VERSION/${QUARTO_VERSION}/g" /etc/rstudio-connect/rstudio-connect.gcfg
 VOLUME ["/data"]
 
 ENTRYPOINT ["tini", "--"]
