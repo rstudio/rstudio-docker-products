@@ -4,7 +4,7 @@
 - Updated Python versions to 3.8.17 and 3.9.17 (latest fix versions).
 
 # 2023-07-25
-- Changed `rstudio-connect.gcfg` Python version numbers behavior from statically defined to dynamically filled on build. 
+- Changed `rstudio-connect.gcfg` Python version numbers behavior from statically defined to dynamically filled on build.
 
 # 2023-07-10
 
@@ -12,7 +12,7 @@
 
 # 2023-07-07
 
-- WARNING: Refactor image to build _FROM_ the new `product-base` image, this could be potentially breaking for some 
+- WARNING: Refactor image to build _FROM_ the new `product-base` image, this could be potentially breaking for some
   users.
   - The following packages have been removed from the image: `gdebi-core`, `libsm6`, `libxext6`, and `libxrender1`.
 - The [Posit Professional Drivers](https://docs.posit.co/pro-drivers/) are now included by default in the image.
