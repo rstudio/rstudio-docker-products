@@ -19,6 +19,10 @@ variable DEFAULT_QUARTO_VERSION {
     default = "1.4.553"
 }
 
+variable DEFAULT_JUPYTERLAB_VERSION {
+    default = "3.6.7"
+}
+
 function tag_safe_version {
     params = [version]
     result = replace(version, "+", "-")
@@ -400,7 +404,7 @@ target "r-session-complete" {
         R_VERSION_ALT = builds.r_alternate
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
-        JUPYTERLAB_VERSION = "3.6.5"
+        JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
         RSW_VERSION = WORKBENCH_VERSION
         RSW_NAME = builds.os == "centos7" ? "rstudio-workbench-rhel" : "rstudio-workbench"
         RSW_DOWNLOAD_URL = builds.os == "centos7" ? "https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x86_64" : "https://download2.rstudio.org/server/jammy/amd64"
@@ -458,7 +462,7 @@ target "workbench-for-google-cloud-workstations" {
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
         PYTHON_VERSION_JUPYTER = builds.py_alternate
-        JUPYTERLAB_VERSION = "3.6.5"
+        JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
         QUARTO_VERSION = DEFAULT_QUARTO_VERSION
         DRIVERS_VERSION = get_drivers_version(builds.os)
         RSW_VERSION = WORKBENCH_VERSION
@@ -488,7 +492,7 @@ target "build-workbench-for-microsoft-azure-ml" {
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
         PYTHON_VERSION_JUPYTER = builds.py_alternate
-        JUPYTERLAB_VERSION = "3.6.5"
+        JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
         RSW_VERSION = WORKBENCH_VERSION
         RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/jammy/amd64"

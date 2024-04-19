@@ -27,6 +27,10 @@ variable DEFAULT_QUARTO_VERSION {
     default = "1.4.553"
 }
 
+variable DEFAULT_JUPYTERLAB_VERSION {
+    default = "3.6.7"
+}
+
 variable RSW_PREVIEW_URL_BASE  {
     default = "https://s3.amazonaws.com/rstudio-ide-build/server/"
 }
@@ -333,7 +337,7 @@ target "r-session-complete-daily" {
         R_VERSION_ALT = builds.r_alternate
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
-        JUPYTERLAB_VERSION = "3.6.5"
+        JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
         RSW_VERSION = WORKBENCH_DAILY_VERSION
         RSW_NAME = builds.os == "centos7" ? "rstudio-workbench-rhel" : "rstudio-workbench"
         RSW_DOWNLOAD_URL = get_rsw_download_url(builds.os)
@@ -359,7 +363,7 @@ target "r-session-complete-preview" {
         R_VERSION_ALT = builds.r_alternate
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
-        JUPYTERLAB_VERSION = "3.6.5"
+        JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
         RSW_VERSION = WORKBENCH_PREVIEW_VERSION
         RSW_NAME = builds.os == "centos7" ? "rstudio-workbench-rhel" : "rstudio-workbench"
         RSW_DOWNLOAD_URL = get_rsw_download_url(builds.os)
