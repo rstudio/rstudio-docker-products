@@ -1,4 +1,4 @@
-FROM us-central1-docker.pkg.dev/cloud-workstations-images/predefined/base:public-image-current
+FROM us-central1-docker.pkg.dev/cloud-workstations-images/predefined/base:public-image-current as build
 
 ### ARG declarations ###
 ARG DEBIAN_FRONTEND=noninteractive
@@ -7,12 +7,12 @@ ARG R_VERSION_ALT=4.1.3
 ARG PYTHON_VERSION=3.11.7
 ARG PYTHON_VERSION_ALT=3.10.13
 ARG PYTHON_VERSION_JUPYTER=3.10.13
-ARG JUPYTERLAB_VERSION=3.6.5
-ARG QUARTO_VERSION=1.3.450
+ARG JUPYTERLAB_VERSION=3.6.7
 ARG DRIVERS_VERSION=2023.05.0
 ARG RSW_VERSION=2023.12.1+402.pro1
 ARG RSW_NAME=rstudio-workbench
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/focal/amd64
+ARG SCRIPTS_DIR=/opt/positscripts
 
 ENV STARTUP_DEBUG_MODE 0
 ENV RSW_LICENSE ""
@@ -83,12 +83,8 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-### Install Quarto ###
-RUN curl -o quarto-linux-amd64.deb -L https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.deb \
-    && apt-get update \
-    && apt-get install -yq ./quarto-linux-amd64.deb \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm quarto-linux-amd64.deb
+### Install Quarto to PATH ###
+RUN ln -s /lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto
 
 ### Install Pro Drivers ###
 RUN apt-get update \
@@ -147,8 +143,7 @@ RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyt
     && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip cache purge \
     && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip cache purge
 
-RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh \
-    && chmod +x /usr/local/bin/wait-for-it.sh
+ADD --chmod=755 https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh /usr/local/bin/wait-for-it.sh
 
 RUN mkdir -p /var/lib/rstudio-server/monitor/log \
     && chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor \

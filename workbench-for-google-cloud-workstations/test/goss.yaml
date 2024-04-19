@@ -22,10 +22,6 @@ package:
     installed: true
   python-{{.Env.PYTHON_VERSION_ALT}}:
     installed: true
-  quarto:
-    installed: true
-    versions:
-    - {{.Env.QUARTO_VERSION}}
   rstudio-drivers:
     installed: true
     versions:
@@ -35,19 +31,14 @@ port:
   tcp:80:
     listening: true
     ip:
-    - 0.0.0.0
-    skip: false
-  tcp:5559:
-    listening: true
-    ip:
-    - 127.0.0.1
+      - 0.0.0.0
     skip: false
 
 process:
   rserver:
     running: true
     skip: false
-  rstudio-launche:
+  rserver-launche:
     running: true
     skip: false
 
@@ -88,14 +79,14 @@ file:
     exists: true
   /etc/rstudio/jupyter.conf:
     exists: true
-    contains:
+    contents:
     - --LabApp.token=""
     - --no-browser
     - --allow-root
     - --ip=0.0.0.0
   /etc/rstudio/rserver.conf:
     exists: true
-    contains:
+    contents:
     - www-port=80
     - launcher-sessions-callback-address=http://0.0.0.0:80
     - auth-proxy=1
@@ -103,21 +94,21 @@ file:
     - auth-proxy-user-header=x-custom-user-name
   /etc/rstudio/nginx.site.conf:
     exists: true
-    contains:
+    contents:
     - proxy_set_header X-CUSTOM-USER-NAME user/google;
     - proxy_set_header Host $http_x_forwarded_host;
   /etc/rstudio/vscode.extensions.conf:
     exists: true
-    contains:
+    contents:
     - quarto.quarto
     - GoogleCloudTools.cloudcode
   /tmp/startup.log:
     exists: true
-    contains:
+    contents:
     - "!Error reading /etc/rstudio/rserver.conf:"
   /etc/pam.d/common-session:
     exists: true
-    contains:
+    contents:
       - "/^session required pam_mkhomedir.so skel=/etc/skel umask=0022$/"
   /etc/sssd/sssd.conf:
     exists: true
@@ -135,7 +126,7 @@ file:
     group: root
     mode: "0755"
     filetype: file
-    contains: [
+    contents: [
       "useradd -m user"
     ]
   /etc/workstation-startup.d/110_config-jupyter.sh:
@@ -144,7 +135,7 @@ file:
     group: root
     mode: "0755"
     filetype: file
-    contains: [
+    contents: [
       # Checks that we're setting the Jupyter shell to /bin/bash
       "echo \"c.ServerApp.terminado_settings = {'shell_command': ['/bin/bash']}\" > /home/user/.jupyter/jupyter_notebook_config.py"
     ]
@@ -154,9 +145,12 @@ file:
     group: root
     mode: "0755"
     filetype: file
-    contains: [
+    contents: [
       "/usr/bin/supervisord -c /etc/supervisor/supervisord.conf"
     ]
+  /usr/local/bin/quarto:
+    exists: true
+    filetype: symlink
 
 
 command:
@@ -182,21 +176,25 @@ command:
      ]
   Test Jupyter works:
     exec: "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/jupyter/bin/jupyter nbconvert --to notebook --stdin --stdout"
+    timeout: 60000
     exit-status: 0
   Check primary Python is version {{.Env.PYTHON_VERSION}}:
     exec: /opt/python/{{.Env.PYTHON_VERSION}}/bin/python --version
+    timeout: 60000
     exit-status: 0
     stdout: [
       "{{.Env.PYTHON_VERSION}}"
     ]
   Check alternate Python is version {{.Env.PYTHON_VERSION_ALT}}:
     exec: /opt/python/{{.Env.PYTHON_VERSION_ALT}}/bin/python --version
+    timeout: 60000
     exit-status: 0
     stdout: [
         "{{.Env.PYTHON_VERSION_ALT}}"
     ]
   Check Jupyter venv uses Python {{.Env.PYTHON_VERSION_JUPYTER}}:
     exec: /opt/python/jupyter/bin/python --version
+    timeout: 60000
     exit-status: 0
     stdout: [
         "{{.Env.PYTHON_VERSION_JUPYTER}}"
@@ -209,18 +207,20 @@ command:
     ]
   {{ $python_version := .Env.PYTHON_VERSION }}
   {{ $python_version_alt := .Env.PYTHON_VERSION_ALT }}
-  {{ $py_package_list := readFile "/tmp/py_packages.txt" | splitList "\n" }}
+  {{ $py_package_list := readFile "/tmp/deps/py_packages.txt" | splitList "\n" }}
   {{- range $py_package_list }}
   Check Python {{ $python_version }} has "{{.}}" installed:
     exec: /opt/python/{{$python_version}}/bin/pip show {{.}}
+    timeout: 60000
     exit-status: 0
   Check Python {{ $python_version_alt }} has "{{.}}" installed:
     exec: /opt/python/{{$python_version_alt}}/bin/pip show {{.}}
+    timeout: 60000
     exit-status: 0
   {{end}}
   {{ $r_version := .Env.R_VERSION }}
   {{ $r_version_alt := .Env.R_VERSION_ALT }}
-  {{ $r_package_list := readFile "/tmp/r_packages.txt" | splitList "\n" }}
+  {{ $r_package_list := readFile "/tmp/deps/r_packages.txt" | splitList "\n" }}
   {{- range $r_package_list }}
   Check R {{ $r_version }} has "{{.}}" installed:
     exec: /opt/R/{{$r_version}}/bin/R --slave -e "library(\"{{.}}\")"
@@ -231,3 +231,8 @@ command:
     timeout: 60000
     exit-status: 0
   {{end}}
+
+# Ensure Quarto works
+  "/usr/local/bin/quarto check --quiet":
+    title: quarto_check
+    exit-status: 0

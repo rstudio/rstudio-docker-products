@@ -15,6 +15,28 @@ package:
   {{end}}
 
 file:
+  {{if .Env.OS | regexMatch "ubuntu.*"}}
+  /opt/positscripts/apt.sh:
+    exists: true
+    mode: "0755"
+  {{end}}
+  {{if .Env.OS | regexMatch "centos.*"}}
+  /opt/positscripts/yum.sh:
+    exists: true
+    mode: "0755"
+  {{end}}
+  /opt/positscripts/install_drivers.sh:
+    exists: true
+    mode: "0755"
+  /opt/positscripts/install_python.sh:
+    exists: true
+    mode: "0755"
+  /opt/positscripts/install_quarto.sh:
+    exists: true
+    mode: "0755"
+  /opt/positscripts/install_r.sh:
+    exists: true
+    mode: "0755"
   /opt/R/{{.Env.R_VERSION}}/bin/R:
     exists: true
   /opt/R/{{.Env.R_VERSION_ALT}}/bin/R:
@@ -24,8 +46,6 @@ file:
   /opt/python/{{.Env.PYTHON_VERSION_ALT}}/bin/python3:
     exists: true
   /tini:
-    exists: true
-  /opt/quarto/{{.Env.QUARTO_VERSION}}/bin/quarto:
     exists: true
   {{if .Env.OS | regexMatch "ubuntu.*"}}
   # Check that `cracklib-runtime` is present so `chpasswd` works
@@ -60,12 +80,4 @@ command:
     exit-status: 0
     stdout: [
       "{{ .Env.PYTHON_VERSION_ALT }}"
-    ]
-
-# Ensure correct Quarto version
-  "/opt/quarto/{{ .Env.QUARTO_VERSION }}/bin/quarto --version":
-    title: quarto_version_matches
-    exit-status: 0
-    stdout: [
-      "{{ .Env.QUARTO_VERSION }}"
     ]

@@ -1,0 +1,290 @@
+on:
+  schedule:
+    - cron: '0 8 * * 1'  # Every Monday at 8:00 UTC for automatic rebuilds (pull in OS updates, security patches, etc.)
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+  
+name: Release - Build, Test, and Push
+jobs:
+
+  base:
+    name: Base Images
+    runs-on: ubuntu-latest-8x
+
+    concurrency:
+      group: bake-base-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      target: base-images
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          push-image: ${{ github.ref == 'refs/heads/main' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+
+  connect:
+    name: Connect
+    runs-on: ubuntu-latest-4x
+
+    concurrency:
+      group: bake-connect-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      target: connect
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          push-image: ${{ github.ref == 'refs/heads/main' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+
+  connect-content-init:
+    name: Connect Content Init
+    runs-on: ubuntu-latest-4x
+
+    concurrency:
+      group: bake-connect-content-init-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      target: connect-content-init
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          push-image: ${{ github.ref == 'refs/heads/main' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+
+  content:
+    name: Content Images
+    runs-on: ubuntu-latest-8x
+
+    concurrency:
+      group: bake-content-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      target: content-images
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          push-image: ${{ github.ref == 'refs/heads/main' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+
+  package-manager:
+    name: Package Manager
+    runs-on: ubuntu-latest-4x
+
+    concurrency:
+      group: bake-package-manager-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      target: package-manager
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          push-image: ${{ github.ref == 'refs/heads/main' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+
+  r-session-complete:
+    name: R Session Complete
+    runs-on: ubuntu-latest-8x
+
+    concurrency:
+      group: bake-r-session-complete-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      target: r-session-complete
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          push-image: ${{ github.ref == 'refs/heads/main' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+
+  workbench:
+    name: Workbench
+    runs-on: ubuntu-latest-4x
+
+    concurrency:
+      group: bake-workbench-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      target: workbench
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          push-image: ${{ github.ref == 'refs/heads/main' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+
+  workbench-for-google-cloud-workstations:
+    name: Workbench for Google Cloud Workstations
+    runs-on: ubuntu-latest-8x
+
+    concurrency:
+      group: bake-wgcw-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      target: workbench-for-google-cloud-workstations
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          push-image: ${{ github.ref == 'refs/heads/main' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+
+  workbench-for-microsoft-azure-ml:
+    name: Workbench for Microsoft Azure ML
+    runs-on: ubuntu-latest-8x
+
+    concurrency:
+      group: bake-waml-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      target: waml-images
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          push-image: ${{ github.ref == 'refs/heads/main' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'

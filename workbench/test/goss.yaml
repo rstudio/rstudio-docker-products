@@ -94,6 +94,9 @@ file:
     owner: root
     group: root
     mode: "0600"
+  /usr/local/bin/quarto:
+    exists: true
+    filetype: symlink
 
 command:
   "su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'":
@@ -112,6 +115,7 @@ command:
      ]
   "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/jupyter/bin/jupyter nbconvert --to notebook --stdin --stdout":
     title: jupyter_works
+    timeout: 60000
     exit-status: 0
 # Ensure correct python version
   "/opt/python/{{.Env.PYTHON_VERSION_ALT}}/bin/python --version":
@@ -139,3 +143,8 @@ command:
     stdout: [
       "/usr/bin/openssl"
     ]
+
+# Ensure Quarto works
+  "/usr/local/bin/quarto check --quiet":
+    title: quarto_check
+    exit-status: 0
