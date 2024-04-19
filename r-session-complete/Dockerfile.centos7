@@ -10,10 +10,6 @@ ARG RSW_NAME=rstudio-workbench-rhel
 ARG RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x86_64
 ARG SCRIPTS_DIR=/opt/positscripts
 
-### Install Quarto ###
-RUN QUARTO_VERSION=${QUARTO_VERSION} ${SCRIPTS_DIR}/install_quarto.sh \
-    && ln -s /opt/quarto/${QUARTO_VERSION}/bin/quarto /usr/local/bin/quarto
-
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN yum install -y subversion \
     && RSW_VERSION_URL=$(echo -n "${RSW_VERSION}" | sed 's/+/-/g') \
