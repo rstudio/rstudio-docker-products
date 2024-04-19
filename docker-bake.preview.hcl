@@ -24,7 +24,7 @@ variable DRIVERS_VERSION {
 }
 
 variable DEFAULT_QUARTO_VERSION {
-    default = "1.4.553"
+    default = "1.4.552"
 }
 
 variable DEFAULT_JUPYTERLAB_VERSION {
@@ -126,7 +126,7 @@ variable PACKAGE_MANAGER_BUILD_MATRIX {
 variable CONNECT_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.11.9", py_alternate = "3.10.14"},
+            {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.11.9", py_alternate = "3.10.14", quarto = "1.4.552"},
         ]
     }
 }
@@ -297,6 +297,7 @@ target "connect-daily" {
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
         RSC_VERSION = CONNECT_DAILY_VERSION
+        QUARTO_VERSION = builds.quarto
     }
 }
 
