@@ -97,7 +97,8 @@ install_python() {
     # shellcheck disable=SC2086
     yum install $YUM_ARGS "/tmp/python-${PYTHON_VERSION}.rpm"
     rm "/tmp/python-${PYTHON_VERSION}.rpm"
-    # Upgrade pip to latest version
+    # Upgrade pip and setuptools to latest version
+    $PYTHON_BIN -m pip install -U setuptools
     $PYTHON_BIN -m pip install -U pip
 }
 
