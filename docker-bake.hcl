@@ -101,7 +101,7 @@ variable PACKAGE_MANAGER_BUILD_MATRIX {
 variable CONNECT_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.9.17", py_alternate = "3.8.17", quarto = "1.4.552"},
+            {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.9.17", py_alternate = "3.8.17", quarto = DEFAULT_QUARTO_VERSION},
         ]
     }
 }
@@ -471,7 +471,6 @@ target "workbench-for-google-cloud-workstations" {
 }
 
 ### Workbench for Microsoft Azure ML targets ###
-
 target "build-workbench-for-microsoft-azure-ml" {
     inherits = ["base"]
     target = "build"
