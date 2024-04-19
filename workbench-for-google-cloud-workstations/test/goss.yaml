@@ -22,10 +22,6 @@ package:
     installed: true
   python-{{.Env.PYTHON_VERSION_ALT}}:
     installed: true
-  quarto:
-    installed: true
-    versions:
-    - {{.Env.QUARTO_VERSION}}
   rstudio-drivers:
     installed: true
     versions:
