@@ -40,8 +40,6 @@ file:
     exists: true
   /tini:
     exists: true
-  /opt/quarto/{{.Env.QUARTO_VERSION}}/bin/quarto:
-    exists: true
 
 
 command:
@@ -71,12 +69,4 @@ command:
     exit-status: 0
     stdout: [
       "{{ .Env.PYTHON_VERSION_ALT }}"
-    ]
-
-# Ensure correct Quarto version
-  "/opt/quarto/{{ .Env.QUARTO_VERSION }}/bin/quarto --version":
-    title: quarto_version_matches
-    exit-status: 0
-    stdout: [
-      "{{ .Env.QUARTO_VERSION }}"
     ]

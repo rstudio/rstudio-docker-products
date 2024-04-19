@@ -8,6 +8,7 @@ ARG JUPYTERLAB_VERSION=3.6.7
 ARG RSW_VERSION=2023.12.1+402.pro1
 ARG RSW_NAME=rstudio-workbench-rhel
 ARG RSW_DOWNLOAD_URL=https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x86_64
+ARG SCRIPTS_DIR=/opt/positscripts
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN yum install -y subversion \
@@ -26,6 +27,9 @@ RUN yum install -y subversion \
     && rm rstudio-workbench.rpm \
     && yum clean all \
     && rm -rf /var/lib/rstudio-server/r-versions
+
+### Install Quarto to PATH ###
+RUN ln -s /lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto
 
 COPY maybe_install_vs_code.sh /tmp/maybe_install_vs_code.sh
 RUN /tmp/maybe_install_vs_code.sh \

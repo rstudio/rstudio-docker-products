@@ -22,10 +22,6 @@ package:
     installed: true
   python-{{.Env.PYTHON_VERSION_ALT}}:
     installed: true
-  quarto:
-    installed: true
-    versions:
-    - {{.Env.QUARTO_VERSION}}
   rstudio-drivers:
     installed: true
     versions:
@@ -152,6 +148,9 @@ file:
     contents: [
       "/usr/bin/supervisord -c /etc/supervisor/supervisord.conf"
     ]
+  /usr/local/bin/quarto:
+    exists: true
+    filetype: symlink
 
 
 command:
@@ -232,3 +231,8 @@ command:
     timeout: 60000
     exit-status: 0
   {{end}}
+
+# Ensure Quarto works
+  "/usr/local/bin/quarto check --quiet":
+    title: quarto_check
+    exit-status: 0
