@@ -344,7 +344,7 @@ target "content-base" {
         "ghcr.io/rstudio/content-base:r${builds.r}-py${builds.py}-${builds.os}",
         "ghcr.io/rstudio/content-base:r${builds.r}-py${builds.py}-${builds.os_alt}",
         "docker.io/rstudio/content-base:r${builds.r}-py${builds.py}-${builds.os}",
-        "docker.io.io/rstudio/content-base:r${builds.r}-py${builds.py}-${builds.os_alt}",
+        "docker.io/rstudio/content-base:r${builds.r}-py${builds.py}-${builds.os_alt}",
     ]
 
     dockerfile = "Dockerfile.${builds.os}"
@@ -366,7 +366,7 @@ target "content-pro" {
         "ghcr.io/rstudio/content-pro:r${builds.r}-py${builds.py}-${builds.os}",
         "ghcr.io/rstudio/content-pro:r${builds.r}-py${builds.py}-${builds.os_alt}",
         "docker.io/rstudio/content-pro:r${builds.r}-py${builds.py}-${builds.os}",
-        "docker.io.io/rstudio/content-pro:r${builds.r}-py${builds.py}-${builds.os_alt}",
+        "docker.io/rstudio/content-pro:r${builds.r}-py${builds.py}-${builds.os_alt}",
     ]
 
     contexts = {
