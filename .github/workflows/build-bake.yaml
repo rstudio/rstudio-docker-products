@@ -267,7 +267,7 @@ jobs:
       cancel-in-progress: true
 
     env:
-      target: waml-images
+      target: workbench-for-microsoft-azure-ml
 
     steps:
       - name: Checkout

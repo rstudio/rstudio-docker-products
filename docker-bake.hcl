@@ -204,14 +204,6 @@ group "content-images" {
     ]
 }
 
-group "waml-images" {
-    targets = [
-        "build-workbench-for-microsoft-azure-ml",
-        "scan-workbench-for-microsoft-azure-ml",
-        "workbench-for-microsoft-azure-ml",
-    ]
-}
-
 ### Base Image targets ###
 target "base" {
     labels = {
