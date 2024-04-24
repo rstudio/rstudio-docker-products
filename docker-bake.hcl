@@ -116,28 +116,31 @@ variable CONNECT_CONTENT_INIT_BUILD_MATRIX {
 
 variable CONTENT_BUILD_MATRIX {
   default = {
+    # Add new entries to produce an image using a new patch version of
+    # R/Python/Quarto. Do not modify existing entries, as that stops those
+    # version combinations from receiving security updates.
     builds = [
-      {os = "ubuntu1804", os_alt = "bionic", r = "3.1.3", py = "2.7.18", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "3.2.5", py = "2.7.18", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "3.3.3", py = "3.6.13", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "3.4.4", py = "3.6.13", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "3.4.4", py = "3.7.10", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "3.5.3", py = "2.7.18", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "3.5.3", py = "3.7.10", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "3.6.3", py = "2.7.18", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "3.6.3", py = "3.6.13", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "3.6.3", py = "3.8.8", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "4.0.5", py = "3.6.13", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "4.0.5", py = "3.7.10", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "4.0.5", py = "3.8.8", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "4.0.5", py = "3.9.2", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "4.1.0", py = "3.8.8", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "4.1.0", py = "3.9.2", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "4.1.3", py = "3.10.4", drivers = "2024.03.0", quarto = "1.0.37"},
+      # R-3.6, Python-3.8, Quarto-1.3.
       {os = "ubuntu2204", os_alt = "jammy", r = "3.6.3", py = "3.8.16", drivers = "2024.03.0", quarto = "1.3.340"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "3.6.3", py = "3.8.19", drivers = "2024.03.0", quarto = "1.3.450"},
+
+      # R-4.0, Python-3.9, Quarto-1.3.
       {os = "ubuntu2204", os_alt = "jammy", r = "4.0.5", py = "3.9.16", drivers = "2024.03.0", quarto = "1.3.340"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.0.5", py = "3.9.19", drivers = "2024.03.0", quarto = "1.3.450"},
+
+      # R-4.1, Python-3.10, Quarto-1.3.
       {os = "ubuntu2204", os_alt = "jammy", r = "4.1.3", py = "3.10.11", drivers = "2024.03.0", quarto = "1.3.340"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.1.3", py = "3.10.14", drivers = "2024.03.0", quarto = "1.3.450"},
+
+      # R-4.2, Python-3.11, Quarto-1.3.
       {os = "ubuntu2204", os_alt = "jammy", r = "4.2.2", py = "3.11.3", drivers = "2024.03.0", quarto = "1.3.340"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.2.3", py = "3.11.9", drivers = "2024.03.0", quarto = "1.3.450"},
+
+      # R-4.3, Python-3.12, Quarto-1.4.
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.3.3", py = "3.12.3", drivers = "2024.03.0", quarto = "1.4.553"},
+
+      # R-4.4, Python-3.12, Quarto-1.4.
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.4.0", py = "3.12.3", drivers = "2024.03.0", quarto = "1.4.553"},
     ]
   }
 }
