@@ -58,6 +58,7 @@ preview-bake target branch="$(git branch --show-current)":
   WORKBENCH_DAILY_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local) \
   WORKBENCH_PREVIEW_VERSION=$(just -f ci.Justfile get-version workbench --type=preview --local) \
   PACKAGE_MANAGER_DAILY_VERSION=$(just -f ci.Justfile get-version package-manager --type=daily --local) \
+  PACKAGE_MANAGER_PREVIEW_VERSION=$(just -f ci.Justfile get-version package-manager --type=preview --local) \
   CONNECT_DAILY_VERSION=$(just -f ci.Justfile get-version connect --type=daily --local) \
   BRANCH="{{branch}}" \
   docker buildx bake --builder=posit-builder -f docker-bake.preview.hcl {{target}}
