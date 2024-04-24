@@ -7,6 +7,10 @@ variable CONNECT_DAILY_VERSION {
     default = null
 }
 
+variable PACKAGE_MANAGER_PREVIEW_VERSION {
+    default = null
+}
+
 variable PACKAGE_MANAGER_DAILY_VERSION {
     default = null
 }
@@ -253,6 +257,29 @@ target "product-base-pro-dev" {
 }
 
 ### Package Manager targets ###
+target "package-manager-preview" {
+    inherits = ["base"]
+    target = "build"
+
+    name = "package-manager-preview-${builds.os}-${replace(PACKAGE_MANAGER_PREVIEW_VERSION, ".", "-")}"
+    tags = get_tags(builds.os, "rstudio-package-manager-preview", PACKAGE_MANAGER_PREVIEW_VERSION, "preview")
+
+    dockerfile = "Dockerfile.${builds.os}"
+    context = "package-manager"
+    contexts = {
+        product-base = "target:product-base-dev-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+    }
+
+    matrix = PACKAGE_MANAGER_BUILD_MATRIX
+    args = {
+        R_VERSION = builds.r_primary
+        R_VERSION_ALT = builds.r_alternate
+        PYTHON_VERSION = builds.py_primary
+        PYTHON_VERSION_ALT = builds.py_alternate
+        RSPM_VERSION = PACKAGE_MANAGER_PREVIEW_VERSION
+    }
+}
+
 target "package-manager-daily" {
     inherits = ["base"]
     target = "build"
