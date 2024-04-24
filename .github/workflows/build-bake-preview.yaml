@@ -192,7 +192,7 @@ jobs:
       BRANCH: ${{ github.head_ref || github.ref_name }}
 
     concurrency:
-      group: bake-package-manager-daily-${{ github.ref }}
+      group: bake-package-manager-preview-${{ github.ref }}
       cancel-in-progress: true
 
     steps:
