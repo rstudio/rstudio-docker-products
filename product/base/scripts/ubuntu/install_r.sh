@@ -163,7 +163,7 @@ install_r_packages() {
     local cran_repo="https://packagemanager.rstudio.com/cran/__linux__/${UBUNTU_CODENAME}/latest"
 
     $R_BIN --vanilla --no-echo <<EOF > /dev/null
-install.packages(readLines("$R_PKG_FILE"), repos = "$cran_repo")
+install.packages(readLines("$R_PKG_FILE"), repos = "$cran_repo", clean = TRUE)
 EOF
 
 }
