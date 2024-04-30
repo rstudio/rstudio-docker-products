@@ -1,6 +1,6 @@
 ### Variable definitions ###
 variable CONNECT_VERSION {
-    default = "2024.02.0"
+    default = "2024.03.0"
 }
 
 variable PACKAGE_MANAGER_VERSION {
@@ -16,7 +16,11 @@ variable DRIVERS_VERSION {
 }
 
 variable DEFAULT_QUARTO_VERSION {
-    default = "1.4.553"
+    default = "1.4.552"
+}
+
+variable DEFAULT_JUPYTERLAB_VERSION {
+    default = "3.6.7"
 }
 
 function tag_safe_version {
@@ -97,7 +101,7 @@ variable PACKAGE_MANAGER_BUILD_MATRIX {
 variable CONNECT_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.9.17", py_alternate = "3.8.17"},
+            {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.9.17", py_alternate = "3.8.17", quarto = "1.3.340"},
         ]
     }
 }
@@ -112,28 +116,31 @@ variable CONNECT_CONTENT_INIT_BUILD_MATRIX {
 
 variable CONTENT_BUILD_MATRIX {
   default = {
+    # Add new entries to produce an image using a new patch version of
+    # R/Python/Quarto. Do not modify existing entries, as that stops those
+    # version combinations from receiving security updates.
     builds = [
-      {os = "ubuntu1804", os_alt = "bionic", r = "3.1.3", py = "2.7.18", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "3.2.5", py = "2.7.18", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "3.3.3", py = "3.6.13", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "3.4.4", py = "3.6.13", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "3.4.4", py = "3.7.10", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "3.5.3", py = "2.7.18", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "3.5.3", py = "3.7.10", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "3.6.3", py = "2.7.18", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "3.6.3", py = "3.6.13", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "3.6.3", py = "3.8.8", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "4.0.5", py = "3.6.13", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "4.0.5", py = "3.7.10", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "4.0.5", py = "3.8.8", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "4.0.5", py = "3.9.2", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "4.1.0", py = "3.8.8", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "4.1.0", py = "3.9.2", drivers = "2024.03.0", quarto = "1.0.37"},
-      {os = "ubuntu1804", os_alt = "bionic", r = "4.1.3", py = "3.10.4", drivers = "2024.03.0", quarto = "1.0.37"},
+      # R-3.6, Python-3.8, Quarto-1.3.
       {os = "ubuntu2204", os_alt = "jammy", r = "3.6.3", py = "3.8.16", drivers = "2024.03.0", quarto = "1.3.340"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "3.6.3", py = "3.8.19", drivers = "2024.03.0", quarto = "1.3.450"},
+
+      # R-4.0, Python-3.9, Quarto-1.3.
       {os = "ubuntu2204", os_alt = "jammy", r = "4.0.5", py = "3.9.16", drivers = "2024.03.0", quarto = "1.3.340"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.0.5", py = "3.9.19", drivers = "2024.03.0", quarto = "1.3.450"},
+
+      # R-4.1, Python-3.10, Quarto-1.3.
       {os = "ubuntu2204", os_alt = "jammy", r = "4.1.3", py = "3.10.11", drivers = "2024.03.0", quarto = "1.3.340"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.1.3", py = "3.10.14", drivers = "2024.03.0", quarto = "1.3.450"},
+
+      # R-4.2, Python-3.11, Quarto-1.3.
       {os = "ubuntu2204", os_alt = "jammy", r = "4.2.2", py = "3.11.3", drivers = "2024.03.0", quarto = "1.3.340"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.2.3", py = "3.11.9", drivers = "2024.03.0", quarto = "1.3.450"},
+
+      # R-4.3, Python-3.12, Quarto-1.4.
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.3.3", py = "3.12.3", drivers = "2024.03.0", quarto = "1.4.553"},
+
+      # R-4.4, Python-3.12, Quarto-1.4.
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.4.0", py = "3.12.3", drivers = "2024.03.0", quarto = "1.4.553"},
     ]
   }
 }
@@ -235,7 +242,6 @@ target "product-base" {
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
         TINI_VERSION = "0.19.0"
-        QUARTO_VERSION = "1.3.340"
     }    
 }
 
@@ -263,8 +269,7 @@ target "product-base-pro" {
         PYTHON_VERSION_ALT = builds.py_alternate
         DRIVERS_VERSION = get_drivers_version(builds.os)
         TINI_VERSION = "0.19.0"
-        QUARTO_VERSION = "1.3.340"
-    }    
+    }
 }
 
 ### Package Manager targets ###
@@ -312,6 +317,7 @@ target "connect" {
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
         RSC_VERSION = CONNECT_VERSION
+        QUARTO_VERSION = builds.quarto
     }
 }
 
@@ -399,7 +405,7 @@ target "r-session-complete" {
         R_VERSION_ALT = builds.r_alternate
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
-        JUPYTERLAB_VERSION = "3.6.5"
+        JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
         RSW_VERSION = WORKBENCH_VERSION
         RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/jammy/amd64"
@@ -457,7 +463,7 @@ target "workbench-for-google-cloud-workstations" {
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
         PYTHON_VERSION_JUPYTER = builds.py_alternate
-        JUPYTERLAB_VERSION = "3.6.5"
+        JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
         QUARTO_VERSION = DEFAULT_QUARTO_VERSION
         DRIVERS_VERSION = get_drivers_version(builds.os)
         RSW_VERSION = WORKBENCH_VERSION
@@ -467,7 +473,6 @@ target "workbench-for-google-cloud-workstations" {
 }
 
 ### Workbench for Microsoft Azure ML targets ###
-
 target "build-workbench-for-microsoft-azure-ml" {
     inherits = ["base"]
     target = "build"
@@ -487,7 +492,7 @@ target "build-workbench-for-microsoft-azure-ml" {
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
         PYTHON_VERSION_JUPYTER = builds.py_alternate
-        JUPYTERLAB_VERSION = "3.6.5"
+        JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
         RSW_VERSION = WORKBENCH_VERSION
         RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/jammy/amd64"

@@ -94,6 +94,9 @@ file:
     owner: root
     group: root
     mode: "0600"
+  /usr/local/bin/quarto:
+    exists: true
+    filetype: symlink
 
 command:
   "su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'":
@@ -140,3 +143,8 @@ command:
     stdout: [
       "/usr/bin/openssl"
     ]
+
+# Ensure Quarto works
+  "/usr/local/bin/quarto check --quiet":
+    title: quarto_check
+    exit-status: 0

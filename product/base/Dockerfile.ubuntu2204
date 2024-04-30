@@ -11,7 +11,7 @@ ARG QUARTO_VERSION=1.3.340
 
 ARG SCRIPTS_DIR=/opt/positscripts
 
-COPY scripts/ubuntu/* ${SCRIPTS_DIR}/
+COPY --chmod=0755 scripts/ubuntu/* ${SCRIPTS_DIR}/
 
 ### Update/upgrade system packages ###
 COPY deps/ubuntu2204_packages.txt /tmp/apt_packages.txt
@@ -37,10 +37,6 @@ RUN curl -sL "https://yihui.org/tinytex/install-bin-unix.sh" | sh \
     && mv /root/.TinyTeX/ /opt/TinyTeX \
     && /opt/TinyTeX/bin/*/tlmgr option sys_bin /usr/local/bin \
     && /opt/TinyTeX/bin/*/tlmgr path add
-
-### Install Quarto ###
-RUN QUARTO_VERSION=${QUARTO_VERSION} ${SCRIPTS_DIR}/install_quarto.sh \
-    && ln -s /opt/quarto/${QUARTO_VERSION}/bin/quarto /usr/local/bin/quarto
 
 ### Install R versions ###
 RUN R_VERSION=${R_VERSION} ${SCRIPTS_DIR}/install_r.sh \
