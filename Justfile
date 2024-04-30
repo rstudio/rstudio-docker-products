@@ -7,7 +7,7 @@ sed_vars := if os() == "macos" { "-i ''" } else { "-i" }
 
 BUILDX_PATH := ""
 
-RSC_VERSION := "2024.03.0"
+RSC_VERSION := "2024.04.0"
 RSPM_VERSION := "2023.12.0-13"
 RSW_VERSION := "2024.04.0+735.pro3"
 
@@ -266,11 +266,7 @@ update-rsc-versions:
     connect/.env \
     connect/Dockerfile.ubuntu2204 \
     connect-content-init/Dockerfile.ubuntu2204
-  sed {{ sed_vars }} "s/RSC_VERSION:.*/RSC_VERSION: {{ RSC_VERSION }}/g" docker-compose.yml
-  sed {{ sed_vars }} "s/rstudio\/rstudio-connect:.*/rstudio\/rstudio-connect:{{ RSC_VERSION }}/g" docker-compose.yml
   sed {{ sed_vars }} "s/^RSC_VERSION := .*/RSC_VERSION := \"{{ RSC_VERSION }}\"/g" \
-    connect/Justfile \
-    connect-content-init/Justfile \
     Justfile
   sed {{ sed_vars }} -E "s/[0-9]{4}\.[0-9]{1,2}\.[0-9]{1,2}/`just _get-clean-version {{ RSC_VERSION }}`/g" \
     connect/README.md \
