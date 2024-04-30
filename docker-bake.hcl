@@ -1,6 +1,6 @@
 ### Variable definitions ###
 variable CONNECT_VERSION {
-    default = "2024.03.0"
+    default = "2024.04.0"
 }
 
 variable PACKAGE_MANAGER_VERSION {
@@ -8,7 +8,7 @@ variable PACKAGE_MANAGER_VERSION {
 }
 
 variable WORKBENCH_VERSION {
-    default = "2023.12.1+402.pro1"
+    default = "2024.04.0+735.pro3"
 }
 
 variable DRIVERS_VERSION {
@@ -101,7 +101,7 @@ variable PACKAGE_MANAGER_BUILD_MATRIX {
 variable CONNECT_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.9.17", py_alternate = "3.8.17", quarto = "1.3.340"},
+            {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.9.17", py_alternate = "3.8.17", quarto = DEFAULT_QUARTO_VERSION},
         ]
     }
 }
@@ -148,7 +148,6 @@ variable CONTENT_BUILD_MATRIX {
 variable R_SESSION_COMPLETE_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "centos7", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.9.14", py_alternate = "3.8.15"},
             {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.9.14", py_alternate = "3.8.15"},
         ]
     }
@@ -224,9 +223,9 @@ target "product-base" {
         "ghcr.io/rstudio/product-base:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
         "docker.io/rstudio/product-base:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
     ]
-    
+
     dockerfile = "Dockerfile.${builds.os}"
-    context = "product/base"    
+    context = "product/base"
 
     matrix = BASE_BUILD_MATRIX
     args = {
@@ -235,7 +234,7 @@ target "product-base" {
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
         TINI_VERSION = "0.19.0"
-    }    
+    }
 }
 
 target "product-base-pro" {
@@ -248,7 +247,7 @@ target "product-base-pro" {
         "docker.io/rstudio/product-base-pro:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
     ]
 
-    dockerfile = "Dockerfile.${builds.os}"   
+    dockerfile = "Dockerfile.${builds.os}"
     context = "product/pro"
     contexts = {
         product-base = "target:product-base-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
@@ -400,8 +399,8 @@ target "r-session-complete" {
         PYTHON_VERSION_ALT = builds.py_alternate
         JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
         RSW_VERSION = WORKBENCH_VERSION
-        RSW_NAME = builds.os == "centos7" ? "rstudio-workbench-rhel" : "rstudio-workbench"
-        RSW_DOWNLOAD_URL = builds.os == "centos7" ? "https://s3.amazonaws.com/rstudio-ide-build/server/centos7/x86_64" : "https://download2.rstudio.org/server/jammy/amd64"
+        RSW_NAME = "rstudio-workbench"
+        RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/jammy/amd64"
     }
 }
 
@@ -427,7 +426,7 @@ target "workbench" {
         RSW_VERSION = WORKBENCH_VERSION
         RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/jammy/amd64"
-    }        
+    }
 }
 
 ### Workbench for Google Cloud Workstations targets ###
@@ -462,7 +461,7 @@ target "workbench-for-google-cloud-workstations" {
         RSW_VERSION = WORKBENCH_VERSION
         RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/focal/amd64"
-    } 
+    }
 }
 
 ### Workbench for Microsoft Azure ML targets ###
@@ -489,7 +488,7 @@ target "build-workbench-for-microsoft-azure-ml" {
         RSW_VERSION = WORKBENCH_VERSION
         RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/jammy/amd64"
-    } 
+    }
 }
 
 target "scan-workbench-for-microsoft-azure-ml" {

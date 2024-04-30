@@ -1,3 +1,7 @@
+# 2024-04-30
+
+- BREAKING: Upgrade the default Quarto version to 1.4.552.
+
 # 2023-08-01
 - BREAKING: Removed R 3.6.2, replaced with R 4.1.3.
 - Updated R 4.2.0 to 4.2.3.

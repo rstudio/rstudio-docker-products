@@ -7,9 +7,9 @@ sed_vars := if os() == "macos" { "-i ''" } else { "-i" }
 
 BUILDX_PATH := ""
 
-RSC_VERSION := "2024.03.0"
+RSC_VERSION := "2024.04.0"
 RSPM_VERSION := "2023.12.0-13"
-RSW_VERSION := "2023.12.1+402.pro1"
+RSW_VERSION := "2024.04.0+735.pro3"
 
 DRIVERS_VERSION := "2023.05.0"
 DRIVERS_VERSION_RHEL := DRIVERS_VERSION + "-1"
@@ -22,7 +22,7 @@ PYTHON_VERSION_ALT := "3.8.17"
 PYTHON_VERSION_RHEL := "3.9.14"
 PYTHON_VERSION_ALT_RHEL := "3.8.15"
 
-QUARTO_VERSION := "1.3.450"
+QUARTO_VERSION := "1.4.553"
 
 export RSC_LICENSE := ""
 export RSPM_LICENSE := ""
@@ -266,11 +266,7 @@ update-rsc-versions:
     connect/.env \
     connect/Dockerfile.ubuntu2204 \
     connect-content-init/Dockerfile.ubuntu2204
-  sed {{ sed_vars }} "s/RSC_VERSION:.*/RSC_VERSION: {{ RSC_VERSION }}/g" docker-compose.yml
-  sed {{ sed_vars }} "s/rstudio\/rstudio-connect:.*/rstudio\/rstudio-connect:{{ RSC_VERSION }}/g" docker-compose.yml
   sed {{ sed_vars }} "s/^RSC_VERSION := .*/RSC_VERSION := \"{{ RSC_VERSION }}\"/g" \
-    connect/Justfile \
-    connect-content-init/Justfile \
     Justfile
   sed {{ sed_vars }} -E "s/[0-9]{4}\.[0-9]{1,2}\.[0-9]{1,2}/`just _get-clean-version {{ RSC_VERSION }}`/g" \
     connect/README.md \

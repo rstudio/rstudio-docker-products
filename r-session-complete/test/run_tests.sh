@@ -6,8 +6,6 @@ GOSS_MAX_CONCURRENT=${GOSS_MAX_CONCURRENT:-50}
 
 if [ -f /etc/debian_version ]; then
   OS="ubuntu"
-elif [ -f /etc/centos-release ]; then
-  OS="centos"
 else
   echo "OS not supported. Exiting"
   exit 1
