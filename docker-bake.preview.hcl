@@ -44,6 +44,11 @@ function get_rsw_download_url {
     result = os == "centos7" ? "${RSW_PREVIEW_URL_BASE}centos7/x86_64" : "${RSW_PREVIEW_URL_BASE}jammy/amd64"
 }
 
+function tag_safe_branch {
+    params = []
+    result = replace(BRANCH, "/", "-")
+}
+
 function tag_safe_version {
     params = [version]
     result = replace(version, "+", "-")
@@ -56,7 +61,7 @@ function clean_version {
 
 function get_tag_prefix {
     params = []
-    result = BRANCH != "main" ? "${BRANCH}-" : ""
+    result = BRANCH != "main" ? "${tag_safe_branch()}-" : ""
 }
 
 function get_drivers_version {
