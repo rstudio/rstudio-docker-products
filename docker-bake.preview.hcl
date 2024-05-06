@@ -7,6 +7,10 @@ variable CONNECT_DAILY_VERSION {
     default = null
 }
 
+variable PACKAGE_MANAGER_PREVIEW_VERSION {
+    default = null
+}
+
 variable PACKAGE_MANAGER_DAILY_VERSION {
     default = null
 }
@@ -126,7 +130,7 @@ variable PACKAGE_MANAGER_BUILD_MATRIX {
 variable CONNECT_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.11.9", py_alternate = "3.10.14", quarto = "1.3.340"},
+            {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.11.9", py_alternate = "3.10.14", quarto = DEFAULT_QUARTO_VERSION},
         ]
     }
 }
@@ -142,7 +146,6 @@ variable CONNECT_CONTENT_INIT_BUILD_MATRIX {
 variable R_SESSION_COMPLETE_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "centos7", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.11.9", py_alternate = "3.10.14"},
             {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.11.9", py_alternate = "3.10.14"},
         ]
     }
@@ -253,6 +256,29 @@ target "product-base-pro-dev" {
 }
 
 ### Package Manager targets ###
+target "package-manager-preview" {
+    inherits = ["base"]
+    target = "build"
+
+    name = "package-manager-preview-${builds.os}-${replace(PACKAGE_MANAGER_PREVIEW_VERSION, ".", "-")}"
+    tags = get_tags(builds.os, "rstudio-package-manager-preview", PACKAGE_MANAGER_PREVIEW_VERSION, "preview")
+
+    dockerfile = "Dockerfile.${builds.os}"
+    context = "package-manager"
+    contexts = {
+        product-base = "target:product-base-dev-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+    }
+
+    matrix = PACKAGE_MANAGER_BUILD_MATRIX
+    args = {
+        R_VERSION = builds.r_primary
+        R_VERSION_ALT = builds.r_alternate
+        PYTHON_VERSION = builds.py_primary
+        PYTHON_VERSION_ALT = builds.py_alternate
+        RSPM_VERSION = PACKAGE_MANAGER_PREVIEW_VERSION
+    }
+}
+
 target "package-manager-daily" {
     inherits = ["base"]
     target = "build"
@@ -340,7 +366,7 @@ target "r-session-complete-daily" {
         PYTHON_VERSION_ALT = builds.py_alternate
         JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
         RSW_VERSION = WORKBENCH_DAILY_VERSION
-        RSW_NAME = builds.os == "centos7" ? "rstudio-workbench-rhel" : "rstudio-workbench"
+        RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = get_rsw_download_url(builds.os)
     }
 }
@@ -366,7 +392,7 @@ target "r-session-complete-preview" {
         PYTHON_VERSION_ALT = builds.py_alternate
         JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
         RSW_VERSION = WORKBENCH_PREVIEW_VERSION
-        RSW_NAME = builds.os == "centos7" ? "rstudio-workbench-rhel" : "rstudio-workbench"
+        RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = get_rsw_download_url(builds.os)
     }
 }

@@ -97,7 +97,7 @@ def clean_product_selection(product: str) -> str:
 
 
 def rstudio_workbench_daily():
-    version_json = download_json("https://dailies.rstudio.com/rstudio/chocolate-cosmos/index.json")
+    version_json = download_json("https://dailies.rstudio.com/rstudio/cranberry-hibiscus/index.json")
     return version_json['workbench']['platforms']['jammy-amd64']['version']
 
 
@@ -161,6 +161,12 @@ def rstudio_connect_daily():
 
     # just grab the first... all we need is a version string... (for now)
     return connect_build_info['packages'][0]['version']
+
+
+def rstudio_pm_preview():
+    latest_url = "https://cdn.posit.co/package-manager/deb/amd64/rstudio-pm-rc-latest.txt"
+    raw_version = requests.get(latest_url).content
+    return raw_version.decode('utf-8').replace('\n','')
 
 
 def rstudio_pm_daily():
@@ -269,6 +275,8 @@ if __name__ == "__main__":
     elif selected_product == 'package-manager':
         if version_type == 'release':
             version = get_release_version(selected_product, local)
+        elif version_type == 'preview':
+            version = rstudio_pm_preview()
         elif version_type == 'daily':
             version = rstudio_pm_daily()
         else:
