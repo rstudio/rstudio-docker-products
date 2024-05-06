@@ -111,8 +111,8 @@ jobs:
         with:
           buildkitd-config: ./share/buildkitd.toml
 
-      - name: Build/Test/Scan/Push manual build image
-        uses: ./.github/actions/build-test-scan-push
+      - name: Build/Test/Push manual build image
+        uses: ./.github/actions/bake-test-push
         with:
           target: ${{ inputs.product }}
           push-image: ${{ inputs.push }}
