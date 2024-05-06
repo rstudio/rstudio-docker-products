@@ -9,8 +9,29 @@ on:
   
 name: Release - Build, Test, and Push
 jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+
+    concurrency:
+      group: bake-setup-${{ github.ref }}
+      cancel-in-progress: true
+
+    outputs:
+      GIT_SHA: ${{ steps.checkout.outputs.sha }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get commit SHA
+        id: get-git-sha
+        run: |
+          GIT_SHA=$(git rev-parse --short HEAD)
+          echo "GIT_SHA=$GIT_SHA" >> $GITHUB_OUTPUT
 
   base:
+    needs: [setup]
     name: Base Images
     runs-on: ubuntu-latest-8x
 
@@ -20,6 +41,7 @@ jobs:
 
     env:
       target: base-images
+      GIT_SHA: ${{ needs.setup.outputs.GIT_SHA }}
 
     steps:
       - name: Checkout
@@ -42,6 +64,7 @@ jobs:
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
   connect:
+    needs: [setup]
     name: Connect
     runs-on: ubuntu-latest-4x
 
@@ -51,6 +74,7 @@ jobs:
 
     env:
       target: connect
+      GIT_SHA: ${{ needs.setup.outputs.GIT_SHA }}
 
     steps:
       - name: Checkout
@@ -73,6 +97,7 @@ jobs:
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
   connect-content-init:
+    needs: [setup]
     name: Connect Content Init
     runs-on: ubuntu-latest-4x
 
@@ -82,6 +107,7 @@ jobs:
 
     env:
       target: connect-content-init
+      GIT_SHA: ${{ needs.setup.outputs.GIT_SHA }}
 
     steps:
       - name: Checkout
@@ -104,6 +130,7 @@ jobs:
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
   content:
+    needs: [setup]
     name: Content Images
     runs-on: ubuntu-latest-8x
 
@@ -113,6 +140,7 @@ jobs:
 
     env:
       target: content-images
+      GIT_SHA: ${{ needs.setup.outputs.GIT_SHA }}
 
     steps:
       - name: Checkout
@@ -135,6 +163,7 @@ jobs:
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
   package-manager:
+    needs: [setup]
     name: Package Manager
     runs-on: ubuntu-latest-4x
 
@@ -144,6 +173,7 @@ jobs:
 
     env:
       target: package-manager
+      GIT_SHA: ${{ needs.setup.outputs.GIT_SHA }}
 
     steps:
       - name: Checkout
@@ -166,6 +196,7 @@ jobs:
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
   r-session-complete:
+    needs: [setup]
     name: R Session Complete
     runs-on: ubuntu-latest-8x
 
@@ -175,6 +206,7 @@ jobs:
 
     env:
       target: r-session-complete
+      GIT_SHA: ${{ needs.setup.outputs.GIT_SHA }}
 
     steps:
       - name: Checkout
@@ -197,6 +229,7 @@ jobs:
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
   workbench:
+    needs: [setup]
     name: Workbench
     runs-on: ubuntu-latest-4x
 
@@ -206,6 +239,7 @@ jobs:
 
     env:
       target: workbench
+      GIT_SHA: ${{ needs.setup.outputs.GIT_SHA }}
 
     steps:
       - name: Checkout
@@ -228,6 +262,7 @@ jobs:
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
   workbench-for-google-cloud-workstations:
+    needs: [setup]
     name: Workbench for Google Cloud Workstations
     runs-on: ubuntu-latest-8x
 
@@ -237,6 +272,7 @@ jobs:
 
     env:
       target: workbench-for-google-cloud-workstations
+      GIT_SHA: ${{ needs.setup.outputs.GIT_SHA }}
 
     steps:
       - name: Checkout
@@ -259,6 +295,7 @@ jobs:
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
 
   workbench-for-microsoft-azure-ml:
+    needs: [setup]
     name: Workbench for Microsoft Azure ML
     runs-on: ubuntu-latest-8x
 
@@ -268,6 +305,7 @@ jobs:
 
     env:
       target: waml-images
+      GIT_SHA: ${{ needs.setup.outputs.GIT_SHA }}
 
     steps:
       - name: Checkout
