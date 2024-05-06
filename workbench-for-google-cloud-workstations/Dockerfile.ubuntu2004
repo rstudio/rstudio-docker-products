@@ -1,4 +1,4 @@
-FROM us-central1-docker.pkg.dev/cloud-workstations-images/predefined/base:public-image-current as build
+FROM us-central1-docker.pkg.dev/cloud-workstations-images/predefined/base:last-ubuntu2004 as build
 
 ### ARG declarations ###
 ARG DEBIAN_FRONTEND=noninteractive
