@@ -92,11 +92,9 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        id: setup-buildx
-        with:
-          buildkitd-config: ./share/buildkitd.toml
+      - name: Install Python dependencies
+        run: |
+          pip install requests
 
       - name: Get Version
         id: get-version
@@ -107,6 +105,12 @@ jobs:
             VERSION="${{ inputs.version }}"
           fi
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
 
       - name: Build/Test/Scan/Push manual build image
         uses: ./.github/actions/build-test-scan-push
