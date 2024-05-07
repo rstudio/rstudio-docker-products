@@ -8,7 +8,7 @@ sed_vars := if os() == "macos" { "-i ''" } else { "-i" }
 BUILDX_PATH := ""
 
 RSC_VERSION := "2024.04.0"
-RSPM_VERSION := "2024.04.0-18"
+RSPM_VERSION := "2024.04.0-20"
 RSW_VERSION := "2024.04.0+735.pro3"
 
 DRIVERS_VERSION := "2023.05.0"
@@ -48,7 +48,8 @@ alias build := bake
 # just bake workbench-images
 bake target="default":
   just -f {{justfile()}} create-builder || true
-  docker buildx bake --builder=posit-builder -f docker-bake.hcl {{target}}
+  GIT_SHA=$(git rev-parse --short HEAD) \
+    docker buildx bake --builder=posit-builder -f docker-bake.hcl {{target}}
 
 # just preview-bake workbench-images dev
 preview-build:
@@ -61,7 +62,7 @@ preview-bake target branch="$(git branch --show-current)":
   PACKAGE_MANAGER_PREVIEW_VERSION=$(just -f ci.Justfile get-version package-manager --type=preview --local) \
   CONNECT_DAILY_VERSION=$(just -f ci.Justfile get-version connect --type=daily --local) \
   BRANCH="{{branch}}" \
-  docker buildx bake --builder=posit-builder -f docker-bake.preview.hcl {{target}}
+    docker buildx bake --builder=posit-builder -f docker-bake.preview.hcl {{target}}
 
 content-bake:
   just -f {{justfile()}} create-builder || true
@@ -70,7 +71,8 @@ content-bake:
 
 # just plan
 plan:
-  docker buildx bake -f docker-bake.hcl --print
+  GIT_SHA=$(git rev-parse --short HEAD) \
+    docker buildx bake -f docker-bake.hcl --print
 
 # just preview-plan
 preview-plan branch="$(git branch --show-current)":
@@ -79,7 +81,7 @@ preview-plan branch="$(git branch --show-current)":
   PACKAGE_MANAGER_DAILY_VERSION=$(just -f ci.Justfile get-version package-manager --type=daily --local) \
   CONNECT_DAILY_VERSION=$(just -f ci.Justfile get-version connect --type=daily --local) \
   BRANCH="{{branch}}" \
-  docker buildx bake -f docker-bake.preview.hcl --print
+    docker buildx bake -f docker-bake.preview.hcl --print
 
 # Run tests
 

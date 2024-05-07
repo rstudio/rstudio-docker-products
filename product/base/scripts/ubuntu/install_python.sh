@@ -108,6 +108,9 @@ install_python_packages() {
     echo "$d$d Installing python-${PYTHON_VERSION} packages from ${PYTHON_PKG_FILE} $d$d"
     $PYTHON_BIN -m pip install -U pip
     $PYTHON_BIN -m pip install -r "$PYTHON_PKG_FILE"
+
+    echo "$d$d Cleaning up pip cache $d$d"
+    $PYTHON_BIN -m pip cache purge
 }
 
 install_python

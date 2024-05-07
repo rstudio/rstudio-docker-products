@@ -16,23 +16,12 @@ on:
         options:
           - connect
           - connect-content-init
-          - content/base
-          - content/pro
+          - content-images
           - package-manager
-          - product/base
-          - product/pro
           - r-session-complete
           - workbench
+          - workbench-for-google-cloud-workstations
           - workbench-for-microsoft-azure-ml
-      os:
-        description: "Which OS to build. WARNING: Not all OSes may be present for all products."
-        required: false
-        default: "ubuntu2204"
-        type: choice
-        options:
-          - ubuntu2204
-          - ubuntu1804
-          - centos7
       type:
         description: "The type of image being built."
         required: false
@@ -42,11 +31,6 @@ on:
           - preview
           - daily
           - release
-      use_s3_download_url:
-        description: "Force build to download binaries directly from S3 where applicable."
-        required: false
-        default: false
-        type: boolean
       version:
         description: "The version to build. Use 'auto' to target the latest build."
         required: false
@@ -58,19 +42,43 @@ on:
         default: false
         type: boolean
 
-name: Manual - Build, Test, Scan, and Push
+name: Manual - Build, Test, and Push
 jobs:
-  build:
+  setup:
+    name: Setup
     runs-on: ubuntu-latest
+
+    concurrency:
+      group: bake-setup-${{ github.ref }}
+      cancel-in-progress: true
+
+    outputs:
+      GIT_SHA: ${{ steps.checkout.outputs.sha }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get commit SHA
+        id: get-git-sha
+        run: |
+          GIT_SHA=$(git rev-parse --short HEAD)
+          echo "GIT_SHA=$GIT_SHA" >> $GITHUB_OUTPUT
+
+  build:
+    runs-on: ubuntu-latest-4x
     name: manual-build
 
     permissions:
       contents: read
       packages: write
 
+    env:
+      GIT_SHA: ${{ needs.setup.outputs.GIT_SHA }}
+
     steps:
       - name: Check Out Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ inputs.branch }}
 
@@ -78,6 +86,14 @@ jobs:
         uses: extractions/setup-just@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python dependencies
+        run: |
+          pip install requests
 
       - name: Get Version
         id: get-version
@@ -89,70 +105,17 @@ jobs:
           fi
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Get build args
-        id: get-build-args
-        run: |
-          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          ARGS_CMD=""
-          USE_S3_DOWNLOAD_URL=""
-          VERSION_OVERRIDES=""
-          if [[ "${{inputs.os}}" == "centos7" ]]; then
-            # FIXME(ianpittwood): This is probably a silly way of doing this. We don't have CentOS builds for later 
-            #                     Python versions so we need to override them. This is done via matrix in the release CI
-            #                     but we don't have that here. We're also limited by the 10 input cap so these can't be
-            #                     passed by the user alongside R versions as I would've liked to do.
-            VERSION_OVERRIDES="PYTHON_VERSION=3.9.14 PYTHON_VERSION_ALT=3.8.15"
-          fi
-          if [[ "${{ inputs.type }}" == "release" ]]; then
-            ARGS_CMD="get-product-args"
-            if [[ "${{ inputs.use_s3_download_url }}" == "true" ]]; then
-              USE_S3_DOWNLOAD_URL="${{ inputs.use_s3_download_url }}"
-            fi
-          else
-            ARGS_CMD="get-prerelease-args ${{inputs.type}}"
-          fi
-          BUILD_ARGS=$( \
-              just -f ci.Justfile \
-              ${VERSION_OVERRIDES} \
-              ${ARGS_CMD} \
-              ${{ inputs.product }} \
-              ${{ inputs.os }} \
-              ${{ steps.get-version.outputs.VERSION }} \
-              ${USE_S3_DOWNLOAD_URL} \
-          )
-          echo "BUILD_ARGS<<$EOF" >> $GITHUB_OUTPUT
-          echo "$BUILD_ARGS" >> $GITHUB_OUTPUT
-          echo "$EOF" >> $GITHUB_OUTPUT
-
-      - name: Get tags
-        id: get-tags
-        run: |
-          ARGS_CMD=""
-          if [[ "${{ inputs.type }}" == "release" ]]; then
-            ARGS_CMD="get-product-tags"
-          else
-            ARGS_CMD="get-prerelease-tags ${{inputs.type}}"
-          fi
-          IMAGE_TAGS=$( \
-              just -f ci.Justfile \
-              ${ARGS_CMD} \
-              ${{ inputs.product }} \
-              ${{ inputs.os }} \
-              ${{ steps.get-version.outputs.VERSION }} \
-          )
-          echo "IMAGE_TAGS=$IMAGE_TAGS" >> $GITHUB_OUTPUT
-
-      - name: Build/Test/Scan/Push manual build image
-        uses: ./.github/actions/build-test-scan-push
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
         with:
-          context: ./${{ inputs.product }}
-          os: ${{ inputs.os }}
-          product: ${{ inputs.product }}
-          image-tags: ${{ steps.get-tags.outputs.IMAGE_TAGS }}
-          build-args: ${{ steps.get-build-args.outputs.BUILD_ARGS }}
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build/Test/Push manual build image
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ inputs.product }}
           push-image: ${{ inputs.push }}
-          snyk-token: ${{ secrets.SNYK_TOKEN }}
-          snyk-org-id: ${{ secrets.SNYK_ORG_ID }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
