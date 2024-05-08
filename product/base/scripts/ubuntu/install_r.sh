@@ -31,7 +31,6 @@ usage() {
 
 
 # Set defaults
-APT_ARGS="-o DPkg::Lock::Timeout=60 -y -qq --no-install-recommends"
 PREFIX="/opt/R"
 R_EXISTS=0
 WITH_SOURCE=0

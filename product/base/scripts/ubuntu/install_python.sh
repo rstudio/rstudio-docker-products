@@ -29,7 +29,6 @@ usage() {
 
 
 # Set defaults
-APT_ARGS="-o DPkg::Lock::Timeout=60 -y -qq --no-install-recommends"
 PREFIX="/opt/python"
 
 OPTIONS=$(getopt -o hdr: --long help,debug,prefix:,requirement: -- "$@")
