@@ -120,9 +120,6 @@ jobs:
         with:
           buildkitd-config: ./share/buildkitd.toml
 
-      - name: Echo tags
-        run: docker buildx bake -f docker-bake.hcl --print
-
       - name: Build, Test, and Push
         uses: ./.github/actions/bake-test-push
         with:
