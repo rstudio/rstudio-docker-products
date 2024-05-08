@@ -18,7 +18,7 @@ jobs:
       cancel-in-progress: true
 
     outputs:
-      GIT_SHA: ${{ steps.checkout.outputs.sha }}
+      GIT_SHA: ${{ steps.get-git-sha.outputs.GIT_SHA }}
 
     steps:
       - name: Checkout
@@ -27,7 +27,7 @@ jobs:
       - name: Get commit SHA
         id: get-git-sha
         run: |
-          GIT_SHA=$(git rev-parse --short ${{ github.sha }})
+          GIT_SHA=$(git rev-parse --short HEAD)
           echo "GIT_SHA=$GIT_SHA" >> $GITHUB_OUTPUT
           echo "$GIT_SHA"
 
