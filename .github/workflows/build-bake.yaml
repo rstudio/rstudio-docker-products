@@ -27,7 +27,7 @@ jobs:
       - name: Get commit SHA
         id: get-git-sha
         run: |
-          GIT_SHA=$(git rev-parse --short HEAD)
+          GIT_SHA=$(git rev-parse --short ${{ github.sha }})
           echo "GIT_SHA=$GIT_SHA" >> $GITHUB_OUTPUT
           echo "$GIT_SHA"
 
