@@ -21,7 +21,7 @@ usage() {
 }
 
 # Set defaults
-APT_ARGS="-o DPkg::Lock::Timeout=60 -y -qq"
+APT_ARGS="-o DPkg::Lock::Timeout=60 -y -qq --no-install-recommends"
 CLEAN=0
 UPDATE=0
 

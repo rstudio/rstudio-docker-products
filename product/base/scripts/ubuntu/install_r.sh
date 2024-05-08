@@ -31,7 +31,7 @@ usage() {
 
 
 # Set defaults
-APT_ARGS="-o DPkg::Lock::Timeout=60 -y -qq"
+APT_ARGS="-o DPkg::Lock::Timeout=60 -y -qq --no-install-recommends"
 PREFIX="/opt/R"
 R_EXISTS=0
 WITH_SOURCE=0
@@ -85,7 +85,7 @@ fi
 R_BIN="${PREFIX}/${R_VERSION}/bin/R"
 
 # Set apt options
-APT_ARGS="-o DPkg::Lock::Timeout=60 -y -qq"
+APT_ARGS="-o DPkg::Lock::Timeout=60 -y -qq --no-install-recommends"
 APT_KEY="0x51716619e084dab9"
 APT_KEY_FILE="/usr/share/keyrings/cran-rstudio-keyring.gpg"
 APT_FILE="/etc/apt/sources.list.d/cran-rstudio.list"
@@ -134,7 +134,7 @@ install_r_dependencies() {
     # There are many dependencies that R users may rely on that we want to
     # include in the images. These include things like a functional X server,
     # fonts, and other libraries that are commonly used by R packages.
-    local r_deps="r-base-core r-base-dev"
+    local r_deps="r-base-dev"
 
     # Check whether dependencies are already installed
     # shellcheck disable=2086

@@ -29,7 +29,7 @@ usage() {
 
 
 # Set defaults
-APT_ARGS="-o DPkg::Lock::Timeout=60 -y -qq"
+APT_ARGS="-o DPkg::Lock::Timeout=60 -y -qq --no-install-recommends"
 PREFIX="/opt/python"
 
 OPTIONS=$(getopt -o hdr: --long help,debug,prefix:,requirement: -- "$@")
@@ -73,7 +73,7 @@ fi
 PYTHON_BIN="${PREFIX}/${PYTHON_VERSION}/bin/python"
 
 # Set apt options
-APT_ARGS="-o DPkg::Lock::Timeout=60 -y -qq"
+APT_ARGS="-o DPkg::Lock::Timeout=60 -y -qq --no-install-recommends"
 
 # Set ubuntu version
 UBUNTU_VERSION=$(lsb_release -rs)
