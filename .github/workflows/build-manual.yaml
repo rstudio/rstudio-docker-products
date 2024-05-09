@@ -78,6 +78,7 @@ jobs:
           echo "BAKE_FILE=$BAKE_FILE" >> $GITHUB_OUTPUT
 
   build:
+    needs: [setup]
     runs-on: ubuntu-latest-4x
     name: manual-build
 
