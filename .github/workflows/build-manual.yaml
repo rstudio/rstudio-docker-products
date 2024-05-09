@@ -9,6 +9,7 @@ on:
           - main
           - dev
           - dev-rspm
+          - set-bake-file-in-manual  # FIXME(ianp): Remove this option
       product:
         description: "The product/path to build."
         required: true
