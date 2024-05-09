@@ -4,23 +4,23 @@ variable BRANCH {
 }
 
 variable CONNECT_DAILY_VERSION {
-    default = ""
+    default = "null"
 }
 
 variable PACKAGE_MANAGER_PREVIEW_VERSION {
-    default = ""
+    default = "null"
 }
 
 variable PACKAGE_MANAGER_DAILY_VERSION {
-    default = ""
+    default = "null"
 }
 
 variable WORKBENCH_DAILY_VERSION {
-    default = ""
+    default = "null"
 }
 
 variable WORKBENCH_PREVIEW_VERSION {
-    default = ""
+    default = "null"
 }
 
 variable DRIVERS_VERSION {

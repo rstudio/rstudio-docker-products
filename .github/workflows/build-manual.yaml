@@ -53,7 +53,7 @@ jobs:
       cancel-in-progress: true
 
     outputs:
-      GIT_SHA: ${{ steps.checkout.outputs.sha }}
+      GIT_SHA: ${{ steps.get-git-sha.outputs.GIT_SHA }}
       BAKE_FILE: ${{ steps.bake-file.outputs.BAKE_FILE }}
 
     steps:
