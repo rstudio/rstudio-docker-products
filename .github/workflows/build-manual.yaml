@@ -74,6 +74,7 @@ jobs:
           else
             BAKE_FILE="docker-bake.preview.hcl"
           fi
+          echo "Using $BAKE_FILE"
           echo "BAKE_FILE=$BAKE_FILE" >> $GITHUB_OUTPUT
 
   build:
