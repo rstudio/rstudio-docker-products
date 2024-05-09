@@ -54,7 +54,7 @@ jobs:
 
     outputs:
       GIT_SHA: ${{ steps.checkout.outputs.sha }}
-      BAKE_FILE: ${{ steps.checkout.outputs.bake-file }}
+      BAKE_FILE: ${{ steps.bake-file.outputs.BAKE_FILE }}
 
     steps:
       - name: Checkout
@@ -110,6 +110,7 @@ jobs:
 
       - name: Get Version
         id: get-version
+        shell: bash
         run: |
           # Determine how to set the version
           if [[ "${{ inputs.version }}" == "auto" ]]; then
