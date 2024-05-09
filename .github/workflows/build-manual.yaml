@@ -54,6 +54,7 @@ jobs:
 
     outputs:
       GIT_SHA: ${{ steps.checkout.outputs.sha }}
+      BAKE_FILE: ${{ steps.checkout.outputs.bake-file }}
 
     steps:
       - name: Checkout
@@ -64,6 +65,16 @@ jobs:
         run: |
           GIT_SHA=$(git rev-parse --short HEAD)
           echo "GIT_SHA=$GIT_SHA" >> $GITHUB_OUTPUT
+
+      - name: Set BAKE_FILE
+        id: bake-file
+        run: |
+          if [[ "${{ inputs.type }}" == "release" ]]; then
+            BAKE_FILE="docker-bake.hcl"
+          else
+            BAKE_FILE="docker-bake.preview.hcl"
+          fi
+          echo "BAKE_FILE=$BAKE_FILE" >> $GITHUB_OUTPUT
 
   build:
     runs-on: ubuntu-latest-4x
@@ -115,9 +126,9 @@ jobs:
         uses: ./.github/actions/bake-test-push
         with:
           target: ${{ inputs.product }}
+          bakefile: ${{ needs.setup.outputs.BAKE_FILE }}
           push-image: ${{ inputs.push }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
-
