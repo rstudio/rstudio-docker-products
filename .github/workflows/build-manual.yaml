@@ -108,6 +108,18 @@ jobs:
         run: |
           pip install requests
 
+      - name: Get Target
+        id: get-target
+        shell: bash
+        run: |
+          # Append suffix if necessary
+          target="${{ inputs.product }}"
+          if [[ "${{ inputs.type }}" != "release" ]]; then
+            target="${{ inputs.product }}-${{ inputs.type }}"
+          fi
+          echo "Setting TARGET=$target"
+          echo "TARGET=$target" >>  $GITHUB_OUTPUT
+
       - name: Get Version
         id: get-version
         shell: bash
@@ -148,7 +160,7 @@ jobs:
       - name: Build/Test/Push manual build image
         uses: ./.github/actions/bake-test-push
         with:
-          target: ${{ inputs.product }}
+          target: ${{ steps.get-target.outputs.TARGET }}
           bakefile: ${{ needs.setup.outputs.BAKE_FILE }}
           push-image: ${{ inputs.push }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
