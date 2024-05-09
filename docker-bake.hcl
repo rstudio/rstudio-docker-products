@@ -24,7 +24,7 @@ variable DEFAULT_JUPYTERLAB_VERSION {
 }
 
 variable GIT_SHA {
-    default = ""
+    default = null
 }
 
 function tag_safe_version {
