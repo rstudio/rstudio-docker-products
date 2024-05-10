@@ -17,7 +17,6 @@ on:
         options:
           - connect
           - connect-content-init
-          - content-images
           - package-manager
           - r-session-complete
           - workbench
