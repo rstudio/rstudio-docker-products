@@ -16,7 +16,6 @@ on:
         options:
           - connect
           - connect-content-init
-          - content-images
           - package-manager
           - r-session-complete
           - workbench
@@ -48,12 +47,9 @@ jobs:
     name: Setup
     runs-on: ubuntu-latest
 
-    concurrency:
-      group: bake-setup-${{ github.ref }}
-      cancel-in-progress: true
-
     outputs:
-      GIT_SHA: ${{ steps.checkout.outputs.sha }}
+      GIT_SHA: ${{ steps.get-git-sha.outputs.GIT_SHA }}
+      BAKE_FILE: ${{ steps.bake-file.outputs.BAKE_FILE }}
 
     steps:
       - name: Checkout
@@ -63,9 +59,22 @@ jobs:
         id: get-git-sha
         run: |
           GIT_SHA=$(git rev-parse --short HEAD)
+          echo "Setting GIT_SHA=$GIT_SHA"
           echo "GIT_SHA=$GIT_SHA" >> $GITHUB_OUTPUT
 
+      - name: Set BAKE_FILE
+        id: bake-file
+        run: |
+          if [[ "${{ inputs.type }}" == "release" ]]; then
+            BAKE_FILE="docker-bake.hcl"
+          else
+            BAKE_FILE="docker-bake.preview.hcl"
+          fi
+          echo "Using $BAKE_FILE"
+          echo "BAKE_FILE=$BAKE_FILE" >> $GITHUB_OUTPUT
+
   build:
+    needs: [setup]
     runs-on: ubuntu-latest-4x
     name: manual-build
 
@@ -95,15 +104,48 @@ jobs:
         run: |
           pip install requests
 
+      - name: Get Target
+        id: get-target
+        shell: bash
+        run: |
+          # Append suffix if necessary
+          target="${{ inputs.product }}"
+          if [[ "${{ inputs.type }}" != "release" ]]; then
+            target="${{ inputs.product }}-${{ inputs.type }}"
+          fi
+          echo "Setting TARGET=$target"
+          echo "TARGET=$target" >>  $GITHUB_OUTPUT
+
       - name: Get Version
         id: get-version
+        shell: bash
         run: |
+          # Determine how to set the version
           if [[ "${{ inputs.version }}" == "auto" ]]; then
             VERSION=`just -f ci.Justfile get-version ${{ inputs.product }} --type=${{ inputs.type }} --local`
           else
             VERSION="${{ inputs.version }}"
           fi
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          
+          # Set the appropriate env var
+          suffix="_VERSION"
+          if [[ "${{ inputs.type }}" == "preview" ]]; then
+            suffix="_PREVIEW_VERSION"
+          elif [[ "${{ inputs.type }}" == "daily" ]]; then
+            suffix="_DAILY_VERSION"
+          fi
+          
+          product="${{ inputs.product }}"
+          if [[ "$product" == "connect" ]] || [[ "$product" == "connect-content-init" ]] || [[ "$product" == "content-images" ]]; then
+            product="CONNECT"
+          elif [[ "$product" == "package-manager" ]]; then
+            product="PACKAGE_MANAGER"
+          else
+            product="WORKBENCH"
+          fi
+          
+          echo "Setting $product$suffix=$VERSION"
+          echo "$product$suffix=$VERSION" >> $GITHUB_ENV
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -114,10 +156,10 @@ jobs:
       - name: Build/Test/Push manual build image
         uses: ./.github/actions/bake-test-push
         with:
-          target: ${{ inputs.product }}
+          target: ${{ steps.get-target.outputs.TARGET }}
+          bakefile: ${{ needs.setup.outputs.BAKE_FILE }}
           push-image: ${{ inputs.push }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
-
