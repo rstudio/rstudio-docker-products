@@ -108,7 +108,7 @@ def download_json(url):
 
 
 def get_downloads_json():
-    return download_json("https://rstudio.com/wp-content/downloads.json")
+    return download_json("https://www.rstudio.com/wp-content/downloads.json")
 
 
 def rstudio_workbench_preview():
@@ -136,7 +136,7 @@ def get_local_release_version(product):
     with open('Justfile', 'r') as f:
         content = f.read()
 
-    vers = re.compile(f'{prefix}_VERSION := (.*)')
+    vers = re.compile(f'{prefix}_VERSION := "(.*)"')
     res = vers.search(content)
     # from the first capture group
     output_version = res[1]
