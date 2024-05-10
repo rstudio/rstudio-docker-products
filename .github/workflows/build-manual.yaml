@@ -9,7 +9,6 @@ on:
           - main
           - dev
           - dev-rspm
-          - set-bake-file-in-manual  # FIXME(ianp): Remove this option
       product:
         description: "The product/path to build."
         required: true
@@ -60,6 +59,7 @@ jobs:
         id: get-git-sha
         run: |
           GIT_SHA=$(git rev-parse --short HEAD)
+          echo "Setting GIT_SHA=$GIT_SHA"
           echo "GIT_SHA=$GIT_SHA" >> $GITHUB_OUTPUT
 
       - name: Set BAKE_FILE
