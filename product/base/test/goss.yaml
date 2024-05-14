@@ -6,6 +6,8 @@ package:
     installed: true
   cracklib-runtime:
     installed: true
+  r-recommended:
+    installed: false
   {{end}}
   {{if .Env.OS | regexMatch "centos.*"}}
   epel-release:
@@ -45,6 +47,8 @@ file:
     exists: true
   /opt/python/{{.Env.PYTHON_VERSION_ALT}}/bin/python3:
     exists: true
+  /usr/lib/R/bin/R:
+    exists: false
   /tini:
     exists: true
   {{if .Env.OS | regexMatch "ubuntu.*"}}

@@ -31,7 +31,6 @@ usage() {
 
 
 # Set defaults
-APT_ARGS="-o DPkg::Lock::Timeout=60 -y -qq"
 PREFIX="/opt/R"
 R_EXISTS=0
 WITH_SOURCE=0
@@ -85,7 +84,7 @@ fi
 R_BIN="${PREFIX}/${R_VERSION}/bin/R"
 
 # Set apt options
-APT_ARGS="-o DPkg::Lock::Timeout=60 -y -qq"
+APT_ARGS="-o DPkg::Lock::Timeout=60 -y -qq --no-install-recommends"
 APT_KEY="0x51716619e084dab9"
 APT_KEY_FILE="/usr/share/keyrings/cran-rstudio-keyring.gpg"
 APT_FILE="/etc/apt/sources.list.d/cran-rstudio.list"
@@ -130,29 +129,6 @@ install_r() {
     rm "/tmp/r-${R_VERSION}.deb"
 }
 
-install_r_dependencies() {
-    # There are many dependencies that R users may rely on that we want to
-    # include in the images. These include things like a functional X server,
-    # fonts, and other libraries that are commonly used by R packages.
-    local r_deps="r-base-core r-base-dev"
-
-    # Check whether dependencies are already installed
-    # shellcheck disable=2086
-    if dpkg -s $r_deps >/dev/null 2>&1 ; then
-        echo "$d R dependencies already installed $d"
-        return
-    fi
-
-    echo "$d$d Installng R depencencies $d$d"
-    # Ensure we have apt-transport-https installed
-    # shellcheck disable=SC2086
-    apt-get install $APT_ARGS apt-transport-https
-
-    # Install R dependencies
-    # shellcheck disable=2086
-    apt-get install $APT_ARGS $r_deps
-}
-
 install_r_packages() {
     if [ ! -f "$R_PKG_FILE" ]; then
         echo "$d R package file $R_PKG_FILE does not exist $d"
@@ -180,10 +156,9 @@ get_r_source() {
 }
 
 
-# Only add the CRAN apt source & dependencies if we don't expect R to exist
+# Only add the CRAN apt source if we don't expect R to exist
 if [ "$R_EXISTS" -eq 0 ]; then
     add_cran_apt_source
-    install_r_dependencies
 fi
 
 # Check if R is already installed
