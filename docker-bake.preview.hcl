@@ -219,6 +219,9 @@ target "product-base-dev" {
         "docker.io/rstudio/product-base-dev:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
     ]
 
+    cache-to = ["type=registry,ref=ghcr.io/rstudio/product-base-dev:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}"]
+    cache-from = ["type=registry,ref=ghcr.io/rstudio/product-base-dev:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}"]
+
     dockerfile = "Dockerfile.${builds.os}"
     context = "product/base"
 
@@ -242,6 +245,9 @@ target "product-base-pro-dev" {
         "ghcr.io/rstudio/product-base-pro-dev:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
         "docker.io/rstudio/product-base-pro-dev:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
     ]
+
+    cache-to = ["type=registry,ref=ghcr.io/rstudio/product-base-pro-dev:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}"]
+    cache-from = ["type=registry,ref=ghcr.io/rstudio/product-base-pro-dev:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}"]
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "product/pro"
@@ -269,6 +275,9 @@ target "package-manager-preview" {
     name = "package-manager-preview-${builds.os}-${replace(PACKAGE_MANAGER_PREVIEW_VERSION, ".", "-")}"
     tags = get_tags(builds.os, "rstudio-package-manager-preview", PACKAGE_MANAGER_PREVIEW_VERSION, "preview")
 
+    cache-to = [format("type=registry,ref=%s", get_tags(builds.os, "rstudio-package-manager-preview", PACKAGE_MANAGER_PREVIEW_VERSION, "preview")[0])]
+    cache-from = [format("type=registry,ref=%s", get_tags(builds.os, "rstudio-package-manager-preview", PACKAGE_MANAGER_PREVIEW_VERSION, "preview")[0])]
+
     dockerfile = "Dockerfile.${builds.os}"
     context = "package-manager"
     contexts = {
@@ -291,6 +300,9 @@ target "package-manager-daily" {
 
     name = "package-manager-daily-${builds.os}-${replace(PACKAGE_MANAGER_DAILY_VERSION, ".", "-")}"
     tags = get_tags(builds.os, "rstudio-package-manager-preview", PACKAGE_MANAGER_DAILY_VERSION, "daily")
+
+    cache-to = [format("type=registry,ref=%s", get_tags(builds.os, "rstudio-package-manager-preview", PACKAGE_MANAGER_DAILY_VERSION, "daily")[0])]
+    cache-from = [format("type=registry,ref=%s", get_tags(builds.os, "rstudio-package-manager-preview", PACKAGE_MANAGER_DAILY_VERSION, "daily")[0])]
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "package-manager"
@@ -316,6 +328,9 @@ target "connect-daily" {
     name = "connect-daily-${builds.os}-${replace(tag_safe_version(CONNECT_DAILY_VERSION), ".", "-")}"
     tags = get_tags(builds.os, "rstudio-connect-preview", CONNECT_DAILY_VERSION, "daily")
 
+    cache-to = [format("type=registry,ref=%s", get_tags(builds.os, "rstudio-connect-preview", CONNECT_DAILY_VERSION, "daily")[0])]
+    cache-from = [format("type=registry,ref=%s", get_tags(builds.os, "rstudio-connect-preview", CONNECT_DAILY_VERSION, "daily")[0])]
+
     dockerfile = "Dockerfile.${builds.os}"
     context = "connect"
     contexts = {
@@ -340,6 +355,9 @@ target "connect-content-init-daily" {
     name = "connect-content-init-daily-${builds.os}-${replace(tag_safe_version(CONNECT_DAILY_VERSION), ".", "-")}"
     tags = get_tags(builds.os, "rstudio-connect-content-init-preview", CONNECT_DAILY_VERSION, "daily")
 
+    cache-to = [format("type=registry,ref=%s", get_tags(builds.os, "rstudio-connect-content-init-preview", CONNECT_DAILY_VERSION, "daily")[0])]
+    cache-from = [format("type=registry,ref=%s", get_tags(builds.os, "rstudio-connect-content-init-preview", CONNECT_DAILY_VERSION, "daily")[0])]
+
     dockerfile = "Dockerfile.${builds.os}"
     context = "connect-content-init"
 
@@ -357,6 +375,9 @@ target "r-session-complete-daily" {
 
     name = "r-session-complete-daily-${builds.os}-${replace(tag_safe_version(WORKBENCH_DAILY_VERSION), ".", "-")}"
     tags = get_tags(builds.os, "r-session-complete-preview", WORKBENCH_DAILY_VERSION, "daily")
+
+    cache-to = [format("type=registry,ref=%s", get_tags(builds.os, "r-session-complete-preview", WORKBENCH_DAILY_VERSION, "daily")[0])]
+    cache-from = [format("type=registry,ref=%s", get_tags(builds.os, "r-session-complete-preview", WORKBENCH_DAILY_VERSION, "daily")[0])]
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "r-session-complete"
@@ -384,6 +405,9 @@ target "r-session-complete-preview" {
     name = "r-session-complete-preview-${builds.os}-${replace(tag_safe_version(WORKBENCH_PREVIEW_VERSION), ".", "-")}"
     tags = get_tags(builds.os, "r-session-complete-preview", WORKBENCH_PREVIEW_VERSION, "preview")
 
+    cache-to = [format("type=registry,ref=%s", get_tags(builds.os, "r-session-complete-preview", WORKBENCH_PREVIEW_VERSION, "preview")[0])]
+    cache-from = [format("type=registry,ref=%s", get_tags(builds.os, "r-session-complete-preview", WORKBENCH_PREVIEW_VERSION, "preview")[0])]
+
     dockerfile = "Dockerfile.${builds.os}"
     context = "r-session-complete"
     contexts = {
@@ -409,6 +433,9 @@ target "workbench-daily" {
     name = "workbench-daily-${builds.os}-${replace(tag_safe_version(WORKBENCH_DAILY_VERSION), ".", "-")}"
     tags = get_tags(builds.os, "rstudio-workbench-preview", WORKBENCH_DAILY_VERSION, "daily")
 
+    cache-to = [format("type=registry,ref=%s", get_tags(builds.os, "rstudio-workbench-preview", WORKBENCH_DAILY_VERSION, "daily")[0])]
+    cache-from = [format("type=registry,ref=%s", get_tags(builds.os, "rstudio-workbench-preview", WORKBENCH_DAILY_VERSION, "daily")[0])]
+
     dockerfile = "Dockerfile.${builds.os}"
     context = "workbench"
     contexts = {
@@ -433,6 +460,9 @@ target "workbench-preview" {
 
     name = "workbench-preview-${builds.os}-${replace(tag_safe_version(WORKBENCH_PREVIEW_VERSION), ".", "-")}"
     tags = get_tags(builds.os, "rstudio-workbench-preview", WORKBENCH_PREVIEW_VERSION, "preview")
+
+    cache-to = [format("type=registry,ref=%s", get_tags(builds.os, "rstudio-workbench-preview", WORKBENCH_PREVIEW_VERSION, "preview")[0])]
+    cache-from = [format("type=registry,ref=%s", get_tags(builds.os, "rstudio-workbench-preview", WORKBENCH_PREVIEW_VERSION, "preview")[0])]
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "workbench"

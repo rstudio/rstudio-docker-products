@@ -243,6 +243,9 @@ target "product-base" {
         "docker.io/rstudio/product-base:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
     ]
 
+    cache-to = ["type=registry,ref=ghcr.io/rstudio/product-base:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}"]
+    cache-from = ["type=registry,ref=ghcr.io/rstudio/product-base:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}"]
+
     dockerfile = "Dockerfile.${builds.os}"
     context = "product/base"
 
@@ -265,6 +268,9 @@ target "product-base-pro" {
         "ghcr.io/rstudio/product-base-pro:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
         "docker.io/rstudio/product-base-pro:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
     ]
+
+    cache-to = ["type=registry,ref=ghcr.io/rstudio/product-base-pro:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}"]
+    cache-from = ["type=registry,ref=ghcr.io/rstudio/product-base-pro:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}"]
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "product/pro"
@@ -291,6 +297,9 @@ target "package-manager" {
     name = "package-manager-${builds.os}-${replace(PACKAGE_MANAGER_VERSION, ".", "-")}"
     tags = get_tags(builds.os, "rstudio-package-manager", PACKAGE_MANAGER_VERSION)
 
+    cache-to = [format("type=registry,ref=%s", get_tags(builds.os, "rstudio-package-manager", PACKAGE_MANAGER_VERSION)[0])]
+    cache-from = [format("type=registry,ref=%s", get_tags(builds.os, "rstudio-package-manager", PACKAGE_MANAGER_VERSION)[0])]
+
     dockerfile = "Dockerfile.${builds.os}"
     context = "package-manager"
     contexts = {
@@ -315,6 +324,9 @@ target "connect" {
     name = "connect-${builds.os}-${replace(CONNECT_VERSION, ".", "-")}"
     tags = get_tags(builds.os, "rstudio-connect", CONNECT_VERSION)
 
+    cache-to = [format("type=registry,ref=%s", get_tags(builds.os, "rstudio-connect", CONNECT_VERSION)[0])]
+    cache-from = [format("type=registry,ref=%s", get_tags(builds.os, "rstudio-connect", CONNECT_VERSION)[0])]
+
     dockerfile = "Dockerfile.${builds.os}"
     context = "connect"
     contexts = {
@@ -335,6 +347,9 @@ target "connect" {
 target "connect-content-init" {
     inherits = ["base"]
     target = "build"
+
+    cache-to = [format("type=registry,ref=%s", get_tags(builds.os, "rstudio-connect-content-init", CONNECT_VERSION)[0])]
+    cache-from = [format("type=registry,ref=%s", get_tags(builds.os, "rstudio-connect-content-init", CONNECT_VERSION)[0])]
 
     name = "connect-content-init-${builds.os}-${replace(CONNECT_VERSION, ".", "-")}"
     tags = get_tags(builds.os, "rstudio-connect-content-init", CONNECT_VERSION)
@@ -360,6 +375,9 @@ target "content-base" {
         "docker.io/rstudio/content-base:r${builds.r}-py${builds.py}-${builds.os_alt}",
     ]
 
+    cache-to = ["type=registry,ref=ghcr.io/rstudio/content-base:r${builds.r}-py${builds.py}-${builds.os}"]
+    cache-from = ["type=registry,ref=ghcr.io/rstudio/content-base:r${builds.r}-py${builds.py}-${builds.os}"]
+
     dockerfile = "Dockerfile.${builds.os}"
     context = "content/base"
 
@@ -382,6 +400,9 @@ target "content-pro" {
         "docker.io/rstudio/content-pro:r${builds.r}-py${builds.py}-${builds.os_alt}",
     ]
 
+    cache-to = ["type=registry,ref=ghcr.io/rstudio/content-pro:r${builds.r}-py${builds.py}-${builds.os}"]
+    cache-from = ["type=registry,ref=ghcr.io/rstudio/content-pro:r${builds.r}-py${builds.py}-${builds.os}"]
+
     contexts = {
         content-base = "target:content-base-r${replace(builds.r, ".", "-")}-py${replace(builds.py, ".", "-")}-${builds.os}"
     }
@@ -403,6 +424,9 @@ target "r-session-complete" {
 
     name = "r-session-complete-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"
     tags = get_tags(builds.os, "r-session-complete", WORKBENCH_VERSION)
+
+    cache-to = [format("type=registry,ref=%s", get_tags(builds.os, "r-session-complete", WORKBENCH_VERSION)[0])]
+    cache-from = [format("type=registry,ref=%s", get_tags(builds.os, "r-session-complete", WORKBENCH_VERSION)[0])]
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "r-session-complete"
@@ -435,6 +459,9 @@ target "workbench" {
         product-base-pro = "target:product-base-pro-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
     }
 
+    cache-to = [format("type=registry,ref=%s", get_tags(builds.os, "rstudio-workbench", WORKBENCH_VERSION)[0])]
+    cache-from = [format("type=registry,ref=%s", get_tags(builds.os, "rstudio-workbench", WORKBENCH_VERSION)[0])]
+
     matrix = WORKBENCH_BUILD_MATRIX
     args = {
         R_VERSION = builds.r_primary
@@ -463,6 +490,9 @@ target "workbench-for-google-cloud-workstations" {
         "asia-docker.pkg.dev/posit-images/cloud-workstations/workbench:${tag_safe_version(WORKBENCH_VERSION)}",
         "asia-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
     ]
+
+    cache-to = ["type=registry,ref=us-central1-docker.pkg.dev/posit-images/cloud-workstations/workbench:${tag_safe_version(WORKBENCH_VERSION)}"]
+    cache-from = ["type=registry,ref=us-central1-docker.pkg.dev/posit-images/cloud-workstations/workbench:${tag_safe_version(WORKBENCH_VERSION)}"]
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "workbench-for-google-cloud-workstations"
@@ -529,6 +559,9 @@ target "workbench-for-microsoft-azure-ml" {
 
     name = "workbench-for-microsoft-azure-ml-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"
     tags = get_tags(builds.os, "rstudio-workbench-for-microsoft-azure-ml", WORKBENCH_VERSION)
+
+    cache-to = [format("type=registry,ref=%s", get_tags(builds.os, "rstudio-workbench-for-microsoft-azure-ml", WORKBENCH_VERSION)[0])]
+    cache-from = [format("type=registry,ref=%s", get_tags(builds.os, "rstudio-workbench-for-microsoft-azure-ml", WORKBENCH_VERSION)[0])]
 
     contexts = {
         build = "target:build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"
