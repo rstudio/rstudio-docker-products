@@ -114,8 +114,6 @@ function get_tags {
 variable BASE_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "centos7", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.11.9", py_alternate = "3.10.14"},
-            {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.11.9", py_alternate = "3.10.14"},
             {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.11.9", py_alternate = "3.10.14"},
         ]
     }
