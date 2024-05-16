@@ -87,7 +87,8 @@ preview-plan branch="$(git branch --show-current)":
 
 # just test workbench
 test target="default" file="docker-bake.hcl":
-  python3 {{justfile_directory()}}/tools/test_bake_artifacts.py --target "{{target}}" --file "{{file}}"
+  GIT_SHA=$(git rev-parse --short HEAD) \
+    python3 {{justfile_directory()}}/tools/test_bake_artifacts.py --target "{{target}}" --file "{{file}}"
 
 # just preview-test connect dev
 preview-test target="default" branch="$(git branch --show-current)":
