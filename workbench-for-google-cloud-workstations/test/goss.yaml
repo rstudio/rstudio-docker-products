@@ -1,13 +1,10 @@
 user:
   rstudio-server:
     exists: true
-    uid: 999
-    gid: 998
 
 group:
   rstudio-server:
     exists: true
-    gid: 998
 
 package:
   rstudio-server:
@@ -155,11 +152,11 @@ file:
 
 command:
   # Check OS release version (early heads up in case the base image is modified)
-  Check OS version is "focal":
+  Check OS version is "jammy":
     exec: "lsb_release -cs"
     exit-status: 0
     stdout: [
-      "focal"
+      "jammy"
     ]
   Test Workbench Monitor rstudio-server.log creation:
     exec: su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'
