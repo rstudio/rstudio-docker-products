@@ -67,7 +67,7 @@ else
         echo "Empty 'RSW_TESTUSER' variables, not creating test user";
     else
         if [ -z "$RSW_TESTUSER_UID" ]; then
-            RSW_TESTUSER_UID=1000
+            RSW_TESTUSER_UID=10000
         fi
         useradd -m -s /bin/bash -u $RSW_TESTUSER_UID -U $RSW_TESTUSER
         echo "$RSW_TESTUSER:$RSW_TESTUSER_PASSWD" | sudo chpasswd
