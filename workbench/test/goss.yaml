@@ -70,8 +70,8 @@ file:
     owner: rstudio-server
     group: rstudio-server
   {{ $version_split := split "." .Env.RSW_VERSION }}
-  {{ if or (lt ($version_split._0 | atoi) 2022) (and (eq ($version_split._0 | atoi) 2022) (lt ($version_split._1 | atoi) 12)) }}
-  /opt/code-server/bin/code-server:
+  {{ if or (ge ($version_split._0 | atoi) 2025) (and (ge ($version_split._0 | atoi) 2024) (ge ($version_split._1 | atoi) 7)) }}
+  /usr/lib/rstudio-server/bin/pwb-code-server/bin/code-server:
     exists: true
   {{ else }}
   /usr/lib/rstudio-server/bin/code-server/bin/code-server:
