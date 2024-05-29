@@ -94,6 +94,7 @@ install_python() {
     apt-get install $APT_ARGS "/tmp/python-${PYTHON_VERSION}.deb"
     rm "/tmp/python-${PYTHON_VERSION}.deb"
     # Upgrade pip and setuptools to latest version
+    $PYTHON_BIN -m ensurepip --upgrade
     $PYTHON_BIN -m pip install -U setuptools
     $PYTHON_BIN -m pip install -U pip
 }
