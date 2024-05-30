@@ -1,3 +1,7 @@
+# 2024-05-25
+
+- Enables TensorFlow Serving.
+
 # 2024-05-24
 
 - Installs the TensorFlow Serving universal binary.
