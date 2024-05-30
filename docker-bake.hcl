@@ -118,7 +118,7 @@ variable PACKAGE_MANAGER_BUILD_MATRIX {
 variable CONNECT_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.9.17", py_alternate = "3.8.17", quarto = DEFAULT_QUARTO_VERSION},
+            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.1", py_alternate = "3.11.7", quarto = DEFAULT_QUARTO_VERSION},
         ]
     }
 }

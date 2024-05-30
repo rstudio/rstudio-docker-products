@@ -1,6 +1,8 @@
 # 2024-05-30
 
-- BREAKING: Upgrade installed R versions to 4.4.0 and 4.3.3.
+- BREAKING:
+  - Upgrade installed R versions to 4.4.0 and 4.3.3.
+  - Upgrade installed Python versions to 3.12.1 and 3.11.7.
 - Enables TensorFlow Serving.
 - Installs the TensorFlow Serving universal binary.
 
