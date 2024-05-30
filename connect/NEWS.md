@@ -1,3 +1,7 @@
+# 2024-05-24
+
+- Installs the TensorFlow Serving universal binary.
+
 # 2024-04-30
 
 - BREAKING: Upgrade the default Quarto version to 1.4.552.
