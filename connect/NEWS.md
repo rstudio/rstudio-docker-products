@@ -1,6 +1,6 @@
 # 2024-05-30
 
-- BREAKING: Upgrade the default R version to 4.4.0. R version 4.1.3 has been removed.
+- BREAKING: Upgrade installed R versions to 4.4.0 and 4.3.3.
 - Enables TensorFlow Serving.
 - Installs the TensorFlow Serving universal binary.
 
