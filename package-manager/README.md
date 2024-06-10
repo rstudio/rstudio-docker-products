@@ -6,16 +6,16 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`jammy`, `ubuntu2204`, `jammy-2024.04.2`, `ubuntu2204-2024.04.2`](https://github.com/rstudio/rstudio-docker-products/blob/main/package-manager/Dockerfile.ubuntu2204)
+* [`jammy`, `ubuntu2204`, `jammy-2023.12.0`, `ubuntu2204-2023.12.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/package-manager/Dockerfile.ubuntu2204)
 
 # What is RStudio Package Manager?
 
-Posit Package Manager, formerly RStudio Package Manager, is a repository management server to organize and centralize
-R packages across your team, department, or entire organization. Get offline access to CRAN, automate CRAN syncs,
-share local packages, restrict package access, find packages across repositories, and more. Experience reliable and
+Posit Package Manager, formerly RStudio Package Manager, is a repository management server to organize and centralize 
+R packages across your team, department, or entire organization. Get offline access to CRAN, automate CRAN syncs, 
+share local packages, restrict package access, find packages across repositories, and more. Experience reliable and 
 consistent package management, optimized for teams who use R.
 
-The following documentation helps an administrator install and configure Package Manager. It provides information for
+The following documentation helps an administrator install and configure Package Manager. It provides information for 
 installing the product on different operating systems, upgrading, and configuring Package Manager.
 
 # Notice for support
@@ -148,15 +148,15 @@ to [create and manage](https://docs.rstudio.com/rspm/admin/getting-started/confi
 *Note: This section **does not** apply to activations using license files.*
 
 There is currently a known licensing bug when using our products in containers. If the container is not stopped
-gracefully, the license deactivation step may fail or be skipped. Failing to deactivate the license can result in a
-"license leak" where a product activation is used up and cannot be deactivated using traditional methods as the
+gracefully, the license deactivation step may fail or be skipped. Failing to deactivate the license can result in a 
+"license leak" where a product activation is used up and cannot be deactivated using traditional methods as the 
 activation state on the container has been lost.
 
-To avoid "leaking" licenses, we encourage users not to force kill containers and to use `--stop-timeout 120` and
-`--time 120` for `docker run` and `docker stop` commands respectively. This helps ensure the deactivation script has
+To avoid "leaking" licenses, we encourage users not to force kill containers and to use `--stop-timeout 120` and 
+`--time 120` for `docker run` and `docker stop` commands respectively. This helps ensure the deactivation script has 
 ample time to run properly.
 
-In some situations, it can be difficult or impossible to avoid a hard termination (e.g. power failure,
+In some situations, it can be difficult or impossible to avoid a hard termination (e.g. power failure, 
 critical error on host). Unfortunately, any of these cases can still cause a license to leak an activation. To help
 prevent a license leak in these situations, users can mount the following directories to persistent storage to preserve
 the license state data across restarts of the container. **These directories differ between products.**
@@ -171,13 +171,13 @@ the license state data across restarts of the container. **These directories dif
 Please note that the files created in these directories are hardware locked and non-transferable between hosts. Due to
 the nature of the hardware fingerprinting algorithm, any low-level changes to the host or container can cause existing
 license state files to invalidate. To avoid this problem, we advise that product containers are gracefully shutdown
-and allowed to deactivate prior to changing any hardware or firmware on the host (e.g. upgrading a network card or
+and allowed to deactivate prior to changing any hardware or firmware on the host (e.g. upgrading a network card or 
 updating BIOS) or the container (e.g. changing the network driver used or the allocated number of CPU cores).
 
 While preserving license state data *can* help avoid license leaks across restarts, it's not a guarantee. If you run
 into issues with your license, please do not hesitate to [contact Posit support](https://support.posit.co/hc/en-us).
 
-While neither of these solutions will eliminate the problem, they should help mitigate it. We are still investigating a
+While neither of these solutions will eliminate the problem, they should help mitigate it. We are still investigating a 
 long-term solution.
 
 # Licensing

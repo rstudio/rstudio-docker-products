@@ -4,7 +4,7 @@ variable CONNECT_VERSION {
 }
 
 variable PACKAGE_MANAGER_VERSION {
-    default = "2024.04.2-24"
+    default = "2024.04.0-20"
 }
 
 variable WORKBENCH_VERSION {
@@ -110,7 +110,7 @@ variable PRO_BUILD_MATRIX {
 variable PACKAGE_MANAGER_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.1", py_alternate = "3.11.7"},
+            {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.12.1", py_alternate = "3.11.7"},
         ]
     }
 }
