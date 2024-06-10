@@ -1,6 +1,3 @@
-# 2024-05-31
-- Update R to 4.4.0
-
 # 2024-01-11
 - Update Python to 3.12.1
 
