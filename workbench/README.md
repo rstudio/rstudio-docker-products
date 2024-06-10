@@ -7,7 +7,7 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`jammy`, `ubuntu2204`, `jammy-2024.04.1`, `ubuntu2204-2024.04.1`](https://github.com/rstudio/rstudio-docker-products/blob/main/workbench/Dockerfile.ubuntu2204)
+* [`jammy`, `ubuntu2204`, `jammy-2024.04.2`, `ubuntu2204-2024.04.2`](https://github.com/rstudio/rstudio-docker-products/blob/main/workbench/Dockerfile.ubuntu2204)
 
 # What is RStudio Workbench?
 
