@@ -31,6 +31,7 @@ verify_installation(){
 # Support RSP_ or RSW_ prefix
 RSP_LICENSE=${RSP_LICENSE:-${RSW_LICENSE}}
 RSP_LICENSE_SERVER=${RSP_LICENSE_SERVER:-${RSW_LICENSE_SERVER}}
+RSW_LICENSE_DATA=${RSW_LICENSE_DATA}
 
 # Activate License
 RSW_LICENSE_FILE_PATH=${RSW_LICENSE_FILE_PATH:-/etc/rstudio-server/license.lic}
@@ -40,6 +41,9 @@ elif [ -n "$RSP_LICENSE_SERVER" ]; then
     ${LICENSE_MANAGER_PATH}/license-manager license-server $RSP_LICENSE_SERVER || true
 elif test -f "$RSW_LICENSE_FILE_PATH"; then
     ${LICENSE_MANAGER_PATH}/license-manager activate-file $RSW_LICENSE_FILE_PATH || true
+elif [ -n "$RSW_LICENSE_DATA" ]; then
+    echo "$RSW_LICENSE_DATA" > /etc/rstudio-server/license.lic
+    ${LICENSE_MANAGER_PATH}/license-manager activate-file /etc/rstudio-server/license.lic || true
 fi
 
 # ensure these cannot be inherited by child processes
@@ -47,6 +51,7 @@ unset RSP_LICENSE
 unset RSP_LICENSE_SERVER
 unset RSW_LICENSE
 unset RSW_LICENSE_SERVER
+unset RSW_LICENSE_DATA
 
 # Start Launcher
 if [ "$RSW_LAUNCHER" == "true" ]; then
