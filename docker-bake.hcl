@@ -160,7 +160,7 @@ variable CONTENT_BUILD_MATRIX {
       {os = "ubuntu2204", os_alt = "jammy", r = "4.4.0", py = "3.12.3", drivers = "2024.03.0", quarto = "1.4.553"},
 
       # R-4.4, Python-3.12.4, Quarto-1.4.556 (polyfill.js vulnerability patch)
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.4.1", py = "3.12.4", drivers = "2024.03.0", quarto = "1.4.553"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.4.1", py = "3.12.4", drivers = "2024.03.0", quarto = "1.4.556"},
     ]
   }
 }
