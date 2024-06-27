@@ -28,7 +28,7 @@ variable DRIVERS_VERSION {
 }
 
 variable DEFAULT_QUARTO_VERSION {
-    default = "1.4.552"
+    default = "1.4.556"
 }
 
 variable DEFAULT_JUPYTERLAB_VERSION {
