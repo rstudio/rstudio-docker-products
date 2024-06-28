@@ -60,7 +60,7 @@ unset RSW_LICENSE
 unset RSW_LICENSE_SERVER
 
 # Create one user
-if [ $(getent passwd $RSW_TESTUSER_UID) ] ; then
+if [ "$(getent passwd $RSW_TESTUSER_UID)" ] ; then
     echo "UID $RSW_TESTUSER_UID already exists, not creating $RSW_TESTUSER test user";
 else
     if [ -z "$RSW_TESTUSER" ]; then
