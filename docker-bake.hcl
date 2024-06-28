@@ -16,7 +16,7 @@ variable DRIVERS_VERSION {
 }
 
 variable DEFAULT_QUARTO_VERSION {
-    default = "1.4.552"
+    default = "1.4.557"
 }
 
 variable DEFAULT_JUPYTERLAB_VERSION {
@@ -158,6 +158,9 @@ variable CONTENT_BUILD_MATRIX {
 
       # R-4.4, Python-3.12, Quarto-1.4.
       {os = "ubuntu2204", os_alt = "jammy", r = "4.4.0", py = "3.12.3", drivers = "2024.03.0", quarto = "1.4.553"},
+
+      # R-4.4, Python-3.12.4, Quarto-1.4.557 (polyfill.js vulnerability patch)
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.4.1", py = "3.12.4", drivers = "2024.03.0", quarto = "1.4.557"},
     ]
   }
 }

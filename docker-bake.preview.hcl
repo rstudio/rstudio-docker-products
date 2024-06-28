@@ -28,7 +28,7 @@ variable DRIVERS_VERSION {
 }
 
 variable DEFAULT_QUARTO_VERSION {
-    default = "1.4.556"
+    default = "1.4.557"
 }
 
 variable DEFAULT_JUPYTERLAB_VERSION {
@@ -227,7 +227,7 @@ target "product-base-dev" {
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
         TINI_VERSION = "0.19.0"
-        QUARTO_VERSION = "1.3.340"
+        QUARTO_VERSION = "1.4.557"
     }
 }
 
