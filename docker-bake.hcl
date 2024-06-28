@@ -359,6 +359,10 @@ target "content-base" {
         "ghcr.io/rstudio/content-base:r${builds.r}-py${builds.py}-${builds.os_alt}",
         "docker.io/rstudio/content-base:r${builds.r}-py${builds.py}-${builds.os}",
         "docker.io/rstudio/content-base:r${builds.r}-py${builds.py}-${builds.os_alt}",
+        "ghcr.io/rstudio/content-base:r${builds.r}-py${builds.py}-quarto${builds.quarto}-${builds.os}",
+        "ghcr.io/rstudio/content-base:r${builds.r}-py${builds.py}-quarto${builds.quarto}-${builds.os_alt}",
+        "docker.io/rstudio/content-base:r${builds.r}-py${builds.py}-quarto${builds.quarto}-${builds.os}",
+        "docker.io/rstudio/content-base:r${builds.r}-py${builds.py}-quarto${builds.quarto}-${builds.os_alt}",
     ]
 
     dockerfile = "Dockerfile.${builds.os}"
