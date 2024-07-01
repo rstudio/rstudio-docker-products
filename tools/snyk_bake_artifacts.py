@@ -97,7 +97,11 @@ def build_snyk_command(target_name, target_spec, snyk_command, opts):
             image_type = get_image_type(target_spec)
             tags += f",image_type={image_type}"
             cmd.append(tags)
+        elif snyk_command == "sbom":
+            cmd.append("--format=cyclonedx1.4+json")
     cmd.append(target_spec["tags"][0])
+    if snyk_command == "sbom":
+        cmd.append("> sbom.json")
     return cmd
 
 
