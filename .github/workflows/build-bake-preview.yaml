@@ -99,6 +99,7 @@ jobs:
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   connect-daily:
     needs: [versions]
@@ -137,6 +138,7 @@ jobs:
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   connect-content-init-daily:
     needs: [versions]
@@ -175,6 +177,7 @@ jobs:
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   package-manager-preview:
     needs: [versions]
@@ -213,6 +216,7 @@ jobs:
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   package-manager-daily:
     needs: [versions]
@@ -251,6 +255,7 @@ jobs:
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   r-session-complete-preview:
     needs: [versions]
@@ -289,6 +294,7 @@ jobs:
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   r-session-complete-daily:
     needs: [versions]
@@ -327,6 +333,7 @@ jobs:
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   workbench-preview:
     needs: [versions]
@@ -365,6 +372,7 @@ jobs:
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   workbench-daily:
     needs: [versions]
@@ -403,3 +411,4 @@ jobs:
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'

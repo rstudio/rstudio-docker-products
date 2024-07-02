@@ -63,6 +63,7 @@ jobs:
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   connect:
     needs: [setup]
@@ -96,6 +97,7 @@ jobs:
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   connect-content-init:
     needs: [setup]
@@ -129,6 +131,7 @@ jobs:
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   content:
     needs: [setup]
@@ -162,6 +165,7 @@ jobs:
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   package-manager:
     needs: [setup]
@@ -195,6 +199,7 @@ jobs:
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   r-session-complete:
     needs: [setup]
@@ -228,6 +233,7 @@ jobs:
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   workbench:
     needs: [setup]
@@ -261,6 +267,7 @@ jobs:
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   workbench-for-google-cloud-workstations:
     needs: [setup]
@@ -294,6 +301,7 @@ jobs:
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   workbench-for-microsoft-azure-ml:
     needs: [setup]
@@ -327,3 +335,4 @@ jobs:
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'

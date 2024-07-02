@@ -41,6 +41,10 @@ inputs:
     description: JSON for authenticating Google Cloud Platform
     default: ""
     type: string
+  snyk-token:
+    description: Token for authenticating with Snyk
+    default: ""
+    type: string
 
 runs:
   using: "composite"
@@ -50,6 +54,13 @@ runs:
       uses: extractions/setup-just@v2
       env:
         GITHUB_TOKEN: ${{ inputs.ghcr-token }}
+
+    - uses: snyk/actions/setup@master
+
+    - name: Snyk auth
+      shell: bash
+      run: |
+        snyk auth ${{ inputs.snyk-token }}
 
     - uses: actions/setup-python@v5
       with:
