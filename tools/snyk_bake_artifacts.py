@@ -77,9 +77,11 @@ def build_snyk_command(target_name, target_spec, snyk_command, opts):
                 f"--org={SNYK_ORG}",
                 f"--file={str(docker_file_path)}",
                 "--platform=linux/amd64",
-                f"--project-name={target_name}",
+                f"--project-name={target_spec['tags'][-1]}",
                 f"--sarif-file-output=snyk.sarif",
                 "--exclude-base-image-vulns",
+                "--severity-threshold=high",
+                f"--policy-path={target_spec['context']}",
             ])
         elif snyk_command == "monitor":
             cmd.extend([
@@ -87,12 +89,13 @@ def build_snyk_command(target_name, target_spec, snyk_command, opts):
                 f"--org={SNYK_ORG}",
                 f"--file={str(docker_file_path)}",
                 "--platform=linux/amd64",
-                f"--project-name={target_name}",
+                f"--project-name={target_spec['tags'][-1]}",
                 "--project-environment=distributed",
                 "--project-lifecycle=production",
                 "--exclude-base-image-vulns",
+                f"--policy-path={target_spec['context']}",
             ])
-            tags = f"--project-tags=product={target_spec['context']},image_tag={target_spec['tags'][0]},os_distro=ubuntu,os_version=22.04"
+            tags = f"--project-tags=product={target_spec['context']},image_tag={target_spec['tags'][1]},os_distro=ubuntu,os_version=22.04"
             version = get_version(target_spec)
             if version:
                 tags += f",version={version}"
