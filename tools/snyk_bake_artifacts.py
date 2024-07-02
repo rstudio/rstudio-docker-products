@@ -101,7 +101,7 @@ def build_snyk_command(target_name, target_spec, snyk_command, opts):
             cmd.append("--format=cyclonedx1.4+json")
     cmd.append(target_spec["tags"][0])
     if snyk_command == "sbom":
-        cmd.append("> sbom.json")
+        cmd.append(f"> {target_name}_sbom.json")
     return cmd
 
 

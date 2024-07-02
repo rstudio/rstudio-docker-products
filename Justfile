@@ -24,6 +24,8 @@ PYTHON_VERSION_ALT_RHEL := "3.8.15"
 
 QUARTO_VERSION := "1.4.553"
 
+SNYK_ORG := env("SNYK_ORG", "")
+
 export RSC_LICENSE := ""
 export RSPM_LICENSE := ""
 export RSW_LICENSE := ""
@@ -114,6 +116,57 @@ preview-test target="default" branch="$(git branch --show-current)":
   CONNECT_DAILY_VERSION="${CONNECT_DAILY_VERSION}" \
   BRANCH="${BRANCH}" \
   python3 {{justfile_directory()}}/tools/test_bake_artifacts.py --file docker-bake.preview.hcl --target "{{target}}"
+
+# just snyk-test workbench
+snyk-test target="default" file="docker-bake.hcl" *opts="":
+  SNYK_ORG="{{SNYK_ORG}}" \
+  GIT_SHA=$(git rev-parse --short HEAD) \
+    python3 {{justfile_directory()}}/tools/snyk_bake_artifacts.py --target "{{target}}" --file "{{file}}" test {{opts}}
+
+# just snyk-monitor workbench
+snyk-monitor target="default" file="docker-bake.hcl" *opts="":
+  SNYK_ORG="{{SNYK_ORG}}" \
+  GIT_SHA=$(git rev-parse --short HEAD) \
+    python3 {{justfile_directory()}}/tools/snyk_bake_artifacts.py --target "{{target}}" --file "{{file}}" monitor {{opts}}
+
+# just snyk-sbom workbench
+snyk-sbom target="default" file="docker-bake.hcl" *opts="":
+  SNYK_ORG="{{SNYK_ORG}}" \
+  GIT_SHA=$(git rev-parse --short HEAD) \
+    python3 {{justfile_directory()}}/tools/snyk_bake_artifacts.py --target "{{target}}" --file "{{file}}" sbom {{opts}}
+
+# just preview-snyk-test workbench
+preview-snyk-test target="default" branch="$(git branch --show-current)" *opts="":
+  WORKBENCH_DAILY_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local) \
+  WORKBENCH_PREVIEW_VERSION=$(just -f ci.Justfile get-version workbench --type=preview --local) \
+  PACKAGE_MANAGER_DAILY_VERSION=$(just -f ci.Justfile get-version package-manager --type=daily --local) \
+  CONNECT_DAILY_VERSION=$(just -f ci.Justfile get-version connect --type=daily --local) \
+  BRANCH="{{branch}}" \
+  SNYK_ORG="{{SNYK_ORG}}" \
+  GIT_SHA=$(git rev-parse --short HEAD) \
+    python3 {{justfile_directory()}}/tools/snyk_bake_artifacts.py --target "{{target}}" --file "docker-bake.preview.hcl" test {{opts}}
+
+# just snyk-monitor workbench
+preview-snyk-monitor target="default" branch="$(git branch --show-current)" *opts="":
+  WORKBENCH_DAILY_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local) \
+  WORKBENCH_PREVIEW_VERSION=$(just -f ci.Justfile get-version workbench --type=preview --local) \
+  PACKAGE_MANAGER_DAILY_VERSION=$(just -f ci.Justfile get-version package-manager --type=daily --local) \
+  CONNECT_DAILY_VERSION=$(just -f ci.Justfile get-version connect --type=daily --local) \
+  BRANCH="{{branch}}" \
+  SNYK_ORG="{{SNYK_ORG}}" \
+  GIT_SHA=$(git rev-parse --short HEAD) \
+    python3 {{justfile_directory()}}/tools/snyk_bake_artifacts.py --target "{{target}}" --file "docker-bake.preview.hcl" monitor {{opts}}
+
+# just snyk-sbom workbench
+preview-snyk-sbom target="default" branch="$(git branch --show-current)" *opts="":
+  WORKBENCH_DAILY_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local) \
+  WORKBENCH_PREVIEW_VERSION=$(just -f ci.Justfile get-version workbench --type=preview --local) \
+  PACKAGE_MANAGER_DAILY_VERSION=$(just -f ci.Justfile get-version package-manager --type=daily --local) \
+  CONNECT_DAILY_VERSION=$(just -f ci.Justfile get-version connect --type=daily --local) \
+  BRANCH="{{branch}}" \
+  SNYK_ORG="{{SNYK_ORG}}" \
+  GIT_SHA=$(git rev-parse --short HEAD) \
+    python3 {{justfile_directory()}}/tools/snyk_bake_artifacts.py --target "{{target}}" --file "docker-bake.preview.hcl" sbom {{opts}}
 
 # just lint workbench ubuntu2204
 lint $PRODUCT $OS:

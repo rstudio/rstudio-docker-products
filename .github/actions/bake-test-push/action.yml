@@ -17,6 +17,10 @@ inputs:
     description: Flag to test image once built
     default: true
     type: boolean
+  scan-image:
+    description: Flag to scan image for vulnerabilities once built
+    default: true
+    type: boolean
   push-image:
     description: Flag to push image once built
     default: false
@@ -109,7 +113,27 @@ runs:
     - name: Test
       shell: bash
       run: |
-        just test "${{ inputs.target }}" "${{ inputs.bakefile }}"
+        if [[ "${{ inputs.test-image }}" == "true" ]]; then
+          just test "${{ inputs.target }}" "${{ inputs.bakefile }}"
+        fi
+
+    - name: Scan
+      shell: bash
+      run: |
+        if [[ "${{ inputs.scan-image }}" == "true" ]]; then
+          if [[ "${{ inputs.push-image }}" == "true" ]]; then
+            just snyk-monitor "${{ inputs.target }}" "${{ inputs.bakefile }}"
+          else
+            just snyk-test "${{ inputs.target }}" "${{ inputs.bakefile }}"
+          fi
+        fi
+
+    - name: Upload results
+      uses: github/codeql-action/upload-sarif@v2
+      continue-on-error: true
+      with:
+          sarif_file: "${{ inputs.target }}.sarif"
+          category: snyk-vulnerabilities
 
     - name: Push - ${{ inputs.push-image }}
       uses: docker/bake-action@v4
