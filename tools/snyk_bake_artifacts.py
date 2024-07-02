@@ -79,6 +79,7 @@ def build_snyk_command(target_name, target_spec, snyk_command, opts):
                 "--platform=linux/amd64",
                 f"--project-name={target_name}",
                 f"--sarif-file-output=snyk.sarif",
+                "--exclude-base-image-vulns",
             ])
         elif snyk_command == "monitor":
             cmd.extend([
@@ -89,6 +90,7 @@ def build_snyk_command(target_name, target_spec, snyk_command, opts):
                 f"--project-name={target_name}",
                 "--project-environment=distributed",
                 "--project-lifecycle=production",
+                "--exclude-base-image-vulns",
             ])
             tags = f"--project-tags=product={target_spec['context']},image_tag={target_spec['tags'][0]},os_distro=ubuntu,os_version=22.04"
             version = get_version(target_spec)
