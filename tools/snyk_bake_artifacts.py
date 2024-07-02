@@ -78,7 +78,7 @@ def build_snyk_command(target_name, target_spec, snyk_command, opts):
                 f"--file={str(docker_file_path)}",
                 "--platform=linux/amd64",
                 f"--project-name={target_name}",
-                f"--sarif-file-output={target_name}.sarif",
+                f"--sarif-file-output=snyk.sarif",
             ])
         elif snyk_command == "monitor":
             cmd.extend([

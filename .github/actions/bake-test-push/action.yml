@@ -141,11 +141,11 @@ runs:
         fi
 
     - name: Upload results
-      uses: github/codeql-action/upload-sarif@v2
+      uses: github/codeql-action/upload-sarif@v3
       continue-on-error: true
       with:
-          sarif_file: "${{ inputs.target }}.sarif"
-          category: snyk-vulnerabilities
+          sarif_file: "snyk.sarif"
+          category: "${{ inputs.target }}-snyk-vulnerabilities"
 
     - name: Push - ${{ inputs.push-image }}
       uses: docker/bake-action@v4
