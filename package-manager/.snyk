@@ -1,0 +1,12 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.25.0
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  SNYK-GOLANG-GITHUBCOMJACKCPGXV4-7416900:
+    - '*':
+        reason: >-
+          Reported upstream in
+          https://github.com/rstudio/package-manager/issues/13981
+        expires: 2024-10-01T00:00:00.000Z
+        created: 2024-07-03T14:03:16.019Z
+patch: {}

@@ -135,6 +135,10 @@ snyk-sbom target="default" file="docker-bake.hcl" *opts="":
   GIT_SHA=$(git rev-parse --short HEAD) \
     python3 {{justfile_directory()}}/tools/snyk_bake_artifacts.py --target "{{target}}" --file "{{file}}" sbom {{opts}}
 
+# just snyk-ignore workbench SNYK-XXXX-XXXX-XXXX "Reported upstream in <link>" 2024-08-31
+snyk-ignore context snyk_id reason expiry:
+  snyk ignore --id="{{snyk_id}}" --reason="{{reason}}" --expiry="{{expiry}}" --policy-path="{{context}}"
+
 # just preview-snyk-test workbench
 preview-snyk-test target="default" branch="$(git branch --show-current)" *opts="":
   WORKBENCH_DAILY_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local) \
