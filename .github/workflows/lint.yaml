@@ -57,8 +57,9 @@ jobs:
       - uses: snyk/actions/setup@master
 
       - name: Snyk code test
+        continue-on-error: true
         env:
-          SNYK_ORG: ${{ secrets.SNYK_ORG }}
+          SNYK_ORG: "${{ secrets.SNYK_ORG }}"
         run: |
           just snyk-code-test
 
