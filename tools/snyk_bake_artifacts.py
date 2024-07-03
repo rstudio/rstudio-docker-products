@@ -78,7 +78,7 @@ def build_snyk_command(target_name, target_spec, snyk_command, opts):
                 f"--file={str(docker_file_path)}",
                 "--platform=linux/amd64",
                 f"--project-name={target_spec['tags'][-1]}",
-                f"--sarif-file-output=snyk.sarif",
+                f"--sarif-file-output=container.sarif",
                 "--severity-threshold=high",
                 f"--policy-path={target_spec['context']}",
             ])

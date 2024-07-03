@@ -117,6 +117,10 @@ preview-test target="default" branch="$(git branch --show-current)":
   BRANCH="${BRANCH}" \
   python3 {{justfile_directory()}}/tools/test_bake_artifacts.py --file docker-bake.preview.hcl --target "{{target}}"
 
+# just snyk-code-test
+snyk-code-test:
+  snyk code test --org="{{SNYK_ORG}}" --sarif-file-output=code.sarif {{justfile_directory()}}
+
 # just snyk-test workbench
 snyk-test target="default" file="docker-bake.hcl" *opts="":
   SNYK_ORG="{{SNYK_ORG}}" \
