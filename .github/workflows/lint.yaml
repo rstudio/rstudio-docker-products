@@ -40,32 +40,3 @@ jobs:
         with:
           dockerfile: ${{ matrix.config.product }}/Dockerfile.${{ matrix.config.os }}
           config: ./hadolint.yaml
-
-  snyk-code:
-    runs-on: ubuntu-latest
-    name: snyk-code
-
-    steps:
-      - name: Check Out Repo
-        uses: actions/checkout@v4
-
-      - name: Set up Just
-        uses: extractions/setup-just@v2
-        env:
-          GITHUB_TOKEN: ${{ inputs.ghcr-token }}
-
-      - uses: snyk/actions/setup@master
-
-      - name: Snyk code test
-        continue-on-error: true
-        env:
-          SNYK_ORG: "${{ secrets.SNYK_ORG }}"
-        run: |
-          just snyk-code-test
-
-      - name: Upload results
-        uses: github/codeql-action/upload-sarif@v3
-        continue-on-error: true
-        with:
-          sarif_file: "code.sarif"
-          category: "snyk-repo-code-vulnerabilities"
