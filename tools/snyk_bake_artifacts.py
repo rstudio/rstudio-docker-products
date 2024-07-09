@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Run tests against bake artifacts by group/target and build definition.
+Run Snyk vulnerability scanning against bake artifacts by group/target and build definition.
 
-./test_bake_artifacts.py --file <build definition> --target <build target or group>
+./snyk_bake_artifacts.py --file <build definition> --target <build target or group> <snyk command> <snyk options (no leading --)>
 """
 
 import argparse
