@@ -41,6 +41,10 @@ inputs:
     description: JSON for authenticating Google Cloud Platform
     default: ""
     type: string
+  snyk-org:
+    description: Organization ID for Snyk
+    default: ""
+    type: string
   snyk-token:
     description: Token for authenticating with Snyk
     default: ""
@@ -130,6 +134,8 @@ runs:
 
     - name: Scan
       continue-on-error: true
+      env:
+        SNYK_ORG: ${{ inputs.snyk-org }}
       shell: bash
       run: |
         if [[ "${{ inputs.scan-image }}" == "true" ]]; then

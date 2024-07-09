@@ -63,6 +63,7 @@ jobs:
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-org: ${{ secrets.SNYK_ORG }}
           snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   connect:
@@ -97,6 +98,7 @@ jobs:
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-org: ${{ secrets.SNYK_ORG }}
           snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   connect-content-init:
@@ -131,6 +133,7 @@ jobs:
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-org: ${{ secrets.SNYK_ORG }}
           snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   content:
@@ -165,6 +168,7 @@ jobs:
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-org: ${{ secrets.SNYK_ORG }}
           snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   package-manager:
@@ -199,6 +203,7 @@ jobs:
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-org: ${{ secrets.SNYK_ORG }}
           snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   r-session-complete:
@@ -233,6 +238,7 @@ jobs:
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-org: ${{ secrets.SNYK_ORG }}
           snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   workbench:
@@ -267,6 +273,7 @@ jobs:
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-org: ${{ secrets.SNYK_ORG }}
           snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   workbench-for-google-cloud-workstations:
@@ -301,6 +308,7 @@ jobs:
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-org: ${{ secrets.SNYK_ORG }}
           snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   workbench-for-microsoft-azure-ml:
@@ -335,4 +343,5 @@ jobs:
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-org: ${{ secrets.SNYK_ORG }}
           snyk-token: '${{ secrets.SNYK_TOKEN }}'
