@@ -72,16 +72,16 @@ function get_ubuntu_tags {
         "ghcr.io/rstudio/${product}:${get_os_alt_name(os)}-${tag_safe_version(product_version)}",
         "ghcr.io/rstudio/${product}:${get_os_alt_name(os)}-${clean_version(product_version)}",
         "ghcr.io/rstudio/${product}:${get_os_alt_name(os)}-${clean_version(product_version)}--${GIT_SHA}",
-        "ghcr.io/rstudio/${product}:${os}",
         "ghcr.io/rstudio/${product}:${get_os_alt_name(os)}",
+        "ghcr.io/rstudio/${product}:${os}",
         "docker.io/rstudio/${product}:${get_os_alt_name(os)}-${tag_safe_version(product_version)}",
         "docker.io/rstudio/${product}:${get_os_alt_name(os)}-${clean_version(product_version)}",
         "docker.io/rstudio/${product}:${get_os_alt_name(os)}-${clean_version(product_version)}--${GIT_SHA}",
         "docker.io/rstudio/${product}:${os}-${tag_safe_version(product_version)}",
         "docker.io/rstudio/${product}:${os}-${clean_version(product_version)}",
         "docker.io/rstudio/${product}:${os}-${clean_version(product_version)}--${GIT_SHA}",
-        "docker.io/rstudio/${product}:${os}",
         "docker.io/rstudio/${product}:${get_os_alt_name(os)}",
+        "docker.io/rstudio/${product}:${os}",
     ]
 }
 
