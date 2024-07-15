@@ -26,7 +26,6 @@ usage() {
     echo "      --add-path-tinytex        Add TinyTeX to PATH using Quarto"
     echo "      --update-tinytex          Update TinyTeX using Quarto"
     echo "      --uninstall-tinytex       Uninstall TinyTeX from Quarto"
-
 }
 
 
@@ -39,7 +38,7 @@ UPDATE_TINYTEX=0
 UNINSTALL_TINYTEX=0
 
 
-OPTIONS=$(getopt -o hdr: --long help,debug,prefix,use-workbench-quarto,install-tinytex,add-path-tinytex,update-tinytex: -- "$@")
+OPTIONS=$(getopt -o hdr: --long help,debug,prefix:,use-workbench-quarto,install-tinytex,add-path-tinytex,update-tinytex,uninstall-tinytex -- "$@")
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
     exit 1;
@@ -87,7 +86,7 @@ while true; do
     esac
 done
 
-if [ -z "$QUARTO_VERSION" ]; then
+if [ -z "$QUARTO_VERSION" ] && [[ "$QUARTO_PATH" != "/lib/rstudio-server/bin/quarto/bin/quarto" ]]; then
     usage
     exit 1
 fi

@@ -233,3 +233,10 @@ command:
   "/usr/local/bin/quarto check --quiet":
     title: quarto_check
     exit-status: 0
+
+# Ensure TinyTeX is installed
+  "quarto list tools":
+    title: quarto_tinytex_installed
+    exit-status: 0
+    stderr:
+      - "/tinytex\\s+Up to date\\s+v\\d{4}\\.\\d{2}\\.\\d{2}\\s+v\\d{4}\\.\\d{2}\\.\\d{2}/"
