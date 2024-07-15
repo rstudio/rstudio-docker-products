@@ -161,7 +161,6 @@ COPY startup/* /startup/base/
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY --chmod=600 sssd.conf /etc/sssd/sssd.conf
 COPY conf/* /etc/rstudio/
-COPY --chmod=600 conf/launcher.p* /etc/rstudio
 
 # GCW specific
 COPY --chmod=755 workstation-startup/* /etc/workstation-startup.d/
