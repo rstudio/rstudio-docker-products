@@ -21,7 +21,6 @@ usage() {
     echo "      --prefix                  Install Quarto to a custom prefix"
     echo "                                Each version of Quarto will have its own subdirectory"
     echo "                                Default: /opt/quarto"
-    echo "      --use-workbench-quarto    Use the Quarto version bundled in Workbench"
     echo "      --install-tinytex         Install TinyTeX using Quarto"
     echo "      --add-path-tinytex        Add TinyTeX to PATH using Quarto"
     echo "      --update-tinytex          Update TinyTeX using Quarto"
@@ -36,7 +35,13 @@ ADD_PATH_TINYTEX=0
 INSTALL_TINYTEX=0
 UPDATE_TINYTEX=0
 UNINSTALL_TINYTEX=0
+IS_WORKBENCH_INSTALLATION=0
 
+# Set Quarto Path to the bundled version in Workbench if it exists
+if [ -f "/lib/rstudio-server/bin/quarto/bin/quarto" ]; then
+    QUARTO_PATH="/lib/rstudio-server/bin/quarto/bin/quarto"
+    IS_WORKBENCH_INSTALLATION=1
+fi
 
 OPTIONS=$(getopt -o hdr: --long help,debug,prefix:,use-workbench-quarto,install-tinytex,add-path-tinytex,update-tinytex,uninstall-tinytex -- "$@")
 # shellcheck disable=SC2181
@@ -60,10 +65,6 @@ while true; do
             PREFIX="$2"
             shift 2
             ;;
-        --use-workbench-quarto)
-            QUARTO_PATH="/lib/rstudio-server/bin/quarto/bin/quarto"
-            shift
-            ;;
         --install-tinytex)
             INSTALL_TINYTEX=1
             shift
@@ -86,7 +87,7 @@ while true; do
     esac
 done
 
-if [ -z "$QUARTO_VERSION" ] && [[ "$QUARTO_PATH" != "/lib/rstudio-server/bin/quarto/bin/quarto" ]]; then
+if [ -z "$QUARTO_VERSION" ] && [[ "$IS_WORKBENCH_INSTALLATION" -eq 0 ]]; then
     usage
     exit 1
 fi
@@ -120,7 +121,7 @@ install_tinytex() {
     fi
 }
 
-if [[ "$QUARTO_PATH" != "/lib/rstudio-server/bin/quarto/bin/quarto" ]]; then
+if [[ "$IS_WORKBENCH_INSTALLATION" -eq 0 ]]; then
     # Skip installation if Quarto is bundled with Workbench
     install_quarto
 fi
