@@ -204,7 +204,7 @@ command:
     ]
   {{ $python_version := .Env.PYTHON_VERSION }}
   {{ $python_version_alt := .Env.PYTHON_VERSION_ALT }}
-  {{ $py_package_list := readFile "/tmp/deps/py_packages.txt" | splitList "\n" }}
+  {{ $py_package_list := readFile "/tmp/deps/requirements.txt" | splitList "\n" }}
   {{- range $py_package_list }}
   Check Python {{ $python_version }} has "{{.}}" installed:
     exec: /opt/python/{{$python_version}}/bin/pip show {{.}}
