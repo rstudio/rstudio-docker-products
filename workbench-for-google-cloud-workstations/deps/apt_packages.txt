@@ -22,6 +22,7 @@ libuser1-dev
 libxext6
 libxrender1
 locales
+lsb-release
 oddjob-mkhomedir
 rrdtool
 sssd

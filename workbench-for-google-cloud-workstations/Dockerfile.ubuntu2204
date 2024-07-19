@@ -56,8 +56,10 @@ RUN ${SCRIPTS_DIR}/apt.sh --update \
 
 ### Install Python versions ###
 COPY deps/requirements.txt /tmp/requirements.txt
-RUN PYTHON_VERSION=${PYTHON_VERSION} ${SCRIPTS_DIR}/install_python.sh -r /tmp/requirements.txt \
+RUN ${SCRIPTS_DIR}/apt.sh --update \
+    && PYTHON_VERSION=${PYTHON_VERSION} ${SCRIPTS_DIR}/install_python.sh -r /tmp/requirements.txt \
     && PYTHON_VERSION=${PYTHON_VERSION_ALT} ${SCRIPTS_DIR}/install_python.sh -r /tmp/requirements.txt \
+    && ${SCRIPTS_DIR}/apt.sh --clean \
     && ln -s /opt/python/${PYTHON_VERSION} /opt/python/default \
     && rm -f /tmp/requirements.txt
 
