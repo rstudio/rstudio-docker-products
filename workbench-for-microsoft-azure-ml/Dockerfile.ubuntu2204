@@ -46,6 +46,8 @@ RUN apt-get update \
     && gpg --keyserver keys.openpgp.org --recv-keys 51C0B5BB19F92D60 \
     && dpkg-sig --verify ./rstudio-workbench.deb \
     && apt-get install -yq --no-install-recommends ./rstudio-workbench.deb \
+    # a wild hack to ensure that workbench can install _and start_ completely before shutdown
+    && sleep 30 \
     && rm ./rstudio-workbench.deb \
     && mkdir -p /opt/rstudio-license/ \
     && mkdir -p /var/lib/rstudio-workbench/ \
@@ -58,6 +60,10 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/rstudio-server/r-versions
+
+# Workaround to ensure no pre-generated certificates are included in image distributions.
+# This happens in the step immediately following Workbench installation in case the certificates are generated.
+RUN rm -f /etc/rstudio/launcher.pem /etc/rstudio/launcher.pub
 
 ### Install Quarto to PATH ###
 RUN ln -s /lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto
