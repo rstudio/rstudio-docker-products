@@ -1,10 +1,10 @@
 #!/bin/bash
-set -x
+set -xe
 
 RSW_TIMEOUT=${RSW_TIMEOUT:-60}
 
 touch /tmp/startup.log
-trap 'err=$?; echo >&2 "run_tests.sh encountered an error: $err"; cat /tmp/startup.log; ls -ltra /etc/rstudio; exit $err' ERR
+trap 'err=$?; echo >&2 "run_tests.sh encountered an error: $err"; cat /tmp/startup.log; exit $err' ERR
 
 # start rstudio-server
 echo "--> Starting RStudio Workbench"
