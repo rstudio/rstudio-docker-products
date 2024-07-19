@@ -90,12 +90,18 @@ RUN curl -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION
     && dpkg-sig --verify ./rstudio-workbench.deb \
     && apt-get update \
     && apt-get install -y --no-install-recommends ./rstudio-workbench.deb \
+    # a wild hack to ensure that workbench can install _and start_ completely before shutdown
+    && sleep 30 \
     && rm ./rstudio-workbench.deb \
     && apt-get remove -yq dpkg-sig \
     && apt-get autoremove -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/rstudio-server/r-versions
+
+# Workaround to ensure no pre-generated certificates are included in image distributions.
+# This happens in the step immediately following Workbench installation in case the certificates are generated.
+RUN rm -f /etc/rstudio/launcher.pem /etc/rstudio/launcher.pub
 
 ### Install GCW License Manager ###
 # TODO(ianpittwood): Replace monitor download with $RSW_VERSION after upgrading to 2023.06.0
