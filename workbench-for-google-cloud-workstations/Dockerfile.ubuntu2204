@@ -117,6 +117,10 @@ RUN curl -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/rstudio-server/r-versions
 
+# Workaround to ensure no pre-generated certificates are included in image distributions.
+# This happens in the step immediately following Workbench installation in case the certificates are generated.
+RUN rm -f /etc/rstudio/launcher.pem /etc/rstudio/launcher.pub
+
 ### Install GCW License Manager ###
 # TODO(ianpittwood): Replace monitor download with $RSW_VERSION after upgrading to 2023.06.0
 RUN mkdir -p /opt/rstudio-license/ \
