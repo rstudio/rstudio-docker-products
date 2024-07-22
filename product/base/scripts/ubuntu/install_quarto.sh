@@ -43,7 +43,7 @@ if [ -f "/lib/rstudio-server/bin/quarto/bin/quarto" ]; then
     IS_WORKBENCH_INSTALLATION=1
 fi
 
-OPTIONS=$(getopt -o hdr: --long help,debug,prefix:,use-workbench-quarto,install-tinytex,add-path-tinytex,update-tinytex,uninstall-tinytex -- "$@")
+OPTIONS=$(getopt -o hd --long help,debug,prefix:,install-tinytex,add-path-tinytex,update-tinytex,uninstall-tinytex -- "$@")
 # shellcheck disable=SC2181
 if [[ $? -ne 0 ]]; then
     exit 1;
