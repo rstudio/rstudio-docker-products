@@ -30,14 +30,6 @@ RUN gpg --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 595E85A6B1
     && chmod +x /tini \
     && ln -s /tini /usr/local/bin/tini
 
-### Install TinyTeX ###
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN curl -sL "https://yihui.org/tinytex/install-bin-unix.sh" | sh \
-    && /root/.TinyTeX/bin/*/tlmgr path remove \
-    && mv /root/.TinyTeX/ /opt/TinyTeX \
-    && /opt/TinyTeX/bin/*/tlmgr option sys_bin /usr/local/bin \
-    && /opt/TinyTeX/bin/*/tlmgr path add
-
 ### Install R versions ###
 RUN R_VERSION=${R_VERSION} ${SCRIPTS_DIR}/install_r.sh \
     && R_VERSION=${R_VERSION_ALT} ${SCRIPTS_DIR}/install_r.sh \

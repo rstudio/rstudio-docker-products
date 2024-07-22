@@ -70,6 +70,9 @@ RUN rm -f /etc/rstudio/launcher.pem /etc/rstudio/launcher.pub
 ### Install Quarto to PATH ###
 RUN ln -s /lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto
 
+### Install TinyTeX using Quarto ###
+RUN $SCRIPTS_DIR/install_quarto.sh --install-tinytex --add-path-tinytex
+
 COPY maybe_install_vs_code.sh /tmp/maybe_install_vs_code.sh
 RUN /tmp/maybe_install_vs_code.sh \
     && rm /tmp/maybe_install_vs_code.sh

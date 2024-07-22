@@ -12,7 +12,7 @@ ARG QUARTO_VERSION=1.4.557
 ARG SCRIPTS_DIR=/opt/positscripts
 
 ### Install Quarto ###
-RUN QUARTO_VERSION=${QUARTO_VERSION} ${SCRIPTS_DIR}/install_quarto.sh \
+RUN QUARTO_VERSION=${QUARTO_VERSION} ${SCRIPTS_DIR}/install_quarto.sh --install-tinytex --add-path-tinytex \
     && ln -s /opt/quarto/${QUARTO_VERSION}/bin/quarto /usr/local/bin/quarto
 
 SHELL [ "/bin/bash", "-o", "pipefail", "-c"]

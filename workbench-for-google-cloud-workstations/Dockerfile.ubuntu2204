@@ -69,9 +69,6 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-### Install Quarto to PATH ###
-RUN ln -s /lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto
-
 ### Install Pro Drivers ###
 RUN ${SCRIPTS_DIR}/apt.sh --update upgrade \
     && ${SCRIPTS_DIR}/apt.sh install unixodbc unixodbc-dev \
@@ -98,6 +95,12 @@ RUN curl -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/rstudio-server/r-versions
+
+### Install Quarto to PATH ###
+RUN ln -s /lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto
+
+### Install TinyTeX using Quarto ###
+RUN $SCRIPTS_DIR/install_quarto.sh --install-tinytex --add-path-tinytex
 
 # Workaround to ensure no pre-generated certificates are included in image distributions.
 # This happens in the step immediately following Workbench installation in case the certificates are generated.
