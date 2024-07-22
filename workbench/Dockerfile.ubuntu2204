@@ -63,8 +63,15 @@ RUN apt-get update \
     && rm -rf /var/lib/rstudio-server/r-versions \
     && rm -rf /var/lib/rstudio-launcher/Local/jobs/buildkitsandbox
 
+# Workaround to ensure no pre-generated certificates are included in image distributions.
+# This happens in the step immediately following Workbench installation in case the certificates are generated.
+RUN rm -f /etc/rstudio/launcher.pem /etc/rstudio/launcher.pub
+
 ### Install Quarto to PATH ###
 RUN ln -s /lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto
+
+### Install TinyTeX using Quarto ###
+RUN $SCRIPTS_DIR/install_quarto.sh --install-tinytex --add-path-tinytex
 
 COPY maybe_install_vs_code.sh /tmp/maybe_install_vs_code.sh
 RUN /tmp/maybe_install_vs_code.sh \

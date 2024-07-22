@@ -17,6 +17,10 @@ inputs:
     description: Flag to test image once built
     default: true
     type: boolean
+  scan-image:
+    description: Flag to scan image for vulnerabilities once built
+    default: true
+    type: boolean
   push-image:
     description: Flag to push image once built
     default: false
@@ -37,6 +41,14 @@ inputs:
     description: JSON for authenticating Google Cloud Platform
     default: ""
     type: string
+  snyk-org:
+    description: Organization ID for Snyk
+    default: ""
+    type: string
+  snyk-token:
+    description: Token for authenticating with Snyk
+    default: ""
+    type: string
 
 runs:
   using: "composite"
@@ -46,6 +58,13 @@ runs:
       uses: extractions/setup-just@v2
       env:
         GITHUB_TOKEN: ${{ inputs.ghcr-token }}
+
+    - uses: snyk/actions/setup@master
+
+    - name: Snyk auth
+      shell: bash
+      run: |
+        snyk auth ${{ inputs.snyk-token }}
 
     - uses: actions/setup-python@v5
       with:
@@ -109,7 +128,30 @@ runs:
     - name: Test
       shell: bash
       run: |
-        just test "${{ inputs.target }}" "${{ inputs.bakefile }}"
+        if [[ "${{ inputs.test-image }}" == "true" ]]; then
+          just test "${{ inputs.target }}" "${{ inputs.bakefile }}"
+        fi
+
+    - name: Scan
+      continue-on-error: true
+      env:
+        SNYK_ORG: ${{ inputs.snyk-org }}
+      shell: bash
+      run: |
+        if [[ "${{ inputs.scan-image }}" == "true" ]]; then
+          if [[ "${{ inputs.push-image }}" == "true" ]]; then
+            just snyk-monitor "${{ inputs.target }}" "${{ inputs.bakefile }}"
+          else
+            just snyk-test "${{ inputs.target }}" "${{ inputs.bakefile }}"
+          fi
+        fi
+
+    - name: Upload results
+      uses: github/codeql-action/upload-sarif@v3
+      continue-on-error: true
+      with:
+          sarif_file: "container.sarif"
+          category: "${{ inputs.target }}-snyk-vulnerabilities"
 
     - name: Push - ${{ inputs.push-image }}
       uses: docker/bake-action@v4

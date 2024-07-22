@@ -1,3 +1,4 @@
+FROM product-base-pro as posit_base
 FROM us-central1-docker.pkg.dev/cloud-workstations-images/predefined/base:latest as build
 
 ### ARG declarations ###
@@ -28,56 +29,39 @@ ENV DIAGNOSTIC_ONLY false
 ENV LICENSE_MANAGER_PATH /opt/rstudio-license
 ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
 
+### Copy scripts from Posit Base ###
+COPY --from=posit_base /opt/positscripts /opt/positscripts
+
 ### Copy package lists and install scripts ###
-COPY deps/* /
+COPY deps/* /tmp/
 
 ### Update/upgrade system packages ###
+COPY deps/apt_packages.txt /tmp/apt_packages.txt
 RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add - \
-    && apt-get update --fix-missing  \
-    && apt-get upgrade -yq \
-    && xargs -a /apt_packages.txt apt-get install -yq --no-install-recommends \
-    && rm /apt_packages.txt \
-    && rm -rf /var/lib/apt/lists/*
+    && ${SCRIPTS_DIR}/apt.sh --update upgrade \
+    && ${SCRIPTS_DIR}/apt.sh install $(cat /tmp/apt_packages.txt) \
+    && ${SCRIPTS_DIR}/apt.sh --clean \
+    && rm /tmp/apt_packages.txt
 
 ### Install R versions ###
-RUN curl -O https://cdn.rstudio.com/r/ubuntu-2204/pkgs/r-${R_VERSION}_1_amd64.deb \
-    && curl -O https://cdn.rstudio.com/r/ubuntu-2204/pkgs/r-${R_VERSION_ALT}_1_amd64.deb \
-    && apt-get update \
-    && apt-get install -yq --no-install-recommends ./r-${R_VERSION}_1_amd64.deb \
-    && apt-get install -yq --no-install-recommends ./r-${R_VERSION_ALT}_1_amd64.deb \
-    && rm -f ./r-${R_VERSION}_1_amd64.deb \
-    && rm -f ./r-${R_VERSION_ALT}_1_amd64.deb \
-    && ln -s /opt/R/${R_VERSION}/bin/R /usr/local/bin/R \
-    && ln -s /opt/R/${R_VERSION}/bin/Rscript /usr/local/bin/Rscript \
-    && rm -rf /var/lib/apt/lists/*
+COPY deps/r_packages.txt /tmp/r_packages.txt
+RUN ${SCRIPTS_DIR}/apt.sh --update \
+    && R_VERSION=${R_VERSION} ${SCRIPTS_DIR}/install_r.sh -r /tmp/r_packages.txt \
+    && R_VERSION=${R_VERSION_ALT} ${SCRIPTS_DIR}/install_r.sh -r /tmp/r_packages.txt \
+    && ${SCRIPTS_DIR}/apt.sh --clean \
+    && ln -s /opt/R/${R_VERSION} /opt/R/default \
+    && ln -s /opt/R/default/bin/R /usr/local/bin/R \
+    && ln -s /opt/R/default/bin/Rscript /usr/local/bin/Rscript \
+    && rm -f /tmp/r_packages.txt
 
 ### Install Python versions ###
-RUN curl -O https://cdn.rstudio.com/python/ubuntu-2204/pkgs/python-${PYTHON_VERSION}_1_amd64.deb \
-    && curl -O https://cdn.rstudio.com/python/ubuntu-2204/pkgs/python-${PYTHON_VERSION_ALT}_1_amd64.deb \
-    && apt-get update \
-    && apt-get install -yq --no-install-recommends ./python-${PYTHON_VERSION}_1_amd64.deb \
-    && apt-get install -yq --no-install-recommends ./python-${PYTHON_VERSION_ALT}_1_amd64.deb \
-    && rm -rf python-${PYTHON_VERSION}_1_amd64.deb \
-    && rm -rf python-${PYTHON_VERSION_ALT}_1_amd64.deb \
-    && /opt/python/${PYTHON_VERSION}/bin/python3 -m ensurepip --upgrade \
-    && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install 'virtualenv<20' \
-    && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install --upgrade setuptools \
-    && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install --upgrade pip \
-    && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip cache purge \
-    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m ensurepip --upgrade \
-    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install 'virtualenv<20' \
-    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install --upgrade setuptools \
-    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install --upgrade pip \
-    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip cache purge \
-    && rm -rf /var/lib/apt/lists/*
-
-### Install basic data science packages for Python and R ###
-RUN /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install -r /py_packages.txt \
-    && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip cache purge \
-    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install -r /py_packages.txt \
-    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip cache purge \
-    && ./install_r_packages.sh \
-    && rm install_r_packages.sh py_packages.txt r_packages.txt
+COPY deps/requirements.txt /tmp/requirements.txt
+RUN ${SCRIPTS_DIR}/apt.sh --update \
+    && PYTHON_VERSION=${PYTHON_VERSION} ${SCRIPTS_DIR}/install_python.sh -r /tmp/requirements.txt \
+    && PYTHON_VERSION=${PYTHON_VERSION_ALT} ${SCRIPTS_DIR}/install_python.sh -r /tmp/requirements.txt \
+    && ${SCRIPTS_DIR}/apt.sh --clean \
+    && ln -s /opt/python/${PYTHON_VERSION} /opt/python/default \
+    && rm -f /tmp/requirements.txt
 
 ### Locale configuration ###
 RUN localedef -i en_US -f UTF-8 en_US.UTF-8
@@ -85,17 +69,11 @@ ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 
-### Install Quarto to PATH ###
-RUN ln -s /lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto
-
 ### Install Pro Drivers ###
-RUN apt-get update \
-    && apt-get install -yq --no-install-recommends unixodbc unixodbc-dev \
-    && curl -O https://cdn.rstudio.com/drivers/7C152C12/installer/rstudio-drivers_${DRIVERS_VERSION}_amd64.deb \
-    && apt-get update \
-    && apt-get install -yq --no-install-recommends ./rstudio-drivers_${DRIVERS_VERSION}_amd64.deb \
-    && rm -f ./rstudio-drivers_${DRIVERS_VERSION}_amd64.deb \
-    && rm -rf /var/lib/apt/lists/* \
+RUN ${SCRIPTS_DIR}/apt.sh --update upgrade \
+    && ${SCRIPTS_DIR}/apt.sh install unixodbc unixodbc-dev \
+    && DRIVERS_VERSION=${DRIVERS_VERSION} ${SCRIPTS_DIR}/install_drivers.sh \
+    && ${SCRIPTS_DIR}/apt.sh --clean \
     && cp /opt/rstudio-drivers/odbcinst.ini.sample /etc/odbcinst.ini \
     && /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.rstudio.com/cran/__linux__/jammy/latest")'
 
@@ -109,17 +87,30 @@ RUN curl -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION
     && dpkg-sig --verify ./rstudio-workbench.deb \
     && apt-get update \
     && apt-get install -y --no-install-recommends ./rstudio-workbench.deb \
+    # a wild hack to ensure that workbench can install _and start_ completely before shutdown
+    && sleep 30 \
     && rm ./rstudio-workbench.deb \
+    && apt-get remove -yq dpkg-sig \
     && apt-get autoremove -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/rstudio-server/r-versions
 
+### Install Quarto to PATH ###
+RUN ln -s /lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto
+
+### Install TinyTeX using Quarto ###
+RUN $SCRIPTS_DIR/install_quarto.sh --install-tinytex --add-path-tinytex
+
+# Workaround to ensure no pre-generated certificates are included in image distributions.
+# This happens in the step immediately following Workbench installation in case the certificates are generated.
+RUN rm -f /etc/rstudio/launcher.pem /etc/rstudio/launcher.pub
+
 ### Install GCW License Manager ###
 # TODO(ianpittwood): Replace monitor download with $RSW_VERSION after upgrading to 2023.06.0
 RUN mkdir -p /opt/rstudio-license/ \
     && mkdir -p /var/lib/rstudio-workbench \
-    && curl -sL "https://s3.amazonaws.com/rstudio-ide-build/monitor/jammy/rsp-monitor-workbench-gcpw-amd64-2023.06.0-419.pro1.tar.gz" |  \
+    && curl -sL "https://s3.amazonaws.com/rstudio-ide-build/monitor/jammy/rsp-monitor-workbench-gcpw-amd64-${RSW_VERSION//+/-}.tar.gz" |  \
        tar xzvf - --strip 2 -C /opt/rstudio-license/ \
     && chmod 0755 /opt/rstudio-license/license-manager \
     && mv /opt/rstudio-license/license-manager /opt/rstudio-license/license-manager-orig \
@@ -161,18 +152,10 @@ COPY startup/* /startup/base/
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 COPY --chmod=600 sssd.conf /etc/sssd/sssd.conf
 COPY conf/* /etc/rstudio/
-COPY --chmod=600 conf/launcher.p* /etc/rstudio
 
 # GCW specific
 COPY --chmod=755 workstation-startup/* /etc/workstation-startup.d/
 COPY --chmod=644 jupyter/jupyter_notebook_config.json /opt/python/jupyter/etc/jupyter/jupyter_notebook_config.json
-
-### Clean up ###
-RUN apt-get remove -yq dpkg-sig \
-    && apt-get install -yqf --no-install-recommends \
-    && apt-get autoremove -yq \
-    && apt-get clean -yq \
-    && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 80/tcp
 EXPOSE 5559/tcp

@@ -72,16 +72,16 @@ function get_ubuntu_tags {
         "ghcr.io/rstudio/${product}:${get_os_alt_name(os)}-${tag_safe_version(product_version)}",
         "ghcr.io/rstudio/${product}:${get_os_alt_name(os)}-${clean_version(product_version)}",
         "ghcr.io/rstudio/${product}:${get_os_alt_name(os)}-${clean_version(product_version)}--${GIT_SHA}",
-        "ghcr.io/rstudio/${product}:${os}",
         "ghcr.io/rstudio/${product}:${get_os_alt_name(os)}",
+        "ghcr.io/rstudio/${product}:${os}",
         "docker.io/rstudio/${product}:${get_os_alt_name(os)}-${tag_safe_version(product_version)}",
         "docker.io/rstudio/${product}:${get_os_alt_name(os)}-${clean_version(product_version)}",
         "docker.io/rstudio/${product}:${get_os_alt_name(os)}-${clean_version(product_version)}--${GIT_SHA}",
         "docker.io/rstudio/${product}:${os}-${tag_safe_version(product_version)}",
         "docker.io/rstudio/${product}:${os}-${clean_version(product_version)}",
         "docker.io/rstudio/${product}:${os}-${clean_version(product_version)}--${GIT_SHA}",
-        "docker.io/rstudio/${product}:${os}",
         "docker.io/rstudio/${product}:${get_os_alt_name(os)}",
+        "docker.io/rstudio/${product}:${os}",
     ]
 }
 
@@ -184,7 +184,7 @@ variable WORKBENCH_BUILD_MATRIX {
 variable WORKBENCH_GOOGLE_CLOUD_WORKSTATION_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.11.9", py_alternate = "3.10.14"},
+            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.1", py_alternate = "3.11.7"},
         ]
     }
 }
@@ -471,6 +471,9 @@ target "workbench-for-google-cloud-workstations" {
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "workbench-for-google-cloud-workstations"
+    contexts = {
+        product-base-pro = "target:product-base-pro-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+    }
 
     matrix = WORKBENCH_GOOGLE_CLOUD_WORKSTATION_BUILD_MATRIX
     args = {
