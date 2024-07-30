@@ -22,13 +22,13 @@ jobs:
 
     steps:
       - name: Checkout
-        if: github.event.schedule == '0 8 * * 1'
+        if: github.event_name == 'schedule'
         uses: actions/checkout@v4
         with:
           ref: 'main'
 
       - name: Checkout
-        if: github.event.schedule != '0 8 * * 1'
+        if: github.event_name != 'schedule'
         uses: actions/checkout@v4
 
       - name: Get commit SHA
@@ -53,13 +53,13 @@ jobs:
 
     steps:
       - name: Checkout
-        if: github.event.schedule == '0 8 * * 1'
+        if: github.event_name == 'schedule'
         uses: actions/checkout@v4
         with:
           ref: 'main'
 
       - name: Checkout
-        if: github.event.schedule != '0 8 * * 1'
+        if: github.event_name != 'schedule'
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
@@ -72,7 +72,7 @@ jobs:
         uses: ./.github/actions/bake-test-push
         with:
           target: ${{ env.target }}
-          push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 8 * * 1' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
@@ -95,13 +95,13 @@ jobs:
 
     steps:
       - name: Checkout
-        if: github.event.schedule == '0 8 * * 1'
+        if: github.event_name == 'schedule'
         uses: actions/checkout@v4
         with:
           ref: 'main'
 
       - name: Checkout
-        if: github.event.schedule != '0 8 * * 1'
+        if: github.event_name != 'schedule'
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
@@ -114,7 +114,7 @@ jobs:
         uses: ./.github/actions/bake-test-push
         with:
           target: ${{ env.target }}
-          push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 8 * * 1' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
@@ -137,13 +137,13 @@ jobs:
 
     steps:
       - name: Checkout
-        if: github.event.schedule == '0 8 * * 1'
+        if: github.event_name == 'schedule'
         uses: actions/checkout@v4
         with:
           ref: 'main'
 
       - name: Checkout
-        if: github.event.schedule != '0 8 * * 1'
+        if: github.event_name != 'schedule'
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
@@ -156,7 +156,7 @@ jobs:
         uses: ./.github/actions/bake-test-push
         with:
           target: ${{ env.target }}
-          push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 8 * * 1' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
@@ -179,13 +179,13 @@ jobs:
 
     steps:
       - name: Checkout
-        if: github.event.schedule == '0 8 * * 1'
+        if: github.event_name == 'schedule'
         uses: actions/checkout@v4
         with:
           ref: 'main'
 
       - name: Checkout
-        if: github.event.schedule != '0 8 * * 1'
+        if: github.event_name != 'schedule'
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
@@ -198,7 +198,7 @@ jobs:
         uses: ./.github/actions/bake-test-push
         with:
           target: ${{ env.target }}
-          push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 8 * * 1' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
@@ -221,13 +221,13 @@ jobs:
 
     steps:
       - name: Checkout
-        if: github.event.schedule == '0 8 * * 1'
+        if: github.event_name == 'schedule'
         uses: actions/checkout@v4
         with:
           ref: 'main'
 
       - name: Checkout
-        if: github.event.schedule != '0 8 * * 1'
+        if: github.event_name != 'schedule'
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
@@ -240,7 +240,7 @@ jobs:
         uses: ./.github/actions/bake-test-push
         with:
           target: ${{ env.target }}
-          push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 8 * * 1' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
@@ -263,13 +263,13 @@ jobs:
 
     steps:
       - name: Checkout
-        if: github.event.schedule == '0 8 * * 1'
+        if: github.event_name == 'schedule'
         uses: actions/checkout@v4
         with:
           ref: 'main'
 
       - name: Checkout
-        if: github.event.schedule != '0 8 * * 1'
+        if: github.event_name != 'schedule'
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
@@ -282,7 +282,7 @@ jobs:
         uses: ./.github/actions/bake-test-push
         with:
           target: ${{ env.target }}
-          push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 8 * * 1' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
@@ -305,13 +305,13 @@ jobs:
 
     steps:
       - name: Checkout
-        if: github.event.schedule == '0 8 * * 1'
+        if: github.event_name == 'schedule'
         uses: actions/checkout@v4
         with:
           ref: 'main'
 
       - name: Checkout
-        if: github.event.schedule != '0 8 * * 1'
+        if: github.event_name != 'schedule'
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
@@ -324,7 +324,7 @@ jobs:
         uses: ./.github/actions/bake-test-push
         with:
           target: ${{ env.target }}
-          push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 8 * * 1' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
@@ -347,13 +347,13 @@ jobs:
 
     steps:
       - name: Checkout
-        if: github.event.schedule == '0 8 * * 1'
+        if: github.event_name == 'schedule'
         uses: actions/checkout@v4
         with:
           ref: 'main'
 
       - name: Checkout
-        if: github.event.schedule != '0 8 * * 1'
+        if: github.event_name != 'schedule'
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
@@ -366,7 +366,7 @@ jobs:
         uses: ./.github/actions/bake-test-push
         with:
           target: ${{ env.target }}
-          push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 8 * * 1' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
@@ -389,13 +389,13 @@ jobs:
 
     steps:
       - name: Checkout
-        if: github.event.schedule == '0 8 * * 1'
+        if: github.event_name == 'schedule'
         uses: actions/checkout@v4
         with:
           ref: 'main'
 
       - name: Checkout
-        if: github.event.schedule != '0 8 * * 1'
+        if: github.event_name != 'schedule'
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
@@ -408,7 +408,7 @@ jobs:
         uses: ./.github/actions/bake-test-push
         with:
           target: ${{ env.target }}
-          push-image: ${{ github.ref == 'refs/heads/main' || github.event.schedule == '0 8 * * 1' }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
