@@ -17,4 +17,9 @@ ignore:
           ingested in Workbench 2024.08.0 (expected within 1 week).
         expires: 2024-08-07T00:00:00.000Z
         created: 2024-07-31T17:46:24.852Z
+  SNYK-GOLANG-GOLANGORGXNETHTTP2-6531285:
+    - '*':
+        reason: Vulnerability in Google Cloud SDK.
+        expires: 2024-09-01T00:00:00.000Z
+        created: 2024-07-31T19:45:25.728Z
 patch: {}
