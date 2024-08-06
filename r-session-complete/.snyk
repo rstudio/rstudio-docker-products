@@ -11,7 +11,10 @@ ignore:
         created: 2024-07-02T20:33:30.847Z
   SNYK-GOLANG-GITHUBCOMGOJOSEGOJOSEV3-6070737:
     - '*':
-        reason: 'Reported upstream in https://github.com/rstudio/openid/issues/18'
-        expires: 2024-07-31T00:00:00.000Z
-        created: 2024-07-02T20:52:24.627Z
+        reason: >-
+          Confirmed fixed upstream in
+          https://github.com/rstudio/rstudio-pro/issues/6635. Patch will be
+          ingested in Workbench 2024.08.0 (expected within 1 week).
+        expires: 2024-08-07T00:00:00.000Z
+        created: 2024-07-31T17:46:24.852Z
 patch: {}
