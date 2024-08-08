@@ -17,6 +17,15 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 LOGGER = logging.getLogger(__name__)
 SNYK_ORG = os.getenv("SNYK_ORG")
 SERVICE_IMAGES = ["workbench-for-microsoft-azure=ml", "workbench-for-google-cloud-workstations"]
+SARIF_PATH_FILTERS = {
+    "connect": ["/opt/rstudio-connect/examples"],
+    "workbench-for-google-cloud-workstations": [
+        "/usr/lib/google-cloud-sdk",
+        "/usr/share",
+        "/usr/bin",
+        "/usr/local/go",
+    ],
+}
 
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 
@@ -78,7 +87,8 @@ def build_snyk_command(target_name, target_spec, snyk_command, opts):
                 f"--file={str(docker_file_path)}",
                 "--platform=linux/amd64",
                 f"--project-name={target_spec['tags'][-1]}",
-                f"--sarif-file-output=container.sarif",
+                "--sarif-file-output=container.sarif",
+                "--json-file-output=container.json",
                 "--severity-threshold=high",
                 f"--policy-path={target_spec['context']}",
             ])
@@ -112,6 +122,36 @@ def build_snyk_command(target_name, target_spec, snyk_command, opts):
     return cmd
 
 
+def filter_sarif_file(target_spec):
+    with open("container.sarif", "r") as f:
+        c_sarif = json.load(f)
+    with open("container.json", "r") as f:
+        c_json = json.load(f)
+    c_sarif_paths = c_sarif["runs"]
+    c_sarif_root = c_sarif_paths.pop(0)
+    c_json_paths = c_json["applications"]
+    filter_paths = SARIF_PATH_FILTERS.get(target_spec["context"], [])
+    filtered_c_sarif_paths = [c_sarif_root]
+    if len(c_sarif_paths) != len(c_json_paths):
+        LOGGER.error("SARIF and JSON number of discovered paths do not match")
+        return
+    for i in range(len(c_sarif_paths)):
+        if c_json_paths[i]["dependencyCount"] != c_sarif_paths[i]["tool"]["driver"]["properties"]["artifactsScanned"]:
+            LOGGER.warning(
+                f"Artifact count in JSON, {c_json_paths[i]['dependencyCount']}, "
+                f"differs from artifact count in SARIF, "
+                f"{c_sarif_paths[i]['tool']['driver']['properties']['artifactsScanned']}, for "
+                f"{c_json_paths[i]['displayTargetFile']}. This may cause incorrect filtering in the SARIF file."
+            )
+        if not any(p in c_json_paths[i]["targetFile"] for p in filter_paths):
+            filtered_c_sarif_paths.append(c_sarif_paths[i])
+    c_sarif["runs"] = filtered_c_sarif_paths
+    num_filtered_paths = len(c_sarif_paths) - len(filtered_c_sarif_paths)
+    LOGGER.info(f"Filtered {num_filtered_paths} paths from SARIF file")
+    with open("container.sarif", "w") as f:
+        json.dump(c_sarif, f, indent=2)
+
+
 def run_cmd(target_name, cmd):
     LOGGER.info(f"Running tests for {target_name}")
     LOGGER.info(f"{' '.join(cmd)}")
@@ -139,6 +179,9 @@ def main():
         if return_code != 0:
             failed_targets.append(target_name)
             result = 1
+        if target_spec["context"] in SARIF_PATH_FILTERS and args.command == "test":
+            LOGGER.info("Filtering SARIF output file for excluded paths...")
+            filter_sarif_file(target_spec)
     LOGGER.info(f"Failed targets: {failed_targets}")
     exit(result)
 

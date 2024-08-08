@@ -1,6 +1,6 @@
 ### Variable definitions ###
 variable CONNECT_VERSION {
-    default = "2024.06.0"
+    default = "2024.08.0"
 }
 
 variable PACKAGE_MANAGER_VERSION {
@@ -461,12 +461,12 @@ target "workbench-for-google-cloud-workstations" {
     tags = [
         "us-central1-docker.pkg.dev/posit-images/cloud-workstations/workbench:${tag_safe_version(WORKBENCH_VERSION)}",
         "us-central1-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
-        "us-docker.pkg.dev/posit-images/cloud-workstations/workbench:${tag_safe_version(WORKBENCH_VERSION)}",
-        "us-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
         "europe-docker.pkg.dev/posit-images/cloud-workstations/workbench:${tag_safe_version(WORKBENCH_VERSION)}",
         "europe-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
         "asia-docker.pkg.dev/posit-images/cloud-workstations/workbench:${tag_safe_version(WORKBENCH_VERSION)}",
         "asia-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
+        "us-docker.pkg.dev/posit-images/cloud-workstations/workbench:${tag_safe_version(WORKBENCH_VERSION)}",
+        "us-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
     ]
 
     dockerfile = "Dockerfile.${builds.os}"
