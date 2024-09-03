@@ -85,18 +85,10 @@ COPY supervisord.conf /etc/supervisor/supervisord.conf
 
 RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyter \
     && /opt/python/jupyter/bin/pip install \
-      jupyter \
-      jupyterlab=="${JUPYTERLAB_VERSION}" \
-      rsconnect_jupyter \
-      rsconnect_python \
-      rsp_jupyter \
-      workbench_jupyterlab \
-    && ln -s /opt/python/jupyter/bin/jupyter /usr/local/bin/jupyter \
-    && /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter \
-    && /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter \
-    && /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsconnect_jupyter \
-    && /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter \
-    && /opt/python/jupyter/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
+      jupyterlab~=4.2.4 \
+      notebook \
+      pwb_jupyterlab~=1.0 \
+    && ln -s /opt/python/jupyter/bin/jupyter /usr/local/bin/jupyter
 
 RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh && \
     chmod +x /usr/local/bin/wait-for-it.sh

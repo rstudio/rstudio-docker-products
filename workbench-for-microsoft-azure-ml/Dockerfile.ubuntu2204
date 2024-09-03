@@ -87,22 +87,14 @@ RUN apt-get update --fix-missing -qq \
     && rm -rf /var/lib/apt/lists/*
 
 ### Install Jupyter and extensions ###
-RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyter \
+RUN RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyter \
     && /opt/python/jupyter/bin/pip install \
-      jupyter \
-      jupyterlab=="${JUPYTERLAB_VERSION}" \
-      rsconnect_jupyter \
-      rsconnect_python \
-      rsp_jupyter \
-      workbench_jupyterlab \
+      jupyterlab~=4.2.4 \
+      notebook \
+      pwb_jupyterlab~=1.0 \
     && /opt/python/jupyter/bin/jupyter kernelspec remove python3 -f \
     && /opt/python/jupyter/bin/pip uninstall -y ipykernel \
     && ln -s /opt/python/jupyter/bin/jupyter /usr/local/bin/jupyter \
-    && /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter \
-    && /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter \
-    && /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsconnect_jupyter \
-    && /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter \
-    && /opt/python/jupyter/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter \
     && /opt/python/${PYTHON_VERSION}/bin/pip install \
       ipykernel \
       virtualenv \
