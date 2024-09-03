@@ -7,19 +7,40 @@ ignore:
         reason: >-
           Reported upstream in
           https://github.com/rstudio/rstudio-pro/issues/6529
-        expires: 2024-08-31T00:00:00.000Z
+        expires: 2024-10-01T00:00:00.000Z
         created: 2024-07-02T20:33:30.847Z
   SNYK-GOLANG-GITHUBCOMGOJOSEGOJOSEV3-6070737:
     - '*':
         reason: >-
           Confirmed fixed upstream in
           https://github.com/rstudio/rstudio-pro/issues/6635. Patch will be
-          ingested in Workbench 2024.08.0 (expected within 1 week).
-        expires: 2024-08-07T00:00:00.000Z
+          ingested in Workbench 2024.09.0.
+        expires: 2024-10-01T00:00:00.000Z
         created: 2024-07-31T17:46:24.852Z
-  SNYK-GOLANG-GOLANGORGXNETHTTP2-6531285:
+  SNYK-JS-WS-7266574:
     - '*':
-        reason: Vulnerability in Google Cloud SDK.
-        expires: 2024-09-01T00:00:00.000Z
-        created: 2024-07-31T19:45:25.728Z
+        reason: >-
+          VS Code usages will be patched will be ingested in Workbench
+          2024.09.0. Usages in JupyterLab are for tests and are unused in
+          Workbench releases.
+        expires: 2024-10-01T00:00:00.000Z
+        created: 2024-08-29T16:55:08.237Z
+  SNYK-JS-BRACES-6838727:
+    - '*':
+        reason: Patch will be ingested in Workbench 2024.09.0
+        expires: 2024-10-01T00:00:00.000Z
+        created: 2024-08-29T16:55:41.316Z
+  SNYK-JS-MICROMATCH-6838728:
+    - '*':
+        reason: Patch will be ingested in Workbench 2024.09.0
+        expires: 2024-10-01T00:00:00.000Z
+        created: 2024-08-29T16:56:02.849Z
+  SNYK-JS-SEMVER-3247795:
+    - '*':
+        reason: >-
+          This vulnerability should be inaccessible to malicious actors and
+          should not be exploitable in its usage in JupyterLab. I would expect
+          it to be upgraded by the end of the year regardless.
+        expires: 2024-12-31T00:00:00.000Z
+        created: 2024-08-29T17:26:48.024Z
 patch: {}
