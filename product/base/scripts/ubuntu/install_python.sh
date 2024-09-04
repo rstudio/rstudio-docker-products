@@ -88,7 +88,7 @@ install_python() {
     mkdir -p "$PREFIX"
 
     local python_url="https://cdn.rstudio.com/python/ubuntu-${UBUNTU_VERSION//./}/pkgs/python-${PYTHON_VERSION}_1_amd64.deb"
-    curl -sL "$python_url" -o "/tmp/python-${PYTHON_VERSION}.deb"
+    curl -fsSL "$python_url" -o "/tmp/python-${PYTHON_VERSION}.deb"
 
     # shellcheck disable=SC2086
     apt-get install $APT_ARGS "/tmp/python-${PYTHON_VERSION}.deb"

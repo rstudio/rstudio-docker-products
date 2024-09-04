@@ -9,7 +9,7 @@ RUN apt-get update -y \
     && apt-get install -y --no-install-recommends unixodbc unixodbc-dev \
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl -O https://cdn.rstudio.com/drivers/7C152C12/installer/rstudio-drivers_${DRIVERS_VERSION}_amd64.deb \
+RUN curl -fsSL -O https://cdn.rstudio.com/drivers/7C152C12/installer/rstudio-drivers_${DRIVERS_VERSION}_amd64.deb \
     && apt-get update \
     && apt-get install -yq --no-install-recommends ./rstudio-drivers_${DRIVERS_VERSION}_amd64.deb \
     && rm -rf /var/lib/apt/lists/* \

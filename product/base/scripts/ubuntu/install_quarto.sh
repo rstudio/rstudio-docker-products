@@ -101,7 +101,7 @@ install_quarto() {
     fi
 
     mkdir -p "/opt/quarto/${QUARTO_VERSION}"
-    wget -q -O - "https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.tar.gz" | tar xzf - -C "/opt/quarto/${QUARTO_VERSION}" --strip-components=1
+    curl -fsSL "https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.tar.gz" | tar xzf - -C "/opt/quarto/${QUARTO_VERSION}" --strip-components=1
 }
 
 update_tinytex() {

@@ -19,7 +19,7 @@ else
 fi
 
 # install goss to tmp location and make executable
-curl -sL https://github.com/aelsabbahy/goss/releases/download/v$GOSS_VERSION/goss-linux-amd64 -o /tmp/goss \
+curl -fsSL https://github.com/aelsabbahy/goss/releases/download/v$GOSS_VERSION/goss-linux-amd64 -o /tmp/goss \
   && chmod +x /tmp/goss \
   && GOSS=/tmp/goss
 
