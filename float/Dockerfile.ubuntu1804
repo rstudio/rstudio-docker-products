@@ -13,14 +13,14 @@ RUN apt-get update \
 
 # Runtime settings
 ARG TINI_VERSION=0.18.0
-RUN curl -L -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini \
+RUN curl -fsSL -o /usr/local/bin/tini https://github.com/krallin/tini/releases/download/v${TINI_VERSION}/tini \
     && chmod +x /usr/local/bin/tini
 
 # install license server binary
 ARG PRODUCT=rsp
 ARG VERSION=1.1.2
 ARG PORT=8989
-RUN curl -L -o "${PRODUCT}-license-server.deb" "https://s3.amazonaws.com/rstudio-license-server/${PRODUCT}-license-server-${VERSION}-x86_64.deb" \
+RUN curl -fsSL -o "${PRODUCT}-license-server.deb" "https://s3.amazonaws.com/rstudio-license-server/${PRODUCT}-license-server-${VERSION}-x86_64.deb" \
     && gdebi -n ${PRODUCT}-license-server.deb \
     && rm ${PRODUCT}-license-server.deb
 
