@@ -92,7 +92,7 @@ install_python() {
     mkdir -p "$PREFIX"
 
     local python_url="https://cdn.rstudio.com/python/${DISTRO}-${OS_VERSION}/pkgs/python-${PYTHON_VERSION}-1-1.x86_64.rpm"
-    curl -sL "$python_url" -o "/tmp/python-${PYTHON_VERSION}.rpm"
+    curl -fsSL "$python_url" -o "/tmp/python-${PYTHON_VERSION}.rpm"
 
     # shellcheck disable=SC2086
     yum install $YUM_ARGS "/tmp/python-${PYTHON_VERSION}.rpm"

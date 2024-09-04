@@ -87,8 +87,6 @@ while true; do
     esac
 done
 
-set -u
-
 if [ -z "$QUARTO_VERSION" ] && [[ "$IS_WORKBENCH_INSTALLATION" -eq 0 ]]; then
     usage
     exit 1

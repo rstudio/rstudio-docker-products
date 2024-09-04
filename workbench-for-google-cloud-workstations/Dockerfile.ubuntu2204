@@ -37,7 +37,7 @@ COPY deps/* /tmp/
 
 ### Update/upgrade system packages ###
 COPY deps/apt_packages.txt /tmp/apt_packages.txt
-RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add - \
+RUN curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add - \
     && ${SCRIPTS_DIR}/apt.sh --update upgrade \
     && ${SCRIPTS_DIR}/apt.sh install $(cat /tmp/apt_packages.txt) \
     && ${SCRIPTS_DIR}/apt.sh --clean \
@@ -79,7 +79,7 @@ RUN ${SCRIPTS_DIR}/apt.sh --update upgrade \
 
 ### Install Workbench ###
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN curl -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION//+/-}-amd64.deb" \
+RUN curl -fsSL -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION//+/-}-amd64.deb" \
     # Pre 7/25/23 packages
     && gpg --keyserver keyserver.ubuntu.com --recv-keys 3F32EE77E331692F \
     # Post 7/25 packages
@@ -110,7 +110,7 @@ RUN rm -f /etc/rstudio/launcher.pem /etc/rstudio/launcher.pub
 # TODO(ianpittwood): Replace monitor download with $RSW_VERSION after upgrading to 2023.06.0
 RUN mkdir -p /opt/rstudio-license/ \
     && mkdir -p /var/lib/rstudio-workbench \
-    && curl -sL "https://s3.amazonaws.com/rstudio-ide-build/monitor/jammy/rsp-monitor-workbench-gcpw-amd64-${RSW_VERSION//+/-}.tar.gz" |  \
+    && curl -fsSL "https://s3.amazonaws.com/rstudio-ide-build/monitor/jammy/rsp-monitor-workbench-gcpw-amd64-${RSW_VERSION//+/-}.tar.gz" |  \
        tar xzvf - --strip 2 -C /opt/rstudio-license/ \
     && chmod 0755 /opt/rstudio-license/license-manager \
     && mv /opt/rstudio-license/license-manager /opt/rstudio-license/license-manager-orig \

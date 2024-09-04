@@ -39,7 +39,7 @@ RUN apt-get update --fix-missing \
     && rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update \
-    && curl -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION//+/-}-amd64.deb" \
+    && curl -fsSL -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION//+/-}-amd64.deb" \
     # Pre 7/25/23 packages
     && gpg --keyserver keyserver.ubuntu.com --recv-keys 3F32EE77E331692F \
     # Post 7/25 packages
@@ -51,7 +51,7 @@ RUN apt-get update \
     && rm ./rstudio-workbench.deb \
     && mkdir -p /opt/rstudio-license/ \
     && mkdir -p /var/lib/rstudio-workbench/ \
-    && curl -sL "https://s3.amazonaws.com/rstudio-ide-build/monitor/jammy/rsp-monitor-workbench-azureml-amd64-${RSW_VERSION//+/-}.tar.gz" \
+    && curl -fsSL "https://s3.amazonaws.com/rstudio-ide-build/monitor/jammy/rsp-monitor-workbench-azureml-amd64-${RSW_VERSION//+/-}.tar.gz" \
     | tar xzvf - --strip 2 -C /opt/rstudio-license/ \
     && chmod 0755 /opt/rstudio-license/license-manager \
     && mv /opt/rstudio-license/license-manager /opt/rstudio-license/license-manager-orig \
@@ -122,7 +122,7 @@ RUN /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install -r /tmp/py_packages
 
 ADD --chmod=755 https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh /usr/local/bin/wait-for-it.sh
 
-RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash \
+RUN curl -fsSL https://aka.ms/InstallAzureCLIDeb | bash \
     && az extension add -n ml -y
 
 COPY conf/* /etc/rstudio/
