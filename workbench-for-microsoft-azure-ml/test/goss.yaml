@@ -157,4 +157,4 @@ command:
     title: quarto_tinytex_installed
     exit-status: 0
     stderr:
-      - "/tinytex\\s+Up to date\\s+v\\d{4}\\.\\d{2}\\.\\d{2}\\s+v\\d{4}\\.\\d{2}\\.\\d{2}/"
+      - "/tinytex\\s+Up to date\\s+v\\d{4}\\.\\d{2}(\\.\\d{2})?\\s+v\\d{4}\\.\\d{2}(\\.\\d{2})?/"
