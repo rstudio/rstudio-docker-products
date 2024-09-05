@@ -119,6 +119,6 @@ RUN curl -fsSL -O https://cdn.rstudio.com/python/${DISTRIBUTION}/pkgs/python-${P
 # install quarto
 ARG QUARTO_VERSION=1.3.340
 COPY maybe_install_quarto.sh /tmp/maybe_install_quarto.sh
-RUN /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.rstudio.com/cran/__linux__/bionic/latest")' \
+RUN /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.posit.co/cran/__linux__/bionic/latest")' \
     && /tmp/maybe_install_quarto.sh \
     && rm -f /tmp/maybe_install_quarto.sh
