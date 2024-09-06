@@ -335,7 +335,14 @@ update-rsc-versions:
   sed {{ sed_vars }} -E "s/[0-9]{4}\.[0-9]{1,2}\.[0-9]{1,2}/`just _get-clean-version {{ RSC_VERSION }}`/g" \
     connect/README.md \
     connect-content-init/README.md
-  sed -i '/variable CONNECT_VERSION/!b;n;c\ \ \ \ default = "{{ RSC_VERSION }}"' docker-bake.hcl
+  ed -s docker-bake.hcl <<EOF
+  /variable CONNECT_VERSION/
+  +1c
+      default = "{{ RSC_VERSION }}"
+  .
+  w
+  q
+  EOF
 
 # just R_VERSION=3.2.1 R_VERSION_ALT=4.1.0 update-r-versions
 update-r-versions: update-default-r-versions
