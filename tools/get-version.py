@@ -108,7 +108,7 @@ def download_json(url):
 
 
 def get_downloads_json():
-    return download_json("https://www.rstudio.com/wp-content/downloads.json")
+    return download_json("https://posit.co/wp-content/uploads/downloads.json")
 
 
 def rstudio_workbench_preview():
