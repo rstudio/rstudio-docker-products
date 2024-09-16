@@ -1,5 +1,5 @@
 FROM product-base-pro as posit_base
-FROM us-central1-docker.pkg.dev/cloud-workstations-images/predefined/base:latest as build
+FROM us-central1-docker.pkg.dev/cloud-workstations-images/predefined/base:last-ubuntu2204 as build
 
 ### ARG declarations ###
 ARG DEBIAN_FRONTEND=noninteractive
