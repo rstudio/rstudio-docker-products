@@ -29,7 +29,7 @@ RUN gpg --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 595E85A6B1
 
 ### Install TinyTeX ###
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN curl -sL "https://yihui.org/tinytex/install-bin-unix.sh" | sh \
+RUN curl -fsSL "https://yihui.org/tinytex/install-bin-unix.sh" | sh \
     && /root/.TinyTeX/bin/*/tlmgr path remove \
     && mv /root/.TinyTeX/ /opt/TinyTeX \
     && /opt/TinyTeX/bin/*/tlmgr option sys_bin /usr/local/bin \

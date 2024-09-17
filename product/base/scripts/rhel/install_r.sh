@@ -98,7 +98,7 @@ install_r() {
     mkdir -p "$PREFIX"
 
     local r_url="https://cdn.rstudio.com/r/${DISTRO}-${OS_VERSION}/pkgs/R-${R_VERSION}-1-1.x86_64.rpm"
-    curl -sL "$r_url" -o "/tmp/r-${R_VERSION}.rpm"
+    curl -fsSL "$r_url" -o "/tmp/r-${R_VERSION}.rpm"
 
     # shellcheck disable=SC2086
     yum install $YUM_ARGS "/tmp/r-${R_VERSION}.rpm"
@@ -146,7 +146,7 @@ get_r_source() {
     echo "$d Fetching R-${R_VERSION} source code into $r_source_dir $d"
     mkdir -p "$r_source_dir"
 
-    curl -sL "$r_source_url" -o "$r_source_dir/R-${R_VERSION}.tar.gz"
+    curl -fsSL "$r_source_url" -o "$r_source_dir/R-${R_VERSION}.tar.gz"
 }
 
 
