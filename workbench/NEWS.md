@@ -1,4 +1,9 @@
+# 2024.09.0
+
+- Update umask for user home directory from 0022 to 0077 to improve security of directory permissions
+
 # 2023.03.1
+
 - No changes
 
 # 2023.03.0
