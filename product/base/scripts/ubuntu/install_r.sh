@@ -136,7 +136,7 @@ install_r_packages() {
     fi
 
     echo "$d$d Installing R-${R_VERSION} packages from ${R_PKG_FILE} $d$d"
-    local cran_repo="https://packagemanager.rstudio.com/cran/__linux__/${UBUNTU_CODENAME}/latest"
+    local cran_repo="https://packagemanager.posit.co/cran/__linux__/${UBUNTU_CODENAME}/latest"
 
     $R_BIN --vanilla --no-echo <<EOF > /dev/null
 install.packages(readLines("$R_PKG_FILE"), repos = "$cran_repo", clean = TRUE)
