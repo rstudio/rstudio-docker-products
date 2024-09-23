@@ -305,7 +305,10 @@ update-rsw-versions:
   sed {{ sed_vars }} "s/[0-9]\{4\}\.[0-9]\{1,2\}\.[0-9]\{1,2\}/`just _get-clean-version {{ RSW_VERSION }}`/g" \
     workbench/README.md \
     r-session-complete/README.md
-  sed -i '/variable WORKBENCH_VERSION/!b;n;c\ \ \ \ default = "{{ RSW_VERSION }}"' docker-bake.hcl
+  awk -v new_version="{{ RSW_VERSION }}" '
+  /variable WORKBENCH_VERSION/ { print; getline; print "    default = \"" new_version "\""; next }
+  { print }
+  ' docker-bake.hcl > file.tmp && mv file.tmp docker-bake.hcl
 
 # just RSPM_VERSION=1.2.3 update-rspm-versions
 update-rspm-versions:
@@ -320,7 +323,10 @@ update-rspm-versions:
     package-manager/Justfile \
     Justfile
   sed {{ sed_vars }} -E "s/[0-9]{4}\.[0-9]{1,2}\.[0-9]{1,2}/`just _get-clean-version {{ RSPM_VERSION }}`/g" package-manager/README.md
-  sed -i '/variable PACKAGE_MANAGER_VERSION/!b;n;c\ \ \ \ default = "{{ RSPM_VERSION }}"' docker-bake.hcl
+  awk -v new_version="{{ RSPM_VERSION }}" '
+  /variable PACKAGE_MANAGER_VERSION/ { print; getline; print "    default = \"" new_version "\""; next }
+  { print }
+  ' docker-bake.hcl > file.tmp && mv file.tmp docker-bake.hcl
 
 # just RSC_VERSION=1.2.3 update-rsc-versions
 update-rsc-versions:
@@ -335,7 +341,10 @@ update-rsc-versions:
   sed {{ sed_vars }} -E "s/[0-9]{4}\.[0-9]{1,2}\.[0-9]{1,2}/`just _get-clean-version {{ RSC_VERSION }}`/g" \
     connect/README.md \
     connect-content-init/README.md
-  sed -i '/variable CONNECT_VERSION/!b;n;c\ \ \ \ default = "{{ RSC_VERSION }}"' docker-bake.hcl
+  awk -v new_version="{{ RSC_VERSION }}" '
+  /variable CONNECT_VERSION/ { print; getline; print "    default = \"" new_version "\""; next }
+  { print }
+  ' docker-bake.hcl > file.tmp && mv file.tmp docker-bake.hcl
 
 # just R_VERSION=3.2.1 R_VERSION_ALT=4.1.0 update-r-versions
 update-r-versions: update-default-r-versions
