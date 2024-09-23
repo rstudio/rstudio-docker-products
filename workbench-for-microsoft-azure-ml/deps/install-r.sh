@@ -18,7 +18,7 @@ install_r_packages() {
   # passing a CRAN repo as third arg will install from that repo, in this case however,
   # we are using the RStudio public package manager so we can install from binaries and not source
   # this speeds everything up dramatically
-  local CRAN_REPO=${3:-"https://packagemanager.rstudio.com/cran/__linux__/${UBUNTU_CODENAME}/latest"}
+  local CRAN_REPO=${3:-"https://packagemanager.posit.co/cran/__linux__/${UBUNTU_CODENAME}/latest"}
 
   # create an R matrix-style string of packages
   local r_packages=$(awk '{print "\"" $0 "\""}' "$1" | paste -d',' -s  -)
@@ -36,5 +36,5 @@ for rvers in 4.0.5 4.1.3 4.2.3 4.3.2; do
     rm -f ./r-${rvers}_1_amd64.deb
 
     # install packages
-    install_r_packages /tmp/r_packages.txt /opt/R/${rvers}/bin/R https://packagemanager.rstudio.com/cran/__linux__/${UBUNTU_CODENAME}/latest
+    install_r_packages /tmp/r_packages.txt /opt/R/${rvers}/bin/R https://packagemanager.posit.co/cran/__linux__/${UBUNTU_CODENAME}/latest
 done
