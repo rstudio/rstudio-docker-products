@@ -70,8 +70,11 @@ file:
     exists: true
     owner: rstudio-server
     group: rstudio-server
-  /usr/lib/rstudio-server/bin/code-server/bin/code-server:
+  /usr/lib/rstudio-server/bin/pwb-code-server/bin/code-server:
     exists: true
+  # Old code-server location
+  /usr/lib/rstudio-server/bin/code-server/bin/code-server:
+    exists: false
   /etc/rstudio/vscode.conf:
     exists: true
   /etc/rstudio/jupyter.conf:
