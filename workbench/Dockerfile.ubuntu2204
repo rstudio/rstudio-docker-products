@@ -103,7 +103,7 @@ COPY conf/* /etc/rstudio/
 RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
     chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor && \
     mkdir -p /startup/custom/ && \
-    printf '\n# allow home directory creation\nsession required pam_mkhomedir.so skel=/etc/skel umask=0027' >> /etc/pam.d/common-session
+    printf '\n# allow home directory creation\nsession required pam_mkhomedir.so skel=/etc/skel umask=0077' >> /etc/pam.d/common-session
 
 EXPOSE 8787/tcp
 EXPOSE 5559/tcp
