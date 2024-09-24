@@ -88,7 +88,7 @@ file:
   /etc/pam.d/common-session:
     exists: true
     contains:
-      - "/^session required pam_mkhomedir.so skel=/etc/skel umask=0027$/"
+      - "/^session required pam_mkhomedir.so skel=/etc/skel umask=0077$/"
   /etc/sssd/sssd.conf:
     exists: true
     owner: root
