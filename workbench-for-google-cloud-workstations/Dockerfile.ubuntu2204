@@ -10,7 +10,7 @@ ARG PYTHON_VERSION_ALT=3.10.14
 ARG PYTHON_VERSION_JUPYTER=3.10.14
 ARG JUPYTERLAB_VERSION=3.6.7
 ARG DRIVERS_VERSION=2023.05.0
-ARG RSW_VERSION=2024.04.2+764.pro1
+ARG RSW_VERSION=2024.09.0+375.pro3
 ARG RSW_NAME=rstudio-workbench
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/jammy/amd64
 ARG SCRIPTS_DIR=/opt/positscripts
@@ -141,7 +141,7 @@ ADD --chmod=755 https://raw.githubusercontent.com/rstudio/wait-for-it/master/wai
 RUN mkdir -p /var/lib/rstudio-server/monitor/log \
     && chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor \
     && mkdir -p /startup/custom/ \
-    && printf '\n# allow home directory creation\nsession required pam_mkhomedir.so skel=/etc/skel umask=0027' >> /etc/pam.d/common-session
+    && printf '\n# allow home directory creation\nsession required pam_mkhomedir.so skel=/etc/skel umask=0077' >> /etc/pam.d/common-session
 
 COPY --chmod=755 TurboActivate.dat /opt/rstudio-license/license-manager.conf
 COPY --chmod=755 license-manager-shim /opt/rstudio-license/license-manager

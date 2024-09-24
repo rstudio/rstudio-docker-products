@@ -7,7 +7,7 @@ ARG PYTHON_VERSION=3.9.17
 ARG PYTHON_VERSION_ALT=3.8.17
 ARG PYTHON_VERSION_JUPYTER=3.8.17
 ARG JUPYTERLAB_VERSION=3.6.7
-ARG RSW_VERSION=2024.04.2+764.pro1
+ARG RSW_VERSION=2024.09.0+375.pro3
 ARG RSW_NAME=rstudio-workbench
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/jammy/amd64
 ARG SCRIPTS_DIR=/opt/positscripts
@@ -73,10 +73,6 @@ RUN ln -s /lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto
 ### Install TinyTeX using Quarto ###
 RUN $SCRIPTS_DIR/install_quarto.sh --install-tinytex --add-path-tinytex
 
-COPY maybe_install_vs_code.sh /tmp/maybe_install_vs_code.sh
-RUN /tmp/maybe_install_vs_code.sh \
-    && rm /tmp/maybe_install_vs_code.sh
-
 COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
 COPY startup-launcher/* /startup/launcher/
 COPY startup-user-provisioning/* /startup/user-provisioning/
@@ -107,7 +103,7 @@ COPY conf/* /etc/rstudio/
 RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
     chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor && \
     mkdir -p /startup/custom/ && \
-    printf '\n# allow home directory creation\nsession required pam_mkhomedir.so skel=/etc/skel umask=0027' >> /etc/pam.d/common-session
+    printf '\n# allow home directory creation\nsession required pam_mkhomedir.so skel=/etc/skel umask=0077' >> /etc/pam.d/common-session
 
 EXPOSE 8787/tcp
 EXPOSE 5559/tcp

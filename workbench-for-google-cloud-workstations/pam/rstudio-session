@@ -17,7 +17,7 @@ password sufficient pam_sss.so use_authtok
 password required pam_unix.so try_first_pass nullok sha512 shadow
 password optional pam_permit.so
 
-session required pam_mkhomedir.so skel=/etc/skel umask=0027
+session required pam_mkhomedir.so skel=/etc/skel umask=0077
 session required pam_env.so readenv=1
 session required pam_env.so readenv=1 envfile=/etc/default/locale
 session required pam_limits.so

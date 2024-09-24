@@ -8,7 +8,7 @@ variable PACKAGE_MANAGER_VERSION {
 }
 
 variable WORKBENCH_VERSION {
-    default = "2024.04.2+764.pro1"
+    default = "2024.09.0+375.pro3"
 }
 
 variable DRIVERS_VERSION {
@@ -96,9 +96,8 @@ function get_tags {
 variable BASE_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.9.17", py_alternate = "3.8.17"},
-            {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.12.1", py_alternate = "3.11.7"},
             {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.1", py_alternate = "3.11.7"},
+            {os = "ubuntu2204", r_primary = "4.4.1", r_alternate = "4.3.3", py_primary = "3.12.6", py_alternate = "3.11.10"},
         ]
     }
 }
@@ -168,7 +167,7 @@ variable CONTENT_BUILD_MATRIX {
 variable R_SESSION_COMPLETE_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.1", py_alternate = "3.11.7"},
+            {os = "ubuntu2204", r_primary = "4.4.1", r_alternate = "4.3.3", py_primary = "3.12.6", py_alternate = "3.11.10"},
         ]
     }
 }
@@ -176,7 +175,7 @@ variable R_SESSION_COMPLETE_BUILD_MATRIX {
 variable WORKBENCH_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.1", py_alternate = "3.11.7"},
+            {os = "ubuntu2204", r_primary = "4.4.1", r_alternate = "4.3.3", py_primary = "3.12.6", py_alternate = "3.11.10"},
         ]
     }
 }
@@ -184,7 +183,7 @@ variable WORKBENCH_BUILD_MATRIX {
 variable WORKBENCH_GOOGLE_CLOUD_WORKSTATION_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.1", py_alternate = "3.11.7"},
+            {os = "ubuntu2204", r_primary = "4.4.1", r_alternate = "4.3.3", py_primary = "3.12.6", py_alternate = "3.11.10"},
         ]
     }
 }
@@ -192,7 +191,7 @@ variable WORKBENCH_GOOGLE_CLOUD_WORKSTATION_BUILD_MATRIX {
 variable WORKBENCH_MICROSOFT_AZURE_ML_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.2.3", r_alternate = "4.1.3", py_primary = "3.9.17", py_alternate = "3.8.17"},
+            {os = "ubuntu2204", r_primary = "4.4.1", r_alternate = "4.3.3", py_primary = "3.12.6", py_alternate = "3.11.10"},
         ]
     }
 }
