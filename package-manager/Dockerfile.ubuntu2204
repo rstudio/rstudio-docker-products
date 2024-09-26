@@ -4,13 +4,18 @@ ARG PYTHON_VERSION=3.9.17
 ARG PYTHON_VERSION_ALT=3.8.17
 
 # Locale configuration --------------------------------------------------------#
-ENV STARTUP_DEBUG_MODE 0
+ENV STARTUP_DEBUG_MODE=0
 
-ENV PATH /opt/rstudio-pm/bin:$PATH
+ENV PATH=/opt/rstudio-pm/bin:$PATH
 
 # Required Python packages ----------------------------------------------------#
 RUN /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install --no-cache-dir build virtualenv
 RUN /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install --no-cache-dir build virtualenv
+
+# Install bash auto completion ------------------------------------------------#
+RUN apt-get update -qq && apt-get install -y --no-install-recommends \
+    bash-completion && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 # Download RStudio Package Manager ---------------------------------------------#
 ARG RSPM_VERSION=2024.08.2-9
@@ -35,12 +40,11 @@ RUN mkdir -p /var/run/rstudio-pm \
 USER rstudio-pm
 COPY rstudio-pm.gcfg /etc/rstudio-pm/rstudio-pm.gcfg
 
-RUN echo "source <(rspm completion bash)" >> ~/.bashrc \
 # Set up licensing to work in userspace mode. This will not prevent activating a
 # license as root, but it is required to activate one as the non-root user at
 # runtime. It's possible for this to fail and the trial will be considered over,
 # in which case we can ignore it anyway.
-  && license-manager initialize --userspace || true
+RUN license-manager initialize --userspace || true
 
 ENTRYPOINT ["tini", "--"]
 CMD ["/usr/local/bin/startup.sh"]
