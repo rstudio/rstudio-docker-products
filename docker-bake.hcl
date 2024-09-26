@@ -117,7 +117,7 @@ variable PACKAGE_MANAGER_BUILD_MATRIX {
 variable CONNECT_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.1", py_alternate = "3.11.7", quarto = DEFAULT_QUARTO_VERSION},
+            {os = "ubuntu2204", r_primary = "4.4.1", r_alternate = "4.3.3", py_primary = "3.12.6", py_alternate = "3.11.10", quarto = DEFAULT_QUARTO_VERSION},
         ]
     }
 }
@@ -158,8 +158,8 @@ variable CONTENT_BUILD_MATRIX {
       # R-4.4, Python-3.12, Quarto-1.4.
       {os = "ubuntu2204", os_alt = "jammy", r = "4.4.0", py = "3.12.3", drivers = "2024.03.0", quarto = "1.4.553"},
 
-      # R-4.4, Python-3.12.4, Quarto-1.4.557 (polyfill.js vulnerability patch)
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.4.1", py = "3.12.4", drivers = "2024.03.0", quarto = "1.4.557"},
+      # R-4.4, Python-3.12.6, Quarto-1.4.557 (polyfill.js vulnerability patch)
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.4.1", py = "3.12.6", drivers = "2024.03.0", quarto = "1.4.557"},
     ]
   }
 }
