@@ -43,21 +43,18 @@ RUN ln -s /lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto
 ### Install TinyTeX using Quarto ###
 RUN $SCRIPTS_DIR/install_quarto.sh --install-tinytex --add-path-tinytex
 
-RUN /opt/python/"${PYTHON_VERSION}"/bin/pip install \
-      jupyter \
-      jupyterlab=="${JUPYTERLAB_VERSION}" \
-      rsconnect_jupyter \
-      rsconnect_python \
-      rsp_jupyter \
-      workbench_jupyterlab \
-    && ln -s /opt/python/"${PYTHON_VERSION}"/bin/jupyter /usr/local/bin/jupyter \
-    && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter \
-    && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter \
-    && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-nbextension install --sys-prefix --py rsconnect_jupyter \
-    && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter \
-    && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
+RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyter \
+    && /opt/python/jupyter/bin/python -m pip install \
+      jupyterlab~=4.2.4 \
+      notebook \
+      pwb_jupyterlab~=1.0 \
+    && ln -s /opt/python/jupyter/bin/jupyter /usr/local/bin/jupyter \
+    && /opt/python/jupyter/bin/python -m pip install ipykernel \
+    && /opt/python/jupyter/bin/python -m ipykernel install --name py${PYTHON_VERSION} --display-name "Python ${PYTHON_VERSION}" \
+    && /opt/python/jupyter/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}" \
+    && /opt/python/jupyter/bin/python -m pip cache purge
 
-ENV PATH="/opt/python/${PYTHON_VERSION}/bin:${PATH}"
+ENV PATH="/opt/python/jupyter/bin:${PATH}"
 
 COPY vscode.extensions.conf /etc/rstudio/vscode.extensions.conf
 
