@@ -89,28 +89,14 @@ RUN apt-get update --fix-missing -qq \
 ### Install Jupyter and extensions ###
 RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyter \
     && /opt/python/jupyter/bin/pip install \
-      jupyter \
-      jupyterlab=="${JUPYTERLAB_VERSION}" \
-      rsconnect_jupyter \
-      rsconnect_python \
-      rsp_jupyter \
-      workbench_jupyterlab \
-    && /opt/python/jupyter/bin/jupyter kernelspec remove python3 -f \
-    && /opt/python/jupyter/bin/pip uninstall -y ipykernel \
+      jupyterlab~=4.2.4 \
+      notebook \
+      pwb_jupyterlab~=1.0 \
     && ln -s /opt/python/jupyter/bin/jupyter /usr/local/bin/jupyter \
-    && /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter \
-    && /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter \
-    && /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsconnect_jupyter \
-    && /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter \
-    && /opt/python/jupyter/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter \
-    && /opt/python/${PYTHON_VERSION}/bin/pip install \
-      ipykernel \
-      virtualenv \
-    && /opt/python/${PYTHON_VERSION}/bin/python -m ipykernel install --name py${PYTHON_VERSION} --display-name "Python ${PYTHON_VERSION}" \
-    && /opt/python/${PYTHON_VERSION_ALT}/bin/pip install \
-      ipykernel \
-      virtualenv \
-    && /opt/python/${PYTHON_VERSION_ALT}/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}"
+    && /opt/python/jupyter/bin/python -m pip install ipykernel \
+    && /opt/python/jupyter/bin/python -m ipykernel install --name py${PYTHON_VERSION} --display-name "Python ${PYTHON_VERSION}" \
+    && /opt/python/jupyter/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}" \
+    && /opt/python/jupyter/bin/python3 -m pip cache purge
 
 ### Install basic data science packages for Python and R ###
 COPY deps/* /
