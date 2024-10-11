@@ -93,9 +93,10 @@ RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyt
       notebook \
       pwb_jupyterlab~=1.0 \
     && ln -s /opt/python/jupyter/bin/jupyter /usr/local/bin/jupyter \
-    && /opt/python/jupyter/bin/python -m pip install ipykernel \
-    && /opt/python/jupyter/bin/python -m ipykernel install --name py${PYTHON_VERSION} --display-name "Python ${PYTHON_VERSION}" \
-    && /opt/python/jupyter/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}" \
+    && /opt/python/${PYTHON_VERSION}/bin/python -m pip install ipykernel \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python -m pip install ipykernel \
+    && /opt/python/${PYTHON_VERSION}/bin/python -m ipykernel install --name py${PYTHON_VERSION} --display-name "Python ${PYTHON_VERSION}" \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}" \
     && /opt/python/jupyter/bin/python3 -m pip cache purge
 
 ### Install basic data science packages for Python and R ###
