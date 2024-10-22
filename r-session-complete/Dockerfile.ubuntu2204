@@ -44,6 +44,8 @@ RUN ln -s /lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto
 RUN $SCRIPTS_DIR/install_quarto.sh --install-tinytex --add-path-tinytex
 
 RUN /opt/python/"${PYTHON_VERSION}"/bin/python -m venv /opt/python/jupyter \
+    && /opt/python/jupyter/bin/python -m pip install --upgrade pip \
+    && /opt/python/jupyter/bin/python -m pip install --upgrade setuptools \
     && /opt/python/jupyter/bin/python -m pip install \
       jupyterlab~=4.2.4 \
       notebook \
