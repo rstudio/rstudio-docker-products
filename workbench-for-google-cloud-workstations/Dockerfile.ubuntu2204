@@ -118,6 +118,8 @@ RUN mkdir -p /opt/rstudio-license/ \
 
 ### Install Jupyter and extensions ###
 RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyter \
+    && /opt/python/jupyter/bin/python -m pip install --upgrade pip \
+    && /opt/python/jupyter/bin/python -m pip install --upgrade setuptools \
     && /opt/python/jupyter/bin/python -m pip install\
       jupyterlab~=4.2.4 \
       notebook \
