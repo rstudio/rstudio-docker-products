@@ -6,7 +6,7 @@ on:
       - main
       - dev
   pull_request:
-  
+
 name: Release - Build, Test, and Push
 jobs:
   setup:
@@ -374,44 +374,3 @@ jobs:
           snyk-org: ${{ secrets.SNYK_ORG }}
           snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
-  workbench-for-microsoft-azure-ml:
-    needs: [setup]
-    name: Workbench for Microsoft Azure ML
-    runs-on: ubuntu-latest-8x
-
-    concurrency:
-      group: bake-waml-${{ github.ref }}
-      cancel-in-progress: true
-
-    env:
-      target: workbench-for-microsoft-azure-ml
-      GIT_SHA: ${{ needs.setup.outputs.GIT_SHA }}
-
-    steps:
-      - name: Checkout
-        if: github.event_name == 'schedule'
-        uses: actions/checkout@v4
-        with:
-          ref: 'main'
-
-      - name: Checkout
-        if: github.event_name != 'schedule'
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        id: setup-buildx
-        with:
-          buildkitd-config: ./share/buildkitd.toml
-
-      - name: Build, Test, and Push
-        uses: ./.github/actions/bake-test-push
-        with:
-          target: ${{ env.target }}
-          push-image: ${{ github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
-          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
-          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
-          snyk-org: ${{ secrets.SNYK_ORG }}
-          snyk-token: '${{ secrets.SNYK_TOKEN }}'
