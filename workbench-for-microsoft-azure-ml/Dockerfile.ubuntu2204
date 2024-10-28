@@ -103,10 +103,10 @@ RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyt
 
 ### Install basic data science packages for Python and R ###
 COPY deps/* /
-RUN /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install -U pip setuptools \
+RUN /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install -U pip setuptools wheel \
     && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install -r /tmp/py_packages.txt \
     && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip cache purge \
-    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install -U pip setuptools \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install -U pip setuptools wheel \
     && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install -r /tmp/py_packages.txt \
     && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip cache purge \
     && rm /tmp/py_packages.txt
