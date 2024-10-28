@@ -126,7 +126,7 @@ jobs:
           else
             VERSION="${{ inputs.version }}"
           fi
-
+          
           # Set the appropriate env var
           suffix="_VERSION"
           if [[ "${{ inputs.type }}" == "preview" ]]; then
@@ -134,7 +134,7 @@ jobs:
           elif [[ "${{ inputs.type }}" == "daily" ]]; then
             suffix="_DAILY_VERSION"
           fi
-
+          
           product="${{ inputs.product }}"
           if [[ "$product" == "connect" ]] || [[ "$product" == "connect-content-init" ]] || [[ "$product" == "content-images" ]]; then
             product="CONNECT"
@@ -143,7 +143,7 @@ jobs:
           else
             product="WORKBENCH"
           fi
-
+          
           echo "Setting $product$suffix=$VERSION"
           echo "$product$suffix=$VERSION" >> $GITHUB_ENV
 
