@@ -69,7 +69,7 @@ get-product-args $PRODUCT $OS $VERSION $USE_S3="false" $BRANCH=`git branch --sho
     RSW_DOWNLOAD_URL=$(just -f ci.Justfile _get-rsw-download-url preview $OS)
   fi
 
-  if [[ $PRODUCT == "workbench" || $PRODUCT == "r-session-complete" || $PRODUCT == "workbench-for-microsoft-azure-ml" ]]; then
+  if [[ $PRODUCT == "workbench" || $PRODUCT == "workbench-session-init" || $PRODUCT == "r-session-complete" || $PRODUCT == "workbench-for-microsoft-azure-ml" ]]; then
     SHORT_NAME="RSW"
   elif [[ $PRODUCT == "connect" || $PRODUCT == "connect-content-init" ]]; then
     SHORT_NAME="RSC"
@@ -158,7 +158,7 @@ get-prerelease-args $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
 
   RSW_DOWNLOAD_URL=$(just -f ci.Justfile _get-rsw-download-url $TYPE $OS)
 
-  if [[ $PRODUCT == "workbench" || $PRODUCT == "r-session-complete" || $PRODUCT == "workbench-for-microsoft-azure-ml" ]]; then
+  if [[ $PRODUCT == "workbench" ||  $PRODUCT == "workbench-session-init" ||  $PRODUCT == "r-session-complete" || $PRODUCT == "workbench-for-microsoft-azure-ml" ]]; then
     SHORT_NAME="RSW"
   elif [[ $PRODUCT == "connect" || $PRODUCT == "connect-content-init" ]]; then
     SHORT_NAME="RSC"
