@@ -183,6 +183,7 @@ group "default" {
         "r-session-complete-daily",
         "workbench-preview",
         "workbench-daily",
+        "workbench-session-init-daily",
     ]
 }
 
