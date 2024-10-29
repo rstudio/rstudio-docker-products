@@ -3,6 +3,8 @@
 set -e
 set -x
 
+S=/opt/session-components
+
 # The target should exist and be an empty directory.
 T=/mnt/init
 
@@ -12,4 +14,4 @@ if [ ! -d "${T}" ] ; then
 fi
 
 echo "Copying files from /session-components to /mnt/init"
-time cp -r /session-components/* /mnt/init
+time cp -r $S/* $T
