@@ -1,12 +1,7 @@
-ARG PYTHON_VERSION
-ARG R_VERSION
-ARG REGISTRY=ghcr.io
-FROM ${REGISTRY}/rstudio/content-base:r${R_VERSION}-py${PYTHON_VERSION}-ubuntu2204
-
-LABEL maintainer="RStudio Docker <docker@rstudio.com>"
+FROM content-base
 
 # Install RStudio Professional Drivers ----------------------------------------#
-ARG DRIVERS_VERSION=2023.05.0
+ARG DRIVERS_VERSION=2024.03.0
 ARG R_VERSION
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -14,7 +9,7 @@ RUN apt-get update -y \
     && apt-get install -y --no-install-recommends unixodbc unixodbc-dev \
     && rm -rf /var/lib/apt/lists/*
 
-RUN curl -O https://cdn.rstudio.com/drivers/7C152C12/installer/rstudio-drivers_${DRIVERS_VERSION}_amd64.deb \
+RUN curl -fsSL -O https://cdn.rstudio.com/drivers/7C152C12/installer/rstudio-drivers_${DRIVERS_VERSION}_amd64.deb \
     && apt-get update \
     && apt-get install -yq --no-install-recommends ./rstudio-drivers_${DRIVERS_VERSION}_amd64.deb \
     && rm -rf /var/lib/apt/lists/* \

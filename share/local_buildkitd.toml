@@ -1,0 +1,4 @@
+insecure-entitlements = ["security.insecure"]
+
+[worker.oci]
+  max-parallelism = 4

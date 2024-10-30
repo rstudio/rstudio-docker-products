@@ -1,11 +1,5 @@
-ARG R_VERSION=4.2.3
-ARG R_VERSION_ALT=4.1.3
-ARG PYTHON_VERSION=3.9.17
-ARG PYTHON_VERSION_ALT=3.8.17
-ARG SRC_IMAGE_NAME=product-base-pro
-ARG REGISTRY=ghcr.io
-FROM ${REGISTRY}/rstudio/${SRC_IMAGE_NAME}:ubuntu2204-r${R_VERSION}_${R_VERSION_ALT}-py${PYTHON_VERSION}_${PYTHON_VERSION_ALT}
-LABEL maintainer="RStudio Docker <docker@rstudio.com>"
+# syntax=docker/dockerfile:1-labs
+FROM product-base-pro as build
 
 COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
 
@@ -13,8 +7,26 @@ ARG R_VERSION=4.2.3
 ARG R_VERSION_ALT=4.1.3
 ARG PYTHON_VERSION=3.9.17
 ARG PYTHON_VERSION_ALT=3.8.17
-ARG RSC_VERSION=2023.10.0
+ARG RSC_VERSION=2024.09.0
+ARG QUARTO_VERSION=1.4.557
+ARG SCRIPTS_DIR=/opt/positscripts
+
+### Install Quarto ###
+RUN QUARTO_VERSION=${QUARTO_VERSION} ${SCRIPTS_DIR}/install_quarto.sh --install-tinytex --add-path-tinytex \
+    && ln -s /opt/quarto/${QUARTO_VERSION}/bin/quarto /usr/local/bin/quarto
+
 SHELL [ "/bin/bash", "-o", "pipefail", "-c"]
+
+### Install TensorFlow Serving ###
+RUN echo "deb [arch=amd64] http://storage.googleapis.com/tensorflow-serving-apt stable tensorflow-model-server tensorflow-model-server-universal" > /etc/apt/sources.list.d/tensorflow-serving.list && \
+    curl -fsSL https://storage.googleapis.com/tensorflow-serving-apt/tensorflow-serving.release.pub.gpg | apt-key add -
+RUN apt-get update \
+    && apt-get install -yq --no-install-recommends \
+      tensorflow-model-server-universal \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+### Install Connect and additional dependencies ###
 RUN apt-get update --fix-missing \
     && apt-get install -yq --no-install-recommends \
       bzip2 \
@@ -22,7 +34,7 @@ RUN apt-get update --fix-missing \
       libpam-sss \
       libglib2.0-0 \
     && RSC_VERSION_URL=$(echo -n "${RSC_VERSION}" | sed 's/+/%2B/g') \
-    && curl -L -o rstudio-connect.deb "https://cdn.rstudio.com/connect/$(echo $RSC_VERSION | sed -r 's/([0-9]+\.[0-9]+).*/\1/')/rstudio-connect_${RSC_VERSION_URL}~ubuntu22_amd64.deb" \
+    && curl -fsSL -o rstudio-connect.deb "https://cdn.rstudio.com/connect/$(echo $RSC_VERSION | sed -r 's/([0-9]+\.[0-9]+).*/\1/')/rstudio-connect_${RSC_VERSION_URL}~ubuntu22_amd64.deb" \
     # Pre 7/25/23 packages
     && gpg --keyserver keyserver.ubuntu.com --recv-keys 3F32EE77E331692F \
     # Post 7/25 packages
@@ -33,13 +45,16 @@ RUN apt-get update --fix-missing \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+
+### Configure Connect ###
 EXPOSE 3939/tcp
 ENV RSC_LICENSE ""
 ENV RSC_LICENSE_SERVER ""
 ENV STARTUP_DEBUG_MODE 0
 COPY rstudio-connect.gcfg /etc/rstudio-connect/rstudio-connect.gcfg
 RUN sed -i "s/{{PYTHON_VERSION}}/${PYTHON_VERSION}/g" /etc/rstudio-connect/rstudio-connect.gcfg \
-    && sed -i "s/{{PYTHON_VERSION_ALT}}/${PYTHON_VERSION_ALT}/g" /etc/rstudio-connect/rstudio-connect.gcfg
+    && sed -i "s/{{PYTHON_VERSION_ALT}}/${PYTHON_VERSION_ALT}/g" /etc/rstudio-connect/rstudio-connect.gcfg \
+    && sed -i "s/{{QUARTO_VERSION}}/${QUARTO_VERSION}/g" /etc/rstudio-connect/rstudio-connect.gcfg
 VOLUME ["/data"]
 
 ENTRYPOINT ["tini", "--"]

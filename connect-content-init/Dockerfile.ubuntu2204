@@ -1,6 +1,5 @@
 # Tag from https://hub.docker.com/_/ubuntu/
-FROM ubuntu:22.04
-LABEL maintainer="RStudio Connect <rsconnect@rstudio.com>"
+FROM ubuntu:22.04 as build
 
 # Install required tools:
 # - ca-certificates installs necessary certificates to use cURL with HTTPS websites
@@ -10,7 +9,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends ca-certificates curl && \
     rm -rf /var/lib/apt/lists/*
 
-ARG RSC_VERSION=2023.10.0
+ARG RSC_VERSION=2024.09.0
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN mkdir -p /rsc-staging && \
     RSC_VERSION_URL=$(echo -n "${RSC_VERSION}" | sed 's/+/%2B/g') && \

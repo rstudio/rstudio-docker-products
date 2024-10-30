@@ -9,10 +9,10 @@ R_VERSION_ALT := "4.1.3"
 PYTHON_VERSION := "3.9.17"
 PYTHON_VERSION_ALT := "3.8.17"
 
-DRIVERS_VERSION := "2023.05.0"
+DRIVERS_VERSION := "2024.03.0"
 DRIVERS_VERSION_RHEL := DRIVERS_VERSION + "-1"
 
-QUARTO_VERSION := "1.3.340"
+QUARTO_VERSION := "1.4.557"
 
 # just _get-os-alias jammy
 _get-os-alias OS:
@@ -59,60 +59,15 @@ _get-rsw-download-url TYPE OS:
 get-version +NARGS:
   ./tools/get-version.py {{NARGS}}
 
-# just get-base-args ubuntu2204 base|pro
-get-base-args $OS $TYPE="base" $BRANCH=`git branch --show`:
-  #!/usr/bin/env bash
-  set -euxo pipefail
-  if [[ $TYPE == "base" || $TYPE == "product-base" ]]; then
-    SRC_IMAGE_NAME=""
-    CTX_PATH="./product/base"
-    FILE_PATH="./product/base/Dockerfile.${OS}"
-  elif [[ $TYPE == "base-pro" || $TYPE == "pro" || $TYPE == "product-base-pro" ]]; then
-    SRC_IMAGE_NAME="product-base"
-    CTX_PATH="./product/pro"
-    FILE_PATH="./product/pro/Dockerfile.${OS}"
-  fi
-  if [[ $BRANCH != "main" ]]; then
-    SRC_IMAGE_NAME="${SRC_IMAGE_NAME}-dev"
-  fi
-
-  if [[ "${OS}" == "centos7" ]]; then
-    _DRIVERS_VERSION="{{ DRIVERS_VERSION_RHEL }}"
-  else
-    _DRIVERS_VERSION="{{ DRIVERS_VERSION }}"
-  fi
-
-  printf "R_VERSION={{ R_VERSION }}
-  R_VERSION_ALT={{ R_VERSION_ALT }}
-  PYTHON_VERSION={{ PYTHON_VERSION }}
-  PYTHON_VERSION_ALT={{ PYTHON_VERSION_ALT }}
-  QUARTO_VERSION={{ QUARTO_VERSION }}
-  DRIVERS_VERSION=${_DRIVERS_VERSION}
-  SRC_IMAGE_NAME=${SRC_IMAGE_NAME}"
-
-# just get-base-tags ubuntu2204 base|pro
-get-base-tags $OS $TYPE="base" $BRANCH=`git branch --show`:
-  #!/usr/bin/env bash
-  set -euxo pipefail
-  IMAGE_NAME=""
-  if [[ $TYPE == "base" || $TYPE == "product-base" ]]; then
-    IMAGE_NAME="product-base"
-  elif [[ $TYPE == "base-pro" || $TYPE == "pro" || $TYPE == "product-base-pro" ]]; then
-    IMAGE_NAME="product-base-pro"
-  fi
-  if [[ $BRANCH != "main" ]]; then
-    IMAGE_NAME="${IMAGE_NAME}-dev"
-  fi
-
-  echo ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}_{{R_VERSION_ALT}}-py{{PYTHON_VERSION}}_{{PYTHON_VERSION_ALT}},\
-  ghcr.io/rstudio/${IMAGE_NAME}:${OS}-r{{R_VERSION}}-py{{PYTHON_VERSION}},\
-  ghcr.io/rstudio/${IMAGE_NAME}:${OS}
-
 # just get-product-args connect ubuntu2204 2023.05.0
-get-product-args $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`git rev-parse --short HEAD`:
+get-product-args $PRODUCT $OS $VERSION $USE_S3="false" $BRANCH=`git branch --show` $SHA_SHORT=`git rev-parse --short HEAD`:
   #!/usr/bin/env bash
   set -euxo pipefail
+
   RSW_DOWNLOAD_URL=$(just -f ci.Justfile _get-rsw-download-url release $OS)
+  if [[ "${USE_S3}" == "true" ]]; then
+    RSW_DOWNLOAD_URL=$(just -f ci.Justfile _get-rsw-download-url preview $OS)
+  fi
 
   if [[ $PRODUCT == "workbench" || $PRODUCT == "r-session-complete" || $PRODUCT == "workbench-for-microsoft-azure-ml" ]]; then
     SHORT_NAME="RSW"
@@ -129,6 +84,12 @@ get-product-args $PRODUCT $OS $VERSION $BRANCH=`git branch --show` $SHA_SHORT=`g
       SRC_IMAGE_NAME="product-base-pro"
     else
       SRC_IMAGE_NAME="product-base-pro-dev"
+    fi
+  elif [[ $PRODUCT == "package-manager" ]]; then
+    if [[ $BRANCH == "main" ]]; then
+      SRC_IMAGE_NAME="product-base"
+    else
+      SRC_IMAGE_NAME="product-base-dev"
     fi
   fi
 
@@ -213,6 +174,12 @@ get-prerelease-args $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
     else
       SRC_IMAGE_NAME="product-base-pro-dev"
     fi
+  elif [[ $PRODUCT == "package-manager" ]]; then
+    if [[ $BRANCH == "main" ]]; then
+      SRC_IMAGE_NAME="product-base"
+    else
+      SRC_IMAGE_NAME="product-base-dev"
+    fi
   fi
 
   if [[ "${OS}" == "centos7" ]]; then
@@ -270,20 +237,3 @@ get-prerelease-tags $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
   done
   tags=$(IFS="," ; echo "${tag_array[*]}")
   echo "${tags}"
-
-# just get-content-args 4.2.3 3.9.17
-get-content-args r-ver py-ver drivers-ver="":
-  #!/usr/bin/env bash
-  printf "R_VERSION={{r-ver}}
-  PYTHON_VERSION={{py-ver}}
-  DRIVERS_VERSION={{drivers-ver}}"
-
-# just get-content-tags content-base|content-pro 4.2.3 3.9.17 ubuntu2204
-get-content-tags image-name r-ver py-ver os:
-  #!/usr/bin/env bash
-  OS=$(just _parse-os {{os}})
-  OS_ALT=$(just _rev-parse-os {{os}})
-  echo rstudio/{{image-name}}:r{{r-ver}}-py{{py-ver}}-${OS},\
-  ghcr.io/rstudio/{{image-name}}:r{{r-ver}}-py{{py-ver}}-${OS},\
-  rstudio/{{image-name}}:r{{r-ver}}-py{{py-ver}}-${OS_ALT},\
-  ghcr.io/rstudio/{{image-name}}:r{{r-ver}}-py{{py-ver}}-${OS_ALT}

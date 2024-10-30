@@ -44,9 +44,14 @@ file:
     exists: true
   /opt/python/{{.Env.PYTHON_VERSION_ALT}}/bin/python:
     exists: true
+  /opt/quarto/{{.Env.QUARTO_VERSION}}/bin/quarto:
+    exists: true
+  /usr/local/bin/quarto:
+    exists: true
+    filetype: symlink
   /tmp/startup.log:
     exists: true
-    contains:
+    contents:
     - "!Error: Couldn't read configuration file "
   # Check that `cracklib-runtime` is present so `chpasswd` works
   /var/cache/cracklib/cracklib_dict.pwd:
@@ -58,7 +63,7 @@ command:
     title: connect_version_matches
     exit-status: 0
     stdout: [
-       "{{ .Env.RSC_VERSION }}"
+      "{{ .Env.RSC_VERSION }}"
     ]
 # Ensure correct R version
   "/opt/R/{{ .Env.R_VERSION }}/bin/R --version":
@@ -87,3 +92,32 @@ command:
     stdout: [
       "{{ .Env.PYTHON_VERSION_ALT }}"
     ]
+
+# Ensure correct Quarto version
+  "/opt/quarto/{{ .Env.QUARTO_VERSION }}/bin/quarto --version":
+    title: quarto_version_matches
+    exit-status: 0
+    stdout: [
+      "{{ .Env.QUARTO_VERSION }}"
+    ]
+  "/usr/local/bin/quarto --version":
+    title: quarto_symlink_version_matches
+    exit-status: 0
+    stdout: [
+      "{{ .Env.QUARTO_VERSION }}"
+    ]
+
+# Ensure Quarto works
+  "/opt/quarto/{{ .Env.QUARTO_VERSION }}/bin/quarto check --quiet":
+    title: quarto_check
+    exit-status: 0
+  "/usr/local/bin/quarto check --quiet":
+    title: quarto_check
+    exit-status: 0
+
+# Ensure TinyTeX is installed
+  "quarto list tools":
+    title: quarto_tinytex_installed
+    exit-status: 0
+    stderr:
+      - "/tinytex\\s+Up to date\\s+v\\d{4}\\.\\d{2}(\\.\\d{2})?\\s+v\\d{4}\\.\\d{2}(\\.\\d{2})?/"

@@ -6,17 +6,16 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`2023.08.4`, `bionic`, `ubuntu1804`, `bionic-2023.08.4`, `ubuntu1804-2023.08.4`](https://github.com/rstudio/rstudio-docker-products/blob/main/package-manager/Dockerfile.ubuntu1804)
-* [`jammy`, `ubuntu2204`, `jammy-2023.08.4`, `ubuntu2204-2023.08.4`](https://github.com/rstudio/rstudio-docker-products/blob/main/package-manager/Dockerfile.ubuntu2204)
+* [`jammy`, `ubuntu2204`, `jammy-2024.08.2`, `ubuntu2204-2024.08.2`](https://github.com/rstudio/rstudio-docker-products/blob/main/package-manager/Dockerfile.ubuntu2204)
 
 # What is RStudio Package Manager?
 
-Posit Package Manager, formerly RStudio Package Manager, is a repository management server to organize and centralize 
-R packages across your team, department, or entire organization. Get offline access to CRAN, automate CRAN syncs, 
-share local packages, restrict package access, find packages across repositories, and more. Experience reliable and 
+Posit Package Manager, formerly RStudio Package Manager, is a repository management server to organize and centralize
+R packages across your team, department, or entire organization. Get offline access to CRAN, automate CRAN syncs,
+share local packages, restrict package access, find packages across repositories, and more. Experience reliable and
 consistent package management, optimized for teams who use R.
 
-The following documentation helps an administrator install and configure Package Manager. It provides information for 
+The following documentation helps an administrator install and configure Package Manager. It provides information for
 installing the product on different operating systems, upgrading, and configuring Package Manager.
 
 # Notice for support
@@ -50,7 +49,7 @@ export RSPM_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
 docker run -it \
     -p 4242:4242 \
     -e RSPM_LICENSE=$RSPM_LICENSE \
-    rstudio/rstudio-package-manager:ubuntu1804
+    rstudio/rstudio-package-manager:ubuntu2204
 ```
 Open [http://localhost:4242](http://localhost:4242) to access RStudio Package Manager UI.
 
@@ -60,8 +59,9 @@ Note that running the RStudio Package Manager Docker image requires a valid RStu
 
 This container includes:
 
-1. One version of R
-2. RStudio Package Manager
+1. Two versions of R
+2. Two versions of Python
+3. RStudio Package Manager
 
 > NOTE: Package Manager is currently not very particular about R version. Changing the R version is rarely necessary.
 
@@ -80,17 +80,9 @@ a persistent volume. The included configuration file expects a persistent volume
 orchestration system to be available at `/var/lib/rstudio-pm`. Should you wish to move this to a different path, you can change the
 `Server.DataDir` option.
 
-When changing `Server.DataDir` to a custom location, we also recommend setting `Server.LauncherDir`
-to a consistent location within `Server.DataDir`, such as `{Server.DataDir}/launcher_internal`.
-The default location of `Server.LauncherDir` depends on the container's hostname, which may be
-different each time the container restarts.
-
 ```ini
 [Server]
 DataDir = /mnt/rspm/data
-; Use a consistent location for the Launcher directory. The default location
-; is based on the hostname, and the hostname may be different in each container.
-LauncherDir = /mnt/rspm/data/launcher_internal
 ```
 
 ### Licensing
@@ -128,7 +120,7 @@ docker run -it \
     -p 4242:4242 \
     -v $PWD/package-manager/rstudio-pm.gcfg:/etc/rstudio-pm/rstudio-pm.gcfg \
     -e RSPM_LICENSE=$RSPM_LICENSE \
-    rstudio/rstudio-package-manager:ubuntu1804
+    rstudio/rstudio-package-manager:ubuntu2204
 
 # Run with persistent data and using an external configuration
 docker run -it \
@@ -136,7 +128,7 @@ docker run -it \
     -v $PWD/data/rspm:/data \
     -v $PWD/package-manager/rstudio-pm.gcfg:/etc/rstudio-pm/rstudio-pm.gcfg \
     -e RSPM_LICENSE=$RSPM_LICENSE \
-    rstudio/rstudio-package-manager:ubuntu1804
+    rstudio/rstudio-package-manager:ubuntu2204
 ```
 
 Open [http://localhost:4242](http://localhost:4242) to access RStudio Package Manager UI.
@@ -156,15 +148,15 @@ to [create and manage](https://docs.rstudio.com/rspm/admin/getting-started/confi
 *Note: This section **does not** apply to activations using license files.*
 
 There is currently a known licensing bug when using our products in containers. If the container is not stopped
-gracefully, the license deactivation step may fail or be skipped. Failing to deactivate the license can result in a 
-"license leak" where a product activation is used up and cannot be deactivated using traditional methods as the 
+gracefully, the license deactivation step may fail or be skipped. Failing to deactivate the license can result in a
+"license leak" where a product activation is used up and cannot be deactivated using traditional methods as the
 activation state on the container has been lost.
 
-To avoid "leaking" licenses, we encourage users not to force kill containers and to use `--stop-timeout 120` and 
-`--time 120` for `docker run` and `docker stop` commands respectively. This helps ensure the deactivation script has 
+To avoid "leaking" licenses, we encourage users not to force kill containers and to use `--stop-timeout 120` and
+`--time 120` for `docker run` and `docker stop` commands respectively. This helps ensure the deactivation script has
 ample time to run properly.
 
-In some situations, it can be difficult or impossible to avoid a hard termination (e.g. power failure, 
+In some situations, it can be difficult or impossible to avoid a hard termination (e.g. power failure,
 critical error on host). Unfortunately, any of these cases can still cause a license to leak an activation. To help
 prevent a license leak in these situations, users can mount the following directories to persistent storage to preserve
 the license state data across restarts of the container. **These directories differ between products.**
@@ -179,13 +171,13 @@ the license state data across restarts of the container. **These directories dif
 Please note that the files created in these directories are hardware locked and non-transferable between hosts. Due to
 the nature of the hardware fingerprinting algorithm, any low-level changes to the host or container can cause existing
 license state files to invalidate. To avoid this problem, we advise that product containers are gracefully shutdown
-and allowed to deactivate prior to changing any hardware or firmware on the host (e.g. upgrading a network card or 
+and allowed to deactivate prior to changing any hardware or firmware on the host (e.g. upgrading a network card or
 updating BIOS) or the container (e.g. changing the network driver used or the allocated number of CPU cores).
 
 While preserving license state data *can* help avoid license leaks across restarts, it's not a guarantee. If you run
 into issues with your license, please do not hesitate to [contact Posit support](https://support.posit.co/hc/en-us).
 
-While neither of these solutions will eliminate the problem, they should help mitigate it. We are still investigating a 
+While neither of these solutions will eliminate the problem, they should help mitigate it. We are still investigating a
 long-term solution.
 
 # Licensing

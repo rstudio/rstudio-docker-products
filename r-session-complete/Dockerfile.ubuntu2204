@@ -1,21 +1,15 @@
-ARG R_VERSION=4.2.3
-ARG R_VERSION_ALT=4.1.3
-ARG PYTHON_VERSION=3.9.17
-ARG PYTHON_VERSION_ALT=3.8.17
-ARG SRC_IMAGE_NAME=product-base-pro
-ARG REGISTRY=ghcr.io
-FROM ${REGISTRY}/rstudio/${SRC_IMAGE_NAME}:ubuntu2204-r${R_VERSION}_${R_VERSION_ALT}-py${PYTHON_VERSION}_${PYTHON_VERSION_ALT}
-LABEL maintainer="RStudio Docker <docker@rstudio.com>"
+FROM product-base-pro as build
 
 ARG DEBIAN_FRONTEND=noninteractive
-ARG R_VERSION=4.2.3
-ARG R_VERSION_ALT=4.1.3
+ARG R_VERSION=4.4.0
+ARG R_VERSION_ALT=4.3.3
 ARG PYTHON_VERSION=3.9.17
 ARG PYTHON_VERSION_ALT=3.8.17
 ARG JUPYTERLAB_VERSION=3.6.5
-ARG RSW_VERSION=2023.09.1+494.pro2
+ARG RSW_VERSION=2024.09.0+375.pro3
 ARG RSW_NAME=rstudio-workbench
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/jammy/amd64
+ARG SCRIPTS_DIR=/opt/positscripts
 
 ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
 
@@ -30,7 +24,7 @@ RUN apt-get update \
       rrdtool \
       subversion \
     && RSW_VERSION_URL=$(echo -n "${RSW_VERSION}" | sed 's/+/-/g') \
-    && curl -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-amd64.deb" \
+    && curl -fsSL -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-amd64.deb" \
     # Pre 7/25/23 packages
     && gpg --keyserver keyserver.ubuntu.com --recv-keys 3F32EE77E331692F \
     # Post 7/25 packages
@@ -43,21 +37,27 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/rstudio-server/r-versions
 
-RUN /opt/python/"${PYTHON_VERSION}"/bin/pip install \
-      jupyter \
-      jupyterlab=="${JUPYTERLAB_VERSION}" \
-      rsconnect_jupyter \
-      rsconnect_python \
-      rsp_jupyter \
-      workbench_jupyterlab \
-    && ln -s /opt/python/"${PYTHON_VERSION}"/bin/jupyter /usr/local/bin/jupyter \
-    && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter \
-    && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter \
-    && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-nbextension install --sys-prefix --py rsconnect_jupyter \
-    && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter \
-    && /opt/python/"${PYTHON_VERSION}"/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter
+### Install Quarto to PATH ###
+RUN ln -s /lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto
 
-ENV PATH="/opt/python/${PYTHON_VERSION}/bin:${PATH}"
+### Install TinyTeX using Quarto ###
+RUN $SCRIPTS_DIR/install_quarto.sh --install-tinytex --add-path-tinytex
+
+RUN /opt/python/"${PYTHON_VERSION}"/bin/python -m venv /opt/python/jupyter \
+    && /opt/python/jupyter/bin/python -m pip install --upgrade pip \
+    && /opt/python/jupyter/bin/python -m pip install --upgrade setuptools \
+    && /opt/python/jupyter/bin/python -m pip install \
+      jupyterlab~=4.2.4 \
+      notebook \
+      pwb_jupyterlab~=1.0 \
+    && ln -s /opt/python/jupyter/bin/jupyter /usr/local/bin/jupyter \
+    && /opt/python/${PYTHON_VERSION}/bin/python -m pip install ipykernel \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python -m pip install ipykernel \
+    && /opt/python/${PYTHON_VERSION}/bin/python -m ipykernel install --name py${PYTHON_VERSION} --display-name "Python ${PYTHON_VERSION}" \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}" \
+    && /opt/python/jupyter/bin/python -m pip cache purge
+
+ENV PATH="/opt/python/jupyter/bin:${PATH}"
 
 COPY vscode.extensions.conf /etc/rstudio/vscode.extensions.conf
 

@@ -1,0 +1,417 @@
+on:
+  schedule:
+    - cron: '0 8 * * 1'  # Every Monday at 8:00 UTC for automatic rebuilds (pull in OS updates, security patches, etc.)
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+  
+name: Release - Build, Test, and Push
+jobs:
+  setup:
+    name: Setup
+    runs-on: ubuntu-latest
+
+    concurrency:
+      group: bake-setup-${{ github.ref }}
+      cancel-in-progress: true
+
+    outputs:
+      GIT_SHA: ${{ steps.get-git-sha.outputs.GIT_SHA }}
+
+    steps:
+      - name: Checkout
+        if: github.event_name == 'schedule'
+        uses: actions/checkout@v4
+        with:
+          ref: 'main'
+
+      - name: Checkout
+        if: github.event_name != 'schedule'
+        uses: actions/checkout@v4
+
+      - name: Get commit SHA
+        id: get-git-sha
+        run: |
+          GIT_SHA=$(git rev-parse --short HEAD)
+          echo "GIT_SHA=$GIT_SHA" >> $GITHUB_OUTPUT
+          echo "$GIT_SHA"
+
+  base:
+    needs: [setup]
+    name: Base Images
+    runs-on: ubuntu-latest-8x
+
+    concurrency:
+      group: bake-base-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      target: base-images
+      GIT_SHA: ${{ needs.setup.outputs.GIT_SHA }}
+
+    steps:
+      - name: Checkout
+        if: github.event_name == 'schedule'
+        uses: actions/checkout@v4
+        with:
+          ref: 'main'
+
+      - name: Checkout
+        if: github.event_name != 'schedule'
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-org: ${{ secrets.SNYK_ORG }}
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
+
+  connect:
+    needs: [setup]
+    name: Connect
+    runs-on: ubuntu-latest-4x
+
+    concurrency:
+      group: bake-connect-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      target: connect
+      GIT_SHA: ${{ needs.setup.outputs.GIT_SHA }}
+
+    steps:
+      - name: Checkout
+        if: github.event_name == 'schedule'
+        uses: actions/checkout@v4
+        with:
+          ref: 'main'
+
+      - name: Checkout
+        if: github.event_name != 'schedule'
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-org: ${{ secrets.SNYK_ORG }}
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
+
+  connect-content-init:
+    needs: [setup]
+    name: Connect Content Init
+    runs-on: ubuntu-latest-4x
+
+    concurrency:
+      group: bake-connect-content-init-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      target: connect-content-init
+      GIT_SHA: ${{ needs.setup.outputs.GIT_SHA }}
+
+    steps:
+      - name: Checkout
+        if: github.event_name == 'schedule'
+        uses: actions/checkout@v4
+        with:
+          ref: 'main'
+
+      - name: Checkout
+        if: github.event_name != 'schedule'
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-org: ${{ secrets.SNYK_ORG }}
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
+
+  content:
+    needs: [setup]
+    name: Content Images
+    runs-on: ubuntu-latest-8x
+
+    concurrency:
+      group: bake-content-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      target: content-images
+      GIT_SHA: ${{ needs.setup.outputs.GIT_SHA }}
+
+    steps:
+      - name: Checkout
+        if: github.event_name == 'schedule'
+        uses: actions/checkout@v4
+        with:
+          ref: 'main'
+
+      - name: Checkout
+        if: github.event_name != 'schedule'
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-org: ${{ secrets.SNYK_ORG }}
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
+
+  package-manager:
+    needs: [setup]
+    name: Package Manager
+    runs-on: ubuntu-latest-4x
+
+    concurrency:
+      group: bake-package-manager-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      target: package-manager
+      GIT_SHA: ${{ needs.setup.outputs.GIT_SHA }}
+
+    steps:
+      - name: Checkout
+        if: github.event_name == 'schedule'
+        uses: actions/checkout@v4
+        with:
+          ref: 'main'
+
+      - name: Checkout
+        if: github.event_name != 'schedule'
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-org: ${{ secrets.SNYK_ORG }}
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
+
+  r-session-complete:
+    needs: [setup]
+    name: R Session Complete
+    runs-on: ubuntu-latest-8x
+
+    concurrency:
+      group: bake-r-session-complete-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      target: r-session-complete
+      GIT_SHA: ${{ needs.setup.outputs.GIT_SHA }}
+
+    steps:
+      - name: Checkout
+        if: github.event_name == 'schedule'
+        uses: actions/checkout@v4
+        with:
+          ref: 'main'
+
+      - name: Checkout
+        if: github.event_name != 'schedule'
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-org: ${{ secrets.SNYK_ORG }}
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
+
+  workbench:
+    needs: [setup]
+    name: Workbench
+    runs-on: ubuntu-latest-4x
+
+    concurrency:
+      group: bake-workbench-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      target: workbench
+      GIT_SHA: ${{ needs.setup.outputs.GIT_SHA }}
+
+    steps:
+      - name: Checkout
+        if: github.event_name == 'schedule'
+        uses: actions/checkout@v4
+        with:
+          ref: 'main'
+
+      - name: Checkout
+        if: github.event_name != 'schedule'
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-org: ${{ secrets.SNYK_ORG }}
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
+
+  workbench-for-google-cloud-workstations:
+    needs: [setup]
+    name: Workbench for Google Cloud Workstations
+    runs-on: ubuntu-latest-8x
+
+    concurrency:
+      group: bake-wgcw-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      target: workbench-for-google-cloud-workstations
+      GIT_SHA: ${{ needs.setup.outputs.GIT_SHA }}
+
+    steps:
+      - name: Checkout
+        if: github.event_name == 'schedule'
+        uses: actions/checkout@v4
+        with:
+          ref: 'main'
+
+      - name: Checkout
+        if: github.event_name != 'schedule'
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-org: ${{ secrets.SNYK_ORG }}
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
+
+  workbench-for-microsoft-azure-ml:
+    needs: [setup]
+    name: Workbench for Microsoft Azure ML
+    runs-on: ubuntu-latest-8x
+
+    concurrency:
+      group: bake-waml-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      target: workbench-for-microsoft-azure-ml
+      GIT_SHA: ${{ needs.setup.outputs.GIT_SHA }}
+
+    steps:
+      - name: Checkout
+        if: github.event_name == 'schedule'
+        uses: actions/checkout@v4
+        with:
+          ref: 'main'
+
+      - name: Checkout
+        if: github.event_name != 'schedule'
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-org: ${{ secrets.SNYK_ORG }}
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'

@@ -30,17 +30,20 @@ Docker images for RStudio Professional Products
 - RStudio Workbench Session Images (requires the launcher)
     - [R Session Complete](./r-session-complete/)
 - Product Base Images
-    - [Base](./product/base)
-    - [Pro (with Pro Drivers)](./product/pro)
+    - [Product Base](./product/base)
+    - [Product Base Pro (includes Pro Drivers)](./product/pro)
+- RStudio Connect Session Images (requires the launcher)
+    - [Content Base Image](./content/base/)
+    - [Content Base + Pro Driver Image](./content/pro/)
+    - [Content Init Container](./connect-content-init/)
 
 ### Preview Images
 
 *IMPORTANT:* Do not use these images. They are in preparation for a future release
 
-- RStudio Connect Session Images (requires the launcher)
-    - [Content Base Image](./content/base/)
-    - [Content Base + Pro Driver Image](./content/pro/)
-    - [Content Init Container](./connect-content-init/)
+- [RStudio Workbench Preview and Daily](./workbench/)
+- [RStudio Connect Daily](./connect/)
+- [RStudio Package Manager Daily](./package-manager/)
 
 ### Image Hierarchy And Relationship
 
@@ -49,19 +52,21 @@ Docker images for RStudio Professional Products
 
 ```mermaid
 flowchart TB;
-  subgraph s1["Connect"];
-    id1("Connect Image")
-    id2("Connect Content Init")
-    id1-.-id2
-  end;
-  subgraph Package Manager;
-    id3("Package Manager Image")
-  end;
   subgraph Product Base Images;
     id4("Product Base")
     id5("Product Base Pro")
     id4-->id5
   end
+  subgraph s1["Connect"];
+    id1("Connect Image")
+    id2("Connect Content Init")
+    id1-.-id2
+    id5-->id1
+  end;
+  subgraph Package Manager;
+    id3("Package Manager Image")
+    id4-->id3
+  end;
   subgraph Workbench;
     id6("Workbench Image")
     id7("r-session-complete")
@@ -115,28 +120,49 @@ After you have cloned [rstudio-docker-products](https://github.com/rstudio/rstud
 own containers fairly simply with the provided Justfiles. If you're unfamiliar with `just`, please check out 
 [their documentation](https://just.systems/man/en). If you are unable to use `just` in your organization,
 most targets in each Justfile can be copy/pasted into your shell and ran there with variables replaced where 
-appropriate. 
+appropriate.
 
-To build RStudio Workbench:
+We orchestrate all our builds using `docker buildx bake`. You can learn more about the tool on 
+[Docker's buildx bake page](https://docs.docker.com/build/bake/), however no additional background knowledge is needed on the tool in order 
+to use it.
+
+To build all images:
+```bash
+just build
 ```
-just workbench/build
+Individual images or groups of images can also be built. For example, you can build `connect` by running:
+```bash
+just bake connect
 ```
-To build RStudio Connect:
-```
-just connect/build
-```
-To build RStudio Package Manager:
-```
-just package-manager/build
-```
+
+Here are the available targets and groups in bake. To build one, use `just bake <target>`:
+- `build` - Builds all images
+- `base-images` - Builds `product/base` and `product/pro`
+- `package-manager` - Builds `package-manager`
+- `connect` - Builds `connect`
+- `workbench` - Builds `workbench`
+- `connect-content-init` - Builds `connect-content-init`
+- `r-session-complete` - Builds `r-session-complete`
+- `workbench-for-google-cloud-workstations` - Builds `workbench-for-google-cloud-workstations`
+- `waml-images` - Builds `workbench-for-microsoft-azure-ml` stack (build, scan, and final)
+
+Preview images and content images are also available to build through the `docker-bake.preview.hcl` and 
+`content/docker-bake.hcl` files respectively or use `just preview-bake` and `just content-bake`. 
 
 You can alter what exactly is built by changing `workbench/Dockerfile.$OS`, `connect/Dockerfile.$OS`,
-and `package-manager/Dockerfile.$OS`.
+and `package-manager/Dockerfile.$OS`. Keep in mind that `product/base` or `product/pro` also impact what our default
+image builds contain.
 
-You can then run what you've built to test out with the `run` commands. For instance, to run the workbench container
+You can then run what you've built to test out with the `run` target. For instance, to run the workbench container
 you have built:
 ```
-just workbench/run
+just RSW_LICENSE="<license key>" run workbench
+```
+
+You can also run validation tests on the image using [Goss](https://github.com/goss-org/goss). To run the tests, use 
+the `test` target. For example, to test Connect you can run:
+```
+just test connect
 ```
 
 Note you must have a license in place, and all other instructions in separate sections are still relevant.

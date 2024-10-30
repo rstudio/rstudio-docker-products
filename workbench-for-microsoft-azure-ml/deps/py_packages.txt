@@ -1,4 +1,4 @@
-azureml
+azureml-sdk
 azureml-core
 azureml-dataset-runtime
 azure-ai-ml

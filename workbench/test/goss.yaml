@@ -69,8 +69,11 @@ file:
     exists: true
     owner: rstudio-server
     group: rstudio-server
-  /usr/lib/rstudio-server/bin/code-server/bin/code-server:
+  /usr/lib/rstudio-server/bin/pwb-code-server/bin/code-server:
     exists: true
+  # Old code-server location
+  /usr/lib/rstudio-server/bin/code-server/bin/code-server:
+    exists: false
   /var/lib/rstudio-launcher/Local/jobs/buildkitsandbox:
     exists: false
   /etc/rstudio/vscode.conf:
@@ -82,12 +85,15 @@ file:
   /etc/pam.d/common-session:
     exists: true
     contains:
-      - "/^session required pam_mkhomedir.so skel=/etc/skel umask=0022$/"
+      - "/^session required pam_mkhomedir.so skel=/etc/skel umask=0077$/"
   /etc/sssd/sssd.conf:
     exists: true
     owner: root
     group: root
     mode: "0600"
+  /usr/local/bin/quarto:
+    exists: true
+    filetype: symlink
 
 command:
   "su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'":
@@ -106,6 +112,7 @@ command:
      ]
   "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/jupyter/bin/jupyter nbconvert --to notebook --stdin --stdout":
     title: jupyter_works
+    timeout: 60000
     exit-status: 0
 # Ensure correct python version
   "/opt/python/{{.Env.PYTHON_VERSION_ALT}}/bin/python --version":
@@ -133,3 +140,15 @@ command:
     stdout: [
       "/usr/bin/openssl"
     ]
+
+# Ensure Quarto works
+  "/usr/local/bin/quarto check --quiet":
+    title: quarto_check
+    exit-status: 0
+
+# Ensure TinyTeX is installed
+  "quarto list tools":
+    title: quarto_tinytex_installed
+    exit-status: 0
+    stderr:
+      - "/tinytex\\s+Up to date\\s+v\\d{4}\\.\\d{2}(\\.\\d{2})?\\s+v\\d{4}\\.\\d{2}(\\.\\d{2})?/"

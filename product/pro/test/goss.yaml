@@ -22,7 +22,12 @@ package:
   rstudio-drivers:
     installed: true
     versions:
-      - {{ trimSuffix "-1" .Env.DRIVERS_VERSION }}  # RHEL driver doesn't print the "-1" suffix in the package name
+      {{if .Env.OS | regexMatch "ubuntu.*"}}
+      - {{ .Env.DRIVERS_VERSION }}  # RHEL driver doesn't print the "-1" suffix in the package name
+      {{end}}
+      {{if .Env.OS | regexMatch "centos.*"}}
+      - {{ .Env.DRIVERS_VERSION }}.el
+      {{end}}
 
 file:
   /opt/R/{{.Env.R_VERSION}}/bin/R:
@@ -34,8 +39,6 @@ file:
   /opt/python/{{.Env.PYTHON_VERSION_ALT}}/bin/python3:
     exists: true
   /tini:
-    exists: true
-  /opt/quarto/{{.Env.QUARTO_VERSION}}/bin/quarto:
     exists: true
 
 
@@ -66,12 +69,4 @@ command:
     exit-status: 0
     stdout: [
       "{{ .Env.PYTHON_VERSION_ALT }}"
-    ]
-
-# Ensure correct Quarto version
-  "/opt/quarto/{{ .Env.QUARTO_VERSION }}/bin/quarto --version":
-    title: quarto_version_matches
-    exit-status: 0
-    stdout: [
-      "{{ .Env.QUARTO_VERSION }}"
     ]

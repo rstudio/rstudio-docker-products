@@ -1,0 +1,156 @@
+FROM product-base-pro as posit_base
+FROM us-central1-docker.pkg.dev/cloud-workstations-images/predefined/base:last-ubuntu2204 as build
+
+### ARG declarations ###
+ARG DEBIAN_FRONTEND=noninteractive
+ARG R_VERSION=4.4.0
+ARG R_VERSION_ALT=4.3.3
+ARG PYTHON_VERSION=3.11.9
+ARG PYTHON_VERSION_ALT=3.10.14
+ARG PYTHON_VERSION_JUPYTER=3.10.14
+ARG JUPYTERLAB_VERSION=3.6.7
+ARG DRIVERS_VERSION=2023.05.0
+ARG RSW_VERSION=2024.09.0+375.pro3
+ARG RSW_NAME=rstudio-workbench
+ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/jammy/amd64
+ARG SCRIPTS_DIR=/opt/positscripts
+
+ENV STARTUP_DEBUG_MODE 0
+ENV RSW_LICENSE ""
+ENV RSW_LICENSE_SERVER ""
+ENV RSW_TESTUSER user
+ENV RSW_TESTUSER_PASSWD rstudio
+ENV RSW_TESTUSER_UID 10000
+ENV RSW_LAUNCHER true
+ENV RSW_LAUNCHER_TIMEOUT 10
+ENV DIAGNOSTIC_DIR /var/log/rstudio
+ENV DIAGNOSTIC_ENABLE false
+ENV DIAGNOSTIC_ONLY false
+ENV LICENSE_MANAGER_PATH /opt/rstudio-license
+ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
+
+### Copy scripts from Posit Base ###
+COPY --from=posit_base /opt/positscripts /opt/positscripts
+
+### Copy package lists and install scripts ###
+COPY deps/* /tmp/
+
+### Update/upgrade system packages ###
+COPY deps/apt_packages.txt /tmp/apt_packages.txt
+RUN curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add - \
+    && ${SCRIPTS_DIR}/apt.sh --update upgrade \
+    && ${SCRIPTS_DIR}/apt.sh install $(cat /tmp/apt_packages.txt) \
+    && ${SCRIPTS_DIR}/apt.sh --clean \
+    && rm /tmp/apt_packages.txt
+
+### Install R versions ###
+COPY deps/r_packages.txt /tmp/r_packages.txt
+RUN ${SCRIPTS_DIR}/apt.sh --update \
+    && R_VERSION=${R_VERSION} ${SCRIPTS_DIR}/install_r.sh -r /tmp/r_packages.txt \
+    && R_VERSION=${R_VERSION_ALT} ${SCRIPTS_DIR}/install_r.sh -r /tmp/r_packages.txt \
+    && ${SCRIPTS_DIR}/apt.sh --clean \
+    && ln -s /opt/R/${R_VERSION} /opt/R/default \
+    && ln -s /opt/R/default/bin/R /usr/local/bin/R \
+    && ln -s /opt/R/default/bin/Rscript /usr/local/bin/Rscript \
+    && rm -f /tmp/r_packages.txt
+
+### Install Python versions ###
+COPY deps/requirements.txt /tmp/requirements.txt
+RUN ${SCRIPTS_DIR}/apt.sh --update \
+    && PYTHON_VERSION=${PYTHON_VERSION} ${SCRIPTS_DIR}/install_python.sh -r /tmp/requirements.txt \
+    && PYTHON_VERSION=${PYTHON_VERSION_ALT} ${SCRIPTS_DIR}/install_python.sh -r /tmp/requirements.txt \
+    && ${SCRIPTS_DIR}/apt.sh --clean \
+    && ln -s /opt/python/${PYTHON_VERSION} /opt/python/default \
+    && rm -f /tmp/requirements.txt
+
+### Locale configuration ###
+RUN localedef -i en_US -f UTF-8 en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+
+### Install Pro Drivers ###
+RUN ${SCRIPTS_DIR}/apt.sh --update upgrade \
+    && ${SCRIPTS_DIR}/apt.sh install unixodbc unixodbc-dev \
+    && DRIVERS_VERSION=${DRIVERS_VERSION} ${SCRIPTS_DIR}/install_drivers.sh \
+    && ${SCRIPTS_DIR}/apt.sh --clean \
+    && cp /opt/rstudio-drivers/odbcinst.ini.sample /etc/odbcinst.ini \
+    && /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.posit.co/cran/__linux__/jammy/latest")'
+
+### Install Workbench ###
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN curl -fsSL -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION//+/-}-amd64.deb" \
+    # Pre 7/25/23 packages
+    && gpg --keyserver keyserver.ubuntu.com --recv-keys 3F32EE77E331692F \
+    # Post 7/25 packages
+    && gpg --keyserver keys.openpgp.org --recv-keys 51C0B5BB19F92D60 \
+    && dpkg-sig --verify ./rstudio-workbench.deb \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends ./rstudio-workbench.deb \
+    # a wild hack to ensure that workbench can install _and start_ completely before shutdown
+    && sleep 30 \
+    && rm ./rstudio-workbench.deb \
+    && apt-get remove -yq dpkg-sig \
+    && apt-get autoremove -y \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /var/lib/rstudio-server/r-versions
+
+### Install Quarto to PATH ###
+RUN ln -s /lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto
+
+### Install TinyTeX using Quarto ###
+RUN $SCRIPTS_DIR/install_quarto.sh --install-tinytex --add-path-tinytex
+
+# Workaround to ensure no pre-generated certificates are included in image distributions.
+# This happens in the step immediately following Workbench installation in case the certificates are generated.
+RUN rm -f /etc/rstudio/launcher.pem /etc/rstudio/launcher.pub
+
+### Install GCW License Manager ###
+# TODO(ianpittwood): Replace monitor download with $RSW_VERSION after upgrading to 2023.06.0
+RUN mkdir -p /opt/rstudio-license/ \
+    && mkdir -p /var/lib/rstudio-workbench \
+    && curl -fsSL "https://s3.amazonaws.com/rstudio-ide-build/monitor/jammy/rsp-monitor-workbench-gcpw-amd64-${RSW_VERSION//+/-}.tar.gz" |  \
+       tar xzvf - --strip 2 -C /opt/rstudio-license/ \
+    && chmod 0755 /opt/rstudio-license/license-manager \
+    && mv /opt/rstudio-license/license-manager /opt/rstudio-license/license-manager-orig \
+    && rm -f /usr/lib/rstudio-server/bin/license-manager
+
+### Install Jupyter and extensions ###
+RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyter \
+    && /opt/python/jupyter/bin/python -m pip install --upgrade pip \
+    && /opt/python/jupyter/bin/python -m pip install --upgrade setuptools \
+    && /opt/python/jupyter/bin/python -m pip install\
+      jupyterlab~=4.2.4 \
+      notebook \
+      pwb_jupyterlab~=1.0 \
+    && ln -s /opt/python/jupyter/bin/jupyter /usr/local/bin/jupyter \
+    && /opt/python/${PYTHON_VERSION}/bin/python -m pip install ipykernel \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python -m pip install ipykernel \
+    && /opt/python/${PYTHON_VERSION}/bin/python -m ipykernel install --name py${PYTHON_VERSION} --display-name "Python ${PYTHON_VERSION}" \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}" \
+    && /opt/python/jupyter/bin/python3 -m pip cache purge
+
+ADD --chmod=755 https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh /usr/local/bin/wait-for-it.sh
+
+RUN mkdir -p /var/lib/rstudio-server/monitor/log \
+    && chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor \
+    && mkdir -p /startup/custom/ \
+    && printf '\n# allow home directory creation\nsession required pam_mkhomedir.so skel=/etc/skel umask=0077' >> /etc/pam.d/common-session
+
+COPY --chmod=755 TurboActivate.dat /opt/rstudio-license/license-manager.conf
+COPY --chmod=755 license-manager-shim /opt/rstudio-license/license-manager
+COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
+COPY startup-launcher/* /startup/launcher/
+COPY startup-user-provisioning/* /startup/user-provisioning/
+COPY startup/* /startup/base/
+COPY supervisord.conf /etc/supervisor/supervisord.conf
+COPY --chmod=600 sssd.conf /etc/sssd/sssd.conf
+COPY conf/* /etc/rstudio/
+
+# GCW specific
+COPY --chmod=755 workstation-startup/* /etc/workstation-startup.d/
+COPY --chmod=644 jupyter/jupyter_notebook_config.json /opt/python/jupyter/etc/jupyter/jupyter_notebook_config.json
+
+EXPOSE 80/tcp
+EXPOSE 5559/tcp

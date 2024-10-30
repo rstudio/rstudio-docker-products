@@ -1,11 +1,4 @@
-ARG R_VERSION=4.2.3
-ARG R_VERSION_ALT=4.1.3
-ARG PYTHON_VERSION=3.9.17
-ARG PYTHON_VERSION_ALT=3.8.17
-ARG SRC_IMAGE_NAME=product-base-pro
-ARG REGISTRY=ghcr.io
-FROM ${REGISTRY}/rstudio/${SRC_IMAGE_NAME}:ubuntu2204-r${R_VERSION}_${R_VERSION_ALT}-py${PYTHON_VERSION}_${PYTHON_VERSION_ALT} AS workbench
-LABEL maintainer="RStudio Docker <docker@rstudio.com>"
+FROM product-base-pro AS build
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG R_VERSION=4.2.3
@@ -13,11 +6,11 @@ ARG R_VERSION_ALT=4.1.3
 ARG PYTHON_VERSION=3.9.17
 ARG PYTHON_VERSION_ALT=3.8.17
 ARG PYTHON_VERSION_JUPYTER=3.8.17
-ARG JUPYTERLAB_VERSION=3.6.5
-ARG RSW_VERSION=2023.09.1+494.pro2
+ARG JUPYTERLAB_VERSION=3.6.7
+ARG RSW_VERSION=2024.09.0+375.pro3
 ARG RSW_NAME=rstudio-workbench
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/jammy/amd64
-ARG DEBIAN_FRONTEND=noninteractive
+ARG SCRIPTS_DIR=/opt/positscripts
 
 # Set default env values
 ENV STARTUP_DEBUG_MODE 0
@@ -46,17 +39,19 @@ RUN apt-get update --fix-missing \
     && rm -rf /var/lib/apt/lists/*
 
 RUN apt-get update \
-    && curl -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION//+/-}-amd64.deb" \
+    && curl -fsSL -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION//+/-}-amd64.deb" \
     # Pre 7/25/23 packages
     && gpg --keyserver keyserver.ubuntu.com --recv-keys 3F32EE77E331692F \
     # Post 7/25 packages
     && gpg --keyserver keys.openpgp.org --recv-keys 51C0B5BB19F92D60 \
     && dpkg-sig --verify ./rstudio-workbench.deb \
     && apt-get install -yq --no-install-recommends ./rstudio-workbench.deb \
+    # a wild hack to ensure that workbench can install _and start_ completely before shutdown
+    && sleep 30 \
     && rm ./rstudio-workbench.deb \
     && mkdir -p /opt/rstudio-license/ \
     && mkdir -p /var/lib/rstudio-workbench/ \
-    && curl -sL "https://s3.amazonaws.com/rstudio-ide-build/monitor/jammy/rsp-monitor-workbench-azureml-amd64-${RSW_VERSION//+/-}.tar.gz" \
+    && curl -fsSL "https://s3.amazonaws.com/rstudio-ide-build/monitor/jammy/rsp-monitor-workbench-azureml-amd64-${RSW_VERSION//+/-}.tar.gz" \
     | tar xzvf - --strip 2 -C /opt/rstudio-license/ \
     && chmod 0755 /opt/rstudio-license/license-manager \
     && mv /opt/rstudio-license/license-manager /opt/rstudio-license/license-manager-orig \
@@ -65,6 +60,16 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/lib/rstudio-server/r-versions
+
+# Workaround to ensure no pre-generated certificates are included in image distributions.
+# This happens in the step immediately following Workbench installation in case the certificates are generated.
+RUN rm -f /etc/rstudio/launcher.pem /etc/rstudio/launcher.pub
+
+### Install Quarto to PATH ###
+RUN ln -s /lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto
+
+### Install TinyTeX using Quarto ###
+RUN $SCRIPTS_DIR/install_quarto.sh --install-tinytex --add-path-tinytex
 
 COPY --chmod=0755 license-manager-shim /opt/rstudio-license/license-manager
 COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
@@ -83,42 +88,32 @@ RUN apt-get update --fix-missing -qq \
 
 ### Install Jupyter and extensions ###
 RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyter \
+    && /opt/python/jupyter/bin/python -m pip install --upgrade pip \
+    && /opt/python/jupyter/bin/python -m pip install --upgrade setuptools \
     && /opt/python/jupyter/bin/pip install \
-      jupyter \
-      jupyterlab=="${JUPYTERLAB_VERSION}" \
-      rsconnect_jupyter \
-      rsconnect_python \
-      rsp_jupyter \
-      workbench_jupyterlab \
-    && /opt/python/jupyter/bin/jupyter kernelspec remove python3 -f \
-    && /opt/python/jupyter/bin/pip uninstall -y ipykernel \
+      jupyterlab~=4.2.4 \
+      notebook \
+      pwb_jupyterlab~=1.0 \
     && ln -s /opt/python/jupyter/bin/jupyter /usr/local/bin/jupyter \
-    && /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsp_jupyter \
-    && /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsp_jupyter \
-    && /opt/python/jupyter/bin/jupyter-nbextension install --sys-prefix --py rsconnect_jupyter \
-    && /opt/python/jupyter/bin/jupyter-nbextension enable --sys-prefix --py rsconnect_jupyter \
-    && /opt/python/jupyter/bin/jupyter-serverextension enable --sys-prefix --py rsconnect_jupyter \
-    && /opt/python/${PYTHON_VERSION}/bin/pip install \
-      ipykernel \
-      virtualenv \
+    && /opt/python/${PYTHON_VERSION}/bin/python -m pip install ipykernel \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python -m pip install ipykernel \
     && /opt/python/${PYTHON_VERSION}/bin/python -m ipykernel install --name py${PYTHON_VERSION} --display-name "Python ${PYTHON_VERSION}" \
-    && /opt/python/${PYTHON_VERSION_ALT}/bin/pip install \
-      ipykernel \
-      virtualenv \
-    && /opt/python/${PYTHON_VERSION_ALT}/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}"
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}" \
+    && /opt/python/jupyter/bin/python3 -m pip cache purge
 
 ### Install basic data science packages for Python and R ###
 COPY deps/* /
-RUN /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install -r /tmp/py_packages.txt \
+RUN /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install -U pip setuptools wheel \
+    && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install -r /tmp/py_packages.txt \
     && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip cache purge \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install -U pip setuptools wheel \
     && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip install -r /tmp/py_packages.txt \
     && /opt/python/${PYTHON_VERSION_ALT}/bin/python3 -m pip cache purge \
     && rm /tmp/py_packages.txt
 
-RUN curl -L -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh \
-    && chmod +x /usr/local/bin/wait-for-it.sh
+ADD --chmod=755 https://raw.githubusercontent.com/rstudio/wait-for-it/master/wait-for-it.sh /usr/local/bin/wait-for-it.sh
 
-RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash \
+RUN curl -fsSL https://aka.ms/InstallAzureCLIDeb | bash \
     && az extension add -n ml -y
 
 COPY conf/* /etc/rstudio/
@@ -131,8 +126,7 @@ ENTRYPOINT []
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
 
 
-
-FROM workbench AS clamav
+FROM build AS clamav
 
 # Set up ClamAV
 RUN apt-get update \
@@ -150,16 +144,26 @@ RUN grep -v "DatabaseMirror" /etc/clamav/freshclam.conf > /etc/clamav/freshclam.
 # Update ClamAV
 RUN freshclam --log="/var/log/clamav/clamupdate.log"
 
-# Scan all but /sys for viruses. If this fails, the Docker build will
-# fail.
-RUN clamscan --recursive --infected --exclude-dir="^/sys" --log "/var/log/clamav/clamscan.log" /
+# Scan all but /sys for viruses. If this fails, the Docker build will fail.
+#
+# --exclude options are false positives per rstudio/rstudio-docker-products#704.
+# They can likely be removed in the future after ClamAV's database is updated.
+RUN clamscan \
+    --recursive \
+    --infected \
+    --exclude-dir="^/sys" \
+    --exclude="/opt/az/lib/python3.11/ensurepip/_bundled/pip-23.2.1-py3-none-any.whl" \
+    --exclude="/opt/az/lib/python3.11/site-packages/pip/_vendor/distlib/w32.exe" \
+    --exclude="/opt/az/lib/python3.11/site-packages/pip/_vendor/distlib/w64-arm.exe" \
+    --exclude="/opt/az/lib/python3.11/site-packages/pip/_vendor/distlib/t64-arm.exe" \
+    --log "/var/log/clamav/clamscan.log" /
 
 
 # Ignore the intermediate 'clamav' multi-stage build step so we don't distribute
 # with ClamAV installed. Avoid adding changes in this stage unless they are related
 # to the ClamAV stage. Since the ClamAV stage may be cached, you can't guarantee
 # another full scan if you change anything beyond this point.
-FROM workbench AS final
+FROM build AS final
 
 # Copy ClamAV scan logs so the end user can see them.
 COPY --from=clamav /var/log/clamav/clamscan.log /var/log/clamav/clamupdate.log /
@@ -174,5 +178,5 @@ LABEL \
      azure.ii.endpoints='[{"label":"connect","target":8787,"protocol":"http"}]' \
      org.opencontainers.image.description='A professional integrated development environment for data science teams using R and Python' \
      org.opencontainers.image.title='RStudio Workbench' \
-     org.opencontainers.image.version='2023.06.2+561.pro5' \
+     org.opencontainers.image.version='2024.09.0+375.pro3' \
      org.opencontainers.image.url='https://www.rstudio.com/products/workbench/'
