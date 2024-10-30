@@ -21,6 +21,7 @@ on:
           - workbench
           - workbench-for-google-cloud-workstations
           - workbench-for-microsoft-azure-ml
+          - workbench-session-init
       type:
         description: "The type of image being built."
         required: false
