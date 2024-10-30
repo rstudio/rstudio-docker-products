@@ -13,10 +13,10 @@ ARG RSW_VERSION=2024.09.0+375.pro3
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN mkdir -p /pwb-staging && \
     RSW_VERSION_URL=$(echo -n "${RSW_VERSION}" | sed 's/+/-/g') && \
-    echo "Downloading https://s3.amazonaws.com/rstudio-ide-build/session/multi/x86_64/rsp-session-multi-${RSW_VERSION_URL}-x86_64.tar.gz" && \
-    curl -fsSL -o /pwb-staging/rsp-session-multi.tar.gz "https://s3.amazonaws.com/rstudio-ide-build/session/multi/x86_64/rsp-session-multi-linux-${RSW_VERSION_URL}-x86_64.tar.gz" && \
+    echo "Downloading https://s3.amazonaws.com/rstudio-ide-build/session/multi/x86_64/rsp-session-multi-linux-${RSW_VERSION_URL}-x86_64.tar.gz" && \
+    curl -fsSL -o /pwb-staging/rsp-session-multi-linux.tar.gz "https://s3.amazonaws.com/rstudio-ide-build/session/multi/x86_64/rsp-session-multi-linux-${RSW_VERSION_URL}-x86_64.tar.gz" && \
     mkdir -p /opt/session-components && \
-    tar -C /opt/session-components -xf /pwb-staging/rsp-session-multi.tar.gz && \
+    tar -C /opt/session-components -xf /pwb-staging/rsp-session-multi-linux.tar.gz && \
     chmod -R 755 /opt/session-components && \
     rm -rf /pwb-staging
 
