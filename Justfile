@@ -51,6 +51,7 @@ alias build := bake
 bake target="default":
   just -f {{justfile()}} create-builder || true
   GIT_SHA=$(git rev-parse --short HEAD) \
+  WORKBENCH_SESSION_INIT_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local) \
     docker buildx bake --builder=posit-builder -f docker-bake.hcl {{target}}
 
 # just preview-bake workbench-images dev
@@ -90,6 +91,7 @@ preview-plan branch="$(git branch --show-current)":
 # just test workbench
 test target="default" file="docker-bake.hcl":
   GIT_SHA=$(git rev-parse --short HEAD) \
+  WORKBENCH_SESSION_INIT_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local) \
     python3 {{justfile_directory()}}/tools/test_bake_artifacts.py --target "{{target}}" --file "{{file}}"
 
 # just preview-test connect dev
