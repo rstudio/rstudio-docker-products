@@ -8,7 +8,7 @@ This directory contains a Dockerfile and script that will create an init contain
 * Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues)
 * Posit Workbench image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-workbench)
 * RStudio r-session-complete image: [Docker Hub](https://hub.docker.com/r/rstudio/r-session-complete)
-* Workbench Session Init image (Daily/Preview): [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-workbench-session-init-preview)
+* Workbench Session Init image: [Docker Hub](https://hub.docker.com/r/rstudio/workbench-session-init)
 
 ## Supported tags and respective Dockerfile links
 
@@ -16,7 +16,13 @@ This directory contains a Dockerfile and script that will create an init contain
 
 ## Building
 
-Currently daily builds are supported. To build the image, run:
+Just will build an image using a default Connect distribution.
+
+```console
+just build
+```
+
+Daily builds are also supported. To build the daily image, run:
 
 ```console
 just preview-bake workbench-session-init-daily
@@ -28,14 +34,14 @@ You can observe what gets copied by the container:
 
 ```console
 mkdir init
-docker run --rm -v $(pwd)/init:/mnt/init rstudio/workbench-session-init-preview:workbench-session-init-jammy-2024.11.0-daily-328.pro3
+docker run --rm -v $(pwd)/init:/mnt/init rstudio/workbench-session-init:jammy-2024.11.0
 # The init directory has been populated with the Workbench session runtime components.
 ```
 
 You can also test using GOSS:
 
 ```console
-just preview-test workbench-session-init-daily
+just test workbench-session-init
 ```
 
 ## Licensing
