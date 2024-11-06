@@ -421,3 +421,43 @@ jobs:
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           snyk-org: ${{ secrets.SNYK_ORG }}
           snyk-token: '${{ secrets.SNYK_TOKEN }}'
+
+  workbench-session-init-daily:
+    needs: [versions]
+    name: Workbench Session Init - Daily
+    runs-on: ubuntu-latest-4x
+
+    env:
+      target: "workbench-session-init-daily"
+      WORKBENCH_DAILY_VERSION: ${{ needs.versions.outputs.WORKBENCH_DAILY_VERSION }}
+      WORKBENCH_PREVIEW_VERSION: ${{ needs.versions.outputs.WORKBENCH_PREVIEW_VERSION }}
+      PACKAGE_MANAGER_DAILY_VERSION: ${{ needs.versions.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
+      PACKAGE_MANAGER_PREVIEW_VERSION: ${{ needs.versions.outputs.PACKAGE_MANAGER_PREVIEW_VERSION }}
+      CONNECT_DAILY_VERSION: ${{ needs.versions.outputs.CONNECT_DAILY_VERSION }}
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+
+    concurrency:
+      group: bake-workbench-session-init-daily-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          bakefile: docker-bake.preview.hcl
+          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          snyk-org: ${{ secrets.SNYK_ORG }}
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'

@@ -9,7 +9,7 @@ BUILDX_PATH := ""
 
 RSC_VERSION := "2024.09.0"
 RSPM_VERSION := "2024.08.2-9"
-RSW_VERSION := "2024.09.0+375.pro3"
+RSW_VERSION := "2024.09.1+394.pro7"
 
 DRIVERS_VERSION := "2023.05.0"
 DRIVERS_VERSION_RHEL := DRIVERS_VERSION + "-1"
@@ -295,16 +295,17 @@ update-rsw-versions:
     r-session-complete/.env \
     workbench-for-microsoft-azure-ml/.env \
     r-session-complete/Dockerfile.ubuntu2204 \
-    r-session-complete/Dockerfile.centos7 \
     workbench/Dockerfile.ubuntu2204 \
-    workbench-for-microsoft-azure-ml/Dockerfile.ubuntu2204
+    workbench-for-microsoft-azure-ml/Dockerfile.ubuntu2204 \
+    workbench-session-init/Dockerfile.ubuntu2204
   sed {{ sed_vars }} "s/RSW_VERSION:.*/RSW_VERSION: {{ RSW_VERSION }}/g" docker-compose.yml
   sed {{ sed_vars }} "s/rstudio\/rstudio-workbench:.*/rstudio\/rstudio-workbench:$(just _get-clean-version {{ RSW_VERSION }})/g" docker-compose.yml
   sed {{ sed_vars }} "s/^RSW_VERSION := .*/RSW_VERSION := \"{{ RSW_VERSION }}\"/g" \
     Justfile
   sed {{ sed_vars }} "s/[0-9]\{4\}\.[0-9]\{1,2\}\.[0-9]\{1,2\}/`just _get-clean-version {{ RSW_VERSION }}`/g" \
     workbench/README.md \
-    r-session-complete/README.md
+    r-session-complete/README.md \
+    workbench-session-init/README.md
   awk -v new_version="{{ RSW_VERSION }}" '
   /variable WORKBENCH_VERSION/ { print; getline; print "    default = \"" new_version "\""; next }
   { print }

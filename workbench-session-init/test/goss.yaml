@@ -1,0 +1,13 @@
+package:
+  curl:
+    installed: true
+
+file:
+  /opt/session-components/:
+    exists: true
+    mode: "0755"
+    filetype: directory
+  /usr/local/bin/run.sh:
+    exists: true
+    filetype: file
+    mode: "0755"

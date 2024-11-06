@@ -24,6 +24,8 @@ jobs:
           - {prefix: '', repository: 'content-pro', readme_path: './content/pro/README.md'}
           - {prefix: 'rstudio-', repository: 'package-manager', readme_path: './package-manager/README.md'}
           - {prefix: '', repository: 'r-session-complete', readme_path: './r-session-complete/README.md'}
+          - {prefix: 'rstudio-', repository: 'workbench-for-microsoft-azure-ml', readme_path: './workbench-for-microsoft-azure-ml/README.md'}
+          - {prefix: '', repository: 'workbench-session-init', readme_path: './workbench-session-init/README.md'}
 
     steps:
       - name: Check Out Repo

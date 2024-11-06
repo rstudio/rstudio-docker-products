@@ -1,0 +1,25 @@
+FROM ubuntu:22.04 AS build
+
+# Install required tools:
+# - ca-certificates installs necessary certificates to use cURL with HTTPS websites
+# - curl is used to download the runtime tar.gz
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates curl && \
+    rm -rf /var/lib/apt/lists/*
+
+ARG RSW_VERSION=2024.09.1+394.pro7
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN mkdir -p /pwb-staging && \
+    RSW_VERSION_URL=$(echo -n "${RSW_VERSION}" | sed 's/+/-/g') && \
+    echo "Downloading https://s3.amazonaws.com/rstudio-ide-build/session/multi/x86_64/rsp-session-multi-linux-${RSW_VERSION_URL}-x86_64.tar.gz" && \
+    curl -fsSL -o /pwb-staging/rsp-session-multi-linux.tar.gz "https://s3.amazonaws.com/rstudio-ide-build/session/multi/x86_64/rsp-session-multi-linux-${RSW_VERSION_URL}-x86_64.tar.gz" && \
+    mkdir -p /opt/session-components && \
+    tar -C /opt/session-components -xf /pwb-staging/rsp-session-multi-linux.tar.gz && \
+    chmod -R 755 /opt/session-components && \
+    rm -rf /pwb-staging
+
+COPY --chmod=755 run.sh /usr/local/bin/run.sh
+
+ENTRYPOINT ["/usr/local/bin/run.sh"]

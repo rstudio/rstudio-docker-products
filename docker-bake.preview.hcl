@@ -163,6 +163,14 @@ variable WORKBENCH_BUILD_MATRIX {
     }
 }
 
+variable WORKBENCH_SESSION_INIT_BUILD_MATRIX {
+    default = {
+        builds = [
+            {os = "ubuntu2204"},
+        ]
+    }
+}
+
 ### Group definitions ###
 group "default" {
     targets = [
@@ -175,6 +183,7 @@ group "default" {
         "r-session-complete-daily",
         "workbench-preview",
         "workbench-daily",
+        "workbench-session-init-daily",
     ]
 }
 
@@ -448,5 +457,22 @@ target "workbench-preview" {
         RSW_VERSION = WORKBENCH_PREVIEW_VERSION
         RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = get_rsw_download_url(builds.os)
+    }
+}
+
+target "workbench-session-init-daily" {
+    inherits = ["base"]
+    target = "build"
+
+    name = "workbench-session-init-daily-${builds.os}-${replace(tag_safe_version(WORKBENCH_DAILY_VERSION), ".", "-")}"
+    tags = get_tags(builds.os, "workbench-session-init-preview", WORKBENCH_DAILY_VERSION, "daily")
+
+    dockerfile = "Dockerfile.${builds.os}"
+    context = "workbench-session-init"
+
+    matrix = WORKBENCH_SESSION_INIT_BUILD_MATRIX
+
+    args = {
+        RSW_VERSION = WORKBENCH_DAILY_VERSION
     }
 }
