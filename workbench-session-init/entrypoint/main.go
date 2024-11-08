@@ -44,7 +44,7 @@ var (
 			"extras",
 		},
 		"positron": {
-			"/bin/positron-server",
+			"bin/positron-server",
 			"bin/positron-session-run",
 			"extras",
 		},
