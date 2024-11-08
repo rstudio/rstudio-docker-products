@@ -39,7 +39,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags '-s -w' -o entrypoint main.go
 FROM scratch AS build
 
 # For testing, set the PWB_SESSION_TYPE environment variable to "rstudio"
-ENV PWB_SESSION_TYPE=rstudio
+ENV PWB_SESSION_TYPE=positron
 
 # Copy the compiled Go binary from the build stage
 COPY --from=builder --chmod=755 /workspace/entrypoint /usr/local/bin/entrypoint
