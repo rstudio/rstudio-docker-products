@@ -16,10 +16,10 @@ RUN mkdir -p /pwb-staging && \
     echo "Downloading https://s3.amazonaws.com/rstudio-ide-build/session/multi/x86_64/rsp-session-multi-linux-${RSW_VERSION_URL}-x86_64.tar.gz" && \
     curl -fsSL -o /pwb-staging/rsp-session-multi-linux.tar.gz "https://s3.amazonaws.com/rstudio-ide-build/session/multi/x86_64/rsp-session-multi-linux-${RSW_VERSION_URL}-x86_64.tar.gz" && \
     mkdir -p /opt/session-components && \
-    tar -C /opt/session-components -xf /pwb-staging/rsp-session-multi-linux.tar.gz && \
-    chmod -R 755 /opt/session-components && \
+    tar -C /opt/session-components -xpf /pwb-staging/rsp-session-multi-linux.tar.gz && \
+    chmod 755 /opt/session-components && \
     rm -rf /pwb-staging
 
-COPY --chmod=755 run.sh /usr/local/bin/run.sh
+COPY --chmod=755 entrypoint/entrypoint /usr/local/bin/entrypoint
 
-ENTRYPOINT ["/usr/local/bin/run.sh"]
+ENTRYPOINT ["/usr/local/bin/entrypoint"]
