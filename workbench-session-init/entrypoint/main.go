@@ -17,7 +17,7 @@ var (
 	// Read the PWB_SESSION_TYPE environment variable
 	sessionType = os.Getenv("PWB_SESSION_TYPE")
 
-	// List of dependecies common to all session types
+	// List of dependencies common to all session types
 	commonDeps = []string{
 		"bin/git-credential-pwb",
 		"bin/focal",
@@ -70,8 +70,6 @@ func main() {
 		elapsed := time.Since(programStart)
 		fmt.Printf("Program took %s\n", elapsed)
 	}()
-
-	sessionType = "vscode"
 
 	filesToCopy, err := getFilesToCopy(sessionType)
 	if err != nil {
