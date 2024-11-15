@@ -7,8 +7,8 @@ This directory contains a Dockerfile and script that will create an init contain
 * Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
 * Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues)
 * Posit Workbench image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-workbench)
-* RStudio r-session-complete image: [Docker Hub](https://hub.docker.com/r/rstudio/r-session-complete)
-* Workbench Session Init image: [Docker Hub](https://hub.docker.com/r/rstudio/workbench-session-init)
+* Posit Workbench session image: [Docker Hub](https://hub.docker.com/r/rstudio/workbench-session)
+* Posit Workbench session init image: [Docker Hub](https://hub.docker.com/r/rstudio/workbench-session-init)
 
 ## Supported tags and respective Dockerfile links
 

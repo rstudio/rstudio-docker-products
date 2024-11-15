@@ -7,7 +7,6 @@ services:
     entrypoint: []
     environment:
       # uses .env by default
-      - RSW_VERSION
       - R_VERSION
       - PYTHON_VERSION
     volumes:
