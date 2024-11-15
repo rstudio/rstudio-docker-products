@@ -2,8 +2,9 @@
 
 * Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
 * Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues)
-* RStudio Workbench image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-workbench)
-* RStudio r-session-complete image: [Docker Hub](https://hub.docker.com/r/rstudio/r-session-complete)
+* Posit Workbench image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-workbench)
+* Posit Workbench session image: [Docker Hub](https://hub.docker.com/r/rstudio/workbench-session)
+* Posit Workbench session init image: [Docker Hub](https://hub.docker.com/r/rstudio/workbench-session-init)
 
 # Supported tags and respective Dockerfile links
 
@@ -33,22 +34,20 @@ The Docker images built from these Dockerfiles are intended to be used for R and
 Jupyter sessions and jobs with RStudio Workbench (RSW), Launcher, and
 Kubernetes.
 
-Note: These Docker images are not equipped or intended to be used to run RStudio
+Note: These Docker images are not equipped or intended to be used to run Posit
 Workbench within a Docker container. Visit the
 [rstudio/rstudio-worbench Docker Hub page](https://hub.docker.com/r/rstudio/rstudio-workbench)
 for images built for that purpose.
 
-For more information about RStudio Workbench and Launcher, refer to the
+For more information about Posit Workbench and Launcher, refer to the
 [Launcher Overview](https://solutions.rstudio.com/launcher/overview/) on the
 RStudio Solutions website.
 
 For more information about how to use these images with RStudio Workbench and
 Launcher, refer to the RStudio support article on [Using Docker images with
-RStudio Workbench, Launcher, and
-Kubernetes](https://support.rstudio.com/hc/en-us/articles/360019253393-Using-Docker-images-with-RStudio-Server-Pro-Launcher-and-Kubernetes).
+RStudio Workbench, Launcher, and Kubernetes](https://support.rstudio.com/hc/en-us/articles/360019253393-Using-Docker-images-with-RStudio-Server-Pro-Launcher-and-Kubernetes).
 
-We provide simple ways to extend and build the Dockerfiles. After you have cloned the repo, you can create your own 
-containers fairly simply with the provided Justfile.
+We provide simple ways to extend and build the Dockerfiles. After you have cloned the repo, you can create your own containers fairly simply with the provided Justfile.
 
 ## Overview
 
@@ -59,8 +58,7 @@ repository on Docker Hub.
 These images include the following layers:
 
 * Base OS
-* RSW session components
-* System packages required for R, R packages, and RStudio Professional Drivers
+* System packages required for R, R packages, RStudio Professional Drivers, and Workbench Session Components
 * One version of R
 * One version of Python
 * Jupyter Notebooks, JupyterLab, and RSW/RSC notebook extensions
