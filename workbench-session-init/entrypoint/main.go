@@ -41,6 +41,7 @@ var (
 		"bin/r-ldpath",
 		"bin/rhel8",
 		"bin/rhel9",
+		"bin/shared_run",
 		"R",
 		"resources",
 		"www",
