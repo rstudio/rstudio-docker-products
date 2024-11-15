@@ -38,7 +38,12 @@ COPY entrypoint/main.go .
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags '-s -w' -o entrypoint main.go
 
 # Create the final image
-FROM scratch AS build
+FROM ubuntu:22.04 AS build
+
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates curl && \
+    rm -rf /var/lib/apt/lists/*
 
 # For testing, set the PWB_SESSION_TYPE environment variable to "rstudio"
 ENV PWB_SESSION_TYPE=positron
