@@ -45,9 +45,6 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends ca-certificates curl && \
     rm -rf /var/lib/apt/lists/*
 
-# For testing, set the PWB_SESSION_TYPE environment variable to "rstudio"
-ENV PWB_SESSION_TYPE=positron
-
 # Copy the compiled Go binary and session components from the builder stage
 COPY --from=builder --chmod=755 /workspace/entrypoint /usr/local/bin/entrypoint
 COPY --from=builder --chmod=755 /opt/session-components /opt/session-components
