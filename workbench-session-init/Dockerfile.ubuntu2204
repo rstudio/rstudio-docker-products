@@ -29,10 +29,12 @@ ENV PATH="/usr/local/go/bin:$PATH"
 # Set the Go workspace
 WORKDIR /workspace
 
-# Copy the Go source code
-COPY entrypoint/main.go .
+# Copy the Go source code and download dependencies
+COPY entrypoint/go.mod entrypoint/go.sum ./
+RUN go mod download
 
-# Compile the Go program
+# Copy the Go source code and build the binary
+COPY entrypoint/main.go .
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags '-s -w' -o entrypoint main.go
 
 # Create the final image

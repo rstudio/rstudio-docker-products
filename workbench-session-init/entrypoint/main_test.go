@@ -81,6 +81,7 @@ func TestCopy(t *testing.T) {
 	//     ├── file2.txt
 	//     └── subdir2
 	//         └── file3.txt
+	// |__ subdir3
 	err = os.MkdirAll(filepath.Join(srcDir, "subdir1"), 0755)
 	if err != nil {
 		t.Fatalf("Failed to create subdir1: %v", err)
@@ -101,27 +102,30 @@ func TestCopy(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Failed to create file3.txt: %v", err)
 	}
-
-	// Set ownership (requires root privileges)
-	err = os.Chown(filepath.Join(srcDir, "file1.txt"), os.Getuid(), os.Getgid())
+	err = os.MkdirAll(filepath.Join(srcDir, "subdir3"), 0755)
 	if err != nil {
-		t.Fatalf("Failed to set ownership for file1.txt: %v", err)
-	}
-	err = os.Chown(filepath.Join(srcDir, "subdir1", "file2.txt"), os.Getuid(), os.Getgid())
-	if err != nil {
-		t.Fatalf("Failed to set ownership for file2.txt: %v", err)
+		t.Fatalf("Failed to create subdir3: %v", err)
 	}
 
 	// Copy the directory structure from source to destination
-	err = copy(srcDir, dstDir)
+	// exclude subdir3
+	filesToCopy := []string{
+		"file1.txt",
+		"subdir1",
+	}
+	err = copyFiles(srcDir, dstDir, filesToCopy)
 	if err != nil {
-		t.Fatalf("Failed to copy directory: %v", err)
+		t.Fatalf("Failed to copy files: %v", err)
 	}
 
 	// Verify that the directory structure and files are correctly copied
 	verifyFile(t, filepath.Join(dstDir, "file1.txt"), 0644, os.Getuid(), os.Getgid())
 	verifyFile(t, filepath.Join(dstDir, "subdir1", "file2.txt"), 0600, os.Getuid(), os.Getgid())
 	verifyFile(t, filepath.Join(dstDir, "subdir1", "subdir2", "file3.txt"), 0644, os.Getuid(), os.Getgid())
+	// Verify that subdir3 is not copied
+	if _, err := os.Stat(filepath.Join(dstDir, "subdir3")); !os.IsNotExist(err) {
+		t.Errorf("Directory subdir3 should not have been copied")
+	}
 }
 
 func verifyFile(t *testing.T, path string, mode os.FileMode, uid, gid int) {
