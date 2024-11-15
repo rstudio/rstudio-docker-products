@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"time"
@@ -100,7 +102,7 @@ func main() {
 	fmt.Printf("Copy operation took %s\n", elapsed)
 }
 
-// getFilesToCopy returns the list of files to copy based on the session type
+// getFilesToCopy returns the list of files to copy based on the session type.
 func getFilesToCopy(sessionType string) ([]string, error) {
 	files := commonDeps
 	if deps, ok := sessionDeps[sessionType]; ok {
@@ -111,7 +113,7 @@ func getFilesToCopy(sessionType string) ([]string, error) {
 	return files, nil
 }
 
-// validateTargetDir checks if the target directory exists and is empty
+// validateTargetDir checks if the target directory exists and is empty.
 func validateTargetDir(targetDir string) error {
 	if _, err := os.Stat(targetDir); os.IsNotExist(err) {
 		return fmt.Errorf("cannot find the copy target %s", targetDir)
@@ -128,7 +130,7 @@ func validateTargetDir(targetDir string) error {
 	return nil
 }
 
-// isDirEmpty checks if a directory is empty
+// isDirEmpty checks if a directory is empty.
 func isDirEmpty(dir string) (bool, error) {
 	f, err := os.Open(dir)
 	if err != nil {
@@ -143,23 +145,23 @@ func isDirEmpty(dir string) (bool, error) {
 	return false, err
 }
 
-// copy copies a file or directory from src to dst
-// If src is a directory, it copies the directory recursively
+// copy copies a file or directory from src to dst.
+// If src is a directory, it copies the directory recursively.
 func copy(src, dst string) error {
 	info, err := os.Stat(src)
 	if err != nil {
-		return err
+		return fmt.Errorf("error getting file info for %s: %v", src, err)
 	}
 
 	if info.IsDir() {
-		return copyDir(src, dst)
+		return copyDir(src, dst, info)
 	}
-	return copyFile(src, dst)
+	return copyFile(src, dst, info)
 }
 
-// copyDir copies a directory recursively from src to dst
-// It creates the destination directory if it doesn't exist
-func copyDir(src, dst string) error {
+// copyDir copies a directory recursively from src to dst.
+// It creates the destination directory if it doesn't exist.
+func copyDir(src, dst string, info fs.FileInfo) error {
 	/* 	cmd := exec.Command("cp", "--recursive", src, dst)
 	   	var stdout, stderr bytes.Buffer
 	   	cmd.Stdout = &stdout
@@ -169,32 +171,31 @@ func copyDir(src, dst string) error {
 	   		return fmt.Errorf("error copying directory %s to %s: %v\n%s", src, dst, err, stderr.String())
 	   	} */
 
-	srcInfo, err := os.Stat(src)
+	err := os.MkdirAll(dst, info.Mode())
 	if err != nil {
-		return err
-	}
-
-	err = os.MkdirAll(dst, srcInfo.Mode())
-	if err != nil {
-		return err
+		return fmt.Errorf("error creating directory %s: %v", dst, err)
 	}
 
 	entries, err := os.ReadDir(src)
 	if err != nil {
-		return err
+		return fmt.Errorf("error reading source directory %s: %v", src, err)
 	}
 
 	for _, entry := range entries {
 		srcPath := filepath.Join(src, entry.Name())
 		dstPath := filepath.Join(dst, entry.Name())
+		info, err := entry.Info()
+		if err != nil {
+			return fmt.Errorf("error getting info for %s: %v", srcPath, err)
+		}
 
 		if entry.IsDir() {
-			err = copyDir(srcPath, dstPath)
+			err = copyDir(srcPath, dstPath, info)
 			if err != nil {
 				return err
 			}
 		} else {
-			err = copyFile(srcPath, dstPath)
+			err = copyFile(srcPath, dstPath, info)
 			if err != nil {
 				return err
 			}
@@ -203,35 +204,32 @@ func copyDir(src, dst string) error {
 	return nil
 }
 
-// copyFile copies a file from src to dst
-// It creates the destination directory if it doesn't exist
-func copyFile(src, dst string) error {
+// copyFile copies a file from src to dst.
+// It creates the destination directory if it doesn't exist.
+func copyFile(src, dst string, info fs.FileInfo) error {
 	sourceFile, err := os.Open(src)
 	if err != nil {
-		return err
+		return fmt.Errorf("error opening source file %s: %v", src, err)
 	}
 	defer sourceFile.Close()
 
 	destDir := filepath.Dir(dst)
 	err = os.MkdirAll(destDir, os.ModePerm)
 	if err != nil {
-		return err
+		return fmt.Errorf("error creating parent directory %s: %v", destDir, err)
 	}
 
 	destFile, err := os.Create(dst)
 	if err != nil {
-		return err
+		return fmt.Errorf("error creating destination file %s: %v", dst, err)
 	}
 	defer destFile.Close()
 
-	_, err = io.Copy(destFile, sourceFile)
+	buf := bufio.NewReader(sourceFile)
+	_, err = io.Copy(destFile, buf)
 	if err != nil {
-		return err
+		return fmt.Errorf("error copying file %s to %s: %v", src, dst, err)
 	}
 
-	fileInfo, err := sourceFile.Stat()
-	if err != nil {
-		return err
-	}
-	return os.Chmod(dst, fileInfo.Mode())
+	return os.Chmod(dst, info.Mode())
 }
