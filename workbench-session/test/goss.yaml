@@ -1,0 +1,69 @@
+file:
+  /usr/lib/rstudio-server:
+    exists: true
+  /usr/lib/rstudio-server/bin/rsession:
+    exists: true
+  /usr/local/bin/jupyter:
+    exists: true
+  {{ $version_split := split "." .Env.RSW_VERSION }}
+  {{ if or (ge ($version_split._0 | atoi) 2025) (and (ge ($version_split._0 | atoi) 2024) (ge ($version_split._1 | atoi) 7)) }}
+  /usr/lib/rstudio-server/bin/pwb-code-server/bin/code-server:
+    exists: true
+  {{ else }}
+  /usr/lib/rstudio-server/bin/code-server/bin/code-server:
+    exists: true
+  {{ end }}
+  /opt/rstudio-drivers:
+    exists: true
+    filetype: directory
+  /var/lib/rstudio-server/r-versions:
+    exists: false
+  /usr/local/bin/quarto:
+    exists: true
+    filetype: symlink
+
+command:
+  "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/jupyter/bin/jupyter nbconvert --to notebook --stdin --stdout":
+    title: jupyter_works
+    timeout: 60000
+    exit-status: 0
+
+# Ensure correct R version
+  "/opt/R/{{.Env.R_VERSION}}/bin/R --version":
+    title: r_version_match
+    exit-status: 0
+    stdout: [
+      "{{.Env.R_VERSION}}"
+    ]
+
+# Ensure correct python version
+  "/opt/python/{{.Env.PYTHON_VERSION}}/bin/python3 --version":
+    title: python_version_matches
+    exit-status: 0
+    stdout: [
+      "{{ .Env.PYTHON_VERSION }}"
+    ]
+
+  "python3 --version":
+    title: python_in_path_var
+    exit-status: 0
+    stdout: [
+      "{{ .Env.PYTHON_VERSION }}"
+    ]
+
+  "jupyter --version":
+    title: jupyter_in_path_var
+    timeout: 60000
+    exit-status: 0
+
+# Ensure Quarto works
+  "/usr/local/bin/quarto check --quiet":
+    title: quarto_check
+    exit-status: 0
+
+# Ensure TinyTeX is installed
+  "quarto list tools":
+    title: quarto_tinytex_installed
+    exit-status: 0
+    stderr:
+      - "/tinytex\\s+Up to date\\s+v\\d{4}\\.\\d{2}(\\.\\d{2})?\\s+v\\d{4}\\.\\d{2}(\\.\\d{2})?/"
