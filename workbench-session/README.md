@@ -52,7 +52,7 @@ We provide simple ways to extend and build the Dockerfiles. After you have clone
 ## Overview
 
 Built images are available from the
-[rstudio/r-session-complete](https://hub.docker.com/r/rstudio/r-session-complete)
+[rstudio/workbench-session](https://hub.docker.com/r/rstudio/workbench-session)
 repository on Docker Hub.
 
 These images include the following layers:
