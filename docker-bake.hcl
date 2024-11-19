@@ -185,6 +185,10 @@ variable WORKBENCH_BUILD_MATRIX {
     }
 }
 
+variable WORKBENCH_SESSION_MATRIX {
+    default = PRO_BUILD_MATRIX
+}
+
 variable WORKBENCH_SESSION_INIT_BUILD_MATRIX {
     default = {
         builds = [
@@ -221,6 +225,7 @@ group "default" {
         "package-manager",
         "r-session-complete",
         "workbench",
+        "workbench-session",
         "workbench-session-init",
     ]
 }
@@ -438,6 +443,31 @@ target "r-session-complete" {
         RSW_VERSION = WORKBENCH_VERSION
         RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/jammy/amd64"
+    }
+}
+
+target "workbench-session" {
+    inherits = ["base"]
+    name = "workbench-session-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+
+    tags = [
+        "ghcr.io/rstudio/workbench-session:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
+        "docker.io/rstudio/workbench-session:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
+    ]
+
+    dockerfile = "Dockerfile.${builds.os}"
+    context = "workbench-session"
+    contexts = {
+        product-base-pro = "target:product-base-pro-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+    }
+    
+    matrix = BASE_BUILD_MATRIX
+    args = {
+        R_VERSION = builds.r_primary
+        R_VERSION_ALT = builds.r_alternate
+        PYTHON_VERSION = builds.py_primary
+        PYTHON_VERSION_ALT = builds.py_alternate
+        JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
     }
 }
 
