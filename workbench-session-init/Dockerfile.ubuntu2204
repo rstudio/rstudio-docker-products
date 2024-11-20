@@ -1,4 +1,4 @@
-FROM ubuntu:22.04 AS build
+FROM ubuntu:22.04 AS builder
 
 # Install required tools:
 # - ca-certificates installs necessary certificates to use cURL with HTTPS websites
@@ -9,17 +9,44 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 ARG RSW_VERSION=2024.09.1+394.pro7
+ARG GO_VERSION=1.22.2
 
+# Download the RStudio Workbench session components and install Go
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN mkdir -p /pwb-staging && \
     RSW_VERSION_URL=$(echo -n "${RSW_VERSION}" | sed 's/+/-/g') && \
-    echo "Downloading https://s3.amazonaws.com/rstudio-ide-build/session/multi/x86_64/rsp-session-multi-linux-${RSW_VERSION_URL}-x86_64.tar.gz" && \
     curl -fsSL -o /pwb-staging/rsp-session-multi-linux.tar.gz "https://s3.amazonaws.com/rstudio-ide-build/session/multi/x86_64/rsp-session-multi-linux-${RSW_VERSION_URL}-x86_64.tar.gz" && \
     mkdir -p /opt/session-components && \
-    tar -C /opt/session-components -xf /pwb-staging/rsp-session-multi-linux.tar.gz && \
-    chmod -R 755 /opt/session-components && \
+    tar -C /opt/session-components -xpf /pwb-staging/rsp-session-multi-linux.tar.gz && \
+    chmod 755 /opt/session-components && \
+    curl -fsSL -o /pwb-staging/go.tar.gz "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" && \
+    tar -C /usr/local -xf /pwb-staging/go.tar.gz && \
     rm -rf /pwb-staging
 
-COPY --chmod=755 run.sh /usr/local/bin/run.sh
+# Add Go binary to PATH
+ENV PATH="/usr/local/go/bin:$PATH"
 
-ENTRYPOINT ["/usr/local/bin/run.sh"]
+# Set the Go workspace
+WORKDIR /workspace
+
+# Copy the Go source code and download dependencies
+COPY entrypoint/go.mod entrypoint/go.sum ./
+RUN go mod download
+
+# Copy the Go source code and build the binary
+COPY entrypoint/main.go .
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags '-s -w' -o entrypoint main.go
+
+# Create the final image
+FROM ubuntu:22.04 AS build
+
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates curl && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy the compiled Go binary and session components from the builder stage
+COPY --from=builder --chmod=755 /workspace/entrypoint /usr/local/bin/entrypoint
+COPY --from=builder --chmod=755 /opt/session-components /opt/session-components
+
+ENTRYPOINT ["/usr/local/bin/entrypoint"]
