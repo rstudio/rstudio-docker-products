@@ -59,8 +59,7 @@ bake target="default":
     docker buildx bake --builder=posit-builder -f docker-bake.hcl {{target}}
 
 # just preview-bake workbench-images dev
-preview-build:
-  just preview-bake "default"
+alias preview-build := preview-bake
 preview-bake target branch="$(git branch --show-current)":
   just -f {{justfile()}} create-builder || true
   WORKBENCH_DAILY_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local) \
