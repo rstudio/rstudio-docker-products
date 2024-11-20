@@ -37,39 +37,6 @@ jobs:
           GIT_SHA=$(git rev-parse --short HEAD)
           echo "GIT_SHA=$GIT_SHA" >> $GITHUB_OUTPUT
           echo "$GIT_SHA"
-  versions:
-    name: Fetch Workbench session init container version
-    runs-on: ubuntu-latest
-
-    concurrency:
-        group: fetch-versions-${{ github.ref }}
-        cancel-in-progress: true
-
-    outputs:
-      WORKBENCH_SESSION_INIT_VERSION: ${{ steps.get-version.outputs.WORKBENCH_SESSION_INIT_VERSION }}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Just
-        uses: extractions/setup-just@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install Python dependencies
-        run: |
-          pip install requests
-
-      - name: Get Version
-        id: get-version
-        run: |
-          WORKBENCH_SESSION_INIT_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local)
-          echo "WORKBENCH_SESSION_INIT_VERSION=$WORKBENCH_SESSION_INIT_VERSION" >> $GITHUB_OUTPUT
 
   base:
     needs: [setup]
@@ -335,7 +302,6 @@ jobs:
     env:
       target: workbench-session-init
       GIT_SHA: ${{ needs.setup.outputs.GIT_SHA }}
-      WORKBENCH_SESSION_INIT_VERSION: ${{ needs.versions.outputs.WORKBENCH_SESSION_INIT_VERSION }}
 
     steps:
       - name: Checkout
@@ -354,7 +320,28 @@ jobs:
         with:
           buildkitd-config: ./share/buildkitd.toml
 
+      - name: Set up Just
+        uses: extractions/setup-just@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python dependencies
+        run: |
+          pip install requests
+
+      - name: Get Version
+        id: get-version
+        run: |
+          WORKBENCH_SESSION_INIT_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local)
+          echo "WORKBENCH_SESSION_INIT_VERSION=$WORKBENCH_SESSION_INIT_VERSION" >> $GITHUB_OUTPUT
+
       - name: Build, Test, and Push
+        env:
+          WORKBENCH_SESSION_INIT_VERSION: ${{ steps.get-version.outputs.WORKBENCH_SESSION_INIT_VERSION }}
         uses: ./.github/actions/bake-test-push
         with:
           target: ${{ env.target }}
