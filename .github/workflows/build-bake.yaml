@@ -291,7 +291,7 @@ jobs:
           snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   workbench-session-init:
-    needs: [setup, versions]
+    needs: [setup]
     name: Workbench Session Init
     runs-on: ubuntu-latest-8x
 
