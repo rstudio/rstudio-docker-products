@@ -26,7 +26,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* 
 
 # Add Jupyter, Python, and Quarto to the PATH
-ENV PATH="/opt/python/jupyter/bin:/opt/python/bin:/usr/lib/rstudio-server/bin/quarto/bin:${PATH}"
+ENV PATH="/opt/python/jupyter/bin:/opt/python/bin:/opt/quarto/${QUARTO_VERSION}/bin:${PATH}"
 
 ### Install TinyTeX using Quarto ###
 RUN $SCRIPTS_DIR/install_quarto.sh --install-tinytex --add-path-tinytex
