@@ -6,8 +6,6 @@ file:
     filetype: directory
   /var/lib/rstudio-server/r-versions:
     exists: false
-  /usr/local/bin/quarto:
-    exists: true
 
 command:
   "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/jupyter/bin/jupyter nbconvert --to notebook --stdin --stdout":
