@@ -8,7 +8,7 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`jammy`, `ubuntu2204`, `jammy-2024.09.1`, `ubuntu2204-2024.09.1`](https://github.com/rstudio/rstudio-docker-products/blob/main/r-session-complete/Dockerfile.ubuntu2204)
+* [`ubuntu2204-r4.4.1_4.3.3-py3.12.6_3.11.10`, `ubuntu2204-r4.4.1_4.3.3-py3.11.10_3.10.15`, `ubuntu2204-r4.4.0_4.3.3-py3.12.1_3.11.7`](https://github.com/rstudio/rstudio-docker-products/blob/main/workbench-session/Dockerfile.ubuntu2204)
 
 # What are the r-session-complete images?
 
@@ -31,13 +31,15 @@ Images for R and Python sessions and jobs to be used RStudio Workbench, Launcher
 # How to use these images
 
 The Docker images built from these Dockerfiles are intended to be used for R and
-Jupyter sessions and jobs with RStudio Workbench (RSW), Launcher, and
+Jupyter sessions and jobs with Posit Workbench (PWB), Launcher, and
 Kubernetes.
 
 Note: These Docker images are not equipped or intended to be used to run Posit
 Workbench within a Docker container. Visit the
 [rstudio/rstudio-worbench Docker Hub page](https://hub.docker.com/r/rstudio/rstudio-workbench)
 for images built for that purpose.
+
+Note: These images do not include the Posit Workbench Session Components. To use these images with Posit Workbench, the [session init container](https://hub.docker.com/r/rstudio/workbench-session-init) must be enabled within the Posit Workbench configuration. For more information, refer to the [Posit Workbench documentation](https://docs.rstudio.com/ide/server-pro/launcher/).
 
 For more information about Posit Workbench and Launcher, refer to the
 [Launcher Overview](https://solutions.rstudio.com/launcher/overview/) on the
@@ -59,8 +61,8 @@ These images include the following layers:
 
 * Base OS
 * System packages required for R, R packages, RStudio Professional Drivers, and Workbench Session Components
-* One version of R
-* One version of Python
+* Two versions of R
+* Two versions of Python
 * Jupyter Notebooks, JupyterLab, and RSW/RSC notebook extensions
 * RStudio Professional Drivers
 
