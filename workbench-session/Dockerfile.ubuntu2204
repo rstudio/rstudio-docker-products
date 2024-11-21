@@ -7,7 +7,6 @@ ARG PYTHON_VERSION=3.9.17
 ARG PYTHON_VERSION_ALT=3.8.17
 ARG JUPYTERLAB_VERSION=3.6.5
 ARG SCRIPTS_DIR=/opt/positscripts
-ARG QUARTO_VERSION=1.3.340
 
 ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
 
@@ -26,10 +25,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/* 
 
 # Add Jupyter, Python, and Quarto to the PATH
-ENV PATH="/opt/python/jupyter/bin:/opt/python/bin:/opt/quarto/${QUARTO_VERSION}/bin:${PATH}"
-
-### Install TinyTeX using Quarto ###
-RUN $SCRIPTS_DIR/install_quarto.sh --install-tinytex --add-path-tinytex
+ENV PATH="/opt/python/jupyter/bin:/opt/python/bin:/usr/lib/rstudio-server/bin/quarto/bin:${PATH}"
 
 RUN /opt/python/"${PYTHON_VERSION}"/bin/python -m venv /opt/python/jupyter \
     && /opt/python/jupyter/bin/python -m pip install --upgrade pip \

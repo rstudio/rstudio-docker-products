@@ -6,6 +6,8 @@ file:
     filetype: directory
   /var/lib/rstudio-server/r-versions:
     exists: false
+  /usr/local/bin/quarto:
+    exists: true
 
 command:
   "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/jupyter/bin/jupyter nbconvert --to notebook --stdin --stdout":
@@ -41,14 +43,3 @@ command:
     timeout: 60000
     exit-status: 0
 
-# Ensure Quarto works
-  "quarto check --quiet":
-    title: quarto_check
-    exit-status: 0
-
-# Ensure TinyTeX is installed
-  "quarto list tools":
-    title: quarto_tinytex_installed
-    exit-status: 0
-    stderr:
-      - "/tinytex\\s+Up to date\\s+v\\d{4}\\.\\d{2}(\\.\\d{2})?\\s+v\\d{4}\\.\\d{2}(\\.\\d{2})?/"
