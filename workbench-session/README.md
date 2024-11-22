@@ -60,7 +60,7 @@ repository on Docker Hub.
 These images include the following layers:
 
 * Base OS
-* System packages required for R, R packages, RStudio Professional Drivers, and Workbench Session Components
+* System packages required for R, R packages, and RStudio Professional Drivers
 * Two versions of R
 * Two versions of Python
 * Jupyter Notebooks, JupyterLab, and RSW/RSC notebook extensions
