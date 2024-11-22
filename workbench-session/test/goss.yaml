@@ -40,4 +40,7 @@ command:
     title: jupyter_in_path_var
     timeout: 60000
     exit-status: 0
-
+  
+  "pip --version":
+    title: pip_installed
+    exit-status: 0
