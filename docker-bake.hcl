@@ -461,7 +461,7 @@ target "workbench-session" {
         product-base-pro = "target:product-base-pro-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
     }
     
-    matrix = BASE_BUILD_MATRIX
+    matrix = WORKBENCH_SESSION_MATRIX
     args = {
         R_VERSION = builds.r_primary
         R_VERSION_ALT = builds.r_alternate
