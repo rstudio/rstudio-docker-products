@@ -6,9 +6,9 @@ file:
     filetype: directory
   /var/lib/rstudio-server/r-versions:
     exists: false
-  /etc/rstudio/vscode.extensions.conf
+  /etc/rstudio/vscode.extensions.conf:
     exists: true
-  /etc/rstudio/positron.extensions.conf
+  /etc/rstudio/positron.extensions.conf:
     exists: true
 
 command:
