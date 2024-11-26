@@ -42,5 +42,6 @@ RUN /opt/python/"${PYTHON_VERSION}"/bin/python -m venv /opt/python/jupyter \
     && /opt/python/jupyter/bin/python -m pip cache purge
 
 COPY vscode.extensions.conf /etc/rstudio/vscode.extensions.conf
+COPY positron.extensions.conf /etc/rstudio/positron.extensions.conf
 
 EXPOSE 8788/tcp
