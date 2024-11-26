@@ -1,0 +1,47 @@
+FROM product-base-pro as build
+
+ARG DEBIAN_FRONTEND=noninteractive
+ARG R_VERSION=4.4.0
+ARG R_VERSION_ALT=4.3.3
+ARG PYTHON_VERSION=3.9.17
+ARG PYTHON_VERSION_ALT=3.8.17
+ARG JUPYTERLAB_VERSION=3.6.5
+ARG SCRIPTS_DIR=/opt/positscripts
+
+ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
+
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y \
+      krb5-user \
+      libcurl4-gnutls-dev \
+      libuser \
+      libuser1-dev \
+      libpq-dev \
+      rrdtool \
+      subversion \
+    && apt-get autoremove -y \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* 
+
+# Add Jupyter, Python, and Quarto to the PATH
+ENV PATH="/opt/python/jupyter/bin:/opt/python/bin:/usr/lib/rstudio-server/bin/quarto/bin:${PATH}"
+
+RUN /opt/python/"${PYTHON_VERSION}"/bin/python -m venv /opt/python/jupyter \
+    && /opt/python/jupyter/bin/python -m pip install --upgrade pip \
+    && /opt/python/jupyter/bin/python -m pip install --upgrade setuptools \
+    && /opt/python/jupyter/bin/python -m pip install \
+      jupyterlab~=4.2.4 \
+      notebook \
+      pwb_jupyterlab~=1.0 \
+    && ln -s /opt/python/jupyter/bin/jupyter /usr/local/bin/jupyter \
+    && /opt/python/${PYTHON_VERSION}/bin/python -m pip install ipykernel \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python -m pip install ipykernel \
+    && /opt/python/${PYTHON_VERSION}/bin/python -m ipykernel install --name py${PYTHON_VERSION} --display-name "Python ${PYTHON_VERSION}" \
+    && /opt/python/${PYTHON_VERSION_ALT}/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}" \
+    && /opt/python/jupyter/bin/python -m pip cache purge
+
+COPY vscode.extensions.conf /etc/rstudio/vscode.extensions.conf
+COPY positron.extensions.conf /etc/rstudio/positron.extensions.conf
+
+EXPOSE 8788/tcp

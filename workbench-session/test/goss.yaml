@@ -1,0 +1,50 @@
+file:
+  /usr/local/bin/jupyter:
+    exists: true
+  /opt/rstudio-drivers:
+    exists: true
+    filetype: directory
+  /var/lib/rstudio-server/r-versions:
+    exists: false
+  /etc/rstudio/vscode.extensions.conf:
+    exists: true
+  /etc/rstudio/positron.extensions.conf:
+    exists: true
+
+command:
+  "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/jupyter/bin/jupyter nbconvert --to notebook --stdin --stdout":
+    title: jupyter_works
+    timeout: 60000
+    exit-status: 0
+
+# Ensure correct R version
+  "/opt/R/{{.Env.R_VERSION}}/bin/R --version":
+    title: r_version_match
+    exit-status: 0
+    stdout: [
+      "{{.Env.R_VERSION}}"
+    ]
+
+# Ensure correct python version
+  "/opt/python/{{.Env.PYTHON_VERSION}}/bin/python3 --version":
+    title: python_version_matches
+    exit-status: 0
+    stdout: [
+      "{{ .Env.PYTHON_VERSION }}"
+    ]
+
+  "python3 --version":
+    title: python_in_path_var
+    exit-status: 0
+    stdout: [
+      "{{ .Env.PYTHON_VERSION }}"
+    ]
+
+  "jupyter --version":
+    title: jupyter_in_path_var
+    timeout: 60000
+    exit-status: 0
+  
+  "pip --version":
+    title: pip_installed
+    exit-status: 0
