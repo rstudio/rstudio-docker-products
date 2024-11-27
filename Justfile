@@ -49,13 +49,17 @@ delete-builder:
 alias build := bake
 # just bake workbench-images
 bake target="default":
+  #!/bin/bash
   just -f {{justfile()}} create-builder || true
+  if [ -z "$WORKBENCH_SESSION_INIT_VERSION" ]; then
+    WORKBENCH_SESSION_INIT_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local)
+  fi
   GIT_SHA=$(git rev-parse --short HEAD) \
+  WORKBENCH_SESSION_INIT_VERSION=${WORKBENCH_SESSION_INIT_VERSION} \
     docker buildx bake --builder=posit-builder -f docker-bake.hcl {{target}}
 
 # just preview-bake workbench-images dev
-preview-build:
-  just preview-bake "default"
+alias preview-build := preview-bake
 preview-bake target branch="$(git branch --show-current)":
   just -f {{justfile()}} create-builder || true
   WORKBENCH_DAILY_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local) \
@@ -89,7 +93,12 @@ preview-plan branch="$(git branch --show-current)":
 
 # just test workbench
 test target="default" file="docker-bake.hcl":
+  #!/bin/bash
+  if [ -z "$WORKBENCH_SESSION_INIT_VERSION" ]; then
+    WORKBENCH_SESSION_INIT_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local)
+  fi
   GIT_SHA=$(git rev-parse --short HEAD) \
+  WORKBENCH_SESSION_INIT_VERSION=${WORKBENCH_SESSION_INIT_VERSION} \
     python3 {{justfile_directory()}}/tools/test_bake_artifacts.py --target "{{target}}" --file "{{file}}"
 
 # just preview-test connect dev

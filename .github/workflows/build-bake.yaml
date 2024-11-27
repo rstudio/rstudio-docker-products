@@ -290,6 +290,112 @@ jobs:
           snyk-org: ${{ secrets.SNYK_ORG }}
           snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
+  workbench-session:
+    needs: [setup]
+    name: Workbench Session
+    runs-on: ubuntu-latest-8x
+
+    concurrency:
+      group: bake-workbench-session-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      target: workbench-session
+      GIT_SHA: ${{ needs.setup.outputs.GIT_SHA }}
+
+    steps:
+      - name: Checkout
+        if: github.event_name == 'schedule'
+        uses: actions/checkout@v4
+        with:
+          ref: 'main'
+
+      - name: Checkout
+        if: github.event_name != 'schedule'
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-org: ${{ secrets.SNYK_ORG }}
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
+
+  workbench-session-init:
+    if: false  # TODO: Re-enable this job after next release
+    needs: [setup]
+    name: Workbench Session Init
+    runs-on: ubuntu-latest-8x
+
+    concurrency:
+      group: bake-workbench-session-init-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      target: workbench-session-init
+      GIT_SHA: ${{ needs.setup.outputs.GIT_SHA }}
+
+    steps:
+      - name: Checkout
+        if: github.event_name == 'schedule'
+        uses: actions/checkout@v4
+        with:
+          ref: 'main'
+
+      - name: Checkout
+        if: github.event_name != 'schedule'
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Set up Just
+        uses: extractions/setup-just@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python dependencies
+        run: |
+          pip install requests
+
+      - name: Get Version
+        id: get-version
+        run: |
+          WORKBENCH_SESSION_INIT_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local)
+          echo "WORKBENCH_SESSION_INIT_VERSION=$WORKBENCH_SESSION_INIT_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Build, Test, and Push
+        env:
+          WORKBENCH_SESSION_INIT_VERSION: ${{ steps.get-version.outputs.WORKBENCH_SESSION_INIT_VERSION }}
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-org: ${{ secrets.SNYK_ORG }}
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
+
   workbench:
     needs: [setup]
     name: Workbench

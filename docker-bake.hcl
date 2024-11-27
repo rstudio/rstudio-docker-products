@@ -11,6 +11,10 @@ variable WORKBENCH_VERSION {
     default = "2024.09.1+394.pro7"
 }
 
+variable WORKBENCH_SESSION_INIT_VERSION {
+    default = ""
+}
+
 variable DRIVERS_VERSION {
     default = "2024.03.0"
 }
@@ -181,6 +185,18 @@ variable WORKBENCH_BUILD_MATRIX {
     }
 }
 
+variable WORKBENCH_SESSION_MATRIX {
+    default = PRO_BUILD_MATRIX
+}
+
+variable WORKBENCH_SESSION_INIT_BUILD_MATRIX {
+    default = {
+        builds = [
+            {os = "ubuntu2204"},
+        ]
+    }
+}
+
 variable WORKBENCH_GOOGLE_CLOUD_WORKSTATION_BUILD_MATRIX {
     default = {
         builds = [
@@ -209,6 +225,8 @@ group "default" {
         "package-manager",
         "r-session-complete",
         "workbench",
+        "workbench-session",
+        "workbench-session-init",
     ]
 }
 
@@ -428,6 +446,31 @@ target "r-session-complete" {
     }
 }
 
+target "workbench-session" {
+    inherits = ["base"]
+    name = "workbench-session-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+
+    tags = [
+        "ghcr.io/rstudio/workbench-session:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
+        "docker.io/rstudio/workbench-session:${builds.os}-r${builds.r_primary}_${builds.r_alternate}-py${builds.py_primary}_${builds.py_alternate}",
+    ]
+
+    dockerfile = "Dockerfile.${builds.os}"
+    context = "workbench-session"
+    contexts = {
+        product-base-pro = "target:product-base-pro-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
+    }
+    
+    matrix = WORKBENCH_SESSION_MATRIX
+    args = {
+        R_VERSION = builds.r_primary
+        R_VERSION_ALT = builds.r_alternate
+        PYTHON_VERSION = builds.py_primary
+        PYTHON_VERSION_ALT = builds.py_alternate
+        JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
+    }
+}
+
 target "workbench" {
     inherits = ["base"]
 
@@ -450,6 +493,23 @@ target "workbench" {
         RSW_VERSION = WORKBENCH_VERSION
         RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/jammy/amd64"
+    }
+}
+
+target "workbench-session-init" {
+    inherits = ["base"]
+    target = "build"
+
+    name = "workbench-session-init-${builds.os}-${replace(tag_safe_version(WORKBENCH_SESSION_INIT_VERSION), ".", "-")}"
+    tags = get_tags(builds.os, "workbench-session-init", WORKBENCH_SESSION_INIT_VERSION)
+
+    dockerfile = "Dockerfile.${builds.os}"
+    context = "workbench-session-init"
+
+    matrix = WORKBENCH_SESSION_INIT_BUILD_MATRIX
+
+    args = {
+        RSW_VERSION = WORKBENCH_SESSION_INIT_VERSION
     }
 }
 

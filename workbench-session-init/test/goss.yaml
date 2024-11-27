@@ -7,7 +7,7 @@ file:
     exists: true
     mode: "0755"
     filetype: directory
-  /usr/local/bin/run.sh:
+  /usr/local/bin/entrypoint:
     exists: true
     filetype: file
     mode: "0755"
