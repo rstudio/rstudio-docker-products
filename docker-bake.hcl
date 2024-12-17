@@ -8,7 +8,7 @@ variable PACKAGE_MANAGER_VERSION {
 }
 
 variable WORKBENCH_VERSION {
-    default = "2024.09.1+394.pro7"
+    default = "2024.12.0+467.pro1"
 }
 
 variable WORKBENCH_SESSION_INIT_VERSION {
