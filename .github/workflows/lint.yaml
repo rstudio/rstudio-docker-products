@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Hadolint
-        uses: hadolint/hadolint-action@v3.0.0
+        uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: ${{ matrix.config.product }}/Dockerfile.${{ matrix.config.os }}
           config: ./hadolint.yaml
