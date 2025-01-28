@@ -2,24 +2,18 @@
 version: v1.25.0
 # ignores vulnerabilities until expiry date; change duration by modifying expiry date
 ignore:
-  SNYK-GOLANG-GITHUBCOMCREWJAMSAML-5971016:
+  SNYK-JS-SEMVER-3247795:
     - '*':
         reason: >-
-          Reported upstream in
-          https://github.com/rstudio/rstudio-pro/issues/6529
-        expires: 2024-08-31T00:00:00.000Z
-        created: 2024-07-02T20:33:30.847Z
-  SNYK-GOLANG-GITHUBCOMGOJOSEGOJOSEV3-6070737:
+          Awaiting upstream patch in jupyterlab, but exploit should not be
+          reachable.
+        expires: 2025-03-31T00:00:00.000Z
+        created: 2025-01-24T01:42:36.788Z
+  SNYK-JS-WS-7266574:
     - '*':
         reason: >-
-          Confirmed fixed upstream in
-          https://github.com/rstudio/rstudio-pro/issues/6635. Patch will be
-          ingested in Workbench 2024.08.0 (expected within 1 week).
-        expires: 2024-08-07T00:00:00.000Z
-        created: 2024-07-31T17:46:24.852Z
-  SNYK-GOLANG-GOLANGORGXNETHTTP2-6531285:
-    - '*':
-        reason: Vulnerability in Google Cloud SDK.
-        expires: 2024-09-01T00:00:00.000Z
-        created: 2024-07-31T19:45:25.728Z
+          Awaiting upstream patch in jupyterlab, but Jupyterlab is not using the
+          package component affected.
+        expires: 2025-03-31T00:00:00.000Z
+        created: 2025-01-24T01:58:55.561Z
 patch: {}

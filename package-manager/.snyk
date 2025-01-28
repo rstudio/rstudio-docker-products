@@ -2,11 +2,19 @@
 version: v1.25.0
 # ignores vulnerabilities until expiry date; change duration by modifying expiry date
 ignore:
-  SNYK-GOLANG-GITHUBCOMJACKCPGXV4-7416900:
+  SNYK-GOLANG-GOLANGORGXNETHTML-8535262:
     - '*':
-        reason: >-
-          Reported upstream in
-          https://github.com/rstudio/package-manager/issues/13981
-        expires: 2024-10-01T00:00:00.000Z
-        created: 2024-07-03T14:03:16.019Z
+        reason: Patch will be ingested in next release
+        expires: 2025-03-31T00:00:00.000Z
+        created: 2025-01-24T01:05:55.359Z
+  SNYK-GOLANG-GITHUBCOMGOGITGOGITV5PLUMBING-8602520:
+    - '*':
+        reason: Patch will be ingested in next release
+        expires: 2025-03-31T00:00:00.000Z
+        created: 2025-01-24T01:08:04.773Z
+  SNYK-GOLANG-GOLANGORGXCRYPTOSSH-8496611:
+    - '*':
+        reason: Patch will be ingested in next release
+        expires: 2025-03-31T00:00:00.000Z
+        created: 2025-01-24T01:08:19.247Z
 patch: {}
