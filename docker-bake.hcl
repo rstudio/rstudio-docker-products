@@ -8,7 +8,7 @@ variable PACKAGE_MANAGER_VERSION {
 }
 
 variable WORKBENCH_VERSION {
-    default = "2024.12.0+467.pro1"
+    default = "2024.12.1+563.pro5"
 }
 
 variable DRIVERS_VERSION {
