@@ -7,7 +7,7 @@ ARG PYTHON_VERSION=3.9.17
 ARG PYTHON_VERSION_ALT=3.8.17
 ARG PYTHON_VERSION_JUPYTER=3.8.17
 ARG JUPYTERLAB_VERSION=3.6.7
-ARG RSW_VERSION=2024.12.0+467.pro1
+ARG RSW_VERSION=2024.12.1+563.pro5
 ARG RSW_NAME=rstudio-workbench
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/jammy/amd64
 ARG SCRIPTS_DIR=/opt/positscripts
@@ -29,6 +29,7 @@ ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
+      gdb \
       krb5-user \
       libcap2 \
       libcurl4-gnutls-dev \
@@ -45,6 +46,7 @@ RUN apt-get update \
       oddjob-mkhomedir \
       rrdtool \
       sssd \
+      strace \
       supervisor \
     && RSW_VERSION_URL=$(echo -n "${RSW_VERSION}" | sed 's/+/-/g') \
     && curl -fsSL -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION_URL}-amd64.deb" \

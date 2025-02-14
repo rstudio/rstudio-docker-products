@@ -1,0 +1,12 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.25.0
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  SNYK-JS-BODYPARSER-7926860:
+    - '*':
+        reason: >-
+          Patched upstream in Positron by upgrading express to 4.19.2. Will be
+          ingested next Workbench release.
+        expires: 2025-03-31T00:00:00.000Z
+        created: 2025-01-24T02:04:47.267Z
+patch: {}
