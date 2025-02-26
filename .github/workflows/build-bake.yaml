@@ -333,7 +333,6 @@ jobs:
           snyk-token: '${{ secrets.SNYK_TOKEN }}'
 
   workbench-session-init:
-    if: false  # TODO: Re-enable this job after next release
     needs: [setup]
     name: Workbench Session Init
     runs-on: ubuntu-latest-8x
@@ -363,28 +362,7 @@ jobs:
         with:
           buildkitd-config: ./share/buildkitd.toml
 
-      - name: Set up Just
-        uses: extractions/setup-just@v2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install Python dependencies
-        run: |
-          pip install requests
-
-      - name: Get Version
-        id: get-version
-        run: |
-          WORKBENCH_SESSION_INIT_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local)
-          echo "WORKBENCH_SESSION_INIT_VERSION=$WORKBENCH_SESSION_INIT_VERSION" >> $GITHUB_OUTPUT
-
       - name: Build, Test, and Push
-        env:
-          WORKBENCH_SESSION_INIT_VERSION: ${{ steps.get-version.outputs.WORKBENCH_SESSION_INIT_VERSION }}
         uses: ./.github/actions/bake-test-push
         with:
           target: ${{ env.target }}

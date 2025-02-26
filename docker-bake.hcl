@@ -1,18 +1,14 @@
 ### Variable definitions ###
 variable CONNECT_VERSION {
-    default = "2024.09.0"
+    default = "2024.12.0"
 }
 
 variable PACKAGE_MANAGER_VERSION {
-    default = "2024.08.2-9"
+    default = "2024.11.0-7"
 }
 
 variable WORKBENCH_VERSION {
-    default = "2024.09.1+394.pro7"
-}
-
-variable WORKBENCH_SESSION_INIT_VERSION {
-    default = ""
+    default = "2024.12.1+563.pro5"
 }
 
 variable DRIVERS_VERSION {
@@ -500,8 +496,8 @@ target "workbench-session-init" {
     inherits = ["base"]
     target = "build"
 
-    name = "workbench-session-init-${builds.os}-${replace(tag_safe_version(WORKBENCH_SESSION_INIT_VERSION), ".", "-")}"
-    tags = get_tags(builds.os, "workbench-session-init", WORKBENCH_SESSION_INIT_VERSION)
+    name = "workbench-session-init-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"
+    tags = get_tags(builds.os, "workbench-session-init", WORKBENCH_VERSION)
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "workbench-session-init"
@@ -509,7 +505,7 @@ target "workbench-session-init" {
     matrix = WORKBENCH_SESSION_INIT_BUILD_MATRIX
 
     args = {
-        RSW_VERSION = WORKBENCH_SESSION_INIT_VERSION
+        RSW_VERSION = WORKBENCH_VERSION
     }
 }
 
