@@ -52,20 +52,20 @@ file:
   /usr/local/bin/quarto:
     exists: true
     filetype: symlink
-  /opt/TinyTeX:
+  /opt/.TinyTeX:
     exists: true
     filetype: directory
     mode: "0755"
-  /opt/TinyTeX/bin/x86_64-linux/tlmgr:
+  /opt/.TinyTeX/bin/x86_64-linux/tlmgr:
     exists: true
     filetype: symlink
     mode: "0777"
     linked-to: ../../texmf-dist/scripts/texlive/tlmgr.pl
-  /opt/TinyTeX/bin/x86_64-linux/tex:
+  /opt/.TinyTeX/bin/x86_64-linux/tex:
     exists: true
     filetype: file
     mode: "0755"
-  /opt/TinyTeX/bin/x86_64-linux/pdflatex:
+  /opt/.TinyTeX/bin/x86_64-linux/pdflatex:
     exists: true
     filetype: symlink
     linked-to: pdftex
@@ -73,12 +73,12 @@ file:
   /usr/local/bin/tex:
     exists: true
     filetype: symlink
-    linked-to: /opt/TinyTeX/bin/x86_64-linux/tex
+    linked-to: /opt/.TinyTeX/bin/x86_64-linux/tex
     mode: "0777"
   /usr/local/bin/pdflatex:
     exists: true
     filetype: symlink
-    linked-to: /opt/TinyTeX/bin/x86_64-linux/pdflatex
+    linked-to: /opt/.TinyTeX/bin/x86_64-linux/pdflatex
     mode: "0777"
   /tmp/startup.log:
     exists: true
