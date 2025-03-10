@@ -1,8 +1,9 @@
 # 2025-03-10
 
-- Quarto installations of TinyTeX are manually moved from `/root` to `/opt` to prevent potential permissions issues
-  when running Quarto in a non-root user context. TinyTeX's tools will still be linked to `/usr/local/bin` which should
-  prevent this from being a breaking change.
+- Quarto TinyTeX installation path has been updated from `/root/.TinyTeX` to `/opt/.TinyTeX` to fix potential permission 
+  issues when called from a non-root user. As a result, Quarto will no longer recognize TinyTeX as a managed 
+  installation. This change is not expected to affect the existing functionality of Quarto or TinyTeX for end users.
+  TinyTeX's relevant packages will still be linked to `/usr/local/bin` as before.
 
 # 2024-05-30
 
