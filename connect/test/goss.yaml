@@ -146,10 +146,12 @@ command:
     title: quarto_check
     exit-status: 0
 
-# TODO: Reenable this once Quarto supports custom install locations for TinyTeX, see quarto-dev/quarto-cli#11800.
+
 # Ensure TinyTeX is installed
-#  "quarto list tools":
-#    title: quarto_tinytex_installed
-#    exit-status: 0
-#    stderr:
+  "quarto list tools":
+    title: quarto_tinytex_installed
+    exit-status: 0
+    stderr:
+      - "/tinytex\\s+External Installation/"
+# TODO: Reenable this once Quarto supports custom install locations for TinyTeX, see quarto-dev/quarto-cli#11800.
 #      - "/tinytex\\s+Up to date\\s+v\\d{4}\\.\\d{2}(\\.\\d{2})?\\s+v\\d{4}\\.\\d{2}(\\.\\d{2})?/"
