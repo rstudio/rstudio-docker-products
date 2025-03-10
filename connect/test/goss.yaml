@@ -70,6 +70,10 @@ file:
     filetype: symlink
     linked-to: pdftex
     mode: "0777"
+  /opt/.TinyTeX/bin/x86_64-linux/pdftex:
+    exists: true
+    filetype: file
+    mode: "0755"
   /usr/local/bin/tex:
     exists: true
     filetype: symlink
