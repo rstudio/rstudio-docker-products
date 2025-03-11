@@ -1,3 +1,8 @@
+package:
+  # Necessary for `tlmgr` to work properly
+  perl:
+    installed: true
+
 file:
   /usr/lib/rstudio-server:
     exists: true
@@ -21,6 +26,38 @@ file:
   /usr/local/bin/quarto:
     exists: true
     filetype: symlink
+  /opt/.TinyTeX:
+    exists: true
+    filetype: directory
+    mode: "0755"
+  /opt/.TinyTeX/bin/x86_64-linux/tlmgr:
+    exists: true
+    filetype: symlink
+    mode: "0777"
+    linked-to: ../../texmf-dist/scripts/texlive/tlmgr.pl
+  /opt/.TinyTeX/bin/x86_64-linux/tex:
+    exists: true
+    filetype: file
+    mode: "0755"
+  /opt/.TinyTeX/bin/x86_64-linux/pdflatex:
+    exists: true
+    filetype: symlink
+    linked-to: pdftex
+    mode: "0777"
+  /opt/.TinyTeX/bin/x86_64-linux/pdftex:
+    exists: true
+    filetype: file
+    mode: "0755"
+  /usr/local/bin/tex:
+    exists: true
+    filetype: symlink
+    linked-to: /opt/.TinyTeX/bin/x86_64-linux/tex
+    mode: "0777"
+  /usr/local/bin/pdflatex:
+    exists: true
+    filetype: symlink
+    linked-to: /opt/.TinyTeX/bin/x86_64-linux/pdflatex
+    mode: "0777"
 
 command:
   "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/jupyter/bin/jupyter nbconvert --to notebook --stdin --stdout":
@@ -66,4 +103,6 @@ command:
     title: quarto_tinytex_installed
     exit-status: 0
     stderr:
-      - "/tinytex\\s+Up to date\\s+v\\d{4}\\.\\d{2}(\\.\\d{2})?\\s+v\\d{4}\\.\\d{2}(\\.\\d{2})?/"
+      - "/tinytex\\s+External Installation/"
+# TODO: Reenable this once Quarto supports custom install locations for TinyTeX, see quarto-dev/quarto-cli#11800.
+#      - "/tinytex\\s+Up to date\\s+v\\d{4}\\.\\d{2}(\\.\\d{2})?\\s+v\\d{4}\\.\\d{2}(\\.\\d{2})?/"
