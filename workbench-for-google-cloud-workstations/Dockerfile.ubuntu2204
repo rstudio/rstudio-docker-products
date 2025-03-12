@@ -100,7 +100,7 @@ RUN curl -fsSL -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_V
 RUN ln -s /lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto
 
 ### Install TinyTeX using Quarto ###
-RUN $SCRIPTS_DIR/install_quarto.sh --install-tinytex --add-path-tinytex
+RUN HOME="/opt" $SCRIPTS_DIR/install_quarto.sh --install-tinytex --add-path-tinytex
 
 # Workaround to ensure no pre-generated certificates are included in image distributions.
 # This happens in the step immediately following Workbench installation in case the certificates are generated.

@@ -1,3 +1,10 @@
+# 2025.03.11
+
+- Quarto TinyTeX installation path has been updated from `/root/.TinyTeX` to `/opt/.TinyTeX` to fix potential permission 
+  issues when called from a non-root user. As a result, Quarto will no longer recognize TinyTeX as a managed 
+  installation. This change is not expected to affect the existing functionality of Quarto or TinyTeX for end users.
+  TinyTeX's relevant packages will still be linked to `/usr/local/bin` as before.
+
 # 2024.09.0
 
 - Update umask for user home directory from 0022 to 0077 to improve security of directory permissions
