@@ -22,6 +22,7 @@ RUN apt-get update \
       libuser \
       libuser1-dev \
       libpq-dev \
+      perl \
       rrdtool \
       strace \
       subversion \
@@ -43,7 +44,7 @@ RUN apt-get update \
 RUN ln -s /lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto
 
 ### Install TinyTeX using Quarto ###
-RUN $SCRIPTS_DIR/install_quarto.sh --install-tinytex --add-path-tinytex
+RUN HOME="/opt" $SCRIPTS_DIR/install_quarto.sh --install-tinytex --add-path-tinytex
 
 RUN /opt/python/"${PYTHON_VERSION}"/bin/python -m venv /opt/python/jupyter \
     && /opt/python/jupyter/bin/python -m pip install --upgrade pip \

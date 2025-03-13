@@ -97,8 +97,8 @@ def clean_product_selection(product: str) -> str:
 
 
 def rstudio_workbench_daily():
-    version_json = download_json("https://dailies.rstudio.com/rstudio/kousa-dogwood/index.json")
-    return version_json['workbench']['platforms']['jammy-amd64']['version']
+    version_json = download_json("https://dailies.rstudio.com/rstudio/latest/index.json")
+    return version_json['products']['workbench']['platforms']['jammy-amd64']['version']
 
 
 def download_json(url):
