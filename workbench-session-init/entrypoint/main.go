@@ -52,7 +52,6 @@ var (
 	sessionDeps = map[string][]string{
 		"jupyter": {
 			"bin/jupyter-session-run",
-			"bin/node",
 			"extras",
 		},
 		"positron": {
@@ -61,7 +60,6 @@ var (
 			"extras",
 		},
 		"rstudio": {
-			"bin/node",
 			"bin/rsession-run",
 		},
 		"vscode": {
