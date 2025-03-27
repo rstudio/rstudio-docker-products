@@ -421,7 +421,20 @@ target "r-session-complete" {
     target = "build"
 
     name = "r-session-complete-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"
-    tags = get_tags(builds.os, "r-session-complete", WORKBENCH_VERSION)
+    tags = [
+        "ghcr.io/rstudio/r-session-complete:${builds.os}-${tag_safe_version(WORKBENCH_VERSION)}",
+        "ghcr.io/rstudio/r-session-complete:${builds.os}-${clean_version(WORKBENCH_VERSION)}",
+        "ghcr.io/rstudio/r-session-complete:${builds.os}-${clean_version(WORKBENCH_VERSION)}--${GIT_SHA}",
+        "ghcr.io/rstudio/r-session-complete:${get_os_alt_name(builds.os)}-${tag_safe_version(WORKBENCH_VERSION)}",
+        "ghcr.io/rstudio/r-session-complete:${get_os_alt_name(builds.os)}-${clean_version(WORKBENCH_VERSION)}",
+        "ghcr.io/rstudio/r-session-complete:${get_os_alt_name(builds.os)}-${clean_version(WORKBENCH_VERSION)}--${GIT_SHA}",
+        "docker.io/rstudio/r-session-complete:${get_os_alt_name(builds.os)}-${tag_safe_version(WORKBENCH_VERSION)}",
+        "docker.io/rstudio/r-session-complete:${get_os_alt_name(builds.os)}-${clean_version(WORKBENCH_VERSION)}",
+        "docker.io/rstudio/r-session-complete:${get_os_alt_name(builds.os)}-${clean_version(WORKBENCH_VERSION)}--${GIT_SHA}",
+        "docker.io/rstudio/r-session-complete:${builds.os}-${tag_safe_version(WORKBENCH_VERSION)}",
+        "docker.io/rstudio/r-session-complete:${builds.os}-${clean_version(WORKBENCH_VERSION)}",
+        "docker.io/rstudio/r-session-complete:${builds.os}-${clean_version(WORKBENCH_VERSION)}--${GIT_SHA}",
+    ]
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "r-session-complete"
