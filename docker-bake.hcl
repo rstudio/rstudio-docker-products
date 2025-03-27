@@ -8,7 +8,7 @@ variable PACKAGE_MANAGER_VERSION {
 }
 
 variable WORKBENCH_VERSION {
-    default = "2024.12.1+563.pro5"
+    default = "2024.04.2+764.pro1"
 }
 
 variable DRIVERS_VERSION {
@@ -168,7 +168,7 @@ variable CONTENT_BUILD_MATRIX {
 variable R_SESSION_COMPLETE_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.1", r_alternate = "4.3.3", py_primary = "3.12.6", py_alternate = "3.11.10"},
+            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.1", py_alternate = "3.11.7"},
         ]
     }
 }
