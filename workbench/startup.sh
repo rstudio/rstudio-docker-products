@@ -71,6 +71,9 @@ else
         fi
         useradd -m -s /bin/bash -u $RSW_TESTUSER_UID -U $RSW_TESTUSER
         echo "$RSW_TESTUSER:$RSW_TESTUSER_PASSWD" | sudo chpasswd
+
+        groupadd "$RSW_ADMIN_GROUP"
+        usermod -a -G "$RSW_ADMIN_GROUP" "$RSW_TESTUSER"
     fi
 fi
 
