@@ -2,6 +2,7 @@ on:
   push:
     branches:
       - main
+      - fix-readme-updating-fork
 
 name: Update READMEs on Docker Hub
 jobs:
@@ -17,23 +18,23 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {prefix: 'rstudio-', repository: 'workbench', readme_path: './workbench/README.md'}
-          - {prefix: 'rstudio-', repository: 'connect', readme_path: './connect/README.md'}
-          - {prefix: 'rstudio-', repository: 'connect-content-init', readme_path: './connect-content-init/README.md'}
-          - {prefix: '', repository: 'content-base', readme_path: './content/base/README.md'}
-          - {prefix: '', repository: 'content-pro', readme_path: './content/pro/README.md'}
-          - {prefix: 'rstudio-', repository: 'package-manager', readme_path: './package-manager/README.md'}
-          - {prefix: '', repository: 'r-session-complete', readme_path: './r-session-complete/README.md'}
+#          - {prefix: 'rstudio-', repository: 'workbench', readme_path: './workbench/README.md'}
+#          - {prefix: 'rstudio-', repository: 'connect', readme_path: './connect/README.md'}
+#          - {prefix: 'rstudio-', repository: 'connect-content-init', readme_path: './connect-content-init/README.md'}
+#          - {prefix: '', repository: 'content-base', readme_path: './content/base/README.md'}
+#          - {prefix: '', repository: 'content-pro', readme_path: './content/pro/README.md'}
+#          - {prefix: 'rstudio-', repository: 'package-manager', readme_path: './package-manager/README.md'}
+#          - {prefix: '', repository: 'r-session-complete', readme_path: './r-session-complete/README.md'}
           - {prefix: 'rstudio-', repository: 'workbench-for-microsoft-azure-ml', readme_path: './workbench-for-microsoft-azure-ml/README.md'}
-          - {prefix: '', repository: 'workbench-session', readme_path: './workbench-session/README.md'}
-          - {prefix: '', repository: 'workbench-session-init', readme_path: './workbench-session-init/README.md'}
+#          - {prefix: '', repository: 'workbench-session', readme_path: './workbench-session/README.md'}
+#          - {prefix: '', repository: 'workbench-session-init', readme_path: './workbench-session-init/README.md'}
 
     steps:
       - name: Check Out Repo
         uses: actions/checkout@v3
 
       - name: Docker Hub Description
-        uses: peter-evans/dockerhub-description@v4
+        uses: ianpittwood/dockerhub-description@update-endpoint
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
