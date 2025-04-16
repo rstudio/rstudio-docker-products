@@ -4,7 +4,7 @@ variable CONNECT_VERSION {
 }
 
 variable PACKAGE_MANAGER_VERSION {
-    default = "2024.11.0-7"
+    default = "2025.04.0-4"
 }
 
 variable WORKBENCH_VERSION {
