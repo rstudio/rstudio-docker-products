@@ -35,11 +35,6 @@ func TestGetFilesToCopy(t *testing.T) {
 			expectError: false,
 		},
 		{
-			sessionType: "vscode",
-			expected:    sessionDeps["vscode"],
-			expectError: false,
-		},
-		{
 			sessionType: "adhoc",
 			expected:    commonDeps,
 			expectError: false,
