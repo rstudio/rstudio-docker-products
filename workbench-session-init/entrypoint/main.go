@@ -28,15 +28,20 @@ var (
 		NumOfWorkers:      20,
 	}
 
-	// List of dependencies common to all session types
+	// List of dependencies common to 
 	commonDeps = []string{
+		"bin/pwb-supervisor",
+	}
+
+
+	// List of dependencies common to all session types
+	commonSessionDeps =  append([]string{
 		"bin/git-credential-pwb",
 		"bin/focal",
 		"bin/jammy",
 		"bin/noble",
 		"bin/opensuse15",
 		"bin/postback",
-		"bin/pwb-supervisor",
 		"bin/quarto",
 		"bin/r-ldpath",
 		"bin/rhel8",
@@ -46,29 +51,30 @@ var (
 		"resources",
 		"www",
 		"www-symbolmaps",
-	}
+	}, commonDeps...)
 
 	// Map of session-specific dependencies
 	sessionDeps = map[string][]string{
-		"jupyter": {
+		"jupyter": append([]string{
 			"bin/jupyter-session-run",
 			"bin/node",
 			"extras",
-		},
-		"positron": {
+		}, commonSessionDeps...),
+		"positron": append([]string{
 			"bin/positron-server",
 			"bin/positron-session-run",
 			"extras",
-		},
-		"rstudio": {
+		}, commonSessionDeps...),
+		"rstudio": append([]string{
 			"bin/node",
 			"bin/rsession-run",
-		},
-		"vscode": {
+		}, commonSessionDeps...),
+		"vscode": append([]string{
 			"bin/pwb-code-server",
 			"bin/vscode-session-run",
 			"extras",
-		},
+		}, commonSessionDeps...),
+		"adhoc":  commonDeps,
 	}
 )
 
@@ -106,13 +112,11 @@ func main() {
 
 // getFilesToCopy returns the list of files to copy based on the session type.
 func getFilesToCopy(sessionType string) ([]string, error) {
-	files := commonDeps
 	if deps, ok := sessionDeps[sessionType]; ok {
-		files = append(files, deps...)
+		return deps, nil
 	} else {
 		return nil, fmt.Errorf("unknown session type: %s", sessionType)
 	}
-	return files, nil
 }
 
 // validateTargetDir checks if the target directory exists and is empty.
