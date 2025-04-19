@@ -56,7 +56,6 @@ var (
 	sessionDeps = map[string][]string{
 		"jupyter": append([]string{
 			"bin/jupyter-session-run",
-			"bin/node",
 			"extras",
 		}, commonSessionDeps...),
 		"positron": append([]string{
@@ -65,7 +64,6 @@ var (
 			"extras",
 		}, commonSessionDeps...),
 		"rstudio": append([]string{
-			"bin/node",
 			"bin/rsession-run",
 		}, commonSessionDeps...),
 		"vscode": append([]string{
