@@ -19,15 +19,6 @@ var (
 	// Read the PWB_SESSION_TYPE environment variable
 	sessionType = os.Getenv("PWB_SESSION_TYPE")
 
-	// Set the copy options.
-	// Preserve permissions, times, and owner.
-	opt = cp.Options{
-		PermissionControl: cp.PerservePermission,
-		PreserveTimes:     true,
-		PreserveOwner:     true,
-		NumOfWorkers:      20,
-	}
-
 	// List of dependencies common to all environments
 	commonDeps = []string{
 		"bin/pwb-supervisor",
@@ -75,6 +66,21 @@ var (
 	}
 )
 
+func createCopyOptions(sessionType string) cp.Options {
+	// adhoc sessions init container does not run as root so it can't preserve the owner.
+	var preserveOwner bool = true
+	if sessionType == "adhoc" {
+		preserveOwner = false
+	} 
+
+	return cp.Options{
+		PermissionControl: cp.PerservePermission,
+		PreserveTimes:     true,
+		PreserveOwner:     preserveOwner,
+		NumOfWorkers:      20,
+	}
+}
+
 func main() {
 	if sessionType == "" {
 		fmt.Println("PWB_SESSION_TYPE environment variable is not set")
@@ -99,7 +105,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	err = copyFiles(sourceDir, targetDir, filesToCopy)
+	opt := createCopyOptions(sessionType)
+	err = copyFiles(sourceDir, targetDir, filesToCopy, opt)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -151,7 +158,7 @@ func isDirEmpty(dir string) (bool, error) {
 // copyFiles copies the files from the source directory to the target directory.
 // It uses the otiai10/copy package to copy files, with options to preserve
 // permissions, times, and owner.
-func copyFiles(src, dst string, filesToCopy []string) error {
+func copyFiles(src, dst string, filesToCopy []string, opt cp.Options) error {
 	fmt.Printf("Copying files from %s to %s\n", src, dst)
 	start := time.Now()
 
