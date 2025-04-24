@@ -56,6 +56,7 @@ var (
 		}, commonSessionDeps...),
 		"rstudio": append([]string{
 			"bin/rsession-run",
+			"bin/copilot-language-server",
 		}, commonSessionDeps...),
 		"vscode": append([]string{
 			"bin/pwb-code-server",
