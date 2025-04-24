@@ -104,7 +104,3 @@ file:
     exists: true
     filetype: file
     mode: "0755"
-  /opt/session-components/bin/copilot-language-server/copilot-language-server:
-    exists: true
-    filetype: file
-    mode: "0755"
