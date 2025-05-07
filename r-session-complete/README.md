@@ -7,13 +7,13 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`jammy`, `ubuntu2204`, `jammy-2024.12.1`, `ubuntu2204-2024.12.1`](https://github.com/rstudio/rstudio-docker-products/blob/main/r-session-complete/Dockerfile.ubuntu2204)
+* [`jammy`, `ubuntu2204`, `jammy-2025.05.0`, `ubuntu2204-2025.05.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/r-session-complete/Dockerfile.ubuntu2204)
 
 # What are the r-session-complete images?
 
 Images for R and Python sessions and jobs to be used RStudio Workbench, Launcher, and Kubernetes.
 
-# Notice for support 
+# Notice for support
 
 1. This image may introduce **BREAKING** changes; as such we recommend:
    - Avoid using the `{operating-system}` tags to avoid unexpected version changes, and
@@ -47,7 +47,7 @@ Launcher, refer to the RStudio support article on [Using Docker images with
 RStudio Workbench, Launcher, and
 Kubernetes](https://support.rstudio.com/hc/en-us/articles/360019253393-Using-Docker-images-with-RStudio-Server-Pro-Launcher-and-Kubernetes).
 
-We provide simple ways to extend and build the Dockerfiles. After you have cloned the repo, you can create your own 
+We provide simple ways to extend and build the Dockerfiles. After you have cloned the repo, you can create your own
 containers fairly simply with the provided Justfile.
 
 ## Overview

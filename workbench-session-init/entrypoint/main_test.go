@@ -16,22 +16,27 @@ func TestGetFilesToCopy(t *testing.T) {
 	}{
 		{
 			sessionType: "jupyter",
-			expected:    append(commonDeps, sessionDeps["jupyter"]...),
+			expected:    sessionDeps["jupyter"],
 			expectError: false,
 		},
 		{
 			sessionType: "positron",
-			expected:    append(commonDeps, sessionDeps["positron"]...),
+			expected:    sessionDeps["positron"],
 			expectError: false,
 		},
 		{
 			sessionType: "rstudio",
-			expected:    append(commonDeps, sessionDeps["rstudio"]...),
+			expected:    sessionDeps["rstudio"],
 			expectError: false,
 		},
 		{
 			sessionType: "vscode",
-			expected:    append(commonDeps, sessionDeps["vscode"]...),
+			expected:    sessionDeps["vscode"],
+			expectError: false,
+		},
+		{
+			sessionType: "adhoc",
+			expected:    commonDeps,
 			expectError: false,
 		},
 		{

@@ -11,3 +11,92 @@ file:
     exists: true
     filetype: file
     mode: "0755"
+  # Should encompass commonDeps and sessionDeps listed in main.go
+  /opt/session-components/bin/git-credential-pwb:
+    exists: true
+    filetype: file
+    mode: "0755"
+  /opt/session-components/bin/jammy:
+    exists: true
+    filetype: directory
+    mode: "0755"
+  /opt/session-components/bin/noble:
+    exists: true
+    filetype: directory
+    mode: "0755"
+  /opt/session-components/bin/opensuse15:
+    exists: true
+    filetype: directory
+    mode: "0755"
+  /opt/session-components/bin/postback:
+    exists: true
+    filetype: directory
+    mode: "0755"
+  /opt/session-components/bin/pwb-supervisor:
+    exists: true
+    filetype: file
+    mode: "0755"
+  /opt/session-components/bin/quarto:
+    exists: true
+    filetype: directory
+    mode: "0755"
+  /opt/session-components/bin/r-ldpath:
+    exists: true
+    filetype: file
+    mode: "0755"
+  /opt/session-components/bin/rhel8:
+    exists: true
+    filetype: directory
+    mode: "0755"
+  /opt/session-components/bin/rhel9:
+    exists: true
+    filetype: directory
+    mode: "0755"
+  /opt/session-components/bin/shared-run:
+    exists: true
+    filetype: file
+    mode: "0755"
+  /opt/session-components/R:
+    exists: true
+    filetype: directory
+    mode: "0755"
+  /opt/session-components/resources:
+    exists: true
+    filetype: directory
+    mode: "0755"
+  /opt/session-components/www:
+    exists: true
+    filetype: directory
+    mode: "0755"
+  /opt/session-components/www-symbolmaps:
+    exists: true
+    filetype: directory
+    mode: "0755"
+  /opt/session-components/bin/jupyter-session-run:
+    exists: true
+    filetype: file
+    mode: "0755"
+  /opt/session-components/extras:
+    exists: true
+    filetype: directory
+    mode: "0755"
+  /opt/session-components/bin/positron-server:
+    exists: true
+    filetype: directory
+    mode: "0755"
+  /opt/session-components/bin/positron-session-run:
+    exists: true
+    filetype: file
+    mode: "0755"
+  /opt/session-components/bin/rsession-run:
+    exists: true
+    filetype: file
+    mode: "0755"
+  /opt/session-components/bin/pwb-code-server:
+    exists: true
+    filetype: directory
+    mode: "0755"
+  /opt/session-components/bin/vscode-session-run:
+    exists: true
+    filetype: file
+    mode: "0755"

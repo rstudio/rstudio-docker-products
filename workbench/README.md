@@ -7,13 +7,13 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`jammy`, `ubuntu2204`, `jammy-2024.12.1`, `ubuntu2204-2024.12.1`](https://github.com/rstudio/rstudio-docker-products/blob/main/workbench/Dockerfile.ubuntu2204)
+* [`jammy`, `ubuntu2204`, `jammy-2025.05.0`, `ubuntu2204-2025.05.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/workbench/Dockerfile.ubuntu2204)
 
 # What is RStudio Workbench?
 
-Posit Workbench, formerly RStudio Workbench, is the preferred data analysis and integrated development experience for 
-professional R users and data science teams who use R and Python. Posit Workbench enables the collaboration, 
-centralized management, metrics, security, and commercial support that professional data science teams need to operate 
+Posit Workbench, formerly RStudio Workbench, is the preferred data analysis and integrated development experience for
+professional R users and data science teams who use R and Python. Posit Workbench enables the collaboration,
+centralized management, metrics, security, and commercial support that professional data science teams need to operate
 at scale.
 
 Some of the functionality that Workbench provides is:
@@ -63,7 +63,7 @@ docker run -it \
 ```
 
 
-Open [http://localhost:8787](http://localhost:8787) to access RStudio Workbench. The default username and password are 
+Open [http://localhost:8787](http://localhost:8787) to access RStudio Workbench. The default username and password are
 `rstudio`.
 
 ## Overview
@@ -213,10 +213,10 @@ Details on the various processes and their configuration is below:
   sessions, as well as talking to job schedulers like Slurm and Kubernetes.
   - Optional and enabled by default
   - this startup configuration is mounted at `/startup/launcher`
-  - to disable, mount an empty volume over `/startup/launcher`  
+  - to disable, mount an empty volume over `/startup/launcher`
 
 - **sssd**: often used for user provisioning when connected to an LDAP
-  directory or other user store. 
+  directory or other user store.
   - Optional, and enabled by default, but with a "dummy" domain so it does
     nothing.
   - To use this with your directory, mount required `.conf` files into
@@ -236,15 +236,15 @@ Details on the various processes and their configuration is below:
 *Note: This section **does not** apply to activations using license files.*
 
 There is currently a known licensing bug when using our products in containers. If the container is not stopped
-gracefully, the license deactivation step may fail or be skipped. Failing to deactivate the license can result in a 
-"license leak" where a product activation is used up and cannot be deactivated using traditional methods as the 
+gracefully, the license deactivation step may fail or be skipped. Failing to deactivate the license can result in a
+"license leak" where a product activation is used up and cannot be deactivated using traditional methods as the
 activation state on the container has been lost.
 
-To avoid "leaking" licenses, we encourage users not to force kill containers and to use `--stop-timeout 120` and 
-`--time 120` for `docker run` and `docker stop` commands respectively. This helps ensure the deactivation script has 
+To avoid "leaking" licenses, we encourage users not to force kill containers and to use `--stop-timeout 120` and
+`--time 120` for `docker run` and `docker stop` commands respectively. This helps ensure the deactivation script has
 ample time to run properly.
 
-In some situations, it can be difficult or impossible to avoid a hard termination (e.g. power failure, 
+In some situations, it can be difficult or impossible to avoid a hard termination (e.g. power failure,
 critical error on host). Unfortunately, any of these cases can still cause a license to leak an activation. To help
 prevent a license leak in these situations, users can mount the following directories to persistent storage to preserve
 the license state data across restarts of the container. **These directories differ between products.**
@@ -259,13 +259,13 @@ the license state data across restarts of the container. **These directories dif
 Please note that the files created in these directories are hardware locked and non-transferable between hosts. Due to
 the nature of the hardware fingerprinting algorithm, any low-level changes to the host or container can cause existing
 license state files to invalidate. To avoid this problem, we advise that product containers are gracefully shutdown
-and allowed to deactivate prior to changing any hardware or firmware on the host (e.g. upgrading a network card or 
+and allowed to deactivate prior to changing any hardware or firmware on the host (e.g. upgrading a network card or
 updating BIOS) or the container (e.g. changing the network driver used or the allocated number of CPU cores).
 
 While preserving license state data *can* help avoid license leaks across restarts, it's not a guarantee. If you run
 into issues with your license, please do not hesitate to [contact Posit support](https://support.posit.co/hc/en-us).
 
-While neither of these solutions will eliminate the problem, they should help mitigate it. We are still investigating a 
+While neither of these solutions will eliminate the problem, they should help mitigate it. We are still investigating a
 long-term solution.
 
 # Licensing

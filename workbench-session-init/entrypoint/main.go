@@ -19,24 +19,19 @@ var (
 	// Read the PWB_SESSION_TYPE environment variable
 	sessionType = os.Getenv("PWB_SESSION_TYPE")
 
-	// Set the copy options.
-	// Preserve permissions, times, and owner.
-	opt = cp.Options{
-		PermissionControl: cp.PerservePermission,
-		PreserveTimes:     true,
-		PreserveOwner:     true,
-		NumOfWorkers:      20,
+	// List of dependencies common to all environments
+	commonDeps = []string{
+		"bin/pwb-supervisor",
 	}
 
 	// List of dependencies common to all session types
-	commonDeps = []string{
+	commonSessionDeps = append([]string{
 		"bin/git-credential-pwb",
 		"bin/focal",
 		"bin/jammy",
 		"bin/noble",
 		"bin/opensuse15",
 		"bin/postback",
-		"bin/pwb-supervisor",
 		"bin/quarto",
 		"bin/r-ldpath",
 		"bin/rhel8",
@@ -46,31 +41,46 @@ var (
 		"resources",
 		"www",
 		"www-symbolmaps",
-	}
+	}, commonDeps...)
 
 	// Map of session-specific dependencies
 	sessionDeps = map[string][]string{
-		"jupyter": {
+		"jupyter": append([]string{
 			"bin/jupyter-session-run",
-			"bin/node",
 			"extras",
-		},
-		"positron": {
+		}, commonSessionDeps...),
+		"positron": append([]string{
 			"bin/positron-server",
 			"bin/positron-session-run",
 			"extras",
-		},
-		"rstudio": {
-			"bin/node",
+		}, commonSessionDeps...),
+		"rstudio": append([]string{
 			"bin/rsession-run",
-		},
-		"vscode": {
+			"bin/copilot-language-server",
+		}, commonSessionDeps...),
+		"vscode": append([]string{
 			"bin/pwb-code-server",
 			"bin/vscode-session-run",
 			"extras",
-		},
+		}, commonSessionDeps...),
+		"adhoc": commonDeps,
 	}
 )
+
+func createCopyOptions(sessionType string) cp.Options {
+	// adhoc sessions init container does not run as root so it can't preserve the owner.
+	var preserveOwner bool = true
+	if sessionType == "adhoc" {
+		preserveOwner = false
+	} 
+
+	return cp.Options{
+		PermissionControl: cp.PerservePermission,
+		PreserveTimes:     true,
+		PreserveOwner:     preserveOwner,
+		NumOfWorkers:      20,
+	}
+}
 
 func main() {
 	if sessionType == "" {
@@ -96,7 +106,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	err = copyFiles(sourceDir, targetDir, filesToCopy)
+	opt := createCopyOptions(sessionType)
+	err = copyFiles(sourceDir, targetDir, filesToCopy, opt)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -106,13 +117,11 @@ func main() {
 
 // getFilesToCopy returns the list of files to copy based on the session type.
 func getFilesToCopy(sessionType string) ([]string, error) {
-	files := commonDeps
 	if deps, ok := sessionDeps[sessionType]; ok {
-		files = append(files, deps...)
+		return deps, nil
 	} else {
 		return nil, fmt.Errorf("unknown session type: %s", sessionType)
 	}
-	return files, nil
 }
 
 // validateTargetDir checks if the target directory exists and is empty.
@@ -150,7 +159,7 @@ func isDirEmpty(dir string) (bool, error) {
 // copyFiles copies the files from the source directory to the target directory.
 // It uses the otiai10/copy package to copy files, with options to preserve
 // permissions, times, and owner.
-func copyFiles(src, dst string, filesToCopy []string) error {
+func copyFiles(src, dst string, filesToCopy []string, opt cp.Options) error {
 	fmt.Printf("Copying files from %s to %s\n", src, dst)
 	start := time.Now()
 
