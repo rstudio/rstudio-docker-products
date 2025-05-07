@@ -8,7 +8,7 @@ variable PACKAGE_MANAGER_VERSION {
 }
 
 variable WORKBENCH_VERSION {
-    default = "2024.12.1+563.pro5"
+    default = "2025.05.0+496.pro5"
 }
 
 variable DRIVERS_VERSION {
@@ -456,7 +456,7 @@ target "workbench-session" {
     contexts = {
         product-base-pro = "target:product-base-pro-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
     }
-    
+
     matrix = WORKBENCH_SESSION_MATRIX
     args = {
         R_VERSION = builds.r_primary

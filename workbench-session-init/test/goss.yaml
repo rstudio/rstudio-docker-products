@@ -16,10 +16,6 @@ file:
     exists: true
     filetype: file
     mode: "0755"
-  /opt/session-components/bin/focal:
-    exists: true
-    filetype: directory
-    mode: "0755"
   /opt/session-components/bin/jammy:
     exists: true
     filetype: directory
