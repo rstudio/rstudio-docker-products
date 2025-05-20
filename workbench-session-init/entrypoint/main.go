@@ -27,7 +27,6 @@ var (
 	// List of dependencies common to all session types
 	commonSessionDeps = append([]string{
 		"bin/git-credential-pwb",
-		"bin/focal",
 		"bin/jammy",
 		"bin/noble",
 		"bin/opensuse15",
