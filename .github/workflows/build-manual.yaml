@@ -141,8 +141,6 @@ jobs:
             product="CONNECT"
           elif [[ "$product" == "package-manager" ]]; then
             product="PACKAGE_MANAGER"
-          elif [[ "$product" == "workbench-session-init" ]]; then
-            product="WORKBENCH_SESSION_INIT"
           else
             product="WORKBENCH"
           fi
