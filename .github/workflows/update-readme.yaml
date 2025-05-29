@@ -34,7 +34,7 @@ jobs:
       - name: Docker Hub Description
         uses: peter-evans/dockerhub-description@v4.0.0
         with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          username: ${{ secrets.DOCKER_HUB_README_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_README_ACCESS_TOKEN }}
           repository: ${{ env.REGISTRY_NAMESPACE }}/${{ matrix.config.prefix }}${{ matrix.config.repository }}
           readme-filepath: ${{ matrix.config.readme_path }}
