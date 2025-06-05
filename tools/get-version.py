@@ -84,7 +84,7 @@ def clean_product_selection(product: str) -> str:
         product = 'workbench'
 
     workbench_pref = re.compile('^workbench')
-    if workbench_pref.match(product):
+    if workbench_pref.match(product) and product != 'workbench-session-init':
         print(f"Swapping product '{product}' for 'workbench'", file=sys.stderr)
         product = 'workbench'
 
@@ -97,9 +97,15 @@ def clean_product_selection(product: str) -> str:
 
 
 def rstudio_workbench_daily():
-    version_json = download_json("https://dailies.rstudio.com/rstudio/latest/index.json")
+    version_json = workbench_daily_version_json()
     return version_json['products']['workbench']['platforms']['jammy-amd64']['version']
 
+def workbench_session_init_daily():
+    version_json = workbench_daily_version_json()
+    return version_json['products']['session']['platforms']['multi-x86_64']['version']
+
+def workbench_daily_version_json():
+    return download_json("https://dailies.rstudio.com/rstudio/latest/index.json")
 
 def download_json(url):
     raw_json = requests.get(url).content
@@ -185,7 +191,7 @@ if __name__ == "__main__":
         "product",
         type=str,
         nargs=1,
-        help="The product to search. One of 'connect', 'workbench' or 'package-manager'"
+        help="The product to search. One of 'connect', 'workbench', 'workbench-session-init', or 'package-manager'"
     )
     parser.add_argument(
         "--type",
@@ -223,9 +229,9 @@ if __name__ == "__main__":
     # Argument checking
     # (version checking is per-product)
     # ------------------------------------------
-    if selected_product not in ['workbench', 'package-manager', 'connect']:
+    if selected_product not in ['workbench', 'workbench-session-init', 'package-manager', 'connect']:
         print(
-            f"ERROR: Please choose a product from 'connect', 'workbench' or 'package-manager'. "
+            f"ERROR: Please choose a product from 'connect', 'workbench', 'workbench-session-init', or 'package-manager'. "
             f"You provided '{selected_product}'",
             file=sys.stderr
         )
@@ -248,9 +254,12 @@ if __name__ == "__main__":
     # ------------------------------------------
     # Product "switch" statements
     # ------------------------------------------
-    elif selected_product == 'workbench':
+    elif selected_product == 'workbench' or selected_product == 'workbench-session-init':
         if version_type == 'daily':
-            version = rstudio_workbench_daily()
+            if selected_product == 'workbench-session-init':
+                version = workbench_session_init_daily()
+            else:
+                version = rstudio_workbench_daily()
         elif version_type == 'preview':
             version = rstudio_workbench_preview()
         elif version_type == 'release':

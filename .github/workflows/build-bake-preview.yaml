@@ -21,6 +21,7 @@ jobs:
     outputs:
       WORKBENCH_DAILY_VERSION: ${{ steps.get-version.outputs.WORKBENCH_DAILY_VERSION }}
       WORKBENCH_PREVIEW_VERSION: ${{ steps.get-version.outputs.WORKBENCH_PREVIEW_VERSION }}
+      WORKBENCH_SESSION_INIT_DAILY_VERSION: ${{ steps.get-version.outputs.WORKBENCH_SESSION_INIT_DAILY_VERSION }}
       PACKAGE_MANAGER_DAILY_VERSION: ${{ steps.get-version.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
       PACKAGE_MANAGER_PREVIEW_VERSION: ${{ steps.get-version.outputs.PACKAGE_MANAGER_PREVIEW_VERSION }}
       CONNECT_DAILY_VERSION: ${{ steps.get-version.outputs.CONNECT_DAILY_VERSION }}
@@ -49,6 +50,8 @@ jobs:
           echo "WORKBENCH_DAILY_VERSION=$WORKBENCH_DAILY_VERSION" >> $GITHUB_OUTPUT
           WORKBENCH_PREVIEW_VERSION=$(just -f ci.Justfile get-version workbench --type=preview --local)
           echo "WORKBENCH_PREVIEW_VERSION=$WORKBENCH_PREVIEW_VERSION" >> $GITHUB_OUTPUT
+          WORKBENCH_SESSION_INIT_DAILY_VERSION=$(just -f ci.Justfile get-version workbench-session-init --type=daily --local)
+          echo "WORKBENCH_SESSION_INIT_DAILY_VERSION=$WORKBENCH_SESSION_INIT_DAILY_VERSION" >> $GITHUB_OUTPUT
           PACKAGE_MANAGER_DAILY_VERSION=$(just -f ci.Justfile get-version package-manager --type=daily --local)
           echo "PACKAGE_MANAGER_DAILY_VERSION=$PACKAGE_MANAGER_DAILY_VERSION" >> $GITHUB_OUTPUT
           PACKAGE_MANAGER_PREVIEW_VERSION=$(just -f ci.Justfile get-version package-manager --type=preview --local)
@@ -429,7 +432,7 @@ jobs:
 
     env:
       target: "workbench-session-init-daily"
-      WORKBENCH_DAILY_VERSION: ${{ needs.versions.outputs.WORKBENCH_DAILY_VERSION }}
+      WORKBENCH_DAILY_VERSION: ${{ needs.versions.outputs.WORKBENCH_SESSION_INIT_DAILY_VERSION }}
       WORKBENCH_PREVIEW_VERSION: ${{ needs.versions.outputs.WORKBENCH_PREVIEW_VERSION }}
       PACKAGE_MANAGER_DAILY_VERSION: ${{ needs.versions.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
       PACKAGE_MANAGER_PREVIEW_VERSION: ${{ needs.versions.outputs.PACKAGE_MANAGER_PREVIEW_VERSION }}
