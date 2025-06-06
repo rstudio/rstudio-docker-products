@@ -23,7 +23,7 @@ services:
 
   package-manager:
     container_name: rstudio-package-manager
-    image: rstudio/rstudio-package-manager:${RSPM_VERSION:-ubuntu2204}
+    image: rstudio/rstudio-package-manager:2025.04.2
     environment:
       RSPM_LICENSE: ${RSPM_LICENSE}
       LICENSE_SERVER: ${RSPM_LICENSE_SERVER}
