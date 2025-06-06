@@ -236,7 +236,7 @@ target "product-base-dev" {
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
         TINI_VERSION = "0.19.0"
-        QUARTO_VERSION = "1.4.557"
+        QUARTO_VERSION = "1.7.31"
     }
 }
 
