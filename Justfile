@@ -8,7 +8,7 @@ sed_vars := if os() == "macos" { "-i ''" } else { "-i" }
 BUILDX_PATH := ""
 
 RSC_VERSION := "2025.05.0"
-RSPM_VERSION := "2025.04.0-4"
+RSPM_VERSION := "2025.04.2-8"
 RSW_VERSION := "2025.05.1+513.pro3"
 
 DRIVERS_VERSION := "2023.05.0"
@@ -320,7 +320,6 @@ update-rspm-versions:
   sed {{ sed_vars }} "s/RSPM_VERSION:.*/RSPM_VERSION: {{ RSPM_VERSION }}/g" docker-compose.yml
   sed {{ sed_vars }} "s/rstudio\/rstudio-package-manager:.*/rstudio\/rstudio-package-manager:$(just _get-clean-version {{ RSPM_VERSION }})/g" docker-compose.yml
   sed {{ sed_vars }} "s/^RSPM_VERSION := .*/RSPM_VERSION := \"{{ RSPM_VERSION }}\"/g" \
-    package-manager/Justfile \
     Justfile
   sed {{ sed_vars }} -E "s/[0-9]{4}\.[0-9]{1,2}\.[0-9]{1,2}/`just _get-clean-version {{ RSPM_VERSION }}`/g" package-manager/README.md
   awk -v new_version="{{ RSPM_VERSION }}" '
@@ -362,12 +361,6 @@ update-default-r-versions:
     product/base/Dockerfile.ubuntu* \
     product/pro/Dockerfile.ubuntu*
   sed {{ sed_vars }} "s/^R_VERSION := .*/R_VERSION := \"{{ R_VERSION }}\"/g" \
-    workbench/Justfile \
-    workbench-for-microsoft-azure-ml/Justfile \
-    connect/Justfile \
-    package-manager/Justfile \
-    product/base/Justfile \
-    product/pro/Justfile \
     Justfile \
     ci.Justfile
 
@@ -382,12 +375,6 @@ update-default-r-versions:
     product/base/Dockerfile.ubuntu* \
     product/pro/Dockerfile.ubuntu*
   sed {{ sed_vars }} "s/^R_VERSION_ALT := .*/R_VERSION_ALT := \"{{ R_VERSION_ALT }}\"/g" \
-    workbench/Justfile \
-    workbench-for-microsoft-azure-ml/Justfile \
-    connect/Justfile \
-    package-manager/Justfile \
-    product/base/Justfile \
-    product/pro/Justfile \
     Justfile \
     ci.Justfile
 
@@ -412,12 +399,6 @@ update-default-py-versions:
     product/pro/Dockerfile.centos7 \
     r-session-complete/Dockerfile.centos7
   sed {{ sed_vars }} "s/^PYTHON_VERSION := .*/PYTHON_VERSION := \"{{ PYTHON_VERSION }}\"/g" \
-    workbench/Justfile \
-    workbench-for-microsoft-azure-ml/Justfile \
-    connect/Justfile \
-    package-manager/Justfile \
-    product/base/Justfile \
-    product/pro/Justfile \
     Justfile \
     ci.Justfile
 
@@ -435,12 +416,6 @@ update-default-py-versions:
     product/pro/Dockerfile.centos7 \
     r-session-complete/Dockerfile.centos7
   sed {{ sed_vars }} "s/^PYTHON_VERSION_ALT := .*/PYTHON_VERSION_ALT := \"{{ PYTHON_VERSION_ALT }}\"/g" \
-    workbench/Justfile \
-    workbench-for-microsoft-azure-ml/Justfile \
-    connect/Justfile \
-    package-manager/Justfile \
-    product/base/Justfile \
-    product/pro/Justfile \
     Justfile \
     ci.Justfile
 
@@ -459,9 +434,6 @@ update-drivers-versions:
     r-session-complete/Dockerfile.centos7 \
     product/pro/Dockerfile.centos7
   sed {{ sed_vars }} "s/^DRIVERS_VERSION := .*/DRIVERS_VERSION := \"{{ DRIVERS_VERSION }}\"/g" \
-    content/pro/Justfile \
-    r-session-complete/Justfile \
-    product/pro/Justfile \
     ci.Justfile
   sed -i '/variable DRIVERS_VERSION/!b;n;c\ \ \ \ default = "{{ RSC_VERSION }}"' docker-bake.hcl
 
@@ -469,9 +441,6 @@ update-quarto-versions:
   #!/usr/bin/env bash
   set -euxo pipefail
   sed {{ sed_vars }} "s/^QUARTO_VERSION := .*/QUARTO_VERSION := \"{{ QUARTO_VERSION }}\"/g" \
-    content/base/Justfile \
-    product/base/Justfile \
-    ci.Justfile \
     Justfile
   sed {{ sed_vars }} "s/^QUARTO_VERSION=.*/QUARTO_VERSION={{ QUARTO_VERSION }}/g" \
     content/base/Dockerfile* \
