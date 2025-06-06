@@ -12,7 +12,7 @@ This directory contains a Dockerfile and script that will create an init contain
 
 ## Supported tags and respective Dockerfile links
 
-* [`jammy-daily`, `ubuntu2204-daily`, `jammy-2025.05.0`, `ubuntu2204-2025.05.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/workbench-session-init/Dockerfile.2204)
+* [`jammy-daily`, `ubuntu2204-daily`, `jammy-2025.05.1`, `ubuntu2204-2025.05.1`](https://github.com/rstudio/rstudio-docker-products/blob/main/workbench-session-init/Dockerfile.2204)
 
 ## Building
 
@@ -34,7 +34,7 @@ You can observe what gets copied by the container:
 
 ```console
 mkdir init
-docker run --rm -v $(pwd)/init:/mnt/init rstudio/workbench-session-init:jammy-2025.05.0
+docker run --rm -v $(pwd)/init:/mnt/init rstudio/workbench-session-init:jammy-2025.05.1
 # The init directory has been populated with the Workbench session runtime components.
 ```
 
