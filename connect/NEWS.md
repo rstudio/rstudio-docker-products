@@ -1,3 +1,8 @@
+# 2025-06-03
+
+- Install a license file using file copies rather than `license-manager activate-file`.
+- Run `license-manager deactivate` only when using license keys or license servers.
+
 # 2025-03-10
 
 - Quarto TinyTeX installation path has been updated from `/root/.TinyTeX` to `/opt/.TinyTeX` to fix potential permission 
