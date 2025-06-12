@@ -12,7 +12,7 @@ PYTHON_VERSION_ALT := "3.8.17"
 DRIVERS_VERSION := "2024.03.0"
 DRIVERS_VERSION_RHEL := DRIVERS_VERSION + "-1"
 
-QUARTO_VERSION := "1.4.557"
+QUARTO_VERSION := "1.7.31"
 
 # just _get-os-alias jammy
 _get-os-alias OS:
