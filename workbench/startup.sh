@@ -49,6 +49,8 @@ if [ -n "$RSP_LICENSE" ]; then
     /usr/lib/rstudio-server/bin/license-manager activate $RSP_LICENSE
 elif [ -n "$RSP_LICENSE_SERVER" ]; then
     /usr/lib/rstudio-server/bin/license-manager license-server $RSP_LICENSE_SERVER
+elif ls /var/lib/rstudio-server/*.lic >/dev/null 2>&1; then
+    echo "Detected a license file in /var/lib/rstudio-server/*.lic."
 elif test -f "$RSW_LICENSE_FILE_PATH"; then
     /usr/lib/rstudio-server/bin/license-manager activate-file $RSW_LICENSE_FILE_PATH
 fi
@@ -58,6 +60,7 @@ unset RSP_LICENSE
 unset RSP_LICENSE_SERVER
 unset RSW_LICENSE
 unset RSW_LICENSE_SERVER
+unset RSW_LICENSE_FILE_PATH
 
 # Create one user
 if [ $(getent passwd $RSW_TESTUSER_UID) ] ; then
