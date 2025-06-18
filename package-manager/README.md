@@ -101,8 +101,8 @@ Using the container requires a valid license for Posit Package Manager. You can 
 3. Mounting a license file at `/var/lib/rstudio-pm/*.lic` or a different path specified using `RSPM_LICENSE_FILE_PATH`
    that contains a valid license for Posit Package Manager
 
-**NOTE:** the "offline activation process" is not supported by this image today. Offline installations will need
-to explore using a license server, license file, or custom image with manual intervention.
+**NOTE:** Offline installations will need to use a floating license server, license file, or custom image with manual 
+intervention to successfully activate the instance.
 
 #### Example usage with a license file
 
