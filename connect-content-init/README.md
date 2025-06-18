@@ -10,7 +10,7 @@
 
 * [`jammy`, `ubuntu2204`, `jammy-2025.06.0`, `ubuntu2204-2025.06.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.2204)
 
-# RStudio Connect Content Init Container
+# Posit Connect Content Init Container
 
 This container is intended for use as an "init container" to pull
 runtime components into another container, which can then be used with Connect and
@@ -24,7 +24,7 @@ Connect Helm chart. Additional information about the Helm chart can be found in 
 
 # License
 
-The license associated with the RStudio Docker Products repository is located [in LICENSE.md](https://github.com/rstudio/rstudio-docker-products/blob/main/LICENSE.md).
+The license associated with the Posit Docker Products repository is located [in LICENSE.md](https://github.com/rstudio/rstudio-docker-products/blob/main/LICENSE.md).
 
 As is the case with all container images, the images themselves also contain other software which may be under other
 licenses (i.e. bash, linux, system libraries, etc., along with any other direct or indirect dependencies of the primary

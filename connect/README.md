@@ -61,7 +61,7 @@ docker run -it --privileged \
     -e RSC_LICENSE=$RSC_LICENSE \
     rstudio/rstudio-connect:ubuntu2204
 ```
-Once running, open [http://localhost:3939](http://localhost:3939) to access RStudio Connect.
+Once running, open [http://localhost:3939](http://localhost:3939) to access Posit Connect.
 
 ## Overview
 
