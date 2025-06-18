@@ -1,10 +1,14 @@
 # Quick reference
 
 * Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
-* Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues), [the Posit Connect Documentation](https://docs.posit.co/connect/), 
-  [the Posit Community Forum](https://forum.posit.co/c/posit-professional-hosted/posit-connect/27), or [Posit Support](https://support.posit.co/hc/en-us)
-* Posit Connect image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-connect), [GHCR](https://github.com/rstudio/rstudio-docker-products/pkgs/container/rstudio-connect)
-* Posit Connect Content Init image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-connect-content-init), [GHCR](https://github.com/rstudio/rstudio-docker-products/pkgs/container/rstudio-connect-content-init)
+* Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues), 
+  [the Posit Connect Documentation](https://docs.posit.co/connect/),
+  [the Posit Community Forum](https://forum.posit.co/c/posit-professional-hosted/posit-connect/27), 
+  or [Posit Support](https://support.posit.co/hc/en-us)
+* Posit Connect image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-connect), 
+  [GHCR](https://github.com/rstudio/rstudio-docker-products/pkgs/container/rstudio-connect)
+* Posit Connect Content Init image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-connect-content-init), 
+  [GHCR](https://github.com/rstudio/rstudio-docker-products/pkgs/container/rstudio-connect-content-init)
 
 # Supported tags and respective Dockerfile links
 
@@ -37,7 +41,11 @@ https://posit.co/products/enterprise/connect/.
    changes. We
    provide [instructions for building](https://github.com/rstudio/rstudio-docker-products#instructions-for-building) for
    these cases.
-1. **Security Note:** These images are provided AS IS based on the build environment at the time their product version was released/updated. They should be reviewed and updated before production use. If your organization has a specific set of security requirements related to CVE/Vulnerability severity levels, you should plan to use the [instructions for building](https://github.com/rstudio/rstudio-docker-products#instructions-for-building) to clone this repository, and rebuild these images to your specific internal security standards.
+1. **Security Note:** These images are provided AS IS based on the build environment at the time their product version 
+   was released/updated. They should be reviewed and updated before production use. If your organization has a specific 
+   set of security requirements related to CVE/Vulnerability severity levels, you should plan to use the 
+   [instructions for building](https://github.com/rstudio/rstudio-docker-products#instructions-for-building) to clone this repository, and rebuild these images to your specific internal 
+   security standards.
 
 
 # How to use this image
@@ -88,7 +96,8 @@ Be sure the config file has these fields:
 - `Server.Address` set to the exact URL that users will use to visit Connect. A
   placeholder `http://localhost:3939` is in use by default
 - `Server.DataDir` set to `/data/`
-- `HTTP.Listen` (or equivalent `HTTP`, `HTTPS`, or `HTTPRedirect` settings. This could change how you should configure the container ports)
+- `HTTP.Listen` (or equivalent `HTTP`, `HTTPS`, or `HTTPRedirect` settings. This could change how you should configure 
+  the container ports)
 - `Python.Enabled` and `Python.Executable`
 
 See a complete example of that file at `connect/rstudio-connect.gcfg`.

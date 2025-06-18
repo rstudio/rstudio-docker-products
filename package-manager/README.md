@@ -1,9 +1,12 @@
 # Quick reference
 
 * Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
-* Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues), [the Posit Package Manager Documentation](https://docs.posit.co/rspm/), 
-  [the Posit Community Forum](https://forum.posit.co/c/posit-professional-hosted/package-manager/21), or [Posit Support](https://support.posit.co/hc/en-us)
-* RStudio Package Manager image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-package-manager), [GHCR](https://github.com/rstudio/rstudio-docker-products/pkgs/container/rstudio-package-manager)
+* Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues), 
+  [the Posit Package Manager Documentation](https://docs.posit.co/rspm/), 
+  [the Posit Community Forum](https://forum.posit.co/c/posit-professional-hosted/package-manager/21), 
+  or [Posit Support](https://support.posit.co/hc/en-us)
+* RStudio Package Manager image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-package-manager), 
+  [GHCR](https://github.com/rstudio/rstudio-docker-products/pkgs/container/rstudio-package-manager)
 
 # Supported tags and respective Dockerfile links
 
@@ -31,9 +34,13 @@ consistent package management, optimized for teams who use R.
 1. The Package Manager image uses the `No Sandbox` option documented
    [here](https://docs.rstudio.com/rspm/admin/process-management/#process-management-sandboxing) by default, if you need
    a more secure option for configuring
-   [Git-related package builds](https://docs.rstudio.com/rspm/admin/building-packages/) we recommend [using a system with
-   sandboxing enabled](https://docs.rstudio.com/rspm/admin/process-management/#docker).
-1. **Security Note:** These images are provided AS IS based on the build environment at the time their product version was released/updated. They should be reviewed and updated before production use. If your organization has a specific set of security requirements related to CVE/Vulnerability severity levels, you should plan to use the [instructions for building](https://github.com/rstudio/rstudio-docker-products#instructions-for-building) to clone this repository, and rebuild these images to your specific internal security standards.
+   [Git-related package builds](https://docs.rstudio.com/rspm/admin/building-packages/) we recommend [using a system 
+   with sandboxing enabled](https://docs.rstudio.com/rspm/admin/process-management/#docker).
+1. **Security Note:** These images are provided AS IS based on the build environment at the time their product version 
+   was released/updated. They should be reviewed and updated before production use. If your organization has a specific 
+   set of security requirements related to CVE/Vulnerability severity levels, you should plan to use the 
+   [instructions for building](https://github.com/rstudio/rstudio-docker-products#instructions-for-building) to clone this repository, and rebuild these images to your specific internal 
+   security standards.
 
 
 # How to use this image
@@ -77,8 +84,8 @@ Be sure the config file has the `HTTP.Listen` field configured. See a complete e
 
 In order to persist Package Manager data between container restarts, configure the `Server.DataDir` option to go to
 a persistent volume. The included configuration file expects a persistent volume from the host machine or your docker
-orchestration system to be available at `/var/lib/rstudio-pm`. Should you wish to move this to a different path, you can change the
-`Server.DataDir` option.
+orchestration system to be available at `/var/lib/rstudio-pm`. Should you wish to move this to a different path, you can 
+change the `Server.DataDir` option.
 
 ```ini
 [Server]
@@ -91,7 +98,8 @@ Using the container requires a valid license for Posit Package Manager. You can 
 
 1. Setting the `RSPM_LICENSE` environment variable to a valid license key inside the container
 2. Setting the `RSPM_LICENSE_SERVER` environment variable to a valid license server / port inside the container
-3. Mounting a license file at `/var/lib/rstudio-pm/*.lic` or a different path specified using `RSPM_LICENSE_FILE_PATH` that contains a valid license for RStudio Package Manager
+3. Mounting a license file at `/var/lib/rstudio-pm/*.lic` or a different path specified using `RSPM_LICENSE_FILE_PATH`
+   that contains a valid license for RStudio Package Manager
 
 **NOTE:** the "offline activation process" is not supported by this image today. Offline installations will need
 to explore using a license server, license file, or custom image with manual intervention.
