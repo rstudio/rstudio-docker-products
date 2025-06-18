@@ -74,8 +74,9 @@ This container includes:
 
 1. Two versions of R
 2. Two versions of Python
-3. Posit Professional Drivers
-4. Posit Connect
+3. Quarto
+4. Posit Professional Drivers
+5. Posit Connect
 
 Note that running the Posit Connect Docker image requires the container to run using the `--privileged` flag and a
 valid Posit Connect license.
