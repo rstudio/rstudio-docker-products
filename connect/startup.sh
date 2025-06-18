@@ -36,6 +36,8 @@ if ! [ -z "$RSC_LICENSE" ]; then
 elif ! [ -z "$RSC_LICENSE_SERVER" ]; then
     /opt/rstudio-connect/bin/license-manager license-server $RSC_LICENSE_SERVER
     trap deactivate EXIT
+elif ls /var/lib/rstudio-connect/*.lic >/dev/null 2>&1; then
+    echo "Detected a license file in /var/lib/rstudio-connect/*.lic."
 elif test -f "$RSC_LICENSE_FILE_PATH"; then
     rm -f /var/lib/rstudio-connect/*.lic
     cp "${RSC_LICENSE_FILE_PATH}" /var/lib/rstudio-connect/license.lic
@@ -45,6 +47,7 @@ fi
 # ensure these cannot be inherited by child processes
 unset RSC_LICENSE
 unset RSC_LICENSE_SERVER
+unset RSC_LICENSE_FILE_PATH
 
 # Start RStudio Connect
 /opt/rstudio-connect/bin/connect --config /etc/rstudio-connect/rstudio-connect.gcfg

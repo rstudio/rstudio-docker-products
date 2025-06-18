@@ -113,7 +113,7 @@ docker run -it --privileged \
 
 ### Product Licensing
 
-Using the Posit Connect docker image requires to have a valid License. You can set the license in three ways:
+Using the Posit Connect docker image requires to have a valid License. You can set the license three different ways:
 
 1. Setting the `RSC_LICENSE` environment variable to a valid license key inside the container
 2. Setting the `RSC_LICENSE_SERVER` environment variable to a valid license server / port inside the container
@@ -131,6 +131,17 @@ for activation if present. This example uses a bind mount to provide the license
 docker run -it --privileged \
     -p 3939:3939 \
     --mount type=bind,ro,src=<path to license file>,dst=/var/lib/rstudio-connect/rstudio-connect.lic \
+    rstudio/rstudio-connect:ubuntu2204
+```
+
+Alternatively, the license file's path in the container can be provided using the `RSC_LICENSE_FILE_PATH` environment 
+variable. If provided, the container will attempt to find and activate from the file at the given path.
+
+```bash
+docker run -it --privileged \
+    -p 3939:3939 \
+    -e RSC_LICENSE_FILE_PATH=/opt/license.lic \
+    --mount type=bind,ro,src=<path to license file>,dst=/opt/license.lic \
     rstudio/rstudio-connect:ubuntu2204
 ```
 
