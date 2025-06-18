@@ -220,16 +220,16 @@ details on license key issues.
 
 ### Environment variables
 
-| Variable | Description | Default |
-|-----|---|---|
-| `RSC_LICENSE` | License key for Posit Connect, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None |
-| `RSC_LICENSE_SERVER` | Floating license server, format should be: `my.url.com:port` | None |
+| Variable             | Description                                                                           | Default |
+|----------------------|---------------------------------------------------------------------------------------|---------|
+| `RSC_LICENSE`        | License key for Posit Connect, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None    |
+| `RSC_LICENSE_SERVER` | Floating license server, format should be: `my.url.com:port`                          | None    |
 
 ### Ports
 
-| Variable | Description |
-|-----|---|
-| `3939` | Default HTTP Port for Posit Connect |
+| Variable | Description                         |
+|----------|-------------------------------------|
+| `3939`   | Default HTTP Port for Posit Connect |
 
 ## Caveats of product licensing in containers
 

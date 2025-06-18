@@ -193,15 +193,15 @@ details on license key issues.
 
 ### Environment variables
 
-| Variable | Description | Default |
-|-----|---|---|
-| `RSPM_LICENSE` | License key for Posit Package Manager, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None |
-| `RSPM_LICENSE_SERVER` | Floating license server, format should be: `my.url.com:port` | None |
+| Variable              | Description                                                                                   | Default |
+|-----------------------|-----------------------------------------------------------------------------------------------|---------|
+| `RSPM_LICENSE`        | License key for Posit Package Manager, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None    |
+| `RSPM_LICENSE_SERVER` | Floating license server, format should be: `my.url.com:port`                                  | None    |
 
 ### Ports
 
-| Variable | Description |
-|----------|---|
+| Variable | Description                                 |
+|----------|---------------------------------------------|
 | `4242`   | Default HTTP Port for Posit Package Manager |
 
 ### Example usage
