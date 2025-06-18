@@ -12,9 +12,9 @@
 
 * [`jammy`, `ubuntu2204`, `jammy-2025.04.2`, `ubuntu2204-2025.04.2`](https://github.com/rstudio/rstudio-docker-products/blob/main/package-manager/Dockerfile.ubuntu2204)
 
-# What is RStudio Package Manager?
+# What is Posit Package Manager?
 
-Posit Package Manager, formerly RStudio Package Manager, is a repository management server to organize and centralize
+Posit Package Manager, formerly Posit Package Manager, is a repository management server to organize and centralize
 R packages across your team, department, or entire organization. Get offline access to CRAN, automate CRAN syncs,
 share local packages, restrict package access, find packages across repositories, and more. Experience reliable and
 consistent package management, optimized for teams who use R.
@@ -58,11 +58,11 @@ docker run -it \
     rstudio/rstudio-package-manager:ubuntu2204
 ```
 
-Open [http://localhost:4242](http://localhost:4242) to access RStudio Package Manager UI.
+Open [http://localhost:4242](http://localhost:4242) to access Posit Package Manager UI.
 
 ## Overview
 
-Note that running the RStudio Package Manager Docker image requires a valid RStudio Package Manager license.
+Note that running the Posit Package Manager Docker image requires a valid Posit Package Manager license.
 
 This container includes:
 
@@ -74,7 +74,7 @@ This container includes:
 
 ## Configuration
 
-RStudio Package Manager is configured via the`/etc/rstudio-pm/rstudio-pm.gcfg` file. You should mount this file as
+Posit Package Manager is configured via the`/etc/rstudio-pm/rstudio-pm.gcfg` file. You should mount this file as
 a volume from the host machine. Changes will take effect when the container is restarted.
 
 Be sure the config file has the `HTTP.Listen` field configured. See a complete example of that file at
@@ -99,7 +99,7 @@ Using the container requires a valid license for Posit Package Manager. You can 
 1. Setting the `RSPM_LICENSE` environment variable to a valid license key inside the container
 2. Setting the `RSPM_LICENSE_SERVER` environment variable to a valid license server / port inside the container
 3. Mounting a license file at `/var/lib/rstudio-pm/*.lic` or a different path specified using `RSPM_LICENSE_FILE_PATH`
-   that contains a valid license for RStudio Package Manager
+   that contains a valid license for Posit Package Manager
 
 **NOTE:** the "offline activation process" is not supported by this image today. Offline installations will need
 to explore using a license server, license file, or custom image with manual intervention.
@@ -195,14 +195,14 @@ details on license key issues.
 
 | Variable | Description | Default |
 |-----|---|---|
-| `RSPM_LICENSE` | License key for RStudio Package Manager, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None |
+| `RSPM_LICENSE` | License key for Posit Package Manager, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None |
 | `RSPM_LICENSE_SERVER` | Floating license server, format should be: `my.url.com:port` | None |
 
 ### Ports
 
 | Variable | Description |
 |----------|---|
-| `4242`   | Default HTTP Port for RStudio Package Manager |
+| `4242`   | Default HTTP Port for Posit Package Manager |
 
 ### Example usage
 
@@ -226,7 +226,7 @@ docker run -it \
     rstudio/rstudio-package-manager:ubuntu2204
 ```
 
-Open [http://localhost:4242](http://localhost:4242) to access RStudio Package Manager UI.
+Open [http://localhost:4242](http://localhost:4242) to access Posit Package Manager UI.
 
 To create repositories you need to access the container directly and execute some commands.
 To do this find the container ID for RSPM (using `docker ps`) and run:
@@ -235,8 +235,8 @@ To do this find the container ID for RSPM (using `docker ps`) and run:
 docker exec -it {container-id} /bin/bash
 ```
 
-Then please refer to the [RSPM guide](https://docs.rstudio.com/rspm/admin/) on how
-to [create and manage](https://docs.rstudio.com/rspm/admin/getting-started/configuration/) your repositories.
+Then please refer to the [Package Manager documentation](https://docs.posit.co/rspm/admin/) on how
+to [create and manage](https://docs.posit.co/rspm/admin/getting-started/configuration.html) your repositories.
 
 ## Caveats of product licensing in containers
 
@@ -277,7 +277,7 @@ long-term solution.
 
 # License
 
-The license associated with the RStudio Docker Products repository is located
+The license associated with the Posit Docker Products repository is located
 [in LICENSE.md](https://github.com/rstudio/rstudio-docker-products/blob/main/LICENSE.md).
 
 As is the case with all container images, the images themselves also contain other software which may be under other
