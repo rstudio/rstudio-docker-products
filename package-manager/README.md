@@ -1,8 +1,9 @@
 # Quick reference
 
 * Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
-* Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues)
-* RStudio Package Manager image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-package-manager)
+* Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues), [the Posit Package Manager Documentation](https://docs.posit.co/rspm/), 
+  [the Posit Community Forum](https://forum.posit.co/c/posit-professional-hosted/package-manager/21), or [Posit Support](https://support.posit.co/hc/en-us)
+* RStudio Package Manager image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-package-manager), [GHCR](https://github.com/rstudio/rstudio-docker-products/pkgs/container/rstudio-package-manager)
 
 # Supported tags and respective Dockerfile links
 
@@ -14,9 +15,6 @@ Posit Package Manager, formerly RStudio Package Manager, is a repository managem
 R packages across your team, department, or entire organization. Get offline access to CRAN, automate CRAN syncs,
 share local packages, restrict package access, find packages across repositories, and more. Experience reliable and
 consistent package management, optimized for teams who use R.
-
-The following documentation helps an administrator install and configure Package Manager. It provides information for
-installing the product on different operating systems, upgrading, and configuring Package Manager.
 
 # Notice for support
 
@@ -40,7 +38,8 @@ installing the product on different operating systems, upgrading, and configurin
 
 # How to use this image
 
-To verify basic functionality as a first step:
+Below is a very simple example for running Package Manager locally in Docker using a product license key.
+
 ```bash
 # Replace with valid license
 export RSPM_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
@@ -51,6 +50,7 @@ docker run -it \
     -e RSPM_LICENSE=$RSPM_LICENSE \
     rstudio/rstudio-package-manager:ubuntu2204
 ```
+
 Open [http://localhost:4242](http://localhost:4242) to access RStudio Package Manager UI.
 
 ## Overview
@@ -61,7 +61,7 @@ This container includes:
 
 1. Two versions of R
 2. Two versions of Python
-3. RStudio Package Manager
+3. Posit Package Manager
 
 > NOTE: Package Manager is currently not very particular about R version. Changing the R version is rarely necessary.
 
@@ -70,7 +70,7 @@ This container includes:
 RStudio Package Manager is configured via the`/etc/rstudio-pm/rstudio-pm.gcfg` file. You should mount this file as
 a volume from the host machine. Changes will take effect when the container is restarted.
 
-Be sure the config file has the `[HTTP].Listen` field configured. See a complete example of that file at
+Be sure the config file has the `HTTP.Listen` field configured. See a complete example of that file at
 [`package-manager/rstudio-pm.gcfg`](./rstudio-pm.gcfg).
 
 ### Persistent Data
@@ -85,16 +85,103 @@ orchestration system to be available at `/var/lib/rstudio-pm`. Should you wish t
 DataDir = /mnt/rspm/data
 ```
 
-### Licensing
+### Product Licensing
 
-Using the RStudio Package Manager Docker image requires a valid license for Package Manager. You can set the license in three ways:
+Using the container requires a valid license for Posit Package Manager. You can set the license three different ways:
 
 1. Setting the `RSPM_LICENSE` environment variable to a valid license key inside the container
 2. Setting the `RSPM_LICENSE_SERVER` environment variable to a valid license server / port inside the container
-3. Mounting a `/etc/rstudio-pm/license.lic` single file that contains a valid license for RStudio Package Manager
+3. Mounting a license file at `/var/lib/rstudio-pm/*.lic` or a different path specified using `RSPM_LICENSE_FILE_PATH` that contains a valid license for RStudio Package Manager
 
 **NOTE:** the "offline activation process" is not supported by this image today. Offline installations will need
 to explore using a license server, license file, or custom image with manual intervention.
+
+#### Example usage with a license file
+
+The container will automatically look for a license file at `/var/lib/rstudio-pm/*.lic` and will attempt to use it
+for activation if present. This example uses a bind mount to provide the license file from the host machine.
+
+```bash
+docker run -it --privileged \
+    -p 4242:4242 \
+    --mount type=bind,ro,src=<path to license file>,dst=/var/lib/rstudio-pm/rstudio-pm.lic \
+    rstudio/rstudio-package-manager:ubuntu2204
+```
+
+Alternatively, the license file's path in the container can be provided using the `RSPM_LICENSE_FILE_PATH` environment 
+variable. If provided, the container will attempt to find and activate from the file at the given path.
+
+```bash
+docker run -it --privileged \
+    -p 4242:4242 \
+    -e RSPM_LICENSE_FILE_PATH=/opt/license.lic \
+    --mount type=bind,ro,src=<path to license file>,dst=/opt/license.lic \
+    rstudio/rstudio-package-manager:ubuntu2204
+```
+
+If the license file does not successfully activate, the container should fail to start under most circumstances. You can
+still verify the container's licensing status by running the `status` command against the `license-manager` binary.
+
+```bash
+$ docker exec -it <container name> /opt/rstudio-pm/bin/license-manager status
+TTY detected. Printing informational message about logging configuration. Logging configuration loaded from '/etc/rstudio/logging.conf'. Logging to '/var/log/rstudio/rstudio-server/license-manager.log'.
+RStudio License Manager 2024.04.2+764.pro1
+
+-- License file status --
+
+Status: Activated
+Product-Key: XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
+Has-Key: Yes
+Has-Trial: No
+Tier: Tier Name
+SKU-Year: 2024
+Enable-Launcher: 1
+Users: 0
+User-Activity-Days: 365
+Shiny-Users: 0
+Allow-APIs: 1
+Anonymous-Servers: 0
+Unrestricted-Servers: 0
+Licensee: Company Name
+License-File: /var/lib/rstudio-pm/rstudio-pm.lic
+Expiration: YYYY-MM-DD HH:mm:ss
+Days-Left: XXX
+License-Engine: 1.0.0.0
+License-Scope: System
+
+-- Local license status --
+
+Trial-Type: Verified
+Status: Expired
+Has-Key: No
+Has-Trial: Yes
+License-Scope: System
+License-Engine: 4.4.3.0
+
+-- Floating license status --
+
+License server not in use.
+```
+
+#### Example usage with a license key
+
+The container can also be activated using a license key by setting the `RSPM_LICENSE` environment variable. 
+
+```bash
+# Replace with valid license
+export RSPM_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
+
+# Run without persistent data and using an external configuration
+docker run -it --privileged \
+    -p 4242:4242 \
+    -e RSPM_LICENSE=$RSPM_LICENSE \
+    rstudio/rstudio-package-manager:ubuntu2204
+```
+
+If possible, license key activation should be avoided in production environments in favor of using a license file due to 
+the risk of leaking license activations when the container is not gracefully stopped. See the 
+[caveats of product licensing in containers](#caveats-of-product-licensing-in-containers) section below for more 
+details on license key issues.
 
 ### Environment variables
 
@@ -180,7 +267,7 @@ into issues with your license, please do not hesitate to [contact Posit support]
 While neither of these solutions will eliminate the problem, they should help mitigate it. We are still investigating a
 long-term solution.
 
-# Licensing
+# License
 
 The license associated with the RStudio Docker Products repository is located
 [in LICENSE.md](https://github.com/rstudio/rstudio-docker-products/blob/main/LICENSE.md).
