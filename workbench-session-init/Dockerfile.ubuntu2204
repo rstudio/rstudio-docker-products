@@ -38,16 +38,17 @@ RUN if [ ! -f "/workspace/entrypoint" ]; then \
     fi
 
 COPY entrypoint/ /workspace/
+WORKDIR /workspace
 RUN if [ ! -f "/workspace/entrypoint" ]; then \
         echo "Building entrypoint"; \
         export PATH=$PATH:/usr/local/go/bin && \
-        cd /workspace && \
         go mod download && \
         CGO_ENABLED=0 GOOS=linux go build -ldflags '-s -w' -o /workspace/entrypoint main.go; \
     fi
 
 # Create the final image
 FROM ubuntu:22.04 AS build
+LABEL maintainer="RStudio Docker <docker@rstudio.com>"
 
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
