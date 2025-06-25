@@ -1,4 +1,4 @@
-_# Quick reference
+# Quick reference
 
 * Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
 * Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues)
@@ -42,7 +42,7 @@ https://www.rstudio.com/products/workbench/.
 # How to use this image
 
 This image is designed for exclusive use with [Google Cloud Workstations](https://cloud.google.com/workstations). For
-the generalized version of the Workbench image, go [here](../workbench).
+the generalized version of the Workbench image, go [here](https://hub.docker.com/r/rstudio/rstudio-workbench).
 
 Using Google Cloud Workstations requires a Google Cloud Platform account. Click 
 [here](https://console.cloud.google.com/workstations/overview) to navigate to the Cloud Workstations console. Posit
@@ -62,24 +62,25 @@ This container includes:
 
 1. Two versions of R
 2. Two versions of Python
-3. RStudio Workbench
+3. Quarto
+4. Posit Workbench
 
-### Licensing
+### Product Licensing
 
 The RStudio Workbench Docker image requires a valid license, which can be set using the `RSW_LICENSE` environment 
 variable to a valid license key inside the container.
 
 ### Environment variables
 
-| Variable | Description | Default   |
-|-----|---|-----------|
-| `RSW_LICENSE` | License key for RStudio Workbench, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX` | None      |
-| `RSW_LAUNCHER` | Whether or not to use launcher locally / start the launcher process | true      |
-| `RSW_LAUNCHER_TIMEOUT` | The timeout, in seconds, to wait for launcher to start listening on the expected port before failing startup | 10        |
+| Variable               | Description                                                                                                  | Default |
+|------------------------|--------------------------------------------------------------------------------------------------------------|---------|
+| `RSW_LICENSE`          | License key for Posit Workbench, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX`                      | None    |
+| `RSW_LAUNCHER`         | Whether or not to use launcher locally / start the launcher process                                          | true    |
+| `RSW_LAUNCHER_TIMEOUT` | The timeout, in seconds, to wait for launcher to start listening on the expected port before failing startup | 10      |
 
-# Licensing
+# License
 
-The license associated with the RStudio Docker Products repository is located [in LICENSE.md](https://github.com/rstudio/rstudio-docker-products/blob/main/LICENSE.md).
+The license associated with the Posit Docker Products repository is located [in LICENSE.md](https://github.com/rstudio/rstudio-docker-products/blob/main/LICENSE.md).
 
 As is the case with all container images, the images themselves also contain other software which may be under other
 licenses (i.e. bash, linux, system libraries, etc., along with any other direct or indirect dependencies of the primary

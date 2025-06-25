@@ -1,16 +1,22 @@
 # Quick reference
 
 * Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
-* Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues)
-* Posit Workbench image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-workbench)
-* Posit Workbench session image: [Docker Hub](https://hub.docker.com/r/rstudio/workbench-session)
-* Posit Workbench session init image: [Docker Hub](https://hub.docker.com/r/rstudio/workbench-session-init)
+* Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues), 
+  [the Posit Workbench Documentation](https://docs.posit.co/ide/), 
+  [the Posit Community Forum](https://forum.posit.co/c/posit-professional-hosted/posit-workbench/69), 
+  or [Posit Support](https://support.posit.co/hc/en-us)
+* Posit Workbench image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-workbench), 
+  [GHCR](https://github.com/rstudio/rstudio-docker-products/pkgs/container/rstudio-workbench)
+* Posit Workbench session image: [Docker Hub](https://hub.docker.com/r/rstudio/workbench-session),
+  [GHCR](https://github.com/rstudio/rstudio-docker-products/pkgs/container/workbench-session)
+* Posit Workbench session init image: [Docker Hub](https://hub.docker.com/r/rstudio/workbench-session-init),
+  [GHCR](https://github.com/rstudio/rstudio-docker-products/pkgs/container/workbench-session-init)
 
 # Supported tags and respective Dockerfile links
 
 * [`ubuntu2204-r4.4.1_4.3.3-py3.12.6_3.11.10`, `ubuntu2204-r4.4.1_4.3.3-py3.11.10_3.10.15`, `ubuntu2204-r4.4.0_4.3.3-py3.12.1_3.11.7`](https://github.com/rstudio/rstudio-docker-products/blob/main/workbench-session/Dockerfile.ubuntu2204)
 
-# What are the r-session-complete images?
+# What are the Workbench Session images?
 
 Images for R and Python sessions and jobs to be used RStudio Workbench, Launcher, and Kubernetes.
 
@@ -26,7 +32,11 @@ Images for R and Python sessions and jobs to be used RStudio Workbench, Launcher
    changes. We
    provide [instructions for how to build and use](#how-to-use-these-docker-images)
    for these cases.
-1. **Security Note:** These images are provided AS IS based on the build environment at the time their product version was released/updated. They should be reviewed and updated before production use. If your organization has a specific set of security requirements related to CVE/Vulnerability severity levels, you should plan to use the [instructions for building](https://github.com/rstudio/rstudio-docker-products#instructions-for-building) to clone this repository, and rebuild these images to your specific internal security standards.
+1. **Security Note:** These images are provided AS IS based on the build environment at the time their product version 
+   was released/updated. They should be reviewed and updated before production use. If your organization has a specific 
+   set of security requirements related to CVE/Vulnerability severity levels, you should plan to use the 
+   [instructions for building](https://github.com/rstudio/rstudio-docker-products#instructions-for-building) to clone this repository, and rebuild these images to your specific internal 
+   security standards.
 
 # How to use these images
 
@@ -39,22 +49,25 @@ Workbench within a Docker container. Visit the
 [rstudio/rstudio-worbench Docker Hub page](https://hub.docker.com/r/rstudio/rstudio-workbench)
 for images built for that purpose.
 
-Note: These images do not include the Posit Workbench Session Components. To use these images with Posit Workbench, the [session init container](https://hub.docker.com/r/rstudio/workbench-session-init) must be enabled within the Posit Workbench configuration. For more information, refer to the [Posit Workbench documentation](https://docs.rstudio.com/ide/server-pro/launcher/).
+Note: These images do not include the Posit Workbench Session Components. To use these images with Posit Workbench, the 
+[session init container](https://hub.docker.com/r/rstudio/workbench-session-init) must be enabled within the Posit 
+Workbench configuration. For more information, refer to the 
+[Posit Workbench documentation](https://docs.posit.co/ide/server-pro/admin/job_launcher/using_docker_images.html).
 
 For more information about Posit Workbench and Launcher, refer to the
-[Launcher Overview](https://solutions.rstudio.com/launcher/overview/) on the
-RStudio Solutions website.
+[Launcher Overview](https://docs.posit.co/ide/server-pro/admin/job_launcher/job_launcher.html) in the
+Posit Workbench documentation.
 
-For more information about how to use these images with RStudio Workbench and
-Launcher, refer to the RStudio support article on [Using Docker images with
-RStudio Workbench, Launcher, and Kubernetes](https://support.rstudio.com/hc/en-us/articles/360019253393-Using-Docker-images-with-RStudio-Server-Pro-Launcher-and-Kubernetes).
+For more information about how to use these images with Posit Workbench and
+Launcher, refer to the support article on [Using Docker images with
+Posit Workbench, Launcher, and Kubernetes](https://support.posit.co/hc/en-us/articles/360019253393-Using-Docker-images-with-Posit-Workbench-Launcher-and-Kubernetes).
 
-We provide simple ways to extend and build the Dockerfiles. After you have cloned the repo, you can create your own containers fairly simply with the provided Justfile.
+We provide simple ways to extend and build the Dockerfiles. After you have cloned the repo, you can create your own 
+containers fairly simply with the provided Justfile in the repository.
 
 ## Overview
 
-Built images are available from the
-[rstudio/workbench-session](https://hub.docker.com/r/rstudio/workbench-session)
+Built images are available from the [rstudio/workbench-session](https://hub.docker.com/r/rstudio/workbench-session)
 repository on Docker Hub.
 
 These images include the following layers:
@@ -66,9 +79,9 @@ These images include the following layers:
 * Jupyter Notebooks, JupyterLab, and RSW/RSC notebook extensions
 * RStudio Professional Drivers
 
-# Licensing
+# License
 
-The license associated with the RStudio Docker Products repository is located [in LICENSE.md](https://github.com/rstudio/rstudio-docker-products/blob/main/LICENSE.md).
+The license associated with the Posit Docker Products repository is located [in LICENSE.md](https://github.com/rstudio/rstudio-docker-products/blob/main/LICENSE.md).
 
 As is the case with all container images, the images themselves also contain other software which may be under other
 licenses (i.e. bash, linux, system libraries, etc., along with any other direct or indirect dependencies of the primary
