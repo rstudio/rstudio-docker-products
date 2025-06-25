@@ -14,7 +14,7 @@
 
 # What is Posit Package Manager?
 
-Posit Package Manager, formerly Posit Package Manager, is a repository management server to organize and centralize
+Posit Package Manager, formerly RStudio Package Manager, is a repository management server to organize and centralize
 R packages across your team, department, or entire organization. Get offline access to CRAN, automate CRAN syncs,
 share local packages, restrict package access, find packages across repositories, and more. Experience reliable and
 consistent package management, optimized for teams who use R.
