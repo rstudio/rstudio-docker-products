@@ -36,10 +36,11 @@ if ! [ -z "$RSPM_LICENSE" ]; then
     /opt/rstudio-pm/bin/license-manager activate $RSPM_LICENSE --userspace
 elif ! [ -z "$RSPM_LICENSE_SERVER" ]; then
     /opt/rstudio-pm/bin/license-manager license-server $RSPM_LICENSE_SERVER --userspace
+elif test -f "$RSPM_LICENSE_FILE_PATH"; then
+    rm -f /var/lib/rstudio-pm/*.lic || true
+    /opt/rstudio-pm/bin/license-manager activate-file $RSPM_LICENSE_FILE_PATH --userspace
 elif ls /var/lib/rstudio-pm/*.lic >/dev/null 2>&1; then
     echo "Detected a license file in /var/lib/rstudio-pm/*.lic."
-elif test -f "$RSPM_LICENSE_FILE_PATH"; then
-    /opt/rstudio-pm/bin/license-manager activate-file $RSPM_LICENSE_FILE_PATH --userspace
 fi
 
 # ensure these cannot be inherited by child processes

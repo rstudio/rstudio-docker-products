@@ -44,15 +44,16 @@ RSP_LICENSE=${RSP_LICENSE:-${RSW_LICENSE}}
 RSP_LICENSE_SERVER=${RSP_LICENSE_SERVER:-${RSW_LICENSE_SERVER}}
 
 # Activate License
-RSW_LICENSE_FILE_PATH=${RSW_LICENSE_FILE_PATH:-/etc/rstudio-server/license.lic}
+RSW_LICENSE_FILE_PATH=${RSW_LICENSE_FILE_PATH:-${RSP_LICENSE_FILE_PATH:-/etc/rstudio-server/license.lic}}
 if [ -n "$RSP_LICENSE" ]; then
     /usr/lib/rstudio-server/bin/license-manager activate $RSP_LICENSE
 elif [ -n "$RSP_LICENSE_SERVER" ]; then
     /usr/lib/rstudio-server/bin/license-manager license-server $RSP_LICENSE_SERVER
+elif test -f "$RSW_LICENSE_FILE_PATH"; then
+    rm -f /var/lib/rstudio-server/*.lic
+    /usr/lib/rstudio-server/bin/license-manager activate-file $RSW_LICENSE_FILE_PATH
 elif ls /var/lib/rstudio-server/*.lic >/dev/null 2>&1; then
     echo "Detected a license file in /var/lib/rstudio-server/*.lic."
-elif test -f "$RSW_LICENSE_FILE_PATH"; then
-    /usr/lib/rstudio-server/bin/license-manager activate-file $RSW_LICENSE_FILE_PATH
 fi
 
 # ensure these cannot be inherited by child processes
