@@ -37,8 +37,9 @@ elif ! [ -z "$RSC_LICENSE_SERVER" ]; then
     /opt/rstudio-connect/bin/license-manager license-server $RSC_LICENSE_SERVER
     trap deactivate EXIT
 elif test -f "$RSC_LICENSE_FILE_PATH"; then
-    rm -f /var/lib/rstudio-connect/*.lic || true
-    /opt/rstudio-connect/bin/license-manager activate-file $RSC_LICENSE_FILE_PATH
+    rm -f /var/lib/rstudio-connect/*.lic
+    cp "${RSC_LICENSE_FILE_PATH}" /var/lib/rstudio-connect/license.lic
+    chmod g-rwx,g-rwx /var/lib/rstudio-connect/license.lic
 elif ls /var/lib/rstudio-connect/*.lic >/dev/null 2>&1; then
     echo "Detected a license file in /var/lib/rstudio-connect/*.lic."
 fi
