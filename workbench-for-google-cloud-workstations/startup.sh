@@ -38,9 +38,11 @@ if [ -n "$RSP_LICENSE" ]; then
     ${LICENSE_MANAGER_PATH}/license-manager activate $RSP_LICENSE || true
 elif [ -n "$RSP_LICENSE_SERVER" ]; then
     ${LICENSE_MANAGER_PATH}/license-manager license-server $RSP_LICENSE_SERVER || true
-elif test -f "$RSW_LICENSE_FILE_PATH"; then
+elif test -f "${RSW_LICENSE_FILE_PATH}"; then
     rm -f /var/lib/rstudio-server/*.lic
-    ${LICENSE_MANAGER_PATH}/license-manager activate-file $RSW_LICENSE_FILE_PATH || true
+    cp "${RSW_LICENSE_FILE_PATH}" /var/lib/rstudio-server/license.lic
+    chown rstudio-server /var/lib/rstudio-server/license.lic
+    chmod 600 /var/lib/rstudio-server/license.lic
 elif ls /var/lib/rstudio-server/*.lic >/dev/null 2>&1; then
     echo "Detected a license file in /var/lib/rstudio-server/*.lic."
 fi
