@@ -106,8 +106,9 @@ intervention to successfully activate the instance.
 
 #### Example usage with a license file
 
-The container will automatically look for a license file at `/var/lib/rstudio-pm/*.lic` and will attempt to use it
-for activation if present. This example uses a bind mount to provide the license file from the host machine.
+The container will automatically look for a license file at `/var/lib/rstudio-pm/*.lic` or 
+`/home/rstudio-pm/.rstudio-pm/*.lic` and will attempt to use it for activation if present. This example uses a bind 
+mount to provide the license file from the host machine.
 
 ```bash
 docker run -it --privileged \
@@ -130,6 +131,9 @@ docker run -it --privileged \
 If the license file does not successfully activate, the container should fail to start under most circumstances. You can
 still verify the container's licensing status by running the `status` command against the `license-manager` binary.
 
+Depending on how the license file was provided, the `License-File` field may be `/var/lib/rstudio-pm/*.lic` or
+`/home/rstudio-pm/.rstudio-pm/*.lic`. Either path should work so long as the `Status` field shows `Activated`.
+
 ```bash
 $ docker exec -it <container name> /opt/rstudio-pm/bin/license-manager status
 TTY detected. Printing informational message about logging configuration. Logging configuration loaded from '/etc/rstudio/logging.conf'. Logging to '/var/log/rstudio/rstudio-server/license-manager.log'.
@@ -151,7 +155,7 @@ Allow-APIs: 1
 Anonymous-Servers: 0
 Unrestricted-Servers: 0
 Licensee: Company Name
-License-File: /var/lib/rstudio-pm/rstudio-pm.lic
+License-File: /home/rstudio-pm/.rstudio-pm/rstudio-pm.lic
 Expiration: YYYY-MM-DD HH:mm:ss
 Days-Left: XXX
 License-Engine: 1.0.0.0
