@@ -44,13 +44,18 @@ RSP_LICENSE=${RSP_LICENSE:-${RSW_LICENSE}}
 RSP_LICENSE_SERVER=${RSP_LICENSE_SERVER:-${RSW_LICENSE_SERVER}}
 
 # Activate License
-RSW_LICENSE_FILE_PATH=${RSW_LICENSE_FILE_PATH:-/etc/rstudio-server/license.lic}
+RSW_LICENSE_FILE_PATH=${RSW_LICENSE_FILE_PATH:-${RSP_LICENSE_FILE_PATH:-/etc/rstudio-server/license.lic}}
 if [ -n "$RSP_LICENSE" ]; then
     /usr/lib/rstudio-server/bin/license-manager activate $RSP_LICENSE
 elif [ -n "$RSP_LICENSE_SERVER" ]; then
     /usr/lib/rstudio-server/bin/license-manager license-server $RSP_LICENSE_SERVER
-elif test -f "$RSW_LICENSE_FILE_PATH"; then
-    /usr/lib/rstudio-server/bin/license-manager activate-file $RSW_LICENSE_FILE_PATH
+elif test -f "${RSW_LICENSE_FILE_PATH}"; then
+    rm -f /var/lib/rstudio-server/*.lic
+    cp "${RSW_LICENSE_FILE_PATH}" /var/lib/rstudio-server/license.lic
+    chown rstudio-server /var/lib/rstudio-server/license.lic
+    chmod 600 /var/lib/rstudio-server/license.lic
+elif ls /var/lib/rstudio-server/*.lic >/dev/null 2>&1; then
+    echo "Detected a license file in /var/lib/rstudio-server/*.lic."
 fi
 
 # ensure these cannot be inherited by child processes
@@ -58,6 +63,7 @@ unset RSP_LICENSE
 unset RSP_LICENSE_SERVER
 unset RSW_LICENSE
 unset RSW_LICENSE_SERVER
+unset RSW_LICENSE_FILE_PATH
 
 # Create one user
 if [ $(getent passwd $RSW_TESTUSER_UID) ] ; then

@@ -1,50 +1,29 @@
-# Posit Workbench Session Init Container
-
-This directory contains a Dockerfile and script that will create an init container to copy session runtime components from a release package into a target mount directory. This init container can be used to pull the session runtime components into another base sesssion image, which can then be used to run Workbench sessions.
-
-## Quick reference
+# Quick reference
 
 * Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
-* Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues)
-* Posit Workbench image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-workbench)
-* Posit Workbench session image: [Docker Hub](https://hub.docker.com/r/rstudio/workbench-session)
-* Posit Workbench session init image: [Docker Hub](https://hub.docker.com/r/rstudio/workbench-session-init)
+* Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues), 
+  [the Posit Workbench Documentation](https://docs.posit.co/ide/), 
+  [the Posit Community Forum](https://forum.posit.co/c/posit-professional-hosted/posit-workbench/69), 
+  or [Posit Support](https://support.posit.co/hc/en-us)
+* Posit Workbench image: [Docker Hub](https://hub.docker.com/r/rstudio/rstudio-workbench), 
+  [GHCR](https://github.com/rstudio/rstudio-docker-products/pkgs/container/rstudio-workbench)
+* Posit Workbench session image: [Docker Hub](https://hub.docker.com/r/rstudio/workbench-session),
+  [GHCR](https://github.com/rstudio/rstudio-docker-products/pkgs/container/workbench-session)
+* Posit Workbench session init image: [Docker Hub](https://hub.docker.com/r/rstudio/workbench-session-init),
+  [GHCR](https://github.com/rstudio/rstudio-docker-products/pkgs/container/workbench-session-init)
+
+# Posit Workbench Session Init Container
+
+This init container can be used to pull the session runtime components into another base session image, which can then 
+be used to run Workbench sessions. This image is intended to be used in conjunction with the 
+[Posit Workbench Session](https://hub.docker.com/r/rstudio/workbench-session) and 
+[Posit Workbench](https://hub.docker.com/r/rstudio/rstudio-workbench) images.
 
 ## Supported tags and respective Dockerfile links
 
 * [`jammy-daily`, `ubuntu2204-daily`, `jammy-2025.05.1`, `ubuntu2204-2025.05.1`](https://github.com/rstudio/rstudio-docker-products/blob/main/workbench-session-init/Dockerfile.2204)
 
-## Building
-
-Just will build an image using a default Connect distribution.
-
-```console
-just build
-```
-
-Daily builds are also supported. To build the daily image, run:
-
-```console
-just preview-bake workbench-session-init-daily
-```
-
-## Testing
-
-You can observe what gets copied by the container:
-
-```console
-mkdir init
-docker run --rm -v $(pwd)/init:/mnt/init rstudio/workbench-session-init:jammy-2025.05.1
-# The init directory has been populated with the Workbench session runtime components.
-```
-
-You can also test using GOSS:
-
-```console
-just test workbench-session-init
-```
-
-## Licensing
+## License
 
 The license associated with the RStudio Docker Products repository is located [in LICENSE.md](https://github.com/rstudio/rstudio-docker-products/blob/main/LICENSE.md).
 

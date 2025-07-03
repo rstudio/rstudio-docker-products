@@ -1,3 +1,8 @@
+# 2025-07-03
+
+- Update documentation with additional license file usage instructions.
+- Add startup message for when a license file is found in `/var/lib/rstudio-connect/*.lic`.
+
 # 2025-06-03
 
 - Install a license file using file copies rather than `license-manager activate-file`.

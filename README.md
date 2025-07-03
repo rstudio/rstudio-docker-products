@@ -170,7 +170,7 @@ Note you must have a license in place, and all other instructions in separate se
 If you have created an image you want to use yourself, you can push to your own image repository system. The images are
 named `rstudio-workbench`, `rstudio-connect`, and `rstudio-package-manager`.
 
-# Licensing
+# License
 
 The license associated with the RStudio Docker Products repository is
 located [in LICENSE.md](https://github.com/rstudio/rstudio-docker-products/blob/main/LICENSE.md).
