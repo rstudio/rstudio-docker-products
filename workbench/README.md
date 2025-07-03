@@ -257,7 +257,7 @@ more information.
 | `RSW_LICENSE`          | License key for Posit Workbench, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX`                      | None      |
 | `RSW_LICENSE_SERVER`   | Floating license server, format should be: `my.url.com:port`                                                 | None      |
 | `RSW_LAUNCHER`         | Whether or not to use launcher locally / start the launcher process                                          | true      |
-| `RSW_LAUNCHER_TIMEOUT` | The timeout, in seconds, to wait for launcher to start listening on the expected port before failing startup | 10        |
+| `RSW_LAUNCHER_TIMEOUT` | The timeout, in seconds, to wait for launcher to start listening on the expected port before failing startup | 60        |
 
 ### Ports
 

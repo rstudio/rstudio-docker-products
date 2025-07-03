@@ -4,6 +4,7 @@
 - Replace usage of `license-manager activate-file` with file copies for installing license files per Workbench admin 
   guide.
 - Add startup message for when a license file is found in `/var/lib/rstudio-server/*.lic`.
+- Increase `RSW_LAUNCHER_TIMEOUT` from 10 seconds to 60 seconds to provide more time for launcher startup.
 
 # 2025-03-11
 
