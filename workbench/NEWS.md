@@ -1,4 +1,11 @@
-# 2025.03.11
+# 2025-07-03
+
+- Update documentation with additional license file usage instructions.
+- Replace usage of `license-manager activate-file` with file copies for installing license files per Workbench admin 
+  guide.
+- Add startup message for when a license file is found in `/var/lib/rstudio-server/*.lic`.
+
+# 2025-03-11
 
 - Quarto TinyTeX installation path has been updated from `/root/.TinyTeX` to `/opt/.TinyTeX` to fix potential permission 
   issues when called from a non-root user. As a result, Quarto will no longer recognize TinyTeX as a managed 
