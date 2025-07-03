@@ -1,3 +1,7 @@
+# 2025-08-13
+
+- Increase `RSW_LAUNCHER_TIMEOUT` from 10 seconds to 30 seconds to provide more time for launcher startup.
+
 # 2025-08-08
 
 - Add [Azure ML SDK v2](https://learn.microsoft.com/en-us/python/api/overview/azure/ai-ml-readme?view=azure-python&viewFallbackFrom=azure-ml-py) to installed packages.

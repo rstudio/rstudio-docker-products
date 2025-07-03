@@ -76,7 +76,7 @@ variable to a valid license key inside the container.
 |------------------------|--------------------------------------------------------------------------------------------------------------|---------|
 | `RSW_LICENSE`          | License key for Posit Workbench, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX`                      | None    |
 | `RSW_LAUNCHER`         | Whether or not to use launcher locally / start the launcher process                                          | true    |
-| `RSW_LAUNCHER_TIMEOUT` | The timeout, in seconds, to wait for launcher to start listening on the expected port before failing startup | 10      |
+| `RSW_LAUNCHER_TIMEOUT` | The timeout, in seconds, to wait for launcher to start listening on the expected port before failing startup | 30      |
 
 # License
 
