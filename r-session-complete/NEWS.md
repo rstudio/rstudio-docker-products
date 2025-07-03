@@ -1,3 +1,7 @@
+# 2025-07-03
+
+- Update README.md links.
+
 # 2025.03.11
 
 - Quarto TinyTeX installation path has been updated from `/root/.TinyTeX` to `/opt/.TinyTeX` to fix potential permission 

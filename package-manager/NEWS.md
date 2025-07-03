@@ -1,3 +1,10 @@
+# 2025-07-03
+
+- Update documentation with additional license file usage instructions.
+- Replace usage of `license-manager activate-file` with file copies for installing license files per PPM admin guide.
+- Add startup message for when a license file is found in `/var/lib/rstudio-connect/*.lic` or 
+  `/home/rstudio-pm/.rstudio-pm/*.lic`.
+
 # 2025-06-05
 - Update PPM to v2025.04.2
 
