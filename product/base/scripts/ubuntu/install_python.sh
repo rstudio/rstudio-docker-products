@@ -97,6 +97,7 @@ install_python() {
     $PYTHON_BIN -m ensurepip --upgrade
     $PYTHON_BIN -m pip install -U setuptools
     $PYTHON_BIN -m pip install -U pip
+    $PYTHON_BIN -m pip install -U virtualenv
 }
 
 install_python_packages() {
