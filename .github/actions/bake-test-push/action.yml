@@ -123,6 +123,7 @@ runs:
       with:
         targets: "${{ inputs.target }}"
         push: false
+        load: true
         files: ${{ inputs.bakefile }}
 
     - name: Test
