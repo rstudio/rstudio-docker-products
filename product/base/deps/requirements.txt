@@ -1,2 +1,4 @@
-virtualenv<20
+pip
 setuptools
+virtualenv
+wheel
