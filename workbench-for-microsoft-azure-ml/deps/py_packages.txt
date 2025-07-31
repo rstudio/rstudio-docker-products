@@ -1,7 +1,7 @@
+pyarrow
 azureml-sdk
-azureml-core
-azureml-dataset-runtime
 azure-ai-ml
+azure-identity
 numpy
 scipy
 pandas

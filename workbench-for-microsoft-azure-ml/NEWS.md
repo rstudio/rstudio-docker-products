@@ -1,3 +1,9 @@
+# 2025-07-30
+
+- Install [Azure ML SDK v2](https://learn.microsoft.com/en-us/python/api/overview/azure/ai-ml-readme?view=azure-python&viewFallbackFrom=azure-ml-py).
+- **BREAKING** Remove [Azure ML SDK v1](https://learn.microsoft.com/en-us/python/api/overview/azure/ml/?view=azure-ml-py) as it is no 
+  longer supported. This image can still be extended to include it if needed on Python versions 3.11 or earlier.
+
 # 2025-07-03
 
 - Update documentation with additional license file usage instructions.
