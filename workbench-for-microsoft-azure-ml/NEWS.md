@@ -1,3 +1,7 @@
+# 2025-08-06
+
+- Upgrade Posit Pro Drivers to 2025.07.0.
+
 # 2025-07-03
 
 - Update documentation with additional license file usage instructions.
