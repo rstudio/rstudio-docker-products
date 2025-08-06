@@ -119,7 +119,7 @@ runs:
     # Build, test, and push image
     - name: Build
       id: build
-      uses: docker/bake-action@v5
+      uses: docker/bake-action@v6
       with:
         targets: "${{ inputs.target }}"
         push: false
@@ -155,7 +155,7 @@ runs:
           category: "${{ inputs.target }}-snyk-vulnerabilities"
 
     - name: Push - ${{ inputs.push-image }}
-      uses: docker/bake-action@v5
+      uses: docker/bake-action@v6
       with:
         targets: "${{ inputs.target }}"
         push: ${{ inputs.push-image }}
