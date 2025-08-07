@@ -12,7 +12,7 @@ variable WORKBENCH_VERSION {
 }
 
 variable DRIVERS_VERSION {
-    default = "2025.06.0"
+    default = "2025.07.0"
 }
 
 variable DEFAULT_QUARTO_VERSION {
