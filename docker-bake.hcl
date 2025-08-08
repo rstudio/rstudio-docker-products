@@ -96,9 +96,8 @@ function get_tags {
 variable BASE_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.1", r_alternate = "4.3.3", py_primary = "3.11.10", py_alternate = "3.10.15"},
-            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.1", py_alternate = "3.11.7"},
-            {os = "ubuntu2204", r_primary = "4.4.1", r_alternate = "4.3.3", py_primary = "3.12.6", py_alternate = "3.11.10"},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.11.13", py_alternate = "3.10.18"},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
         ]
     }
 }
@@ -110,7 +109,7 @@ variable PRO_BUILD_MATRIX {
 variable PACKAGE_MANAGER_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.1", py_alternate = "3.11.7"},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
         ]
     }
 }
@@ -118,7 +117,7 @@ variable PACKAGE_MANAGER_BUILD_MATRIX {
 variable CONNECT_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.1", py_alternate = "3.11.7", quarto = DEFAULT_QUARTO_VERSION},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13", quarto = DEFAULT_QUARTO_VERSION},
         ]
     }
 }
@@ -137,10 +136,6 @@ variable CONTENT_BUILD_MATRIX {
     # R/Python/Quarto. Do not modify existing entries, as that stops those
     # version combinations from receiving security updates.
     builds = [
-      # R-3.6, Python-3.8, Quarto-1.3.
-      {os = "ubuntu2204", os_alt = "jammy", r = "3.6.3", py = "3.8.16", drivers = "2025.07.0", quarto = "1.3.340"},
-      {os = "ubuntu2204", os_alt = "jammy", r = "3.6.3", py = "3.8.19", drivers = "2025.07.0", quarto = "1.3.450"},
-
       # R-4.0, Python-3.9, Quarto-1.3.
       {os = "ubuntu2204", os_alt = "jammy", r = "4.0.5", py = "3.9.16", drivers = "2025.07.0", quarto = "1.3.340"},
       {os = "ubuntu2204", os_alt = "jammy", r = "4.0.5", py = "3.9.19", drivers = "2025.07.0", quarto = "1.3.450"},
@@ -171,7 +166,7 @@ variable CONTENT_BUILD_MATRIX {
 variable R_SESSION_COMPLETE_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.1", r_alternate = "4.3.3", py_primary = "3.12.6", py_alternate = "3.11.10"},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
         ]
     }
 }
@@ -179,7 +174,7 @@ variable R_SESSION_COMPLETE_BUILD_MATRIX {
 variable WORKBENCH_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.1", r_alternate = "4.3.3", py_primary = "3.12.6", py_alternate = "3.11.10"},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
         ]
     }
 }
@@ -199,7 +194,7 @@ variable WORKBENCH_SESSION_INIT_BUILD_MATRIX {
 variable WORKBENCH_GOOGLE_CLOUD_WORKSTATION_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.1", r_alternate = "4.3.3", py_primary = "3.12.6", py_alternate = "3.11.10"},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
         ]
     }
 }
@@ -207,7 +202,7 @@ variable WORKBENCH_GOOGLE_CLOUD_WORKSTATION_BUILD_MATRIX {
 variable WORKBENCH_MICROSOFT_AZURE_ML_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.1", r_alternate = "4.3.3", py_primary = "3.11.10", py_alternate = "3.10.15"},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.11.13", py_alternate = "3.10.18"},
         ]
     }
 }
