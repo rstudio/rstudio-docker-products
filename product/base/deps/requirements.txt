@@ -1,4 +1,4 @@
 pip
 setuptools
 virtualenv
-wheel
+wheel>=0.38.0
