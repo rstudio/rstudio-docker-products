@@ -2,6 +2,10 @@
 
 - Install `tensorflow_model_server` binary from the `tensorflow:serving` container image.
 
+# 2025-08-06
+
+- Upgrade Posit Pro Drivers to 2025.07.0.
+
 # 2025-07-03
 
 - Update documentation with additional license file usage instructions.
@@ -14,8 +18,8 @@
 
 # 2025-03-10
 
-- Quarto TinyTeX installation path has been updated from `/root/.TinyTeX` to `/opt/.TinyTeX` to fix potential permission 
-  issues when called from a non-root user. As a result, Quarto will no longer recognize TinyTeX as a managed 
+- Quarto TinyTeX installation path has been updated from `/root/.TinyTeX` to `/opt/.TinyTeX` to fix potential permission
+  issues when called from a non-root user. As a result, Quarto will no longer recognize TinyTeX as a managed
   installation. This change is not expected to affect the existing functionality of Quarto or TinyTeX for end users.
   TinyTeX's relevant packages will still be linked to `/usr/local/bin` as before.
 

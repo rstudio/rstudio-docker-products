@@ -423,16 +423,13 @@ update-default-py-versions:
 update-drivers-versions:
   #!/usr/bin/env bash
   set -euxo pipefail
-  sed {{ sed_vars }} "s/\"drivers\": \".[^\,\}]*\"/\"drivers\": \"{{ DRIVERS_VERSION }}\"/g" content/matrix.json
   sed {{ sed_vars }} "s/DRIVERS_VERSION=.*/DRIVERS_VERSION={{ DRIVERS_VERSION }}/g" \
     workbench-for-microsoft-azure-ml/Dockerfile.ubuntu2204 \
     content/pro/Dockerfile.ubuntu* \
     r-session-complete/Dockerfile.ubuntu* \
     product/pro/Dockerfile.ubuntu*
   sed {{ sed_vars }} "s/DRIVERS_VERSION=.*/DRIVERS_VERSION={{ DRIVERS_VERSION_RHEL }}/g" \
-    r-session-complete/.env \
-    r-session-complete/Dockerfile.centos7 \
-    product/pro/Dockerfile.centos7
+    r-session-complete/.env
   sed {{ sed_vars }} "s/^DRIVERS_VERSION := .*/DRIVERS_VERSION := \"{{ DRIVERS_VERSION }}\"/g" \
     ci.Justfile
   sed -i '/variable DRIVERS_VERSION/!b;n;c\ \ \ \ default = "{{ RSC_VERSION }}"' docker-bake.hcl
