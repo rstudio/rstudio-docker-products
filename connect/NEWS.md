@@ -1,3 +1,7 @@
+# 2025-08-11
+
+- Adjust license file permissions.
+
 # 2025-07-03
 
 - Update documentation with additional license file usage instructions.
