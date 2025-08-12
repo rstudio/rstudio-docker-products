@@ -1,3 +1,11 @@
+# 2025-08-11
+
+- Adjust license file permissions.
+
+# 2025-08-07
+
+- Install `tensorflow_model_server` binary from the `tensorflow:serving` container image.
+
 # 2025-07-03
 
 - Update documentation with additional license file usage instructions.
