@@ -28,7 +28,7 @@ variable DRIVERS_VERSION {
 }
 
 variable DEFAULT_QUARTO_VERSION {
-    default = "1.4.557"
+    default = "1.7.32"
 }
 
 variable DEFAULT_JUPYTERLAB_VERSION {
@@ -114,7 +114,7 @@ function get_tags {
 variable BASE_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.4", py_alternate = "3.11.9"},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
         ]
     }
 }
@@ -126,7 +126,7 @@ variable PRO_BUILD_MATRIX {
 variable PACKAGE_MANAGER_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.4", py_alternate = "3.11.9"},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
         ]
     }
 }
@@ -134,7 +134,7 @@ variable PACKAGE_MANAGER_BUILD_MATRIX {
 variable CONNECT_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.4", py_alternate = "3.11.9", quarto = DEFAULT_QUARTO_VERSION},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13", quarto = DEFAULT_QUARTO_VERSION},
         ]
     }
 }
@@ -150,7 +150,7 @@ variable CONNECT_CONTENT_INIT_BUILD_MATRIX {
 variable R_SESSION_COMPLETE_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.4", py_alternate = "3.11.9"},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
         ]
     }
 }
@@ -158,7 +158,7 @@ variable R_SESSION_COMPLETE_BUILD_MATRIX {
 variable WORKBENCH_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.4", py_alternate = "3.11.9"},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
         ]
     }
 }
@@ -236,7 +236,7 @@ target "product-base-dev" {
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
         TINI_VERSION = "0.19.0"
-        QUARTO_VERSION = "1.4.557"
+        QUARTO_VERSION = "1.7.32"
     }
 }
 
@@ -264,7 +264,7 @@ target "product-base-pro-dev" {
         PYTHON_VERSION_ALT = builds.py_alternate
         DRIVERS_VERSION = get_drivers_version(builds.os)
         TINI_VERSION = "0.19.0"
-        QUARTO_VERSION = "1.3.340"
+        QUARTO_VERSION = "1.7.32"
     }
 }
 
