@@ -77,22 +77,6 @@ get-product-args $PRODUCT $OS $VERSION $USE_S3="false" $BRANCH=`git branch --sho
     SHORT_NAME="RSPM"
   fi
 
-  # set source image name
-  SRC_IMAGE_NAME=""
-  if [[ $PRODUCT == "workbench" || $PRODUCT == "r-session-complete" || $PRODUCT == "workbench-for-microsoft-azure-ml" || $PRODUCT == "connect" ]]; then
-    if [[ $BRANCH == "main" ]]; then
-      SRC_IMAGE_NAME="product-base-pro"
-    else
-      SRC_IMAGE_NAME="product-base-pro-dev"
-    fi
-  elif [[ $PRODUCT == "package-manager" ]]; then
-    if [[ $BRANCH == "main" ]]; then
-      SRC_IMAGE_NAME="product-base"
-    else
-      SRC_IMAGE_NAME="product-base-dev"
-    fi
-  fi
-
   if [[ "${OS}" == "centos7" ]]; then
     _DRIVERS_VERSION="{{ DRIVERS_VERSION_RHEL }}"
   else
@@ -107,7 +91,6 @@ get-product-args $PRODUCT $OS $VERSION $USE_S3="false" $BRANCH=`git branch --sho
   PYTHON_VERSION_JUPYTER={{ PYTHON_VERSION_ALT }}
   QUARTO_VERSION={{ QUARTO_VERSION }}
   DRIVERS_VERSION=${_DRIVERS_VERSION}
-  SRC_IMAGE_NAME=${SRC_IMAGE_NAME}
   RSW_DOWNLOAD_URL=${RSW_DOWNLOAD_URL}"
 
 # just get-product-tags connect ubuntu2204 2023.05.0
@@ -166,22 +149,6 @@ get-prerelease-args $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
     SHORT_NAME="RSPM"
   fi
 
-  # set source image name
-  SRC_IMAGE_NAME=""
-  if [[ $PRODUCT == "workbench" || $PRODUCT == "r-session-complete" || $PRODUCT == "workbench-for-microsoft-azure-ml" || $PRODUCT == "connect" ]]; then
-    if [[ $BRANCH == "main" ]]; then
-      SRC_IMAGE_NAME="product-base-pro"
-    else
-      SRC_IMAGE_NAME="product-base-pro-dev"
-    fi
-  elif [[ $PRODUCT == "package-manager" ]]; then
-    if [[ $BRANCH == "main" ]]; then
-      SRC_IMAGE_NAME="product-base"
-    else
-      SRC_IMAGE_NAME="product-base-dev"
-    fi
-  fi
-
   if [[ "${OS}" == "centos7" ]]; then
     _DRIVERS_VERSION="{{ DRIVERS_VERSION_RHEL }}"
   else
@@ -196,7 +163,6 @@ get-prerelease-args $TYPE $PRODUCT $OS $VERSION $BRANCH=`git branch --show`:
   PYTHON_VERSION_JUPYTER={{ PYTHON_VERSION_ALT }}
   QUARTO_VERSION={{ QUARTO_VERSION }}
   DRIVERS_VERSION=${_DRIVERS_VERSION}
-  SRC_IMAGE_NAME=${SRC_IMAGE_NAME}
   RSW_DOWNLOAD_URL=${RSW_DOWNLOAD_URL}
   RSPM_DOWNLOAD_URL=https://cdn.rstudio.com/package-manager/deb/amd64"
 
