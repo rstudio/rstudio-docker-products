@@ -1,4 +1,5 @@
-FROM product-base as build
+FROM product-base AS build
+LABEL maintainer="Posit Docker <docker@posit.co>"
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG R_VERSION=4.2.3

@@ -1,4 +1,5 @@
 FROM content-base
+LABEL maintainer="Posit Docker <docker@posit.co>"
 
 # Install RStudio Professional Drivers ----------------------------------------#
 ARG DRIVERS_VERSION=2025.07.0

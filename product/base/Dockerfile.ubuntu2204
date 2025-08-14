@@ -1,4 +1,5 @@
-FROM ubuntu:22.04 as build
+FROM ubuntu:22.04 AS build
+LABEL maintainer="Posit Docker <docker@posit.co>"
 
 ### ARG declarations ###
 ARG DEBIAN_FRONTEND=noninteractive
@@ -51,6 +52,7 @@ ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
 ENV TZ=UTC
 
+# hadolint ignore=DL3048
 LABEL posit.r.version="${R_VERSION}" \
       posit.r.version_alt="${R_VERSION_ALT}" \
       posit.python.version="${PYTHON_VERSION}" \

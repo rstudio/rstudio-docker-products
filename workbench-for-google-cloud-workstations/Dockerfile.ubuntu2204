@@ -1,5 +1,6 @@
-FROM product-base-pro as posit_base
-FROM us-central1-docker.pkg.dev/cloud-workstations-images/predefined/base:last-ubuntu2204 as build
+FROM product-base-pro AS posit_base
+FROM us-central1-docker.pkg.dev/cloud-workstations-images/predefined/base:last-ubuntu2204 AS build
+LABEL maintainer="Posit Docker <docker@posit.co>"
 
 ### ARG declarations ###
 ARG DEBIAN_FRONTEND=noninteractive
