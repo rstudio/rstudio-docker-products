@@ -1,6 +1,6 @@
 ### Variable definitions ###
 variable BRANCH {
-    default = "dev"
+    default = "main"
 }
 
 variable CONNECT_DAILY_VERSION {

@@ -7,8 +7,6 @@ on:
         type: choice
         options:
           - main
-          - dev
-          - dev-rspm
       product:
         description: "The product/path to build."
         required: true
@@ -123,7 +121,7 @@ jobs:
         run: |
           # Determine how to set the version
           if [[ "${{ inputs.version }}" == "auto" ]]; then
-            VERSION=`just -f ci.Justfile get-version ${{ inputs.product }} --type=${{ inputs.type }} --local`
+            VERSION=`just get-version ${{ inputs.product }} --type=${{ inputs.type }} --local`
           else
             VERSION="${{ inputs.version }}"
           fi

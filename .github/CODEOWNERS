@@ -1,5 +1,5 @@
 # format per https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners#about-code-owners
-* @ianpittwood @bschwedler @costrouc
+* @ianpittwood @bschwedler
 
 /connect/* @rstudio/connect
 /connect-content-init/* @rstudio/connect
