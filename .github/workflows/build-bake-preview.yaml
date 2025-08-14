@@ -44,17 +44,17 @@ jobs:
       - name: Get Version
         id: get-version
         run: |
-          WORKBENCH_DAILY_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local)
+          WORKBENCH_DAILY_VERSION=$(just get-version workbench --type=daily --local)
           echo "WORKBENCH_DAILY_VERSION=$WORKBENCH_DAILY_VERSION" >> $GITHUB_OUTPUT
-          WORKBENCH_PREVIEW_VERSION=$(just -f ci.Justfile get-version workbench --type=preview --local)
+          WORKBENCH_PREVIEW_VERSION=$(just get-version workbench --type=preview --local)
           echo "WORKBENCH_PREVIEW_VERSION=$WORKBENCH_PREVIEW_VERSION" >> $GITHUB_OUTPUT
-          WORKBENCH_SESSION_INIT_DAILY_VERSION=$(just -f ci.Justfile get-version workbench-session-init --type=daily --local)
+          WORKBENCH_SESSION_INIT_DAILY_VERSION=$(just get-version workbench-session-init --type=daily --local)
           echo "WORKBENCH_SESSION_INIT_DAILY_VERSION=$WORKBENCH_SESSION_INIT_DAILY_VERSION" >> $GITHUB_OUTPUT
-          PACKAGE_MANAGER_DAILY_VERSION=$(just -f ci.Justfile get-version package-manager --type=daily --local)
+          PACKAGE_MANAGER_DAILY_VERSION=$(just get-version package-manager --type=daily --local)
           echo "PACKAGE_MANAGER_DAILY_VERSION=$PACKAGE_MANAGER_DAILY_VERSION" >> $GITHUB_OUTPUT
-          PACKAGE_MANAGER_PREVIEW_VERSION=$(just -f ci.Justfile get-version package-manager --type=preview --local)
+          PACKAGE_MANAGER_PREVIEW_VERSION=$(just get-version package-manager --type=preview --local)
           echo "PACKAGE_MANAGER_PREVIEW_VERSION=$PACKAGE_MANAGER_PREVIEW_VERSION" >> $GITHUB_OUTPUT
-          CONNECT_DAILY_VERSION=$(just -f ci.Justfile get-version connect --type=daily --local)
+          CONNECT_DAILY_VERSION=$(just get-version connect --type=daily --local)
           echo "CONNECT_DAILY_VERSION=$CONNECT_DAILY_VERSION" >> $GITHUB_OUTPUT
 
   base:

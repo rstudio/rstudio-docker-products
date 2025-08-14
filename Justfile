@@ -6,12 +6,13 @@ vars := "-i ''"
 sed_vars := if os() == "macos" { "-i ''" } else { "-i" }
 
 BUILDX_PATH := ""
+REGISTRY_NAMESPACE := "rstudio"
 
 RSC_VERSION := "2025.07.0"
 RSPM_VERSION := "2025.04.4-13"
 RSW_VERSION := "2025.05.1+513.pro3"
 
-DRIVERS_VERSION := "2023.05.0"
+DRIVERS_VERSION := "2025.07.0"
 DRIVERS_VERSION_RHEL := DRIVERS_VERSION + "-1"
 
 R_VERSION := "4.2.3"
@@ -49,24 +50,24 @@ delete-builder:
 alias build := bake
 # just bake workbench-images
 bake target="default":
-  just -f {{justfile()}} create-builder || true
+  just create-builder || true
   GIT_SHA=$(git rev-parse --short HEAD) \
     docker buildx bake --builder=posit-builder -f docker-bake.hcl {{target}}
 
 # just preview-bake workbench-images dev
 alias preview-build := preview-bake
 preview-bake target branch="$(git branch --show-current)":
-  just -f {{justfile()}} create-builder || true
-  WORKBENCH_DAILY_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local) \
-  WORKBENCH_PREVIEW_VERSION=$(just -f ci.Justfile get-version workbench --type=preview --local) \
-  PACKAGE_MANAGER_DAILY_VERSION=$(just -f ci.Justfile get-version package-manager --type=daily --local) \
-  PACKAGE_MANAGER_PREVIEW_VERSION=$(just -f ci.Justfile get-version package-manager --type=preview --local) \
-  CONNECT_DAILY_VERSION=$(just -f ci.Justfile get-version connect --type=daily --local) \
+  just create-builder || true
+  WORKBENCH_DAILY_VERSION=$(just get-version workbench --type=daily --local) \
+  WORKBENCH_PREVIEW_VERSION=$(just get-version workbench --type=preview --local) \
+  PACKAGE_MANAGER_DAILY_VERSION=$(just get-version package-manager --type=daily --local) \
+  PACKAGE_MANAGER_PREVIEW_VERSION=$(just get-version package-manager --type=preview --local) \
+  CONNECT_DAILY_VERSION=$(just get-version connect --type=daily --local) \
   BRANCH="{{branch}}" \
     docker buildx bake --builder=posit-builder -f docker-bake.preview.hcl {{target}}
 
 content-bake:
-  just -f {{justfile()}} create-builder || true
+  just create-builder || true
   cd {{justfile_directory()}}/content && docker buildx bake --builder=posit-builder
   cd {{justfile_directory()}}
 
@@ -77,10 +78,10 @@ plan:
 
 # just preview-plan
 preview-plan branch="$(git branch --show-current)":
-  WORKBENCH_DAILY_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local) \
-  WORKBENCH_PREVIEW_VERSION=$(just -f ci.Justfile get-version workbench --type=preview --local) \
-  PACKAGE_MANAGER_DAILY_VERSION=$(just -f ci.Justfile get-version package-manager --type=daily --local) \
-  CONNECT_DAILY_VERSION=$(just -f ci.Justfile get-version connect --type=daily --local) \
+  WORKBENCH_DAILY_VERSION=$(just get-version workbench --type=daily --local) \
+  WORKBENCH_PREVIEW_VERSION=$(just get-version workbench --type=preview --local) \
+  PACKAGE_MANAGER_DAILY_VERSION=$(just get-version package-manager --type=daily --local) \
+  CONNECT_DAILY_VERSION=$(just get-version connect --type=daily --local) \
   BRANCH="{{branch}}" \
     docker buildx bake -f docker-bake.preview.hcl --print
 
@@ -95,16 +96,16 @@ test target="default" file="docker-bake.hcl":
 preview-test target="default" branch="$(git branch --show-current)":
   #!/bin/bash
   if [ -z "$WORKBENCH_DAILY_VERSION" ]; then
-    WORKBENCH_DAILY_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local)
+    WORKBENCH_DAILY_VERSION=$(just get-version workbench --type=daily --local)
   fi
   if [ -z "$WORKBENCH_PREVIEW_VERSION" ]; then
-    WORKBENCH_PREVIEW_VERSION=$(just -f ci.Justfile get-version workbench --type=preview --local)
+    WORKBENCH_PREVIEW_VERSION=$(just get-version workbench --type=preview --local)
   fi
   if [ -z "$PACKAGE_MANAGER_DAILY_VERSION" ]; then
-    PACKAGE_MANAGER_DAILY_VERSION=$(just -f ci.Justfile get-version package-manager --type=daily --local)
+    PACKAGE_MANAGER_DAILY_VERSION=$(just get-version package-manager --type=daily --local)
   fi
   if [ -z "$CONNECT_DAILY_VERSION" ]; then
-    CONNECT_DAILY_VERSION=$(just -f ci.Justfile get-version connect --type=daily --local)
+    CONNECT_DAILY_VERSION=$(just get-version connect --type=daily --local)
   fi
   if [ -z "$BRANCH" ]; then
     BRANCH="{{branch}}"
@@ -144,10 +145,10 @@ snyk-ignore context snyk_id reason expiry:
 
 # just preview-snyk-test workbench
 preview-snyk-test target="default" branch="$(git branch --show-current)" *opts="":
-  WORKBENCH_DAILY_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local) \
-  WORKBENCH_PREVIEW_VERSION=$(just -f ci.Justfile get-version workbench --type=preview --local) \
-  PACKAGE_MANAGER_DAILY_VERSION=$(just -f ci.Justfile get-version package-manager --type=daily --local) \
-  CONNECT_DAILY_VERSION=$(just -f ci.Justfile get-version connect --type=daily --local) \
+  WORKBENCH_DAILY_VERSION=$(just get-version workbench --type=daily --local) \
+  WORKBENCH_PREVIEW_VERSION=$(just get-version workbench --type=preview --local) \
+  PACKAGE_MANAGER_DAILY_VERSION=$(just get-version package-manager --type=daily --local) \
+  CONNECT_DAILY_VERSION=$(just get-version connect --type=daily --local) \
   BRANCH="{{branch}}" \
   SNYK_ORG="{{SNYK_ORG}}" \
   GIT_SHA=$(git rev-parse --short HEAD) \
@@ -155,10 +156,10 @@ preview-snyk-test target="default" branch="$(git branch --show-current)" *opts="
 
 # just snyk-monitor workbench
 preview-snyk-monitor target="default" branch="$(git branch --show-current)" *opts="":
-  WORKBENCH_DAILY_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local) \
-  WORKBENCH_PREVIEW_VERSION=$(just -f ci.Justfile get-version workbench --type=preview --local) \
-  PACKAGE_MANAGER_DAILY_VERSION=$(just -f ci.Justfile get-version package-manager --type=daily --local) \
-  CONNECT_DAILY_VERSION=$(just -f ci.Justfile get-version connect --type=daily --local) \
+  WORKBENCH_DAILY_VERSION=$(just get-version workbench --type=daily --local) \
+  WORKBENCH_PREVIEW_VERSION=$(just get-version workbench --type=preview --local) \
+  PACKAGE_MANAGER_DAILY_VERSION=$(just get-version package-manager --type=daily --local) \
+  CONNECT_DAILY_VERSION=$(just get-version connect --type=daily --local) \
   BRANCH="{{branch}}" \
   SNYK_ORG="{{SNYK_ORG}}" \
   GIT_SHA=$(git rev-parse --short HEAD) \
@@ -166,10 +167,10 @@ preview-snyk-monitor target="default" branch="$(git branch --show-current)" *opt
 
 # just snyk-sbom workbench
 preview-snyk-sbom target="default" branch="$(git branch --show-current)" *opts="":
-  WORKBENCH_DAILY_VERSION=$(just -f ci.Justfile get-version workbench --type=daily --local) \
-  WORKBENCH_PREVIEW_VERSION=$(just -f ci.Justfile get-version workbench --type=preview --local) \
-  PACKAGE_MANAGER_DAILY_VERSION=$(just -f ci.Justfile get-version package-manager --type=daily --local) \
-  CONNECT_DAILY_VERSION=$(just -f ci.Justfile get-version connect --type=daily --local) \
+  WORKBENCH_DAILY_VERSION=$(just get-version workbench --type=daily --local) \
+  WORKBENCH_PREVIEW_VERSION=$(just get-version workbench --type=preview --local) \
+  PACKAGE_MANAGER_DAILY_VERSION=$(just get-version package-manager --type=daily --local) \
+  CONNECT_DAILY_VERSION=$(just get-version connect --type=daily --local) \
   BRANCH="{{branch}}" \
   SNYK_ORG="{{SNYK_ORG}}" \
   GIT_SHA=$(git rev-parse --short HEAD) \
@@ -209,10 +210,9 @@ import-artifacts:
 
 # Helper targets
 
-# just _get-tag-safe-version 2022.07.2+576.pro12
-_get-tag-safe-version $VERSION:
-  #!/usr/bin/env bash
-  echo -n "$VERSION" | sed 's/+/-/g'
+# just get-version workbench --type=preview --local
+get-version +NARGS:
+  ./tools/get-version.py {{NARGS}}
 
 # just _get-clean-version 2022.07.2+576.pro12
 _get-clean-version $VERSION:
@@ -222,49 +222,10 @@ _get-clean-version $VERSION:
 # just _parse-os jammy
 _parse-os OS:
   #!/usr/bin/env bash
-  if [[ "{{OS}}" == "bionic" ]]; then
-    echo "ubuntu1804"
-  elif [[ "{{OS}}" == "jammy" ]]; then
+  if [[ "{{OS}}" == "jammy" ]]; then
     echo "ubuntu2204"
   else
     echo "{{OS}}"
-  fi
-
-# just _rev-parse-os ubuntu2204
-_rev-parse-os OS:
-  #!/usr/bin/env bash
-  if [[ "{{OS}}" == "ubuntu1804" ]]; then
-    echo "bionic"
-  elif [[ "{{OS}}" == "ubuntu2204" ]]; then
-    echo "jammy"
-  else
-    echo "{{OS}}"
-  fi
-
-# just
-_config-license-persist-volumes TYPE PRODUCT HOST_DIR:
-  #!/usr/bin/env bash
-  if [ "{{PRODUCT}}" = "package-manager" ]; then
-    licensing_state_root_dir="/home/rstudio-pm"
-    product_dir_name=".rstudio-pm"
-  elif [ "{{PRODUCT}}" = "workbench" ]; then
-    licensing_state_root_dir="/var/lib"
-    product_dir_name="rstudio-workbench"
-  elif [ "{{PRODUCT}}" = "connect" ]; then
-    licensing_state_root_dir="/var/lib"
-    product_dir_name="rstudio-connect"
-  fi
-
-  if [ "{{TYPE}}" = "key" ]; then
-    mkdir -p {{HOST_DIR}}/local
-    mkdir -p {{HOST_DIR}}/prof
-    mkdir -p {{HOST_DIR}}/product
-
-    echo "-v {{HOST_DIR}}/local:${licensing_state_root_dir}/.local -v {{HOST_DIR}}/prof:${licensing_state_root_dir}/.prof -v {{HOST_DIR}}/product:${licensing_state_root_dir}/${product_dir_name}"
-  elif [ "{{TYPE}}" = "float" ]; then
-    mkdir -p {{HOST_DIR}}/float
-
-    echo "-v {{HOST_DIR}}/float:${licensing_state_root_dir}/.TurboFloat"
   fi
 
 # Version and dependency version management
@@ -361,8 +322,7 @@ update-default-r-versions:
     product/base/Dockerfile.ubuntu* \
     product/pro/Dockerfile.ubuntu*
   sed {{ sed_vars }} "s/^R_VERSION := .*/R_VERSION := \"{{ R_VERSION }}\"/g" \
-    Justfile \
-    ci.Justfile
+    Justfile
 
   # Update alt R versions
   sed {{ sed_vars }} "s/R_VERSION_ALT=.*/R_VERSION_ALT={{ R_VERSION_ALT }}/g" \
@@ -375,8 +335,7 @@ update-default-r-versions:
     product/base/Dockerfile.ubuntu* \
     product/pro/Dockerfile.ubuntu*
   sed {{ sed_vars }} "s/^R_VERSION_ALT := .*/R_VERSION_ALT := \"{{ R_VERSION_ALT }}\"/g" \
-    Justfile \
-    ci.Justfile
+    Justfile
 
 # just PYTHON_VERSION=3.9.5 PYTHON_VERSION_ALT=3.8.10 update-py-versions
 update-py-versions: update-default-py-versions
@@ -399,8 +358,7 @@ update-default-py-versions:
     product/pro/Dockerfile.centos7 \
     r-session-complete/Dockerfile.centos7
   sed {{ sed_vars }} "s/^PYTHON_VERSION := .*/PYTHON_VERSION := \"{{ PYTHON_VERSION }}\"/g" \
-    Justfile \
-    ci.Justfile
+    Justfile
 
   # Update alt Python versions
   sed {{ sed_vars }} "s/PYTHON_VERSION_ALT=.*/PYTHON_VERSION_ALT={{ PYTHON_VERSION_ALT }}/g" \
@@ -416,8 +374,7 @@ update-default-py-versions:
     product/pro/Dockerfile.centos7 \
     r-session-complete/Dockerfile.centos7
   sed {{ sed_vars }} "s/^PYTHON_VERSION_ALT := .*/PYTHON_VERSION_ALT := \"{{ PYTHON_VERSION_ALT }}\"/g" \
-    Justfile \
-    ci.Justfile
+    Justfile
 
 # just DRIVERS_VERSION=2022.11.0 update-driver-versions
 update-drivers-versions:
@@ -431,7 +388,7 @@ update-drivers-versions:
   sed {{ sed_vars }} "s/DRIVERS_VERSION=.*/DRIVERS_VERSION={{ DRIVERS_VERSION_RHEL }}/g" \
     r-session-complete/.env
   sed {{ sed_vars }} "s/^DRIVERS_VERSION := .*/DRIVERS_VERSION := \"{{ DRIVERS_VERSION }}\"/g" \
-    ci.Justfile
+    Justfile
   sed -i '/variable DRIVERS_VERSION/!b;n;c\ \ \ \ default = "{{ RSC_VERSION }}"' docker-bake.hcl
 
 update-quarto-versions:
