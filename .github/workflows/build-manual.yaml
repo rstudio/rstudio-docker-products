@@ -7,8 +7,6 @@ on:
         type: choice
         options:
           - main
-          - dev
-          - dev-rspm
       product:
         description: "The product/path to build."
         required: true

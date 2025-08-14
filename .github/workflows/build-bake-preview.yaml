@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-      - dev
-      - dev-rspm
   pull_request:
 
 name: Preview - Build, Test, and Push
@@ -98,7 +96,7 @@ jobs:
         with:
           target: ${{ env.target }}
           bakefile: docker-bake.preview.hcl
-          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          push-image: ${{ github.ref == 'refs/heads/main' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
@@ -138,7 +136,7 @@ jobs:
         with:
           target: ${{ env.target }}
           bakefile: docker-bake.preview.hcl
-          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          push-image: ${{ github.ref == 'refs/heads/main' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
@@ -178,7 +176,7 @@ jobs:
         with:
           target: ${{ env.target }}
           bakefile: docker-bake.preview.hcl
-          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          push-image: ${{ github.ref == 'refs/heads/main' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
@@ -218,7 +216,7 @@ jobs:
         with:
           target: ${{ env.target }}
           bakefile: docker-bake.preview.hcl
-          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          push-image: ${{ github.ref == 'refs/heads/main' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
@@ -258,7 +256,7 @@ jobs:
         with:
           target: ${{ env.target }}
           bakefile: docker-bake.preview.hcl
-          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          push-image: ${{ github.ref == 'refs/heads/main' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
@@ -298,7 +296,7 @@ jobs:
         with:
           target: ${{ env.target }}
           bakefile: docker-bake.preview.hcl
-          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          push-image: ${{ github.ref == 'refs/heads/main' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
@@ -338,7 +336,7 @@ jobs:
         with:
           target: ${{ env.target }}
           bakefile: docker-bake.preview.hcl
-          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          push-image: ${{ github.ref == 'refs/heads/main' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
@@ -378,7 +376,7 @@ jobs:
         with:
           target: ${{ env.target }}
           bakefile: docker-bake.preview.hcl
-          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          push-image: ${{ github.ref == 'refs/heads/main' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
@@ -418,7 +416,7 @@ jobs:
         with:
           target: ${{ env.target }}
           bakefile: docker-bake.preview.hcl
-          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          push-image: ${{ github.ref == 'refs/heads/main' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
@@ -458,7 +456,7 @@ jobs:
         with:
           target: ${{ env.target }}
           bakefile: docker-bake.preview.hcl
-          push-image: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/dev-rspm' }}
+          push-image: ${{ github.ref == 'refs/heads/main' }}
           ghcr-token: ${{ secrets.GITHUB_TOKEN }}
           dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
