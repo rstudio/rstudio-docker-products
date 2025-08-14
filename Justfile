@@ -20,8 +20,6 @@ R_VERSION_ALT := "4.1.3"
 
 PYTHON_VERSION := "3.9.17"
 PYTHON_VERSION_ALT := "3.8.17"
-PYTHON_VERSION_RHEL := "3.9.14"
-PYTHON_VERSION_ALT_RHEL := "3.8.15"
 
 QUARTO_VERSION := "1.4.557"
 
@@ -240,8 +238,6 @@ update-versions:
     R_VERSION_ALT={{R_VERSION_ALT}} \
     PYTHON_VERSION={{PYTHON_VERSION}} \
     PYTHON_VERSION_ALT={{PYTHON_VERSION_ALT}} \
-    PYTHON_VERSION_RHEL={{PYTHON_VERSION_RHEL}} \
-    PYTHON_VERSION_ALT_RHEL={{PYTHON_VERSION_ALT_RHEL}} \
     DRIVERS_VERSION={{DRIVERS_VERSION}} \
     QUARTO_VERSION={{QUARTO_VERSION}} \
     update-rsw-versions update-rspm-versions update-rsc-versions update-r-versions update-py-versions update-drivers-versions update-quarto-versions
@@ -353,10 +349,6 @@ update-default-py-versions:
     product/base/Dockerfile.ubuntu* \
     product/pro/Dockerfile.ubuntu* \
     r-session-complete/Dockerfile.ubuntu2204
-  sed {{ sed_vars }} "s/PYTHON_VERSION=.*/PYTHON_VERSION={{ PYTHON_VERSION_RHEL }}/g" \
-    product/base/Dockerfile.centos7 \
-    product/pro/Dockerfile.centos7 \
-    r-session-complete/Dockerfile.centos7
   sed {{ sed_vars }} "s/^PYTHON_VERSION := .*/PYTHON_VERSION := \"{{ PYTHON_VERSION }}\"/g" \
     Justfile
 
@@ -369,10 +361,6 @@ update-default-py-versions:
     product/base/Dockerfile.ubuntu* \
     product/pro/Dockerfile.ubuntu* \
     r-session-complete/Dockerfile.ubuntu2204
-  sed {{ sed_vars }} "s/PYTHON_VERSION_ALT=.*/PYTHON_VERSION_ALT={{ PYTHON_VERSION_ALT_RHEL }}/g" \
-    product/base/Dockerfile.centos7 \
-    product/pro/Dockerfile.centos7 \
-    r-session-complete/Dockerfile.centos7
   sed {{ sed_vars }} "s/^PYTHON_VERSION_ALT := .*/PYTHON_VERSION_ALT := \"{{ PYTHON_VERSION_ALT }}\"/g" \
     Justfile
 

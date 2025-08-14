@@ -41,7 +41,7 @@ variable RSW_PREVIEW_URL_BASE  {
 
 function get_rsw_download_url {
     params = [os]
-    result = os == "centos7" ? "${RSW_PREVIEW_URL_BASE}centos7/x86_64" : "${RSW_PREVIEW_URL_BASE}jammy/amd64"
+    result = "${RSW_PREVIEW_URL_BASE}jammy/amd64"
 }
 
 function tag_safe_branch {
@@ -62,11 +62,6 @@ function clean_version {
 function get_tag_prefix {
     params = []
     result = BRANCH != "main" ? "${tag_safe_branch()}-" : ""
-}
-
-function get_drivers_version {
-    params = [os]
-    result = os == "centos7" ? "${DRIVERS_VERSION}-1" : DRIVERS_VERSION
 }
 
 function get_os_alt_name {
@@ -262,7 +257,7 @@ target "product-base-pro-dev" {
         R_VERSION_ALT = builds.r_alternate
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
-        DRIVERS_VERSION = get_drivers_version(builds.os)
+        DRIVERS_VERSION = DRIVERS_VERSION
         TINI_VERSION = "0.19.0"
         QUARTO_VERSION = "1.7.32"
     }

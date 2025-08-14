@@ -1,5 +1,5 @@
-FROM ubuntu:18.04
-LABEL maintainer="RStudio Docker <docker@rstudio.com>"
+FROM ubuntu:22.04
+LABEL maintainer="Posit Docker <docker@posit.co>"
 ARG DEBIAN_FRONTEND=noninteractive
 
 # install deps
