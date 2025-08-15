@@ -1,5 +1,5 @@
-FROM product-base-pro as build
-LABEL maintainer="RStudio Docker <docker@rstudio.com>"
+FROM product-base-pro AS build
+LABEL maintainer="Posit Docker <docker@posit.co>"
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG R_VERSION=4.4.0

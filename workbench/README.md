@@ -277,7 +277,7 @@ docker run -it \
     -p 8787:8787 -p 5559:5559 \
     -v $PWD/workbench/conf/:/etc/rstudio \
     -e RSW_LICENSE=$RSW_LICENSE \
-    rstudio/rstudio-workbench:ubuntu1804
+    rstudio/rstudio-workbench:ubuntu2204
 
 # Run with persistent data and using an external configuration
 docker run -it \
@@ -285,7 +285,7 @@ docker run -it \
     -v $PWD/data/rsw:/home \
     -v $PWD/workbench/conf/:/etc/rstudio \
     -e RSW_LICENSE=$RSW_LICENSE \
-    rstudio/rstudio-workbench:ubuntu1804
+    rstudio/rstudio-workbench:ubuntu2204
 ```
 
 Open [http://localhost:8787](http://localhost:8787) to access Posit Workbench.

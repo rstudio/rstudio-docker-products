@@ -1,4 +1,5 @@
-FROM product-base as build
+FROM product-base AS build
+LABEL maintainer="Posit Docker <docker@posit.co>"
 
 ARG PYTHON_VERSION=3.9.17
 ARG PYTHON_VERSION_ALT=3.8.17
@@ -20,6 +21,7 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
 # Download RStudio Package Manager ---------------------------------------------#
 ARG RSPM_VERSION=2025.04.4-13
 ARG RSPM_DOWNLOAD_URL=https://cdn.rstudio.com/package-manager/deb/amd64
+# hadolint ignore=DL3015
 RUN curl -fsSL -O ${RSPM_DOWNLOAD_URL}/rstudio-pm_${RSPM_VERSION}_amd64.deb \
     # Post 7/25 packages
     && gpg --keyserver keys.openpgp.org --recv-keys 51C0B5BB19F92D60 \

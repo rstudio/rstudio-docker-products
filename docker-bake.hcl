@@ -37,11 +37,6 @@ function clean_version {
     result = regex_replace(version, "[+|-].*", "")
 }
 
-function get_drivers_version {
-    params = [os]
-    result = os == "centos7" ? "${DRIVERS_VERSION}-1" : DRIVERS_VERSION
-}
-
 function get_os_alt_name {
     params = [os]
     result = os == "ubuntu2204" ? "jammy" : os
@@ -291,7 +286,7 @@ target "product-base-pro" {
         R_VERSION_ALT = builds.r_alternate
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
-        DRIVERS_VERSION = get_drivers_version(builds.os)
+        DRIVERS_VERSION = DRIVERS_VERSION
         TINI_VERSION = "0.19.0"
     }
 }
@@ -538,7 +533,7 @@ target "workbench-for-google-cloud-workstations" {
         PYTHON_VERSION_JUPYTER = builds.py_alternate
         JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
         QUARTO_VERSION = DEFAULT_QUARTO_VERSION
-        DRIVERS_VERSION = get_drivers_version(builds.os)
+        DRIVERS_VERSION = DRIVERS_VERSION
         RSW_VERSION = WORKBENCH_VERSION
         RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/jammy/amd64"

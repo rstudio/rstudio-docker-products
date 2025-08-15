@@ -48,7 +48,7 @@ RUN if [ ! -f "/workspace/entrypoint" ]; then \
 
 # Create the final image
 FROM ubuntu:22.04 AS build
-LABEL maintainer="RStudio Docker <docker@rstudio.com>"
+LABEL maintainer="Posit Docker <docker@posit.co>"
 
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \

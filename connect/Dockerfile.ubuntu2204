@@ -1,5 +1,6 @@
 # syntax=docker/dockerfile:1-labs
-FROM product-base-pro as build
+FROM product-base-pro AS build
+LABEL maintainer="Posit Docker <docker@posit.co>"
 
 COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
 
