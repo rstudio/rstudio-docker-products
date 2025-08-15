@@ -36,7 +36,7 @@ verify_installation(){
    echo "==VERIFY INSTALLATION==";
    mkdir -p $DIAGNOSTIC_DIR
    chmod 777 $DIAGNOSTIC_DIR
-   rstudio-server verify-installation --verify-user=$RSW_TESTUSER | tee $DIAGNOSTIC_DIR/verify.log 
+   rstudio-server verify-installation --verify-user=$RSW_TESTUSER | tee $DIAGNOSTIC_DIR/verify.log
 }
 
 # Support RSP_ or RSW_ prefix
@@ -76,7 +76,7 @@ else
             RSW_TESTUSER_UID=10000
         fi
         useradd -m -s /bin/bash -u $RSW_TESTUSER_UID -U $RSW_TESTUSER
-        echo "$RSW_TESTUSER:$RSW_TESTUSER_PASSWD" | sudo chpasswd
+        echo -n "$RSW_TESTUSER:$RSW_TESTUSER_PASSWD" | sudo chpasswd
     fi
 fi
 
