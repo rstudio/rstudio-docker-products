@@ -1,14 +1,29 @@
+# 2025-08-13
+
+- Increase `RSW_LAUNCHER_TIMEOUT` from 10 seconds to 30 seconds to provide more time for launcher startup.
+
+# 2025-08-08
+
+- Add [Azure ML SDK v2](https://learn.microsoft.com/en-us/python/api/overview/azure/ai-ml-readme?view=azure-python&viewFallbackFrom=azure-ml-py) to installed packages.
+- **WARNING** [Azure ML SDK v1](https://learn.microsoft.com/en-us/python/api/overview/azure/ml/?view=azure-ml-py) will
+  be removed in a future release as it will not support Python 3.12+. This image can be extended to include additional
+  Python versions and packages in the future if the v1 SDK is required.
+
+# 2025-08-06
+
+- Upgrade Posit Pro Drivers to 2025.07.0.
+
 # 2025-07-03
 
 - Update documentation with additional license file usage instructions.
-- Replace usage of `license-manager activate-file` with file copies for installing license files per Workbench admin 
+- Replace usage of `license-manager activate-file` with file copies for installing license files per Workbench admin
   guide.
 - Add startup message for when a license file is found in `/var/lib/rstudio-server/*.lic`.
 
 # 2025-03-11
 
-- Quarto TinyTeX installation path has been updated from `/root/.TinyTeX` to `/opt/.TinyTeX` to fix potential permission 
-  issues when called from a non-root user. As a result, Quarto will no longer recognize TinyTeX as a managed 
+- Quarto TinyTeX installation path has been updated from `/root/.TinyTeX` to `/opt/.TinyTeX` to fix potential permission
+  issues when called from a non-root user. As a result, Quarto will no longer recognize TinyTeX as a managed
   installation. This change is not expected to affect the existing functionality of Quarto or TinyTeX for end users.
   TinyTeX's relevant packages will still be linked to `/usr/local/bin` as before.
 

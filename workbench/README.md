@@ -257,7 +257,7 @@ more information.
 | `RSW_LICENSE`          | License key for Posit Workbench, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX`                      | None      |
 | `RSW_LICENSE_SERVER`   | Floating license server, format should be: `my.url.com:port`                                                 | None      |
 | `RSW_LAUNCHER`         | Whether or not to use launcher locally / start the launcher process                                          | true      |
-| `RSW_LAUNCHER_TIMEOUT` | The timeout, in seconds, to wait for launcher to start listening on the expected port before failing startup | 10        |
+| `RSW_LAUNCHER_TIMEOUT` | The timeout, in seconds, to wait for launcher to start listening on the expected port before failing startup | 30        |
 
 ### Ports
 
@@ -277,7 +277,7 @@ docker run -it \
     -p 8787:8787 -p 5559:5559 \
     -v $PWD/workbench/conf/:/etc/rstudio \
     -e RSW_LICENSE=$RSW_LICENSE \
-    rstudio/rstudio-workbench:ubuntu1804
+    rstudio/rstudio-workbench:ubuntu2204
 
 # Run with persistent data and using an external configuration
 docker run -it \
@@ -285,7 +285,7 @@ docker run -it \
     -v $PWD/data/rsw:/home \
     -v $PWD/workbench/conf/:/etc/rstudio \
     -e RSW_LICENSE=$RSW_LICENSE \
-    rstudio/rstudio-workbench:ubuntu1804
+    rstudio/rstudio-workbench:ubuntu2204
 ```
 
 Open [http://localhost:8787](http://localhost:8787) to access Posit Workbench.

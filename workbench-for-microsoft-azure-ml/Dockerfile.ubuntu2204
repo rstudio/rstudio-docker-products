@@ -1,4 +1,5 @@
 FROM product-base-pro AS build
+LABEL maintainer="Posit Docker <docker@posit.co>"
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG R_VERSION=4.2.3
@@ -21,7 +22,7 @@ ENV USER_PASSWORD ""
 ENV PUID 1001
 ENV PGID 1001
 ENV RSW_LAUNCHER true
-ENV RSW_LAUNCHER_TIMEOUT 10
+ENV RSW_LAUNCHER_TIMEOUT 30
 ENV DIAGNOSTIC_DIR /var/log/rstudio
 ENV DIAGNOSTIC_ENABLE false
 ENV DIAGNOSTIC_ONLY false
@@ -86,8 +87,7 @@ RUN apt-get update --fix-missing -qq \
 
 ### Install Jupyter and extensions ###
 RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyter \
-    && /opt/python/jupyter/bin/python -m pip install --upgrade pip \
-    && /opt/python/jupyter/bin/python -m pip install --upgrade setuptools \
+    && /opt/python/jupyter/bin/python -m pip install --upgrade pip setuptools \
     && /opt/python/jupyter/bin/pip install \
       jupyterlab~=4.2.4 \
       notebook \
@@ -150,10 +150,10 @@ RUN clamscan \
     --recursive \
     --infected \
     --exclude-dir="^/sys" \
-    --exclude="/opt/az/lib/python3.11/ensurepip/_bundled/pip-23.2.1-py3-none-any.whl" \
-    --exclude="/opt/az/lib/python3.11/site-packages/pip/_vendor/distlib/w32.exe" \
-    --exclude="/opt/az/lib/python3.11/site-packages/pip/_vendor/distlib/w64-arm.exe" \
-    --exclude="/opt/az/lib/python3.11/site-packages/pip/_vendor/distlib/t64-arm.exe" \
+    --exclude="/opt/az/lib/python[0-9.]+/ensurepip/_bundled/pip-[0-9.]+-py3-none-any.whl" \
+    --exclude="/opt/az/lib/python[0-9.]+site-packages/pip/_vendor/distlib/w32.exe" \
+    --exclude="/opt/az/lib/python[0-9.]+/site-packages/pip/_vendor/distlib/w64-arm.exe" \
+    --exclude="/opt/az/lib/python[0-9.]+/site-packages/pip/_vendor/distlib/t64-arm.exe" \
     --log "/var/log/clamav/clamscan.log" /
 
 

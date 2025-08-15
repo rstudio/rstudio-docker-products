@@ -5,6 +5,11 @@ changed in each image.
 
 This file only captures pervasive, repository-wide changes.
 
+# 2025-08-14
+
+- Remove the `dev` branch and make `main` the default branch.
+- Remove Ubuntu 18.04 and CentOS 7 images.
+
 # 2024-04-10
 
 - Change build orchestration to use `docker buildx bake` for all images.

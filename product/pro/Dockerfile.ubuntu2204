@@ -1,18 +1,19 @@
-FROM product-base as build
+FROM product-base AS build
+LABEL maintainer="Posit Docker <docker@posit.co>"
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG R_VERSION=4.2.3
 ARG R_VERSION_ALT=4.1.3
 ARG PYTHON_VERSION=3.9.17
 ARG PYTHON_VERSION_ALT=3.8.17
-ARG DRIVERS_VERSION=2024.03.0
+ARG DRIVERS_VERSION=2025.07.0
 
 ARG SCRIPTS_DIR=/opt/positscripts
 
 COPY deps/r_packages.txt /tmp/r_packages.txt
 RUN ${SCRIPTS_DIR}/apt.sh --update upgrade \
     && ${SCRIPTS_DIR}/apt.sh install unixodbc unixodbc-dev \
-    && DRIVERS_VERSION=${DRIVERS_VERSION} ${SCRIPTS_DIR}/install_drivers.sh \
+    && DRIVERS_VERSION=2025.07.0 ${SCRIPTS_DIR}/install_drivers.sh \
     && ${SCRIPTS_DIR}/apt.sh --clean \
     && R_VERSION=${R_VERSION} ${SCRIPTS_DIR}/install_r.sh -r /tmp/r_packages.txt \
     && rm -f /tmp/r_packages.txt

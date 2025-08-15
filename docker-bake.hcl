@@ -12,7 +12,7 @@ variable WORKBENCH_VERSION {
 }
 
 variable DRIVERS_VERSION {
-    default = "2024.03.0"
+    default = "2025.07.0"
 }
 
 variable DEFAULT_QUARTO_VERSION {
@@ -35,11 +35,6 @@ function tag_safe_version {
 function clean_version {
     params = [version]
     result = regex_replace(version, "[+|-].*", "")
-}
-
-function get_drivers_version {
-    params = [os]
-    result = os == "centos7" ? "${DRIVERS_VERSION}-1" : DRIVERS_VERSION
 }
 
 function get_os_alt_name {
@@ -96,9 +91,8 @@ function get_tags {
 variable BASE_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.1", r_alternate = "4.3.3", py_primary = "3.11.10", py_alternate = "3.10.15"},
-            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.1", py_alternate = "3.11.7"},
-            {os = "ubuntu2204", r_primary = "4.4.1", r_alternate = "4.3.3", py_primary = "3.12.6", py_alternate = "3.11.10"},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.11.13", py_alternate = "3.10.18"},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
         ]
     }
 }
@@ -110,7 +104,7 @@ variable PRO_BUILD_MATRIX {
 variable PACKAGE_MANAGER_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.1", py_alternate = "3.11.7"},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
         ]
     }
 }
@@ -118,7 +112,7 @@ variable PACKAGE_MANAGER_BUILD_MATRIX {
 variable CONNECT_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.1", py_alternate = "3.11.7", quarto = DEFAULT_QUARTO_VERSION},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13", quarto = DEFAULT_QUARTO_VERSION},
         ]
     }
 }
@@ -137,33 +131,29 @@ variable CONTENT_BUILD_MATRIX {
     # R/Python/Quarto. Do not modify existing entries, as that stops those
     # version combinations from receiving security updates.
     builds = [
-      # R-3.6, Python-3.8, Quarto-1.3.
-      {os = "ubuntu2204", os_alt = "jammy", r = "3.6.3", py = "3.8.16", drivers = "2024.03.0", quarto = "1.3.340"},
-      {os = "ubuntu2204", os_alt = "jammy", r = "3.6.3", py = "3.8.19", drivers = "2024.03.0", quarto = "1.3.450"},
-
       # R-4.0, Python-3.9, Quarto-1.3.
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.0.5", py = "3.9.16", drivers = "2024.03.0", quarto = "1.3.340"},
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.0.5", py = "3.9.19", drivers = "2024.03.0", quarto = "1.3.450"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.0.5", py = "3.9.16", drivers = "2025.07.0", quarto = "1.3.340"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.0.5", py = "3.9.19", drivers = "2025.07.0", quarto = "1.3.450"},
 
       # R-4.1, Python-3.10, Quarto-1.3.
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.1.3", py = "3.10.11", drivers = "2024.03.0", quarto = "1.3.340"},
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.1.3", py = "3.10.14", drivers = "2024.03.0", quarto = "1.3.450"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.1.3", py = "3.10.11", drivers = "2025.07.0", quarto = "1.3.340"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.1.3", py = "3.10.14", drivers = "2025.07.0", quarto = "1.3.450"},
 
       # R-4.2, Python-3.11, Quarto-1.3.
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.2.2", py = "3.11.3", drivers = "2024.03.0", quarto = "1.3.340"},
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.2.3", py = "3.11.9", drivers = "2024.03.0", quarto = "1.3.450"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.2.2", py = "3.11.3", drivers = "2025.07.0", quarto = "1.3.340"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.2.3", py = "3.11.9", drivers = "2025.07.0", quarto = "1.3.450"},
 
       # R-4.3, Python-3.12, Quarto-1.4.
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.3.3", py = "3.12.3", drivers = "2024.03.0", quarto = "1.4.553"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.3.3", py = "3.12.3", drivers = "2025.07.0", quarto = "1.4.553"},
 
       # R-4.4, Python-3.12, Quarto-1.4.
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.4.0", py = "3.12.3", drivers = "2024.03.0", quarto = "1.4.553"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.4.0", py = "3.12.3", drivers = "2025.07.0", quarto = "1.4.553"},
 
       # R-4.4, Python-3.12.4, Quarto-1.4.557 (polyfill.js vulnerability patch)
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.4.1", py = "3.12.4", drivers = "2024.03.0", quarto = "1.4.557"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.4.1", py = "3.12.4", drivers = "2025.07.0", quarto = "1.4.557"},
 
       # R-4.5, Python-3.13, Quarto-1.7
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.5.1", py = "3.13.5", drivers = "2024.03.0", quarto = "1.7.32"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.5.1", py = "3.13.5", drivers = "2025.07.0", quarto = "1.7.32"},
     ]
   }
 }
@@ -171,7 +161,7 @@ variable CONTENT_BUILD_MATRIX {
 variable R_SESSION_COMPLETE_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.1", r_alternate = "4.3.3", py_primary = "3.12.6", py_alternate = "3.11.10"},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
         ]
     }
 }
@@ -179,7 +169,7 @@ variable R_SESSION_COMPLETE_BUILD_MATRIX {
 variable WORKBENCH_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.1", r_alternate = "4.3.3", py_primary = "3.12.6", py_alternate = "3.11.10"},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
         ]
     }
 }
@@ -199,7 +189,7 @@ variable WORKBENCH_SESSION_INIT_BUILD_MATRIX {
 variable WORKBENCH_GOOGLE_CLOUD_WORKSTATION_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.1", r_alternate = "4.3.3", py_primary = "3.12.6", py_alternate = "3.11.10"},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
         ]
     }
 }
@@ -207,7 +197,7 @@ variable WORKBENCH_GOOGLE_CLOUD_WORKSTATION_BUILD_MATRIX {
 variable WORKBENCH_MICROSOFT_AZURE_ML_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.1", r_alternate = "4.3.3", py_primary = "3.11.10", py_alternate = "3.10.15"},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.11.13", py_alternate = "3.10.18"},
         ]
     }
 }
@@ -296,7 +286,7 @@ target "product-base-pro" {
         R_VERSION_ALT = builds.r_alternate
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
-        DRIVERS_VERSION = get_drivers_version(builds.os)
+        DRIVERS_VERSION = DRIVERS_VERSION
         TINI_VERSION = "0.19.0"
     }
 }
@@ -543,7 +533,7 @@ target "workbench-for-google-cloud-workstations" {
         PYTHON_VERSION_JUPYTER = builds.py_alternate
         JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
         QUARTO_VERSION = DEFAULT_QUARTO_VERSION
-        DRIVERS_VERSION = get_drivers_version(builds.os)
+        DRIVERS_VERSION = DRIVERS_VERSION
         RSW_VERSION = WORKBENCH_VERSION
         RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/jammy/amd64"

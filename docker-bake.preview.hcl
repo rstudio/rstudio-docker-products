@@ -1,6 +1,6 @@
 ### Variable definitions ###
 variable BRANCH {
-    default = "dev"
+    default = "main"
 }
 
 variable CONNECT_DAILY_VERSION {
@@ -24,11 +24,11 @@ variable WORKBENCH_PREVIEW_VERSION {
 }
 
 variable DRIVERS_VERSION {
-    default = "2024.03.0"
+    default = "2025.07.0"
 }
 
 variable DEFAULT_QUARTO_VERSION {
-    default = "1.4.557"
+    default = "1.7.32"
 }
 
 variable DEFAULT_JUPYTERLAB_VERSION {
@@ -41,7 +41,7 @@ variable RSW_PREVIEW_URL_BASE  {
 
 function get_rsw_download_url {
     params = [os]
-    result = os == "centos7" ? "${RSW_PREVIEW_URL_BASE}centos7/x86_64" : "${RSW_PREVIEW_URL_BASE}jammy/amd64"
+    result = "${RSW_PREVIEW_URL_BASE}jammy/amd64"
 }
 
 function tag_safe_branch {
@@ -62,11 +62,6 @@ function clean_version {
 function get_tag_prefix {
     params = []
     result = BRANCH != "main" ? "${tag_safe_branch()}-" : ""
-}
-
-function get_drivers_version {
-    params = [os]
-    result = os == "centos7" ? "${DRIVERS_VERSION}-1" : DRIVERS_VERSION
 }
 
 function get_os_alt_name {
@@ -114,7 +109,7 @@ function get_tags {
 variable BASE_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.4", py_alternate = "3.11.9"},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
         ]
     }
 }
@@ -126,7 +121,7 @@ variable PRO_BUILD_MATRIX {
 variable PACKAGE_MANAGER_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.4", py_alternate = "3.11.9"},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
         ]
     }
 }
@@ -134,7 +129,7 @@ variable PACKAGE_MANAGER_BUILD_MATRIX {
 variable CONNECT_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.4", py_alternate = "3.11.9", quarto = DEFAULT_QUARTO_VERSION},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13", quarto = DEFAULT_QUARTO_VERSION},
         ]
     }
 }
@@ -150,7 +145,7 @@ variable CONNECT_CONTENT_INIT_BUILD_MATRIX {
 variable R_SESSION_COMPLETE_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.4", py_alternate = "3.11.9"},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
         ]
     }
 }
@@ -158,7 +153,7 @@ variable R_SESSION_COMPLETE_BUILD_MATRIX {
 variable WORKBENCH_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.0", r_alternate = "4.3.3", py_primary = "3.12.4", py_alternate = "3.11.9"},
+            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
         ]
     }
 }
@@ -236,7 +231,7 @@ target "product-base-dev" {
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
         TINI_VERSION = "0.19.0"
-        QUARTO_VERSION = "1.4.557"
+        QUARTO_VERSION = "1.7.32"
     }
 }
 
@@ -262,9 +257,9 @@ target "product-base-pro-dev" {
         R_VERSION_ALT = builds.r_alternate
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
-        DRIVERS_VERSION = get_drivers_version(builds.os)
+        DRIVERS_VERSION = DRIVERS_VERSION
         TINI_VERSION = "0.19.0"
-        QUARTO_VERSION = "1.3.340"
+        QUARTO_VERSION = "1.7.32"
     }
 }
 
