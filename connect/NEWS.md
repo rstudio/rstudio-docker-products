@@ -1,3 +1,9 @@
+# 2025-08-15
+
+- BREAKING:
+  - Update default Python versions to `3.12.11` and `3.11.13`
+  - Update default R versions to `4.4.3` and `4.3.3`
+
 # 2025-08-11
 
 - Adjust license file permissions.
