@@ -1,3 +1,8 @@
+# 2025-08-15
+
+- Update default Python versions to `3.12.11` and `3.11.13`
+- Update default R versions to `4.4.3` and `4.3.3`
+
 # 2025-08-13
 
 - Increase `RSW_LAUNCHER_TIMEOUT` from 10 seconds to 30 seconds to provide more time for launcher startup.
