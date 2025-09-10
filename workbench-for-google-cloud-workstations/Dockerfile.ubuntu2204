@@ -39,6 +39,8 @@ COPY deps/* /tmp/
 ### Update/upgrade system packages ###
 COPY deps/apt_packages.txt /tmp/apt_packages.txt
 RUN curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add - \
+    && curl -fsSL https://packages.buildkite.com/helm-linux/helm-debian/gpgkey | gpg --dearmor | sudo tee /usr/share/keyrings/helm.gpg > /dev/null \
+    && echo "deb [signed-by=/usr/share/keyrings/helm.gpg] https://packages.buildkite.com/helm-linux/helm-debian/any/ any main" | sudo tee /etc/apt/sources.list.d/helm-stable-debian.list \
     && ${SCRIPTS_DIR}/apt.sh --update upgrade \
     && ${SCRIPTS_DIR}/apt.sh install $(cat /tmp/apt_packages.txt) \
     && ${SCRIPTS_DIR}/apt.sh --clean \
