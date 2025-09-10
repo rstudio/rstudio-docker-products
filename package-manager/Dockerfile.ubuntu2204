@@ -19,7 +19,7 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     apt-get clean && rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 # Download RStudio Package Manager ---------------------------------------------#
-ARG RSPM_VERSION=2025.04.4-13
+ARG RSPM_VERSION=2025.09.0-7
 ARG RSPM_DOWNLOAD_URL=https://cdn.rstudio.com/package-manager/deb/amd64
 # hadolint ignore=DL3015
 RUN curl -fsSL -O ${RSPM_DOWNLOAD_URL}/rstudio-pm_${RSPM_VERSION}_amd64.deb \
