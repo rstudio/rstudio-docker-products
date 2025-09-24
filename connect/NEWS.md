@@ -1,3 +1,7 @@
+# 2025-09-24
+
+- Revert to installing `tensorflow_model_server` binary from apt repo.
+
 # 2025-08-15
 
 - BREAKING:
