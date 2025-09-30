@@ -95,7 +95,8 @@ RUN curl -fsSL -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_V
     && apt-get autoremove -y \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /var/lib/rstudio-server/r-versions
+    && rm -rf /var/lib/rstudio-server/r-versions \
+    && rm -rf /var/lib/rstudio-launcher/Local/jobs/*
 
 ### Install Quarto to PATH ###
 RUN ln -s /lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto
