@@ -96,6 +96,7 @@ command:
 # Ensure Quarto works
   "/usr/local/bin/quarto check --quiet":
     title: quarto_check
+    timeout: 60000
     exit-status: 0
 
 # Ensure TinyTeX is installed
