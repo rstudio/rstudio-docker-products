@@ -61,6 +61,7 @@ fi
 # ensure these cannot be inherited by child processes
 unset RSP_LICENSE
 unset RSP_LICENSE_SERVER
+unset RSP_LICENSE_FILE_PATH
 unset RSW_LICENSE
 unset RSW_LICENSE_SERVER
 unset RSW_LICENSE_FILE_PATH
