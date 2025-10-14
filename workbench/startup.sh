@@ -2,7 +2,7 @@
 
 set -e
 if [[ "${STARTUP_DEBUG_MODE:-0}" -eq 1 ]]; then
-  set -x
+    set -x
 fi
 
 # Deactivate license when the process exits
@@ -14,29 +14,29 @@ deactivate() {
     is_deactivated=0
     retries=0
     while [[ $is_deactivated -ne 1 ]] && [[ $retries -le 3 ]]; do
-      /usr/lib/rstudio-server/bin/license-manager deactivate >/dev/null 2>&1
-      is_deactivated=1
-      ((retries+=1))
-      for file in $(ls -A /var/lib/.local); do
-        if [ -s /var/lib/.local/$file ]; then
-          if [[ $retries -lt 3 ]]; then
-            echo "License did not deactivate, retry ${retries}..."
-            is_deactivated=0
-          else
-            echo "Unable to deactivate license. If you encounter issues activating your product in the future, please contact Posit support."
-          fi
-          continue
-        fi
-      done
+        /usr/lib/rstudio-server/bin/license-manager deactivate >/dev/null 2>&1
+        is_deactivated=1
+        ((retries+=1))
+        for file in $(ls -A /var/lib/.local); do
+            if [ -s /var/lib/.local/$file ]; then
+                if [[ $retries -lt 3 ]]; then
+                    echo "License did not deactivate, retry ${retries}..."
+                    is_deactivated=0
+                else
+                    echo "Unable to deactivate license. If you encounter issues activating your product in the future, please contact Posit support."
+                fi
+                continue
+            fi
+        done
     done
 }
 trap deactivate EXIT
 
 verify_installation(){
-   echo "==VERIFY INSTALLATION==";
-   mkdir -p $DIAGNOSTIC_DIR
-   chmod 777 $DIAGNOSTIC_DIR
-   rstudio-server verify-installation --verify-user=$RSW_TESTUSER | tee $DIAGNOSTIC_DIR/verify.log
+    echo "==VERIFY INSTALLATION==";
+    mkdir -p $DIAGNOSTIC_DIR
+    chmod 777 $DIAGNOSTIC_DIR
+    rstudio-server verify-installation --verify-user=$RSW_TESTUSER | tee $DIAGNOSTIC_DIR/verify.log
 }
 
 # Support RSP_ or RSW_ prefix
@@ -83,20 +83,20 @@ fi
 
 # Start Launcher
 if [ "$RSW_LAUNCHER" == "true" ]; then
-  echo "Waiting for launcher to startup... to disable set RSW_LAUNCHER=false"
-  wait-for-it.sh localhost:5559 -t $RSW_LAUNCHER_TIMEOUT
+    echo "Waiting for launcher to startup... to disable set RSW_LAUNCHER=false"
+    wait-for-it.sh localhost:5559 -t $RSW_LAUNCHER_TIMEOUT
 fi
 
 # Check diagnostic configurations
 if [ "$DIAGNOSTIC_ENABLE" == "true" ]; then
-  verify_installation
-  if [ "$DIAGNOSTIC_ONLY" == "true" ]; then
-    echo $(<$DIAGNOSTIC_DIR/verify.log);
-    echo "Exiting script because DIAGNOSTIC_ONLY=${DIAGNOSTIC_ONLY}";
-    exit 0
-  fi;
+    verify_installation
+    if [ "$DIAGNOSTIC_ONLY" == "true" ]; then
+        echo $(<$DIAGNOSTIC_DIR/verify.log);
+        echo "Exiting script because DIAGNOSTIC_ONLY=${DIAGNOSTIC_ONLY}";
+        exit 0
+    fi;
 else
-  echo "not running verify installation because DIAGNOSTIC_ENABLE=${DIAGNOSTIC_ENABLE}";
+    echo "not running verify installation because DIAGNOSTIC_ENABLE=${DIAGNOSTIC_ENABLE}";
 fi
 
 # the main container process
