@@ -188,7 +188,7 @@ runs:
         sudo ctr i import --digests /tmp/${{ inputs.target }}.tar
         docker buildx bake --builder=posit-builder -f docker-bake.hcl ${{ inputs.target }} --print | jq -r '.target[].tags[]' > /tmp/${{ inputs.target }}-tags
         xargs -i -a /tmp/${{ inputs.target }}-tags sudo soci convert {} {}
-        xargs -i -a /tmp/${{ inputs.target }}-tags /bin/bash -c 'if [[ "{}" == *"ghcr.io"* ]]; then sudo ctr i push --user "${{ github.actor }}:${{ inputs.ghcr-token }}" {}; elif [[ "{}" == *"docker.io"* ]]; then sudo ctr i push --user "${{ inputs.dockerhub-username }}:${{ inputs.dockerhub-token }}" {}; else echo "Not sure what to do with {}"; fi'
+      #xargs -i -a /tmp/${{ inputs.target }}-tags /bin/bash -c 'if [[ "{}" == *"ghcr.io"* ]]; then sudo ctr i push --user "${{ github.actor }}:${{ inputs.ghcr-token }}" {}; elif [[ "{}" == *"docker.io"* ]]; then sudo ctr i push --user "${{ inputs.dockerhub-username }}:${{ inputs.dockerhub-token }}" {}; else echo "Not sure what to do with {}"; fi'
         rm -f /tmp/${{ inputs.target }}-tags
 
     - name: Push - ${{ inputs.push-image }}
