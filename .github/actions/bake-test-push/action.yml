@@ -49,6 +49,10 @@ inputs:
     description: Token for authenticating with Snyk
     default: ""
     type: string
+  soci-index:
+    description: Flag to create SOCI index alongside image
+    default: false
+    type: boolean
 
 runs:
   using: "composite"
@@ -117,6 +121,13 @@ runs:
         password: '${{ inputs.gcp-json }}'
 
     # Build, test, and push image
+    - name: Install soci
+      if: inputs.soci-index
+      uses: lerentis/soci-installer@v1.2.0
+      with:
+        install-dir: /usr/local/bin
+        soci-release: v0.11.1
+
     - name: Build
       id: build
       uses: docker/bake-action@v6
@@ -154,7 +165,16 @@ runs:
           sarif_file: "container.sarif"
           category: "${{ inputs.target }}-snyk-vulnerabilities"
 
+    - name: Create the soci v2 index for all the tags of the image
+      if: inputs.soci-index && inputs.push-image
+      shell: bash
+      run: |
+        docker buildx bake --builder=posit-builder -f docker-bake.hcl --set=*.output=type=oci,dest=/tmp/workbench-session-init.tar workbench-session-init --print | jq -r '.target[].tags[]' > /tmp/workbench-session-init-tags
+        xargs -i -a /tmp/workbench-session-init-tags sudo soci convert {} {}
+        xargs -i -a /tmp/workbench-session-init-tags /bin/bash -c 'if [[ "{}" == *"ghcr.io"* ]]; then sudo ctr i push --user "${{ github.actor }}:${{ inputs.ghcr-token }}" {}; elif [[ "{}" == *"docker.io"* ]]; then sudo ctr i push --user "${{ inputs.dockerhub-username }}:${{ inputs.dockerhub-token }}" {}; else echo "Not sure what to do with {}"; fi'
+
     - name: Push - ${{ inputs.push-image }}
+      if: inputs.soci-index == false && inputs.push-image
       uses: docker/bake-action@v6
       with:
         targets: "${{ inputs.target }}"
