@@ -132,6 +132,16 @@ runs:
         install-dir: /usr/local/bin
         soci-release: v0.11.1
 
+    - name: Determine set variables
+      id: set-vars
+      shell: bash
+      run: |
+        if [[ ${{ inputs.soci-index }} ]]; then
+          echo "SET_VARS=*.output=type=oci,dest=/tmp/${{ inputs.target }}.tar" >> $GITHUB_OUTPUT
+        else
+            echo "SET_VARS=''" >> $GITHUB_OUTPUT
+        fi
+
     - name: Build
       id: build
       uses: docker/bake-action@v6
@@ -140,6 +150,8 @@ runs:
         push: false
         load: true
         files: ${{ inputs.bakefile }}
+        set: |
+          ${{ steps.set-vars.outputs.SET_VARS }}
 
     - name: Test
       shell: bash
@@ -173,9 +185,11 @@ runs:
       if: inputs.soci-index && inputs.push-image
       shell: bash
       run: |
-        docker buildx bake --builder=posit-builder -f docker-bake.hcl --set=*.output=type=oci,dest=/tmp/workbench-session-init.tar workbench-session-init --print | jq -r '.target[].tags[]' > /tmp/workbench-session-init-tags
-        xargs -i -a /tmp/workbench-session-init-tags sudo soci convert {} {}
-        xargs -i -a /tmp/workbench-session-init-tags /bin/bash -c 'if [[ "{}" == *"ghcr.io"* ]]; then sudo ctr i push --user "${{ github.actor }}:${{ inputs.ghcr-token }}" {}; elif [[ "{}" == *"docker.io"* ]]; then sudo ctr i push --user "${{ inputs.dockerhub-username }}:${{ inputs.dockerhub-token }}" {}; else echo "Not sure what to do with {}"; fi'
+        sudo ctr i import --digests /tmp/${{ inputs.target }}.tar
+        docker buildx bake --builder=posit-builder -f docker-bake.hcl ${{ inputs.target }} --print | jq -r '.target[].tags[]' > /tmp/${{ inputs.target }}-tags
+        xargs -i -a /tmp/${{ inputs.target }}-tags sudo soci convert {} {}
+        xargs -i -a /tmp/${{ inputs.target }}-tags /bin/bash -c 'if [[ "{}" == *"ghcr.io"* ]]; then sudo ctr i push --user "${{ github.actor }}:${{ inputs.ghcr-token }}" {}; elif [[ "{}" == *"docker.io"* ]]; then sudo ctr i push --user "${{ inputs.dockerhub-username }}:${{ inputs.dockerhub-token }}" {}; else echo "Not sure what to do with {}"; fi'
+        rm -f /tmp/${{ inputs.target }}-tags
 
     - name: Push - ${{ inputs.push-image }}
       if: inputs.soci-index == false && inputs.push-image
