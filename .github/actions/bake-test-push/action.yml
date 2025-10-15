@@ -121,6 +121,10 @@ runs:
         password: '${{ inputs.gcp-json }}'
 
     # Build, test, and push image
+    - name: Set up containerd
+      if: inputs.soci-index
+      uses: crazy-max/ghaction-setup-containerd@v3
+
     - name: Install soci
       if: inputs.soci-index
       uses: lerentis/soci-installer@v1.2.0
