@@ -133,7 +133,7 @@ runs:
         soci-release: v0.11.1
 
     - name: Build with oci format
-      id: build
+      id: buildoci
       if: ${{ inputs.soci-index == true }}
       uses: docker/bake-action@v6
       with:
