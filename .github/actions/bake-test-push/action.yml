@@ -132,18 +132,9 @@ runs:
         install-dir: /usr/local/bin
         soci-release: v0.11.1
 
-    - name: Determine set variables
-      id: set-vars
-      shell: bash
-      run: |
-        if ${{ inputs.soci-index }}; then
-          echo "SET_VARS=*.output=type=oci,dest=/tmp/${{ inputs.target }}.tar" >> $GITHUB_OUTPUT
-        else
-            echo "SET_VARS=''" >> $GITHUB_OUTPUT
-        fi
-
-    - name: Build
+    - name: Build with oci format
       id: build
+      if: ${{ inputs.soci-index == true }}
       uses: docker/bake-action@v6
       with:
         targets: "${{ inputs.target }}"
@@ -151,7 +142,17 @@ runs:
         load: true
         files: ${{ inputs.bakefile }}
         set: |
-          ${{ steps.set-vars.outputs.SET_VARS }}
+          *.output=type=oci,dest=/tmp/${{ inputs.target }}.tar
+
+    - name: Build
+      id: build
+      if: ${{ inputs.soci-index == false }}
+      uses: docker/bake-action@v6
+      with:
+        targets: "${{ inputs.target }}"
+        push: false
+        load: true
+        files: ${{ inputs.bakefile }}
 
     - name: Test
       shell: bash
