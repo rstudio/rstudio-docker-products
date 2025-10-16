@@ -122,11 +122,11 @@ runs:
 
     # Build, test, and push image
     - name: Set up containerd
-      if: ${{ inputs.soci-index }}
+      if: ${{ inputs.soci-index == true }}
       uses: crazy-max/ghaction-setup-containerd@v3
 
     - name: Install soci
-      if: ${{ inputs.soci-index }}
+      if: ${{ inputs.soci-index == true }}
       uses: lerentis/soci-installer@v1.2.0
       with:
         install-dir: /usr/local/bin
@@ -182,7 +182,7 @@ runs:
           category: "${{ inputs.target }}-snyk-vulnerabilities"
 
     - name: Create the soci v2 index for all the tags of the image, and push the images to their registries
-      if: ${{ inputs.soci-index && inputs.push-image }}
+      if: ${{ inputs.soci-index == true && inputs.push-image == true }}
       shell: bash
       run: |
         sudo ctr i import --digests /tmp/${{ inputs.target }}.tar
@@ -192,7 +192,7 @@ runs:
       #rm -f /tmp/${{ inputs.target }}-tags /tmp/${{ inputs.target }}.tar
 
     - name: Push - ${{ inputs.push-image }}
-      if: ${{ inputs.soci-index == false && inputs.push-image }}
+      if: ${{ inputs.soci-index == false && inputs.push-image == true }}
       uses: docker/bake-action@v6
       with:
         targets: "${{ inputs.target }}"
