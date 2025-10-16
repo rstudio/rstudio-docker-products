@@ -136,7 +136,7 @@ runs:
       id: set-vars
       shell: bash
       run: |
-        if [[ ${{ inputs.soci-index }} ]]; then
+        if ${{ inputs.soci-index }}; then
           echo "SET_VARS=*.output=type=oci,dest=/tmp/${{ inputs.target }}.tar" >> $GITHUB_OUTPUT
         else
             echo "SET_VARS=''" >> $GITHUB_OUTPUT
