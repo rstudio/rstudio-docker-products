@@ -181,7 +181,7 @@ runs:
           sarif_file: "container.sarif"
           category: "${{ inputs.target }}-snyk-vulnerabilities"
 
-    - name: Create the soci v2 index for all the tags of the image
+    - name: Create the soci v2 index for all the tags of the image, and push the images to their registries
       if: inputs.soci-index && inputs.push-image
       shell: bash
       run: |
@@ -189,7 +189,7 @@ runs:
         docker buildx bake --builder=posit-builder -f docker-bake.hcl ${{ inputs.target }} --print | jq -r '.target[].tags[]' > /tmp/${{ inputs.target }}-tags
         xargs -i -a /tmp/${{ inputs.target }}-tags sudo soci convert {} {}
       #xargs -i -a /tmp/${{ inputs.target }}-tags /bin/bash -c 'if [[ "{}" == *"ghcr.io"* ]]; then sudo ctr i push --user "${{ github.actor }}:${{ inputs.ghcr-token }}" {}; elif [[ "{}" == *"docker.io"* ]]; then sudo ctr i push --user "${{ inputs.dockerhub-username }}:${{ inputs.dockerhub-token }}" {}; else echo "Not sure what to do with {}"; fi'
-        rm -f /tmp/${{ inputs.target }}-tags
+      #rm -f /tmp/${{ inputs.target }}-tags /tmp/${{ inputs.target }}.tar
 
     - name: Push - ${{ inputs.push-image }}
       if: inputs.soci-index == false && inputs.push-image
