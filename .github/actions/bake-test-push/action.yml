@@ -134,7 +134,7 @@ runs:
 
     - name: Build with oci format
       id: buildoci
-      if: ${{ inputs.soci-index == true }}
+      if: ${{ inputs.soci-index == 'true' }}
       uses: docker/bake-action@v6
       with:
         targets: "${{ inputs.target }}"
@@ -146,7 +146,7 @@ runs:
 
     - name: Build
       id: build
-      if: ${{ inputs.soci-index == false }}
+      if: ${{ inputs.soci-index == 'false' }}
       uses: docker/bake-action@v6
       with:
         targets: "${{ inputs.target }}"
