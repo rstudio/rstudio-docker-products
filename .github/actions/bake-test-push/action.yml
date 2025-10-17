@@ -49,6 +49,10 @@ inputs:
     description: Token for authenticating with Snyk
     default: ""
     type: string
+  soci-index:
+    description: Flag to create SOCI index alongside image
+    default: false
+    type: boolean
 
 runs:
   using: "composite"
@@ -117,8 +121,32 @@ runs:
         password: '${{ inputs.gcp-json }}'
 
     # Build, test, and push image
+    - name: Set up containerd
+      if: ${{ inputs.soci-index == 'true' }}
+      uses: crazy-max/ghaction-setup-containerd@v3
+
+    - name: Install soci
+      if: ${{ inputs.soci-index == 'true' }}
+      uses: lerentis/soci-installer@v1.2.0
+      with:
+        install-dir: /usr/local/bin
+        soci-release: v0.11.1
+
+    - name: Build with oci format
+      id: buildoci
+      if: ${{ inputs.soci-index == 'true' }}
+      uses: docker/bake-action@v6
+      with:
+        targets: "${{ inputs.target }}"
+        push: false
+        load: true
+        files: ${{ inputs.bakefile }}
+        set: |
+          *.output=type=oci,dest=/tmp/${{ inputs.target }}.tar
+
     - name: Build
       id: build
+      if: ${{ inputs.soci-index == 'false' }}
       uses: docker/bake-action@v6
       with:
         targets: "${{ inputs.target }}"
@@ -154,7 +182,17 @@ runs:
           sarif_file: "container.sarif"
           category: "${{ inputs.target }}-snyk-vulnerabilities"
 
+    - name: Create the soci v2 index for all the tags of the image, and push the images to their registries
+      if: ${{ inputs.soci-index == 'true' && inputs.push-image == 'true' }}
+      shell: bash
+      run: |
+        sudo ctr i import --digests /tmp/${{ inputs.target }}.tar
+        docker buildx bake --builder=posit-builder -f docker-bake.hcl ${{ inputs.target }} --print | jq -r '.target[].tags[]' > /tmp/${{ inputs.target }}-tags
+        xargs -i -a /tmp/${{ inputs.target }}-tags sudo soci convert {} {}
+        xargs -i -a /tmp/${{ inputs.target }}-tags /bin/bash -c 'if [[ "{}" == *"ghcr.io"* ]]; then sudo ctr i push --user "${{ github.actor }}:${{ inputs.ghcr-token }}" {}; elif [[ "{}" == *"docker.io"* ]]; then sudo ctr i push --user "${{ inputs.dockerhub-username }}:${{ inputs.dockerhub-token }}" {}; else echo "Not sure what to do with {}"; fi'
+
     - name: Push - ${{ inputs.push-image }}
+      if: ${{ inputs.soci-index == 'false' && inputs.push-image == 'true' }}
       uses: docker/bake-action@v6
       with:
         targets: "${{ inputs.target }}"

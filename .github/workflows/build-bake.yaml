@@ -372,6 +372,7 @@ jobs:
           gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
           snyk-org: ${{ secrets.SNYK_ORG }}
           snyk-token: '${{ secrets.SNYK_TOKEN }}'
+          soci-index: true
 
   workbench:
     needs: [setup]
