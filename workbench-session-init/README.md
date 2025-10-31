@@ -21,7 +21,7 @@ be used to run Workbench sessions. This image is intended to be used in conjunct
 
 ## Supported tags and respective Dockerfile links
 
-* [`jammy-daily`, `ubuntu2204-daily`, `jammy-2025.09.1`, `ubuntu2204-2025.09.1`](https://github.com/rstudio/rstudio-docker-products/blob/main/workbench-session-init/Dockerfile.ubuntu2204)
+* [`jammy-daily`, `ubuntu2204-daily`, `jammy-2025.09.2`, `ubuntu2204-2025.09.2`](https://github.com/rstudio/rstudio-docker-products/blob/main/workbench-session-init/Dockerfile.ubuntu2204)
 
 ## License
 

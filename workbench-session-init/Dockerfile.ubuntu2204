@@ -8,7 +8,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends ca-certificates curl && \
     rm -rf /var/lib/apt/lists/*
 
-ARG RSW_VERSION=2025.09.1+401.pro2
+ARG RSW_VERSION=2025.09.1+418.pro4
 ARG GO_VERSION=1.22.2
 
 # Download the RStudio Workbench session components and install Go
