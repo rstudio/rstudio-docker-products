@@ -83,8 +83,8 @@ function get_tags {
 variable BASE_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.11.13", py_alternate = "3.10.18"},
             {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
+            {os = "ubuntu2204", r_primary = "4.5.2", r_alternate = "4.4.3", py_primary = "3.13.9", py_alternate = "3.12.11"},
         ]
     }
 }
@@ -104,7 +104,7 @@ variable PACKAGE_MANAGER_BUILD_MATRIX {
 variable CONNECT_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13", quarto = DEFAULT_QUARTO_VERSION},
+            {os = "ubuntu2204", r_primary = "4.5.2", r_alternate = "4.4.3", py_primary = "3.13.9", py_alternate = "3.12.11", quarto = "1.8.25"},
         ]
     }
 }
@@ -146,6 +146,9 @@ variable CONTENT_BUILD_MATRIX {
 
       # R-4.5, Python-3.13, Quarto-1.7
       {os = "ubuntu2204", os_alt = "jammy", r = "4.5.1", py = "3.13.5", drivers = "2025.07.0", quarto = "1.7.32"},
+
+      # R-4.5, Python-3.13, Quarto-1.8
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.5.2", py = "3.13.9", drivers = "2025.07.0", quarto = "1.8.25"},
     ]
   }
 }
@@ -189,7 +192,7 @@ variable WORKBENCH_GOOGLE_CLOUD_WORKSTATION_BUILD_MATRIX {
 variable WORKBENCH_MICROSOFT_AZURE_ML_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.11.13", py_alternate = "3.10.18"},
+            {os = "ubuntu2204", r_primary = "4.5.2", r_alternate = "4.4.3", py_primary = "3.13.9", py_alternate = "3.12.11"},
         ]
     }
 }
