@@ -1,3 +1,7 @@
+# 2025-11-05
+
+- Remove outdated default values for `ARG` instructions related to versions.
+
 # 2024-04-10
 
 - Change build orchestration to `buildx bake`

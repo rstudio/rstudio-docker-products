@@ -1,3 +1,7 @@
+# 2025-11-05
+
+- Remove outdated default values for `ARG` instructions related to versions.
+
 # 2025-09-24
 
 - Revert to installing `tensorflow_model_server` binary from apt repo.

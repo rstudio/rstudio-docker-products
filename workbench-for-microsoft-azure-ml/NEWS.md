@@ -1,3 +1,7 @@
+# 2025-11-05
+
+- Remove outdated default values for `ARG` instructions related to versions.
+
 # 2025-08-13
 
 - Increase `RSW_LAUNCHER_TIMEOUT` from 10 seconds to 30 seconds to provide more time for launcher startup.
