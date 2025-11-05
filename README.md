@@ -126,6 +126,10 @@ We orchestrate all our builds using `docker buildx bake`. You can learn more abo
 [Docker's buildx bake page](https://docs.docker.com/build/bake/), however no additional background knowledge is needed on the tool in order 
 to use it.
 
+All dependency versions (Python, R, Quarto, etc.) are defined in the `docker-bake.hcl` file at the root of the
+repository. You can change versions there to suit your needs. To get a JSON representation of all targeted image builds 
+and their build arguments, call the `just plan` target.
+
 To build all images:
 ```bash
 just build
