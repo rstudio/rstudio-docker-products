@@ -123,9 +123,6 @@ variable CONTENT_BUILD_MATRIX {
     # R/Python/Quarto. Do not modify existing entries, as that stops those
     # version combinations from receiving security updates.
     builds = [
-      # R-4.0, Python-3.9, Quarto-1.3.
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.0.5", py = "3.9.16", drivers = "2025.07.0", quarto = "1.3.340"},
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.0.5", py = "3.9.19", drivers = "2025.07.0", quarto = "1.3.450"},
 
       # R-4.1, Python-3.10, Quarto-1.3.
       {os = "ubuntu2204", os_alt = "jammy", r = "4.1.3", py = "3.10.11", drivers = "2025.07.0", quarto = "1.3.340"},
@@ -143,6 +140,9 @@ variable CONTENT_BUILD_MATRIX {
 
       # R-4.4, Python-3.12.4, Quarto-1.4.557 (polyfill.js vulnerability patch)
       {os = "ubuntu2204", os_alt = "jammy", r = "4.4.1", py = "3.12.4", drivers = "2025.07.0", quarto = "1.4.557"},
+
+      # R-4.4, Python-3.13.1, Quarto-1.6.42
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.4.2", py = "3.13.1", drivers = "2025.07.0", quarto = "1.6.42"},
 
       # R-4.5, Python-3.13, Quarto-1.7
       {os = "ubuntu2204", os_alt = "jammy", r = "4.5.1", py = "3.13.5", drivers = "2025.07.0", quarto = "1.7.32"},
