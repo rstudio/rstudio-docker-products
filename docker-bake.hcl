@@ -19,10 +19,6 @@ variable DEFAULT_QUARTO_VERSION {
     default = "1.4.557"
 }
 
-variable DEFAULT_JUPYTERLAB_VERSION {
-    default = "3.6.7"
-}
-
 variable GIT_SHA {
     default = null
 }
@@ -428,7 +424,6 @@ target "r-session-complete" {
         R_VERSION_ALT = builds.r_alternate
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
-        JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
         RSW_VERSION = WORKBENCH_VERSION
         RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/jammy/amd64"
@@ -456,7 +451,6 @@ target "workbench-session" {
         R_VERSION_ALT = builds.r_alternate
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
-        JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
     }
 }
 
@@ -531,7 +525,6 @@ target "workbench-for-google-cloud-workstations" {
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
         PYTHON_VERSION_JUPYTER = builds.py_alternate
-        JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
         QUARTO_VERSION = DEFAULT_QUARTO_VERSION
         DRIVERS_VERSION = DRIVERS_VERSION
         RSW_VERSION = WORKBENCH_VERSION
@@ -560,7 +553,6 @@ target "build-workbench-for-microsoft-azure-ml" {
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
         PYTHON_VERSION_JUPYTER = builds.py_alternate
-        JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
         RSW_VERSION = WORKBENCH_VERSION
         RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/jammy/amd64"
