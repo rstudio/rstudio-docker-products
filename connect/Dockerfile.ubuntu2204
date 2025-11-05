@@ -10,7 +10,7 @@ ARG PYTHON_VERSION
 ARG PYTHON_VERSION_ALT
 ARG RSC_VERSION
 ARG QUARTO_VERSION
-ARG SCRIPTS_DIR
+ARG SCRIPTS_DIR=/opt/positscripts
 
 ### Install Quarto ###
 # TODO: Remove `HOME="/opt"` once Quarto supports custom install locations for TinyTeX, see quarto-dev/quarto-cli#11800.
