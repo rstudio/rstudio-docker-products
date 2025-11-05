@@ -5,6 +5,12 @@ changed in each image.
 
 This file only captures pervasive, repository-wide changes.
 
+# 2025-11-05
+
+- Remove defaults `ARG` values from all Dockerfiles to reduce confusion. These values are always passed by the 
+  `docker-bake.hcl` and `docker-bake.preview.hcl` during `docker buildx bake` builds. Please refer to the values in
+  `docker-bake.hcl` for current versions in production images or `docker-bake.preview.hcl` for preview/daily images.
+
 # 2025-08-14
 
 - Remove the `dev` branch and make `main` the default branch.

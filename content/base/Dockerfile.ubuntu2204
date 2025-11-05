@@ -5,10 +5,10 @@ LABEL maintainer="Posit Docker <docker@posit.co>"
 ARG DEBIAN_FRONTEND=noninteractive
 ARG DISTRIBUTION=ubuntu-2204
 
-ARG R_VERSION=3.6.3
+ARG R_VERSION
 ARG R_INSTALLER=r-${R_VERSION}_1_amd64.deb
 
-ARG PYTHON_VERSION=3.9.5
+ARG PYTHON_VERSION
 
 # Locale configuration --------------------------------------------------------#
 RUN apt-get update \
@@ -118,7 +118,7 @@ RUN curl -fsSL -O https://cdn.rstudio.com/python/${DISTRIBUTION}/pkgs/python-${P
     && /opt/python/${PYTHON_VERSION}/bin/python3 -m pip install --upgrade setuptools
 
 # install quarto
-ARG QUARTO_VERSION=1.3.340
+ARG QUARTO_VERSION
 COPY maybe_install_quarto.sh /tmp/maybe_install_quarto.sh
 RUN /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.posit.co/cran/__linux__/jammy/latest")' \
     && /tmp/maybe_install_quarto.sh \
