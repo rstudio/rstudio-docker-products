@@ -226,13 +226,8 @@ update-versions:
     RSW_VERSION={{RSW_VERSION}} \
     RSC_VERSION={{RSC_VERSION}} \
     RSPM_VERSION={{RSPM_VERSION}} \
-    R_VERSION={{R_VERSION}} \
-    R_VERSION_ALT={{R_VERSION_ALT}} \
-    PYTHON_VERSION={{PYTHON_VERSION}} \
-    PYTHON_VERSION_ALT={{PYTHON_VERSION_ALT}} \
     DRIVERS_VERSION={{DRIVERS_VERSION}} \
-    QUARTO_VERSION={{QUARTO_VERSION}} \
-    update-rsw-versions update-rspm-versions update-rsc-versions update-r-versions update-py-versions update-drivers-versions update-quarto-versions
+    update-rsw-versions update-rspm-versions update-rsc-versions update-drivers-versions
 
 # just RSW_VERSION=1.2.3 update-rsw-versions
 update-rsw-versions:
