@@ -15,10 +15,6 @@ variable DRIVERS_VERSION {
     default = "2025.07.0"
 }
 
-variable DEFAULT_QUARTO_VERSION {
-    default = "1.4.557"
-}
-
 variable GIT_SHA {
     default = null
 }
@@ -525,7 +521,7 @@ target "workbench-for-google-cloud-workstations" {
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
         PYTHON_VERSION_JUPYTER = builds.py_alternate
-        QUARTO_VERSION = DEFAULT_QUARTO_VERSION
+        QUARTO_VERSION = "1.8.25"
         DRIVERS_VERSION = DRIVERS_VERSION
         RSW_VERSION = WORKBENCH_VERSION
         RSW_NAME = "rstudio-workbench"
