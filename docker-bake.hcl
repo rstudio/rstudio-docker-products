@@ -15,14 +15,6 @@ variable DRIVERS_VERSION {
     default = "2025.07.0"
 }
 
-variable DEFAULT_QUARTO_VERSION {
-    default = "1.4.557"
-}
-
-variable DEFAULT_JUPYTERLAB_VERSION {
-    default = "3.6.7"
-}
-
 variable GIT_SHA {
     default = null
 }
@@ -91,8 +83,8 @@ function get_tags {
 variable BASE_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.11.13", py_alternate = "3.10.18"},
             {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
+            {os = "ubuntu2204", r_primary = "4.5.2", r_alternate = "4.4.3", py_primary = "3.13.9", py_alternate = "3.12.11"},
         ]
     }
 }
@@ -112,7 +104,7 @@ variable PACKAGE_MANAGER_BUILD_MATRIX {
 variable CONNECT_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13", quarto = DEFAULT_QUARTO_VERSION},
+            {os = "ubuntu2204", r_primary = "4.5.2", r_alternate = "4.4.3", py_primary = "3.13.9", py_alternate = "3.12.11", quarto = "1.8.25"},
         ]
     }
 }
@@ -131,9 +123,6 @@ variable CONTENT_BUILD_MATRIX {
     # R/Python/Quarto. Do not modify existing entries, as that stops those
     # version combinations from receiving security updates.
     builds = [
-      # R-4.0, Python-3.9, Quarto-1.3.
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.0.5", py = "3.9.16", drivers = "2025.07.0", quarto = "1.3.340"},
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.0.5", py = "3.9.19", drivers = "2025.07.0", quarto = "1.3.450"},
 
       # R-4.1, Python-3.10, Quarto-1.3.
       {os = "ubuntu2204", os_alt = "jammy", r = "4.1.3", py = "3.10.11", drivers = "2025.07.0", quarto = "1.3.340"},
@@ -152,8 +141,14 @@ variable CONTENT_BUILD_MATRIX {
       # R-4.4, Python-3.12.4, Quarto-1.4.557 (polyfill.js vulnerability patch)
       {os = "ubuntu2204", os_alt = "jammy", r = "4.4.1", py = "3.12.4", drivers = "2025.07.0", quarto = "1.4.557"},
 
+      # R-4.4, Python-3.13.1, Quarto-1.6.42
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.4.2", py = "3.13.1", drivers = "2025.07.0", quarto = "1.6.42"},
+
       # R-4.5, Python-3.13, Quarto-1.7
       {os = "ubuntu2204", os_alt = "jammy", r = "4.5.1", py = "3.13.5", drivers = "2025.07.0", quarto = "1.7.32"},
+
+      # R-4.5, Python-3.13, Quarto-1.8
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.5.2", py = "3.13.9", drivers = "2025.07.0", quarto = "1.8.25"},
     ]
   }
 }
@@ -197,7 +192,7 @@ variable WORKBENCH_GOOGLE_CLOUD_WORKSTATION_BUILD_MATRIX {
 variable WORKBENCH_MICROSOFT_AZURE_ML_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.11.13", py_alternate = "3.10.18"},
+            {os = "ubuntu2204", r_primary = "4.5.2", r_alternate = "4.4.3", py_primary = "3.13.9", py_alternate = "3.12.11"},
         ]
     }
 }
@@ -428,7 +423,6 @@ target "r-session-complete" {
         R_VERSION_ALT = builds.r_alternate
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
-        JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
         RSW_VERSION = WORKBENCH_VERSION
         RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/jammy/amd64"
@@ -456,7 +450,6 @@ target "workbench-session" {
         R_VERSION_ALT = builds.r_alternate
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
-        JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
     }
 }
 
@@ -531,8 +524,7 @@ target "workbench-for-google-cloud-workstations" {
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
         PYTHON_VERSION_JUPYTER = builds.py_alternate
-        JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
-        QUARTO_VERSION = DEFAULT_QUARTO_VERSION
+        QUARTO_VERSION = "1.8.25"
         DRIVERS_VERSION = DRIVERS_VERSION
         RSW_VERSION = WORKBENCH_VERSION
         RSW_NAME = "rstudio-workbench"
@@ -560,7 +552,6 @@ target "build-workbench-for-microsoft-azure-ml" {
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
         PYTHON_VERSION_JUPYTER = builds.py_alternate
-        JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
         RSW_VERSION = WORKBENCH_VERSION
         RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/jammy/amd64"

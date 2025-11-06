@@ -1,3 +1,7 @@
+# 2025-11-05
+
+- Remove outdated default values for `ARG` instructions related to versions.
+
 # 2025-08-15
 
 - Update default Python versions to `3.12.11` and `3.11.13`

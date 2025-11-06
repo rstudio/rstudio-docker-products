@@ -15,14 +15,6 @@ RSW_VERSION := "2025.09.2+418.pro4"
 DRIVERS_VERSION := "2025.07.0"
 DRIVERS_VERSION_RHEL := DRIVERS_VERSION + "-1"
 
-R_VERSION := "4.2.3"
-R_VERSION_ALT := "4.1.3"
-
-PYTHON_VERSION := "3.9.17"
-PYTHON_VERSION_ALT := "3.8.17"
-
-QUARTO_VERSION := "1.4.557"
-
 SNYK_ORG := env("SNYK_ORG", "")
 
 export RSC_LICENSE := ""
@@ -234,28 +226,13 @@ update-versions:
     RSW_VERSION={{RSW_VERSION}} \
     RSC_VERSION={{RSC_VERSION}} \
     RSPM_VERSION={{RSPM_VERSION}} \
-    R_VERSION={{R_VERSION}} \
-    R_VERSION_ALT={{R_VERSION_ALT}} \
-    PYTHON_VERSION={{PYTHON_VERSION}} \
-    PYTHON_VERSION_ALT={{PYTHON_VERSION_ALT}} \
     DRIVERS_VERSION={{DRIVERS_VERSION}} \
-    QUARTO_VERSION={{QUARTO_VERSION}} \
-    update-rsw-versions update-rspm-versions update-rsc-versions update-r-versions update-py-versions update-drivers-versions update-quarto-versions
+    update-rsw-versions update-rspm-versions update-rsc-versions update-drivers-versions
 
 # just RSW_VERSION=1.2.3 update-rsw-versions
 update-rsw-versions:
   #!/usr/bin/env bash
   set -euxo pipefail
-  sed {{ sed_vars }} "s/RSW_VERSION=.*/RSW_VERSION={{ RSW_VERSION }}/g" \
-    workbench/.env \
-    r-session-complete/.env \
-    workbench-for-microsoft-azure-ml/.env \
-    r-session-complete/Dockerfile.ubuntu2204 \
-    workbench/Dockerfile.ubuntu2204 \
-    workbench-for-microsoft-azure-ml/Dockerfile.ubuntu2204 \
-    workbench-session-init/Dockerfile.ubuntu2204
-  sed {{ sed_vars }} "s/RSW_VERSION:.*/RSW_VERSION: {{ RSW_VERSION }}/g" docker-compose.yml
-  sed {{ sed_vars }} "s/rstudio\/rstudio-workbench:.*/rstudio\/rstudio-workbench:$(just _get-clean-version {{ RSW_VERSION }})/g" docker-compose.yml
   sed {{ sed_vars }} "s/^RSW_VERSION := .*/RSW_VERSION := \"{{ RSW_VERSION }}\"/g" \
     Justfile
   sed {{ sed_vars }} "s/[0-9]\{4\}\.[0-9]\{1,2\}\.[0-9]\{1,2\}/`just _get-clean-version {{ RSW_VERSION }}`/g" \
@@ -271,11 +248,6 @@ update-rsw-versions:
 update-rspm-versions:
   #!/usr/bin/env bash
   set -euxo pipefail
-  sed {{ sed_vars }} "s/RSPM_VERSION=.*/RSPM_VERSION={{ RSPM_VERSION }}/g" \
-    package-manager/.env \
-    package-manager/Dockerfile.ubuntu2204
-  sed {{ sed_vars }} "s/RSPM_VERSION:.*/RSPM_VERSION: {{ RSPM_VERSION }}/g" docker-compose.yml
-  sed {{ sed_vars }} "s/rstudio\/rstudio-package-manager:.*/rstudio\/rstudio-package-manager:$(just _get-clean-version {{ RSPM_VERSION }})/g" docker-compose.yml
   sed {{ sed_vars }} "s/^RSPM_VERSION := .*/RSPM_VERSION := \"{{ RSPM_VERSION }}\"/g" \
     Justfile
   sed {{ sed_vars }} -E "s/[0-9]{4}\.[0-9]{1,2}\.[0-9]{1,2}/`just _get-clean-version {{ RSPM_VERSION }}`/g" package-manager/README.md
@@ -288,10 +260,6 @@ update-rspm-versions:
 update-rsc-versions:
   #!/usr/bin/env bash
   set -euxo pipefail
-  sed {{ sed_vars }} "s/RSC_VERSION=.*/RSC_VERSION={{ RSC_VERSION }}/g" \
-    connect/.env \
-    connect/Dockerfile.ubuntu2204 \
-    connect-content-init/Dockerfile.ubuntu2204
   sed {{ sed_vars }} "s/^RSC_VERSION := .*/RSC_VERSION := \"{{ RSC_VERSION }}\"/g" \
     Justfile
   sed {{ sed_vars }} -E "s/[0-9]{4}\.[0-9]{1,2}\.[0-9]{1,2}/`just _get-clean-version {{ RSC_VERSION }}`/g" \
@@ -302,93 +270,10 @@ update-rsc-versions:
   { print }
   ' docker-bake.hcl > file.tmp && mv file.tmp docker-bake.hcl
 
-# just R_VERSION=3.2.1 R_VERSION_ALT=4.1.0 update-r-versions
-update-r-versions: update-default-r-versions
-update-default-r-versions:
-  #!/usr/bin/env bash
-  set -euxo pipefail
-  # Update primary R versions
-  sed {{ sed_vars }} "s/R_VERSION=.*/R_VERSION={{ R_VERSION }}/g" \
-    workbench/.env \
-    connect/.env \
-    package-manager/.env \
-    package-manager/Dockerfile.ubuntu* \
-    workbench/Dockerfile.ubuntu2204 \
-    connect/Dockerfile.ubuntu2204 \
-    product/base/Dockerfile.ubuntu* \
-    product/pro/Dockerfile.ubuntu*
-  sed {{ sed_vars }} "s/^R_VERSION := .*/R_VERSION := \"{{ R_VERSION }}\"/g" \
-    Justfile
-
-  # Update alt R versions
-  sed {{ sed_vars }} "s/R_VERSION_ALT=.*/R_VERSION_ALT={{ R_VERSION_ALT }}/g" \
-    workbench/.env \
-    connect/.env \
-    package-manager/.env \
-    package-manager/Dockerfile.ubuntu* \
-    workbench/Dockerfile.ubuntu2204 \
-    connect/Dockerfile.ubuntu2204 \
-    product/base/Dockerfile.ubuntu* \
-    product/pro/Dockerfile.ubuntu*
-  sed {{ sed_vars }} "s/^R_VERSION_ALT := .*/R_VERSION_ALT := \"{{ R_VERSION_ALT }}\"/g" \
-    Justfile
-
-# just PYTHON_VERSION=3.9.5 PYTHON_VERSION_ALT=3.8.10 update-py-versions
-update-py-versions: update-default-py-versions
-update-default-py-versions:
-  #!/usr/bin/env bash
-  set -euxo pipefail
-  # Update primary Python versions
-  sed {{ sed_vars }} "s/PYTHON_VERSION=.*/PYTHON_VERSION={{ PYTHON_VERSION }}/g" \
-    workbench/Dockerfile.ubuntu2204 \
-    workbench/.env \
-    connect/Dockerfile.ubuntu2204 \
-    connect/.env \
-    package-manager/Dockerfile.ubuntu* \
-    package-manager/.env \
-    product/base/Dockerfile.ubuntu* \
-    product/pro/Dockerfile.ubuntu* \
-    r-session-complete/Dockerfile.ubuntu2204
-  sed {{ sed_vars }} "s/^PYTHON_VERSION := .*/PYTHON_VERSION := \"{{ PYTHON_VERSION }}\"/g" \
-    Justfile
-
-  # Update alt Python versions
-  sed {{ sed_vars }} "s/PYTHON_VERSION_ALT=.*/PYTHON_VERSION_ALT={{ PYTHON_VERSION_ALT }}/g" \
-    workbench/Dockerfile.ubuntu2204 \
-    workbench/.env \
-    connect/Dockerfile.ubuntu2204 \
-    connect/.env \
-    product/base/Dockerfile.ubuntu* \
-    product/pro/Dockerfile.ubuntu* \
-    r-session-complete/Dockerfile.ubuntu2204
-  sed {{ sed_vars }} "s/^PYTHON_VERSION_ALT := .*/PYTHON_VERSION_ALT := \"{{ PYTHON_VERSION_ALT }}\"/g" \
-    Justfile
-
 # just DRIVERS_VERSION=2022.11.0 update-driver-versions
 update-drivers-versions:
   #!/usr/bin/env bash
   set -euxo pipefail
-  sed {{ sed_vars }} "s/DRIVERS_VERSION=.*/DRIVERS_VERSION={{ DRIVERS_VERSION }}/g" \
-    workbench-for-microsoft-azure-ml/Dockerfile.ubuntu2204 \
-    content/pro/Dockerfile.ubuntu* \
-    r-session-complete/Dockerfile.ubuntu* \
-    product/pro/Dockerfile.ubuntu*
-  sed {{ sed_vars }} "s/DRIVERS_VERSION=.*/DRIVERS_VERSION={{ DRIVERS_VERSION_RHEL }}/g" \
-    r-session-complete/.env
   sed {{ sed_vars }} "s/^DRIVERS_VERSION := .*/DRIVERS_VERSION := \"{{ DRIVERS_VERSION }}\"/g" \
     Justfile
-  sed -i '/variable DRIVERS_VERSION/!b;n;c\ \ \ \ default = "{{ RSC_VERSION }}"' docker-bake.hcl
-
-update-quarto-versions:
-  #!/usr/bin/env bash
-  set -euxo pipefail
-  sed {{ sed_vars }} "s/^QUARTO_VERSION := .*/QUARTO_VERSION := \"{{ QUARTO_VERSION }}\"/g" \
-    Justfile
-  sed {{ sed_vars }} "s/^QUARTO_VERSION=.*/QUARTO_VERSION={{ QUARTO_VERSION }}/g" \
-    content/base/Dockerfile* \
-    product/base/Dockerfile*
-  sed {{ sed_vars }} "s/^Executable = \/opt\/quarto\/.*\/bin\/quarto/Executable = \/opt\/quarto\/{{ QUARTO_VERSION }}\/bin\/quarto/g" \
-    connect/rstudio-connect.gcfg
-  sed {{ sed_vars }} "s/qver=\${QUARTO_VERSION:-.*}/qver=\${QUARTO_VERSION:-{{ QUARTO_VERSION }}}/g" \
-    content/base/maybe_install_quarto.sh
-  sed -i '/variable DEFAULT_QUARTO_VERSION/!b;n;c\ \ \ \ default = "{{ QUARTO_VERSION }}"' docker-bake.hcl
+  sed -i '/variable DRIVERS_VERSION/!b;n;c\ \ \ \ default = "{{ DRIVERS_VERSION }}"' docker-bake.hcl

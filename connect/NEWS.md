@@ -1,3 +1,8 @@
+# 2025-11-05
+
+- Remove outdated default values for `ARG` instructions related to versions.
+- **BREAKING**: Updated R, Python, and Quarto versions for 2025.10.0 release.
+
 # 2025-09-24
 
 - Revert to installing `tensorflow_model_server` binary from apt repo.

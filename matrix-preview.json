@@ -1,9 +1,0 @@
-[
-  {"product": "rstudio-workbench-preview", "dir": "workbench", "prefix": "RSW", "os": "bionic", "arch": "amd64", "version": "daily"},
-  {"product": "rstudio-workbench-preview", "dir": "workbench", "prefix": "RSW", "os": "bionic", "arch": "amd64", "version": "preview"},
-  {"product": "rstudio-connect-preview", "dir": "connect", "prefix": "RSC", "os": "bionic", "arch": "amd64", "version": "daily"},
-  {"product": "rstudio-connect-content-init-preview", "dir": "connect-content-init", "prefix": "RSC", "os": "bionic", "arch": "amd64", "version": "daily"},
-  {"product": "rstudio-package-manager-preview", "dir": "package-manager", "prefix": "RSPM", "os": "jammy", "arch": "amd64", "version": "daily"},
-  {"product": "r-session-complete-preview", "tag_prefix": "bionic-", "dir": "r-session-complete", "os": "bionic", "arch": "amd64", "prefix": "RSW", "version": "daily"},
-  {"product": "r-session-complete-preview", "tag_prefix": "bionic-", "dir": "r-session-complete", "os": "bionic", "arch": "amd64", "prefix": "RSW", "version": "preview"},
-]

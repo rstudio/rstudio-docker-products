@@ -28,11 +28,7 @@ variable DRIVERS_VERSION {
 }
 
 variable DEFAULT_QUARTO_VERSION {
-    default = "1.7.32"
-}
-
-variable DEFAULT_JUPYTERLAB_VERSION {
-    default = "3.6.7"
+    default = "1.8.25"
 }
 
 variable RSW_PREVIEW_URL_BASE  {
@@ -109,7 +105,7 @@ function get_tags {
 variable BASE_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
+            {os = "ubuntu2204", r_primary = "4.5.2", r_alternate = "4.4.3", py_primary = "3.13.9", py_alternate = "3.12.12"},
         ]
     }
 }
@@ -121,7 +117,7 @@ variable PRO_BUILD_MATRIX {
 variable PACKAGE_MANAGER_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
+            {os = "ubuntu2204", r_primary = "4.5.2", r_alternate = "4.4.3", py_primary = "3.13.9", py_alternate = "3.12.12"},
         ]
     }
 }
@@ -129,7 +125,7 @@ variable PACKAGE_MANAGER_BUILD_MATRIX {
 variable CONNECT_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13", quarto = DEFAULT_QUARTO_VERSION},
+            {os = "ubuntu2204", r_primary = "4.5.2", r_alternate = "4.4.3", py_primary = "3.13.9", py_alternate = "3.12.12", quarto = "1.8.25"},
         ]
     }
 }
@@ -145,7 +141,7 @@ variable CONNECT_CONTENT_INIT_BUILD_MATRIX {
 variable R_SESSION_COMPLETE_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
+            {os = "ubuntu2204", r_primary = "4.5.2", r_alternate = "4.4.3", py_primary = "3.13.9", py_alternate = "3.12.12"},
         ]
     }
 }
@@ -153,7 +149,7 @@ variable R_SESSION_COMPLETE_BUILD_MATRIX {
 variable WORKBENCH_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
+            {os = "ubuntu2204", r_primary = "4.5.2", r_alternate = "4.4.3", py_primary = "3.13.9", py_alternate = "3.12.12"},
         ]
     }
 }
@@ -231,7 +227,7 @@ target "product-base-dev" {
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
         TINI_VERSION = "0.19.0"
-        QUARTO_VERSION = "1.7.32"
+        QUARTO_VERSION = "1.8.25"
     }
 }
 
@@ -259,7 +255,7 @@ target "product-base-pro-dev" {
         PYTHON_VERSION_ALT = builds.py_alternate
         DRIVERS_VERSION = DRIVERS_VERSION
         TINI_VERSION = "0.19.0"
-        QUARTO_VERSION = "1.7.32"
+        QUARTO_VERSION = "1.8.25"
     }
 }
 
@@ -372,7 +368,6 @@ target "r-session-complete-daily" {
         R_VERSION_ALT = builds.r_alternate
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
-        JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
         RSW_VERSION = WORKBENCH_DAILY_VERSION
         RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = get_rsw_download_url(builds.os)
@@ -398,7 +393,6 @@ target "r-session-complete-preview" {
         R_VERSION_ALT = builds.r_alternate
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
-        JUPYTERLAB_VERSION = DEFAULT_JUPYTERLAB_VERSION
         RSW_VERSION = WORKBENCH_PREVIEW_VERSION
         RSW_NAME = "rstudio-workbench"
         RSW_DOWNLOAD_URL = get_rsw_download_url(builds.os)

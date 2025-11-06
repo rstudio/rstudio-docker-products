@@ -29,7 +29,7 @@ install_r_packages() {
 }
 
 
-for rvers in 4.1.3 4.2.3 4.3.3 4.4.3 4.5.1; do
+for rvers in 4.1.3 4.2.3 4.3.3 4.4.3 4.5.2; do
     # install r version
     curl -fsSL -O https://cdn.rstudio.com/r/ubuntu-$(lsb_release -rs | sed 's/\.//g')/pkgs/r-${rvers}_1_amd64.deb
     DEBIAN_FRONTEND=noninteractive apt-get install -y ./r-${rvers}_1_amd64.deb
