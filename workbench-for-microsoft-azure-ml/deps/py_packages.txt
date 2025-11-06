@@ -1,6 +1,4 @@
 pyarrow
-azureml-sdk
-azureml-core
 azure-ai-ml
 azure-identity
 numpy

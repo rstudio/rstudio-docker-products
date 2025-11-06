@@ -1,7 +1,9 @@
 # 2025-11-05
 
 - Remove outdated default values for `ARG` instructions related to versions.
-- **BREAKING**: Updated R and Python versions.
+- **BREAKING**
+  - Updated R and Python versions.
+  - Removed Azure ML SDK v1.
 
 # 2025-08-13
 
