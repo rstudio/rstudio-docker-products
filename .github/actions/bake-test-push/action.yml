@@ -120,17 +120,11 @@ runs:
         username: _json_key
         password: '${{ inputs.gcp-json }}'
 
-    # Build, test, and push image
-    - name: Set up containerd
-      if: ${{ inputs.soci-index == 'true' }}
-      uses: crazy-max/ghaction-setup-containerd@v3
-
     - name: Install soci
       if: ${{ inputs.soci-index == 'true' }}
       uses: lerentis/soci-installer@v1.2.0
       with:
         install-dir: /usr/local/bin
-        soci-release: v0.11.1
 
     - name: Build with oci format
       id: buildoci
@@ -188,7 +182,14 @@ runs:
       run: |
         sudo ctr i import --digests /tmp/${{ inputs.target }}.tar
         docker buildx bake --builder=posit-builder -f docker-bake.hcl ${{ inputs.target }} --print | jq -r '.target[].tags[]' > /tmp/${{ inputs.target }}-tags
+
+        # Push the base images to their registries first (required for containerd 2.x + soci convert)
+        xargs -i -a /tmp/${{ inputs.target }}-tags /bin/bash -c 'if [[ "{}" == *"ghcr.io"* ]]; then sudo ctr i push --user "${{ github.actor }}:${{ inputs.ghcr-token }}" {}; elif [[ "{}" == *"docker.io"* ]]; then sudo ctr i push --user "${{ inputs.dockerhub-username }}:${{ inputs.dockerhub-token }}" {}; else echo "Not sure what to do with {}"; fi'
+
+        # Now convert to SOCI v2 format (references the pushed images)
         xargs -i -a /tmp/${{ inputs.target }}-tags sudo soci convert {} {}
+
+        # Push the SOCI-converted manifests
         xargs -i -a /tmp/${{ inputs.target }}-tags /bin/bash -c 'if [[ "{}" == *"ghcr.io"* ]]; then sudo ctr i push --user "${{ github.actor }}:${{ inputs.ghcr-token }}" {}; elif [[ "{}" == *"docker.io"* ]]; then sudo ctr i push --user "${{ inputs.dockerhub-username }}:${{ inputs.dockerhub-token }}" {}; else echo "Not sure what to do with {}"; fi'
 
     - name: Push - ${{ inputs.push-image }}
