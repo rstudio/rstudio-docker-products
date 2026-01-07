@@ -11,7 +11,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 ARG RSC_VERSION
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 RUN mkdir -p /rsc-staging && \
     RSC_VERSION_URL=$(echo -n "${RSC_VERSION}" | sed 's/+/%2B/g') && \
     RSC_VERSION_CLEAN=$(echo $RSC_VERSION | sed -r 's/([0-9]+\.[0-9]+).*/\1/') && \
