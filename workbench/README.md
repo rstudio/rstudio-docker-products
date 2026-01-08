@@ -12,7 +12,7 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`jammy`, `ubuntu2204`, `jammy-2025.09.2`, `ubuntu2204-2025.09.2`](https://github.com/rstudio/rstudio-docker-products/blob/main/workbench/Dockerfile.ubuntu2204)
+* [`jammy`, `ubuntu2204`, `jammy-2026.01.0`, `ubuntu2204-2026.01.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/workbench/Dockerfile.ubuntu2204)
 
 # What is Posit Workbench?
 
@@ -143,7 +143,7 @@ still verify the container's licensing status by running the `status` command ag
 ```bash
 $ docker exec -it <container name> /lib/rstudio-server/bin/license-manager status
 TTY detected. Printing informational message about logging configuration. Logging configuration loaded from '/etc/rstudio/logging.conf'. Logging to '/var/log/rstudio/rstudio-server/license-manager.log'.
-RStudio License Manager 2024.04.2+764.pro1
+RStudio License Manager 2026.01.0+764.pro1
 
 -- License file status --
 
