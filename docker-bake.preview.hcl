@@ -264,7 +264,7 @@ target "package-manager-preview" {
     inherits = ["base"]
     target = "build"
 
-    name = "package-manager-preview-${builds.os}-${replace(PACKAGE_MANAGER_PREVIEW_VERSION, ".", "-")}"
+    name = "package-manager-preview-${builds.os}-${replace(tag_safe_version(PACKAGE_MANAGER_PREVIEW_VERSION), ".", "-")}"
     tags = get_tags(builds.os, "rstudio-package-manager-preview", PACKAGE_MANAGER_PREVIEW_VERSION, "preview")
 
     dockerfile = "Dockerfile.${builds.os}"
@@ -287,7 +287,7 @@ target "package-manager-daily" {
     inherits = ["base"]
     target = "build"
 
-    name = "package-manager-daily-${builds.os}-${replace(PACKAGE_MANAGER_DAILY_VERSION, ".", "-")}"
+    name = "package-manager-daily-${builds.os}-${replace(tag_safe_version(PACKAGE_MANAGER_DAILY_VERSION), ".", "-")}"
     tags = get_tags(builds.os, "rstudio-package-manager-preview", PACKAGE_MANAGER_DAILY_VERSION, "daily")
 
     dockerfile = "Dockerfile.${builds.os}"
