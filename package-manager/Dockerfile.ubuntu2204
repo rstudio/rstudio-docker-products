@@ -21,13 +21,15 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
 # Download RStudio Package Manager ---------------------------------------------#
 ARG RSPM_VERSION
 ARG RSPM_DOWNLOAD_URL=https://cdn.rstudio.com/package-manager/deb/amd64
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 # hadolint ignore=DL3015
-RUN curl -fsSL -O ${RSPM_DOWNLOAD_URL}/rstudio-pm_${RSPM_VERSION}_amd64.deb \
+RUN RSPM_VERSION_URL=$(echo -n "${RSPM_VERSION}" | sed 's/+/%2B/g') \
+    && curl -fsSL -o rstudio-pm.deb "${RSPM_DOWNLOAD_URL}/rstudio-pm_${RSPM_VERSION_URL}_amd64.deb" \
     # Post 7/25 packages
     && gpg --keyserver keys.openpgp.org --recv-keys 51C0B5BB19F92D60 \
-    && dpkg-sig --verify rstudio-pm_${RSPM_VERSION}_amd64.deb \
-    && RSTUDIO_INSTALL_NO_LICENSE_INITIALIZATION=1 apt-get install -y ./rstudio-pm_${RSPM_VERSION}_amd64.deb \
-    && rm rstudio-pm_${RSPM_VERSION}_amd64.deb \
+    && dpkg-sig --verify rstudio-pm.deb \
+    && RSTUDIO_INSTALL_NO_LICENSE_INITIALIZATION=1 apt-get install -y ./rstudio-pm.deb \
+    && rm rstudio-pm.deb \
     && (ln -s /opt/rstudio-pm/bin/rspm /usr/local/bin/rspm || echo "/usr/local/bin/rspm symlink already exists")
 
 # Add run script and set permissions -------------------------------------------#
