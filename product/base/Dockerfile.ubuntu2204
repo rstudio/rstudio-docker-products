@@ -12,6 +12,8 @@ ARG QUARTO_VERSION
 
 ARG SCRIPTS_DIR=/opt/positscripts
 
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
 COPY --chmod=0755 scripts/ubuntu/* ${SCRIPTS_DIR}/
 
 ### Update/upgrade system packages ###

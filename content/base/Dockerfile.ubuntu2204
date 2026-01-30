@@ -10,6 +10,8 @@ ARG R_INSTALLER=r-${R_VERSION}_1_amd64.deb
 
 ARG PYTHON_VERSION
 
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
 # Locale configuration --------------------------------------------------------#
 RUN apt-get update \
     && apt-get install -y --no-install-recommends locales \
@@ -83,7 +85,6 @@ RUN apt-get update \
 
 # From https://github.com/rstudio/r-docker/blob/master/base/bionic/Dockerfile
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update  \
     && apt-get install -y --no-install-recommends wget \
     && rm -rf /var/lib/apt/lists/* \

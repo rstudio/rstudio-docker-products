@@ -5,6 +5,8 @@ LABEL maintainer="Posit Docker <docker@posit.co>"
 ARG DRIVERS_VERSION
 ARG DEBIAN_FRONTEND=noninteractive
 
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
 RUN apt-get update -y \
     && apt-get install -y --no-install-recommends unixodbc unixodbc-dev \
     && rm -rf /var/lib/apt/lists/*

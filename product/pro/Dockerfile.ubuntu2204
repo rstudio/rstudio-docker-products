@@ -10,6 +10,8 @@ ARG DRIVERS_VERSION
 
 ARG SCRIPTS_DIR=/opt/positscripts
 
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
 COPY deps/r_packages.txt /tmp/r_packages.txt
 RUN ${SCRIPTS_DIR}/apt.sh --update upgrade \
     && ${SCRIPTS_DIR}/apt.sh install unixodbc unixodbc-dev \
