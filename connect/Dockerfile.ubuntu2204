@@ -2,8 +2,6 @@
 FROM product-base-pro AS build
 LABEL maintainer="Posit Docker <docker@posit.co>"
 
-COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
-
 ARG R_VERSION
 ARG R_VERSION_ALT
 ARG PYTHON_VERSION
@@ -12,12 +10,14 @@ ARG RSC_VERSION
 ARG QUARTO_VERSION
 ARG SCRIPTS_DIR=/opt/positscripts
 
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
+COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
+
 ### Install Quarto ###
 # TODO: Remove `HOME="/opt"` once Quarto supports custom install locations for TinyTeX, see quarto-dev/quarto-cli#11800.
 RUN HOME="/opt" QUARTO_VERSION=${QUARTO_VERSION} ${SCRIPTS_DIR}/install_quarto.sh --install-tinytex --add-path-tinytex \
     && ln -s /opt/quarto/${QUARTO_VERSION}/bin/quarto /usr/local/bin/quarto
-
-SHELL [ "/bin/bash", "-o", "pipefail", "-c"]
 
 ### Install TensorFlow Serving ###
 RUN echo "deb [arch=amd64] http://storage.googleapis.com/tensorflow-serving-apt stable tensorflow-model-server tensorflow-model-server-universal" > /etc/apt/sources.list.d/tensorflow-serving.list && \
