@@ -11,22 +11,26 @@ ARG PYTHON_VERSION_ALT
 ARG RSC_VERSION
 ARG QUARTO_VERSION
 ARG SCRIPTS_DIR=/opt/positscripts
+ARG TARGETARCH
 
 ### Install Quarto ###
 # TODO: Remove `HOME="/opt"` once Quarto supports custom install locations for TinyTeX, see quarto-dev/quarto-cli#11800.
-RUN HOME="/opt" QUARTO_VERSION=${QUARTO_VERSION} ${SCRIPTS_DIR}/install_quarto.sh --install-tinytex --add-path-tinytex \
+RUN HOME="/opt" TARGETARCH=${TARGETARCH} QUARTO_VERSION=${QUARTO_VERSION} ${SCRIPTS_DIR}/install_quarto.sh --install-tinytex --add-path-tinytex \
     && ln -s /opt/quarto/${QUARTO_VERSION}/bin/quarto /usr/local/bin/quarto
 
 SHELL [ "/bin/bash", "-o", "pipefail", "-c"]
 
-### Install TensorFlow Serving ###
-RUN echo "deb [arch=amd64] http://storage.googleapis.com/tensorflow-serving-apt stable tensorflow-model-server tensorflow-model-server-universal" > /etc/apt/sources.list.d/tensorflow-serving.list && \
-    curl -fsSL https://storage.googleapis.com/tensorflow-serving-apt/tensorflow-serving.release.pub.gpg | apt-key add -
-RUN apt-get update \
-    && apt-get install -yq --no-install-recommends \
-      tensorflow-model-server-universal \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+### Install TensorFlow Serving (amd64 only) ###
+RUN if [ "$TARGETARCH" = "amd64" ]; then \
+      curl -fsSL https://storage.googleapis.com/tensorflow-serving-apt/tensorflow-serving.release.pub.gpg | gpg --dearmor -o /usr/share/keyrings/tensorflow-serving.gpg && \
+      echo "deb [arch=amd64 signed-by=/usr/share/keyrings/tensorflow-serving.gpg] http://storage.googleapis.com/tensorflow-serving-apt stable tensorflow-model-server tensorflow-model-server-universal" > /etc/apt/sources.list.d/tensorflow-serving.list && \
+      apt-get update && \
+      apt-get install -yq --no-install-recommends tensorflow-model-server-universal && \
+      apt-get clean && \
+      rm -rf /var/lib/apt/lists/*; \
+    else \
+      echo "Skipping TensorFlow Serving installation (only available for amd64)"; \
+    fi
 
 ### Install Connect and additional dependencies ###
 RUN apt-get update --fix-missing \
@@ -36,7 +40,7 @@ RUN apt-get update --fix-missing \
       libpam-sss \
       libglib2.0-0 \
     && RSC_VERSION_URL=$(echo -n "${RSC_VERSION}" | sed 's/+/%2B/g') \
-    && curl -fsSL -o rstudio-connect.deb "https://cdn.rstudio.com/connect/$(echo $RSC_VERSION | sed -r 's/([0-9]+\.[0-9]+).*/\1/')/rstudio-connect_${RSC_VERSION_URL}~ubuntu22_amd64.deb" \
+    && curl -fsSL -o rstudio-connect.deb "https://cdn.rstudio.com/connect/$(echo $RSC_VERSION | sed -r 's/([0-9]+\.[0-9]+).*/\1/')/rstudio-connect_${RSC_VERSION_URL}~ubuntu22_${TARGETARCH}.deb" \
     # Post 7/25 packages
     && gpg --keyserver keys.openpgp.org --recv-keys 51C0B5BB19F92D60 \
     && dpkg-sig --verify rstudio-connect.deb \

@@ -27,6 +27,10 @@ variable DRIVERS_VERSION {
     default = "2025.07.0"
 }
 
+variable ARCH_SUFFIX {
+    default = ""
+}
+
 variable DEFAULT_QUARTO_VERSION {
     default = "1.8.25"
 }
@@ -68,30 +72,30 @@ function get_os_alt_name {
 function get_centos_tags {
     params = [os, product, product_version, build_type]
     result = [
-        "ghcr.io/rstudio/${product}:${get_tag_prefix()}${os}-${tag_safe_version(product_version)}",
-        "ghcr.io/rstudio/${product}:${get_tag_prefix()}${os}-${clean_version(product_version)}",
-        "ghcr.io/rstudio/${product}:${get_tag_prefix()}${os}-${build_type}",
-        "docker.io/rstudio/${product}:${get_tag_prefix()}${os}-${tag_safe_version(product_version)}",
-        "docker.io/rstudio/${product}:${get_tag_prefix()}${os}-${clean_version(product_version)}",
-        "docker.io/rstudio/${product}:${get_tag_prefix()}${os}-${build_type}",
+        "ghcr.io/rstudio/${product}:${get_tag_prefix()}${os}-${tag_safe_version(product_version)}${ARCH_SUFFIX}",
+        "ghcr.io/rstudio/${product}:${get_tag_prefix()}${os}-${clean_version(product_version)}${ARCH_SUFFIX}",
+        "ghcr.io/rstudio/${product}:${get_tag_prefix()}${os}-${build_type}${ARCH_SUFFIX}",
+        "docker.io/rstudio/${product}:${get_tag_prefix()}${os}-${tag_safe_version(product_version)}${ARCH_SUFFIX}",
+        "docker.io/rstudio/${product}:${get_tag_prefix()}${os}-${clean_version(product_version)}${ARCH_SUFFIX}",
+        "docker.io/rstudio/${product}:${get_tag_prefix()}${os}-${build_type}${ARCH_SUFFIX}",
     ]
 }
 
 function get_ubuntu_tags {
     params = [os, product, product_version, build_type]
     result = [
-        "ghcr.io/rstudio/${product}:${get_tag_prefix()}${os}-${tag_safe_version(product_version)}",
-        "ghcr.io/rstudio/${product}:${get_tag_prefix()}${get_os_alt_name(os)}-${tag_safe_version(product_version)}",
-        "ghcr.io/rstudio/${product}:${get_tag_prefix()}${os}-${clean_version(product_version)}",
-        "ghcr.io/rstudio/${product}:${get_tag_prefix()}${get_os_alt_name(os)}-${clean_version(product_version)}",
-        "ghcr.io/rstudio/${product}:${get_tag_prefix()}${os}-${build_type}",
-        "ghcr.io/rstudio/${product}:${get_tag_prefix()}${get_os_alt_name(os)}-${build_type}",
-        "docker.io/rstudio/${product}:${get_tag_prefix()}${os}-${tag_safe_version(product_version)}",
-        "docker.io/rstudio/${product}:${get_tag_prefix()}${get_os_alt_name(os)}-${tag_safe_version(product_version)}",
-        "docker.io/rstudio/${product}:${get_tag_prefix()}${os}-${clean_version(product_version)}",
-        "docker.io/rstudio/${product}:${get_tag_prefix()}${get_os_alt_name(os)}-${clean_version(product_version)}",
-        "docker.io/rstudio/${product}:${get_tag_prefix()}${os}-${build_type}",
-        "docker.io/rstudio/${product}:${get_tag_prefix()}${get_os_alt_name(os)}-${build_type}",
+        "ghcr.io/rstudio/${product}:${get_tag_prefix()}${os}-${tag_safe_version(product_version)}${ARCH_SUFFIX}",
+        "ghcr.io/rstudio/${product}:${get_tag_prefix()}${get_os_alt_name(os)}-${tag_safe_version(product_version)}${ARCH_SUFFIX}",
+        "ghcr.io/rstudio/${product}:${get_tag_prefix()}${os}-${clean_version(product_version)}${ARCH_SUFFIX}",
+        "ghcr.io/rstudio/${product}:${get_tag_prefix()}${get_os_alt_name(os)}-${clean_version(product_version)}${ARCH_SUFFIX}",
+        "ghcr.io/rstudio/${product}:${get_tag_prefix()}${os}-${build_type}${ARCH_SUFFIX}",
+        "ghcr.io/rstudio/${product}:${get_tag_prefix()}${get_os_alt_name(os)}-${build_type}${ARCH_SUFFIX}",
+        "docker.io/rstudio/${product}:${get_tag_prefix()}${os}-${tag_safe_version(product_version)}${ARCH_SUFFIX}",
+        "docker.io/rstudio/${product}:${get_tag_prefix()}${get_os_alt_name(os)}-${tag_safe_version(product_version)}${ARCH_SUFFIX}",
+        "docker.io/rstudio/${product}:${get_tag_prefix()}${os}-${clean_version(product_version)}${ARCH_SUFFIX}",
+        "docker.io/rstudio/${product}:${get_tag_prefix()}${get_os_alt_name(os)}-${clean_version(product_version)}${ARCH_SUFFIX}",
+        "docker.io/rstudio/${product}:${get_tag_prefix()}${os}-${build_type}${ARCH_SUFFIX}",
+        "docker.io/rstudio/${product}:${get_tag_prefix()}${get_os_alt_name(os)}-${build_type}${ARCH_SUFFIX}",
     ]
 }
 

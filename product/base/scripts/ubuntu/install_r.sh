@@ -121,7 +121,10 @@ install_r() {
     echo "$d$d Installing R $R_VERSION to $PREFIX/$R_VERSION $d$d"
     mkdir -p "$PREFIX"
 
-    local r_url="https://cdn.rstudio.com/r/ubuntu-${UBUNTU_VERSION//./}/pkgs/r-${R_VERSION}_1_amd64.deb"
+    # Use TARGETARCH if set (Docker builds), otherwise default to amd64
+    local ARCH=${TARGETARCH:-amd64}
+
+    local r_url="https://cdn.rstudio.com/r/ubuntu-${UBUNTU_VERSION//./}/pkgs/r-${R_VERSION}_1_${ARCH}.deb"
     curl -fsSL "$r_url" -o "/tmp/r-${R_VERSION}.deb"
 
     # shellcheck disable=SC2086

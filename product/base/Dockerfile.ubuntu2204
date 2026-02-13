@@ -9,6 +9,7 @@ ARG PYTHON_VERSION
 ARG PYTHON_VERSION_ALT
 ARG TINI_VERSION=0.19.0
 ARG QUARTO_VERSION
+ARG TARGETARCH
 
 ARG SCRIPTS_DIR=/opt/positscripts
 
@@ -24,24 +25,25 @@ RUN ${SCRIPTS_DIR}/apt.sh --update install lsof \
     && rm -f /tmp/apt_packages.txt
 
 ### Install tini ###
-ADD https://cdn.rstudio.com/platform/tini/v${TINI_VERSION}/tini-amd64 /tini
-ADD https://cdn.rstudio.com/platform/tini/v${TINI_VERSION}/tini-amd64.asc /tini.asc
-RUN gpg --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7 \
+RUN TINI_ARCH=${TARGETARCH:-amd64} \
+    && curl -fsSL "https://cdn.rstudio.com/platform/tini/v${TINI_VERSION}/tini-${TINI_ARCH}" -o /tini \
+    && curl -fsSL "https://cdn.rstudio.com/platform/tini/v${TINI_VERSION}/tini-${TINI_ARCH}.asc" -o /tini.asc \
+    && gpg --batch --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 595E85A6B1B4779EA4DAAEC70B588DFF0527A9B7 \
     && gpg --batch --verify /tini.asc /tini \
     && chmod +x /tini \
     && ln -s /tini /usr/local/bin/tini
 
 ### Install R versions ###
-RUN R_VERSION=${R_VERSION} ${SCRIPTS_DIR}/install_r.sh \
-    && R_VERSION=${R_VERSION_ALT} ${SCRIPTS_DIR}/install_r.sh \
+RUN TARGETARCH=${TARGETARCH} R_VERSION=${R_VERSION} ${SCRIPTS_DIR}/install_r.sh \
+    && TARGETARCH=${TARGETARCH} R_VERSION=${R_VERSION_ALT} ${SCRIPTS_DIR}/install_r.sh \
     && ln -s /opt/R/${R_VERSION} /opt/R/default \
     && ln -s /opt/R/default/bin/R /usr/local/bin/R \
     && ln -s /opt/R/default/bin/Rscript /usr/local/bin/Rscript
 
 ### Install Python versions ###
 COPY deps/requirements.txt /tmp/requirements.txt
-RUN PYTHON_VERSION=${PYTHON_VERSION} ${SCRIPTS_DIR}/install_python.sh -r /tmp/requirements.txt \
-    && PYTHON_VERSION=${PYTHON_VERSION_ALT} ${SCRIPTS_DIR}/install_python.sh -r /tmp/requirements.txt \
+RUN TARGETARCH=${TARGETARCH} PYTHON_VERSION=${PYTHON_VERSION} ${SCRIPTS_DIR}/install_python.sh -r /tmp/requirements.txt \
+    && TARGETARCH=${TARGETARCH} PYTHON_VERSION=${PYTHON_VERSION_ALT} ${SCRIPTS_DIR}/install_python.sh -r /tmp/requirements.txt \
     && ln -s /opt/python/${PYTHON_VERSION} /opt/python/default \
     && rm -f /tmp/requirements.txt
 

@@ -19,6 +19,10 @@ variable GIT_SHA {
     default = null
 }
 
+variable ARCH_SUFFIX {
+    default = ""
+}
+
 function tag_safe_version {
     params = [version]
     result = replace(version, "+", "-")
@@ -38,14 +42,14 @@ function get_centos_tags {
     params = [os, product, product_version]
     # Bake automatically collapses any duplicate tags where clean versions and tag safe versions may be the same.
     result = [
-        "ghcr.io/rstudio/${product}:${os}-${tag_safe_version(product_version)}",
-        "ghcr.io/rstudio/${product}:${os}-${clean_version(product_version)}",
-        "ghcr.io/rstudio/${product}:${os}-${clean_version(product_version)}--${GIT_SHA}",
-        "ghcr.io/rstudio/${product}:${os}",
-        "docker.io/rstudio/${product}:${os}-${tag_safe_version(product_version)}",
-        "docker.io/rstudio/${product}:${os}-${clean_version(product_version)}",
-        "docker.io/rstudio/${product}:${os}-${clean_version(product_version)}--${GIT_SHA}",
-        "docker.io/rstudio/${product}:${os}",
+        "ghcr.io/rstudio/${product}:${os}-${tag_safe_version(product_version)}${ARCH_SUFFIX}",
+        "ghcr.io/rstudio/${product}:${os}-${clean_version(product_version)}${ARCH_SUFFIX}",
+        "ghcr.io/rstudio/${product}:${os}-${clean_version(product_version)}--${GIT_SHA}${ARCH_SUFFIX}",
+        "ghcr.io/rstudio/${product}:${os}${ARCH_SUFFIX}",
+        "docker.io/rstudio/${product}:${os}-${tag_safe_version(product_version)}${ARCH_SUFFIX}",
+        "docker.io/rstudio/${product}:${os}-${clean_version(product_version)}${ARCH_SUFFIX}",
+        "docker.io/rstudio/${product}:${os}-${clean_version(product_version)}--${GIT_SHA}${ARCH_SUFFIX}",
+        "docker.io/rstudio/${product}:${os}${ARCH_SUFFIX}",
     ]
 }
 
@@ -53,22 +57,22 @@ function get_ubuntu_tags {
     params = [os, product, product_version]
     # Bake automatically collapses any duplicate tags where clean versions and tag safe versions may be the same.
     result = [
-        "ghcr.io/rstudio/${product}:${os}-${tag_safe_version(product_version)}",
-        "ghcr.io/rstudio/${product}:${os}-${clean_version(product_version)}",
-        "ghcr.io/rstudio/${product}:${os}-${clean_version(product_version)}--${GIT_SHA}",
-        "ghcr.io/rstudio/${product}:${get_os_alt_name(os)}-${tag_safe_version(product_version)}",
-        "ghcr.io/rstudio/${product}:${get_os_alt_name(os)}-${clean_version(product_version)}",
-        "ghcr.io/rstudio/${product}:${get_os_alt_name(os)}-${clean_version(product_version)}--${GIT_SHA}",
-        "ghcr.io/rstudio/${product}:${get_os_alt_name(os)}",
-        "ghcr.io/rstudio/${product}:${os}",
-        "docker.io/rstudio/${product}:${get_os_alt_name(os)}-${tag_safe_version(product_version)}",
-        "docker.io/rstudio/${product}:${get_os_alt_name(os)}-${clean_version(product_version)}",
-        "docker.io/rstudio/${product}:${get_os_alt_name(os)}-${clean_version(product_version)}--${GIT_SHA}",
-        "docker.io/rstudio/${product}:${os}-${tag_safe_version(product_version)}",
-        "docker.io/rstudio/${product}:${os}-${clean_version(product_version)}",
-        "docker.io/rstudio/${product}:${os}-${clean_version(product_version)}--${GIT_SHA}",
-        "docker.io/rstudio/${product}:${get_os_alt_name(os)}",
-        "docker.io/rstudio/${product}:${os}",
+        "ghcr.io/rstudio/${product}:${os}-${tag_safe_version(product_version)}${ARCH_SUFFIX}",
+        "ghcr.io/rstudio/${product}:${os}-${clean_version(product_version)}${ARCH_SUFFIX}",
+        "ghcr.io/rstudio/${product}:${os}-${clean_version(product_version)}--${GIT_SHA}${ARCH_SUFFIX}",
+        "ghcr.io/rstudio/${product}:${get_os_alt_name(os)}-${tag_safe_version(product_version)}${ARCH_SUFFIX}",
+        "ghcr.io/rstudio/${product}:${get_os_alt_name(os)}-${clean_version(product_version)}${ARCH_SUFFIX}",
+        "ghcr.io/rstudio/${product}:${get_os_alt_name(os)}-${clean_version(product_version)}--${GIT_SHA}${ARCH_SUFFIX}",
+        "ghcr.io/rstudio/${product}:${get_os_alt_name(os)}${ARCH_SUFFIX}",
+        "ghcr.io/rstudio/${product}:${os}${ARCH_SUFFIX}",
+        "docker.io/rstudio/${product}:${get_os_alt_name(os)}-${tag_safe_version(product_version)}${ARCH_SUFFIX}",
+        "docker.io/rstudio/${product}:${get_os_alt_name(os)}-${clean_version(product_version)}${ARCH_SUFFIX}",
+        "docker.io/rstudio/${product}:${get_os_alt_name(os)}-${clean_version(product_version)}--${GIT_SHA}${ARCH_SUFFIX}",
+        "docker.io/rstudio/${product}:${os}-${tag_safe_version(product_version)}${ARCH_SUFFIX}",
+        "docker.io/rstudio/${product}:${os}-${clean_version(product_version)}${ARCH_SUFFIX}",
+        "docker.io/rstudio/${product}:${os}-${clean_version(product_version)}--${GIT_SHA}${ARCH_SUFFIX}",
+        "docker.io/rstudio/${product}:${get_os_alt_name(os)}${ARCH_SUFFIX}",
+        "docker.io/rstudio/${product}:${os}${ARCH_SUFFIX}",
     ]
 }
 

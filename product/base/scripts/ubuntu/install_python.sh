@@ -87,7 +87,10 @@ install_python() {
     echo "$d$d Installing Python $PYTHON_VERSION to $PREFIX/$PYTHON_VERSION $d$d"
     mkdir -p "$PREFIX"
 
-    local python_url="https://cdn.rstudio.com/python/ubuntu-${UBUNTU_VERSION//./}/pkgs/python-${PYTHON_VERSION}_1_amd64.deb"
+    # Use TARGETARCH if set (Docker builds), otherwise default to amd64
+    local ARCH=${TARGETARCH:-amd64}
+
+    local python_url="https://cdn.rstudio.com/python/ubuntu-${UBUNTU_VERSION//./}/pkgs/python-${PYTHON_VERSION}_1_${ARCH}.deb"
     curl -fsSL "$python_url" -o "/tmp/python-${PYTHON_VERSION}.deb"
 
     # shellcheck disable=SC2086

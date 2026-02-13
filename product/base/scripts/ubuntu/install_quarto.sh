@@ -100,8 +100,11 @@ install_quarto() {
         return
     fi
 
+    # Use TARGETARCH if set (Docker builds), otherwise default to amd64
+    local ARCH=${TARGETARCH:-amd64}
+
     mkdir -p "/opt/quarto/${QUARTO_VERSION}"
-    curl -fsSL "https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-amd64.tar.gz" | tar xzf - -C "/opt/quarto/${QUARTO_VERSION}" --strip-components=1
+    curl -fsSL "https://github.com/quarto-dev/quarto-cli/releases/download/v${QUARTO_VERSION}/quarto-${QUARTO_VERSION}-linux-${ARCH}.tar.gz" | tar xzf - -C "/opt/quarto/${QUARTO_VERSION}" --strip-components=1
 }
 
 update_tinytex() {

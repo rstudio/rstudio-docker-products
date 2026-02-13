@@ -53,6 +53,10 @@ inputs:
     description: Flag to create SOCI index alongside image
     default: false
     type: boolean
+  arch:
+    description: Target architecture (amd64, arm64). If specified, tags will include -arch suffix for multi-arch builds
+    default: ""
+    type: string
 
 runs:
   using: "composite"
@@ -126,10 +130,24 @@ runs:
       with:
         install-dir: /usr/local/bin
 
+    - name: Set architecture suffix
+      id: arch-suffix
+      shell: bash
+      run: |
+        if [[ -n "${{ inputs.arch }}" ]]; then
+          echo "suffix=-${{ inputs.arch }}" >> $GITHUB_OUTPUT
+          echo "ARCH_SUFFIX=-${{ inputs.arch }}" >> $GITHUB_ENV
+        else
+          echo "suffix=" >> $GITHUB_OUTPUT
+          echo "ARCH_SUFFIX=" >> $GITHUB_ENV
+        fi
+
     - name: Build with oci format
       id: buildoci
       if: ${{ inputs.soci-index == 'true' }}
       uses: docker/bake-action@v6
+      env:
+        ARCH_SUFFIX: ${{ steps.arch-suffix.outputs.suffix }}
       with:
         targets: "${{ inputs.target }}"
         push: false
@@ -142,6 +160,8 @@ runs:
       id: build
       if: ${{ inputs.soci-index == 'false' }}
       uses: docker/bake-action@v6
+      env:
+        ARCH_SUFFIX: ${{ steps.arch-suffix.outputs.suffix }}
       with:
         targets: "${{ inputs.target }}"
         push: false
@@ -195,6 +215,8 @@ runs:
     - name: Push - ${{ inputs.push-image }}
       if: ${{ inputs.soci-index == 'false' && inputs.push-image == 'true' }}
       uses: docker/bake-action@v6
+      env:
+        ARCH_SUFFIX: ${{ steps.arch-suffix.outputs.suffix }}
       with:
         targets: "${{ inputs.target }}"
         push: ${{ inputs.push-image }}

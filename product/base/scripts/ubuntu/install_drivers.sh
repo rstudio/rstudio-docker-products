@@ -10,6 +10,15 @@ if [ -z "$DRIVERS_VERSION" ]; then
     exit 1
 fi
 
+# Use TARGETARCH if set (Docker builds), otherwise default to amd64
+ARCH=${TARGETARCH:-amd64}
+
+# Professional Drivers are only available for amd64
+if [ "$ARCH" != "amd64" ]; then
+    echo "$d Skipping Professional Drivers installation on $ARCH (only available for amd64) $d"
+    exit 0
+fi
+
 echo "$d$d Installing Professional Drivers ${DRIVERS_VERSION} $d$d"
 
 drivers_url="https://cdn.rstudio.com/drivers/7C152C12/installer/rstudio-drivers_${DRIVERS_VERSION}_amd64.deb"
