@@ -14,8 +14,15 @@ else
   exit 1
 fi
 
+# detect architecture
+case $(uname -m) in
+  x86_64)  GOSS_ARCH="amd64" ;;
+  aarch64) GOSS_ARCH="arm64" ;;
+  *)       echo "Unsupported architecture: $(uname -m)"; exit 1 ;;
+esac
+
 # install goss to tmp location and make executable
-curl -fsSL https://github.com/aelsabbahy/goss/releases/download/v$GOSS_VERSION/goss-linux-amd64 -o /tmp/goss \
+curl -fsSL "https://github.com/aelsabbahy/goss/releases/download/v${GOSS_VERSION}/goss-linux-${GOSS_ARCH}" -o /tmp/goss \
   && chmod +x /tmp/goss \
   && GOSS=/tmp/goss
 

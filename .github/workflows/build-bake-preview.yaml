@@ -213,8 +213,17 @@ jobs:
 
   connect-content-init-daily:
     needs: [versions]
-    name: Connect Content Init - Daily
-    runs-on: ubuntu-latest-4x
+    name: Connect Content Init - Daily (${{ matrix.arch }})
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [amd64, arm64]
+        include:
+          - arch: amd64
+            runner: ubuntu-latest-4x
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+    runs-on: ${{ matrix.runner }}
 
     env:
       target: "connect-content-init-daily"
@@ -226,7 +235,7 @@ jobs:
       BRANCH: ${{ github.head_ref || github.ref_name }}
 
     concurrency:
-      group: bake-connect-content-init-daily-${{ github.ref }}
+      group: bake-connect-content-init-daily-${{ matrix.arch }}-${{ github.ref }}
       cancel-in-progress: true
 
     steps:
@@ -250,6 +259,65 @@ jobs:
           dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
           snyk-org: ${{ secrets.SNYK_ORG }}
           snyk-token: '${{ secrets.SNYK_TOKEN }}'
+          arch: ${{ matrix.arch }}
+
+  connect-content-init-daily-manifest:
+    needs: [versions, connect-content-init-daily]
+    if: github.ref == 'refs/heads/main'
+    name: Connect Content Init - Daily (Manifest)
+    runs-on: ubuntu-latest
+
+    env:
+      CONNECT_DAILY_VERSION: ${{ needs.versions.outputs.CONNECT_DAILY_VERSION }}
+
+    steps:
+      - name: Login to ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Create and push multi-arch manifest
+        run: |
+          set -euo pipefail
+
+          VERSION="${CONNECT_DAILY_VERSION}"
+          VERSION_SAFE=$(echo "$VERSION" | sed 's/+/-/g')
+          VERSION_CLEAN=$(echo "$VERSION" | sed 's/[+|-].*//')
+
+          # Verify arch-specific images exist before creating manifests
+          echo "Verifying arch-specific images exist..."
+          for registry in ghcr.io docker.io; do
+            for arch in amd64 arm64; do
+              image="${registry}/rstudio/rstudio-connect-content-init-preview:ubuntu2204-${VERSION_SAFE}-${arch}"
+              echo "Checking ${image}..."
+              if ! docker manifest inspect "${image}" > /dev/null 2>&1; then
+                echo "ERROR: Required image not found: ${image}"
+                exit 1
+              fi
+            done
+          done
+
+          # Create manifests for each tag variant
+          echo "Creating multi-arch manifests..."
+          for registry in ghcr.io docker.io; do
+            for tag in "ubuntu2204-${VERSION_SAFE}" "jammy-${VERSION_SAFE}" "ubuntu2204-${VERSION_CLEAN}" "jammy-${VERSION_CLEAN}" "ubuntu2204-daily" "jammy-daily"; do
+              echo "Creating manifest: ${registry}/rstudio/rstudio-connect-content-init-preview:${tag}"
+              docker manifest create "${registry}/rstudio/rstudio-connect-content-init-preview:${tag}" \
+                --amend "${registry}/rstudio/rstudio-connect-content-init-preview:${tag}-amd64" \
+                --amend "${registry}/rstudio/rstudio-connect-content-init-preview:${tag}-arm64"
+              docker manifest push "${registry}/rstudio/rstudio-connect-content-init-preview:${tag}"
+            done
+          done
+
+          echo "Multi-arch manifests created successfully"
 
   package-manager-preview:
     needs: [versions]
