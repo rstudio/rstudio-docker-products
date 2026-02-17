@@ -176,5 +176,5 @@ LABEL \
      azure.ii.endpoints='[{"label":"connect","target":8787,"protocol":"http"}]' \
      org.opencontainers.image.description='A professional integrated development environment for data science teams using R and Python' \
      org.opencontainers.image.title='RStudio Workbench' \
-     org.opencontainers.image.version='2026.01.0+392.pro5' \
+     org.opencontainers.image.version='2026.01.1+403.pro11' \
      org.opencontainers.image.url='https://www.rstudio.com/products/workbench/'
