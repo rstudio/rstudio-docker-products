@@ -12,7 +12,7 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`jammy`, `ubuntu2204`, `jammy-2026.01.0`, `ubuntu2204-2026.01.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/workbench/Dockerfile.ubuntu2204)
+* [`jammy`, `ubuntu2204`, `jammy-2026.01.1`, `ubuntu2204-2026.01.1`](https://github.com/rstudio/rstudio-docker-products/blob/main/workbench/Dockerfile.ubuntu2204)
 
 # What is Posit Workbench?
 
