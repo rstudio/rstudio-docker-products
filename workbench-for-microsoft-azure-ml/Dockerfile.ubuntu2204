@@ -28,10 +28,11 @@ ENV DIAGNOSTIC_ONLY false
 
 ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
 
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
 COPY --chmod=0644 TurboActivate.dat /opt/rstudio-license/license-manager.conf
 COPY deps/* /tmp
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update --fix-missing \
     && apt-get upgrade -yq \
     && xargs -a /tmp/apt_packages.txt apt-get install -yq --no-install-recommends \
@@ -126,6 +127,10 @@ CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
 
 FROM build AS clamav
 
+ARG CLAMAV_MIRROR=https://cdn.rstudio.com/platform/clamav
+
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
 # Set up ClamAV
 RUN apt-get update \
     && apt-get install --no-install-recommends -y clamav \
@@ -133,8 +138,6 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 # Reconfigure freshclam to get database from our S3 location
-ARG CLAMAV_MIRROR=https://cdn.rstudio.com/platform/clamav
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN grep -v "DatabaseMirror" /etc/clamav/freshclam.conf > /etc/clamav/freshclam.conf.new \
     && echo "DatabaseMirror ${CLAMAV_MIRROR}" >> /etc/clamav/freshclam.conf.new \
     && mv /etc/clamav/freshclam.conf.new /etc/clamav/freshclam.conf

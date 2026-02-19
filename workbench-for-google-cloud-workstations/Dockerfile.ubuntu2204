@@ -29,6 +29,8 @@ ENV DIAGNOSTIC_ONLY false
 ENV LICENSE_MANAGER_PATH /opt/rstudio-license
 ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
 
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
 ### Copy scripts from Posit Base ###
 COPY --from=posit_base /opt/positscripts /opt/positscripts
 
@@ -80,7 +82,6 @@ RUN ${SCRIPTS_DIR}/apt.sh --update upgrade \
     && /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.posit.co/cran/__linux__/jammy/latest")'
 
 ### Install Workbench ###
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN curl -fsSL -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION//+/-}-amd64.deb" \
     # Post 7/25 packages
     && gpg --keyserver keys.openpgp.org --recv-keys 51C0B5BB19F92D60 \
