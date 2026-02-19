@@ -58,7 +58,11 @@ RUN /opt/python/"${PYTHON_VERSION}"/bin/python -m venv /opt/python/jupyter \
     && /opt/python/${PYTHON_VERSION_ALT}/bin/python -m ipykernel install --name py${PYTHON_VERSION_ALT} --display-name "Python ${PYTHON_VERSION_ALT}" \
     && /opt/python/jupyter/bin/python -m pip cache purge
 
-ENV PATH="/opt/python/jupyter/bin:${PATH}"
+### Set Quarto to use the venv with jupyterlab requirements installed
+ENV QUARTO_PYTHON="/opt/python/jupyter/bin"
+
+### Set installed python onto PATH
+ENV PATH="/opt/python/${PYTHON_VERSION}/bin:${PATH}"
 
 COPY vscode.extensions.conf /etc/rstudio/vscode.extensions.conf
 
