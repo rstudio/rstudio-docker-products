@@ -1,3 +1,7 @@
+# 2026-02-23
+
+- Remove `virtualenv`
+
 # 2025-11-05
 
 - Remove outdated default values for `ARG` instructions related to versions.

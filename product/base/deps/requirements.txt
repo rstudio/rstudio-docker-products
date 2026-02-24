@@ -1,4 +1,3 @@
 pip
 setuptools
-virtualenv
 wheel>=0.38.0
