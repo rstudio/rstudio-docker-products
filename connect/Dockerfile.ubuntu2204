@@ -20,13 +20,14 @@ RUN HOME="/opt" QUARTO_VERSION=${QUARTO_VERSION} ${SCRIPTS_DIR}/install_quarto.s
 SHELL [ "/bin/bash", "-o", "pipefail", "-c"]
 
 ### Install TensorFlow Serving ###
-RUN echo "deb [arch=amd64] http://storage.googleapis.com/tensorflow-serving-apt stable tensorflow-model-server tensorflow-model-server-universal" > /etc/apt/sources.list.d/tensorflow-serving.list && \
-    curl -fsSL https://storage.googleapis.com/tensorflow-serving-apt/tensorflow-serving.release.pub.gpg | apt-key add -
-RUN apt-get update \
-    && apt-get install -yq --no-install-recommends \
-      tensorflow-model-server-universal \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+# TODO: Reenable TensorFlow Serving once the issue with bucket access is resolved, see https://github.com/tensorflow/serving/issues/4131
+#RUN echo "deb [arch=amd64] http://storage.googleapis.com/tensorflow-serving-apt stable tensorflow-model-server tensorflow-model-server-universal" > /etc/apt/sources.list.d/tensorflow-serving.list && \
+#    curl -fsSL https://storage.googleapis.com/tensorflow-serving-apt/tensorflow-serving.release.pub.gpg | apt-key add -
+#RUN apt-get update \
+#    && apt-get install -yq --no-install-recommends \
+#      tensorflow-model-server-universal \
+#    && apt-get clean \
+#    && rm -rf /var/lib/apt/lists/*
 
 ### Install Connect and additional dependencies ###
 RUN apt-get update --fix-missing \

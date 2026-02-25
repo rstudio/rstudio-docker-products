@@ -1,3 +1,7 @@
+# 2026-02-25
+
+- Temporarily disable TensorFlow Serving due to issues with the bucket access permissions for install.
+
 # 2025-11-05
 
 - Remove outdated default values for `ARG` instructions related to versions.
