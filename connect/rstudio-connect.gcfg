@@ -37,9 +37,9 @@ Executable = /opt/python/{{PYTHON_VERSION_ALT}}/bin/python
 Enabled = true
 Executable = /opt/quarto/{{QUARTO_VERSION}}/bin/quarto
 
-[TensorFlow]
-Enabled = true
-Executable = /usr/bin/tensorflow_model_server
+; [TensorFlow]
+; Enabled = true
+; Executable = /usr/bin/tensorflow_model_server
 
 [RPackageRepository "CRAN"]
 URL = https://packagemanager.posit.co/cran/__linux__/jammy/latest
