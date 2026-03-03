@@ -60,13 +60,15 @@ RUN apt-get update \
     && rm ./rstudio-workbench.deb \
     && apt-get autoremove -y \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /var/lib/rstudio-server/r-versions \
-    && rm -rf /var/lib/rstudio-launcher/Local/jobs/*
+    && rm -rf /var/lib/apt/lists/*
 
-# Workaround to ensure no pre-generated certificates are included in image distributions.
-# This happens in the step immediately following Workbench installation in case the certificates are generated.
-RUN rm -f /etc/rstudio/launcher.pem /etc/rstudio/launcher.pub
+# Workaround to ensure no initialization files are included in image distributions.
+# This happens in the step immediately following Workbench installation in case any were created.
+RUN rm -f /etc/rstudio/launcher.pem \
+      /etc/rstudio/launcher.pub \
+      /var/lib/rstudio-server/secure-cookie-key \
+      /var/lib/rstudio-server/session-rpc-key \
+    && rm -rf /var/lib/rstudio-launcher/Local/jobs/*
 
 ### Install Quarto to PATH ###
 RUN ln -s /lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto

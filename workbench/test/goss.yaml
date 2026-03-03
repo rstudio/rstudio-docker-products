@@ -130,6 +130,18 @@ file:
     linked-to: /opt/.TinyTeX/bin/x86_64-linux/pdflatex
     mode: "0777"
 
+  # Check that startup files were not accidentally included in build
+  /etc/rstudio/launcher.pem:
+    exists: false
+  /etc/rstudio/launcher.pub:
+    exists: false
+  /var/lib/rstudio-server/secure-cookie-key:
+    exists: false
+  /var/lib/rstudio-server/session-rpc-key:
+    exists: false
+  /var/lib/rstudio-launcher/Local/jobs/buildkitsystem:
+    exists: false
+
 command:
   "su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'":
     title: workbench_monitor_log_file_creates
