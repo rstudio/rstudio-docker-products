@@ -56,8 +56,14 @@ RUN apt-get update \
     && rm -f /usr/lib/rstudio-server/bin/license-manager \
     && apt-get autoremove -y \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /var/lib/rstudio-server/r-versions \
+    && rm -rf /var/lib/apt/lists/*
+
+# Workaround to ensure no initialization files are included in image distributions.
+# This happens in the step immediately following Workbench installation in case any were created.
+RUN rm -f /etc/rstudio/launcher.pem \
+      /etc/rstudio/launcher.pub \
+      /var/lib/rstudio-server/secure-cookie-key \
+      /var/lib/rstudio-server/session-rpc-key \
     && rm -rf /var/lib/rstudio-launcher/Local/jobs/*
 
 # Workaround to ensure no pre-generated certificates are included in image distributions.

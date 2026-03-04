@@ -59,6 +59,20 @@ file:
     linked-to: /opt/.TinyTeX/bin/x86_64-linux/pdflatex
     mode: "0777"
 
+  # Check that startup files were not accidentally included in build
+  /etc/rstudio/launcher.pem:
+    exists: false
+  /etc/rstudio/launcher.pub:
+    exists: false
+  /var/lib/rstudio-server/secure-cookie-key:
+    exists: false
+  /var/lib/rstudio-server/session-rpc-key:
+    exists: false
+  /var/lib/rstudio-launcher/Local/jobs/buildkitsystem:
+    exists: false
+  /var/lib/rstudio-launcher/Local/jobs/buildkitsandbox:
+    exists: false
+
 command:
   "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/jupyter/bin/jupyter nbconvert --to notebook --stdin --stdout":
     title: jupyter_works
