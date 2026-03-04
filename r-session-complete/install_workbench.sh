@@ -22,6 +22,7 @@ apt-get install -yq $(dpkg -I $deb_file | grep '^ Depends:' | sed 's/^ Depends: 
 # Patch the installer to not activate the service
 echo "$d Patching ${deb_file} $d"
 dpkg --unpack "${deb_file}"
+sed -i 's/^rstudio-server force-suspend-all/# rstudio-server force-suspend-all/' /var/lib/dpkg/info/rstudio-server.postinst
 sed -i 's/systemctl enable rstudio-server.service/# systemctl enable rstudio-server.service/g' /var/lib/dpkg/info/rstudio-server.postinst
 sed -i 's/systemctl enable rstudio-launcher.service/# systemctl enable rstudio-launcher.service/g' /var/lib/dpkg/info/rstudio-server.postinst
 awk '/if test "\$RSTUDIO_INSTALL_NO_LICENSE_INITIALIZATION" != "1"/ { skip=1 }
