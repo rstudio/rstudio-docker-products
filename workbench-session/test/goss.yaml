@@ -4,8 +4,6 @@ file:
   /opt/rstudio-drivers:
     exists: true
     filetype: directory
-  /var/lib/rstudio-server/r-versions:
-    exists: false
   /etc/rstudio/vscode.extensions.conf:
     exists: true
   /etc/rstudio/positron.extensions.conf:

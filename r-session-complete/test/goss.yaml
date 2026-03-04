@@ -21,8 +21,6 @@ file:
   /opt/rstudio-drivers:
     exists: true
     filetype: directory
-  /var/lib/rstudio-server/r-versions:
-    exists: false
   /usr/local/bin/quarto:
     exists: true
     filetype: symlink
