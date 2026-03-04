@@ -70,6 +70,8 @@ file:
     exists: false
   /var/lib/rstudio-launcher/Local/jobs/buildkitsandbox:
     exists: false
+  /var/lib/rstudio-server/rstudio.sqlite:
+    exists: false
 
 command:
   "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/jupyter/bin/jupyter nbconvert --to notebook --stdin --stdout":

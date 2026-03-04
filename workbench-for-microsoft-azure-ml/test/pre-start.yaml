@@ -28,3 +28,5 @@ file:
     exists: false
   /var/lib/rstudio-launcher/Local/jobs/buildkitsandbox:
     exists: false
+  /var/lib/rstudio-server/rstudio.sqlite:
+    exists: false
