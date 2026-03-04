@@ -1,0 +1,30 @@
+port:
+  tcp:8787:
+    listening: false
+    ip:
+    - 0.0.0.0
+  tcp:5559:
+    listening: false
+    ip:
+    - 127.0.0.1
+
+process:
+  rserver:
+    running: false
+  rstudio-launche:
+    running: false
+
+file:
+  # Check that startup files were not accidentally included in build
+  /etc/rstudio/launcher.pem:
+    exists: false
+  /etc/rstudio/launcher.pub:
+    exists: false
+  /var/lib/rstudio-server/secure-cookie-key:
+    exists: false
+  /var/lib/rstudio-server/session-rpc-key:
+    exists: false
+  /var/lib/rstudio-launcher/Local/jobs/buildkitsystem:
+    exists: false
+  /var/lib/rstudio-launcher/Local/jobs/buildkitsandbox:
+    exists: false

@@ -59,9 +59,6 @@ file:
     exists: true
   /usr/local/bin/jupyter:
     exists: true
-  # this file gets created at startup?
-  # /var/lib/rstudio-server/r-versions:
-  #   exists: false
   /usr/lib/rstudio-server/bin/rserver:
     exists: true
   /usr/lib/rstudio-server/bin/rstudio-server:
@@ -78,6 +75,8 @@ file:
   /usr/lib/rstudio-server/bin/code-server/bin/code-server:
     exists: false
   /var/lib/rstudio-launcher/Local/jobs/buildkitsandbox:
+    exists: false
+  /var/lib/rstudio-launcher/Local/jobs/buildkitsystem:
     exists: false
   /etc/rstudio/vscode.conf:
     exists: true
@@ -142,9 +141,9 @@ command:
     title: workbench_version_matches
     exit-status: 0
     stdout: [
-       "{{ .Env.RSW_VERSION }}",
-       "Workbench"
-     ]
+      "{{ .Env.RSW_VERSION }}",
+      "Workbench"
+    ]
   "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/jupyter/bin/jupyter nbconvert --to notebook --stdin --stdout":
     title: jupyter_works
     timeout: 60000
