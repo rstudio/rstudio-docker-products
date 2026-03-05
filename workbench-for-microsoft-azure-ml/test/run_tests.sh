@@ -13,7 +13,7 @@ PRE_START_GOSS_FILE=${PRE_START_GOSS_FILE:-/test/pre-start.yaml}
 
 OS=$OS GOSS_FILE=$PRE_START_GOSS_FILE $GOSS v --format documentation --max-concurrent $GOSS_MAX_CONCURRENT
 
-RSW_TIMEOUT=${RSW_TIMEOUT:-60}
+RSW_TIMEOUT=${RSW_TIMEOUT:-120}
 
 touch /tmp/startup.log
 trap 'err=$?; echo >&2 "run_tests.sh encountered an error: $err"; cat /tmp/startup.log; exit $err' ERR

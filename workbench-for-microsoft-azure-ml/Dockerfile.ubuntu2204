@@ -38,33 +38,16 @@ RUN apt-get update --fix-missing \
     && rm /tmp/apt_packages.txt \
     && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update \
-    && curl -fsSL -o rstudio-workbench.deb "${RSW_DOWNLOAD_URL}/${RSW_NAME}-${RSW_VERSION//+/-}-amd64.deb" \
-    # Post 7/25 packages
-    && gpg --keyserver keys.openpgp.org --recv-keys 51C0B5BB19F92D60 \
-    && dpkg-sig --verify ./rstudio-workbench.deb \
-    && apt-get install -yq --no-install-recommends ./rstudio-workbench.deb \
-    # a wild hack to ensure that workbench can install _and start_ completely before shutdown
-    && sleep 30 \
-    && rm ./rstudio-workbench.deb \
+COPY install_workbench.sh /tmp/install_workbench.sh
+RUN /tmp/install_workbench.sh && \
+    rm -f /tmp/install_workbench.sh \
     && mkdir -p /opt/rstudio-license/ \
     && mkdir -p /var/lib/rstudio-workbench/ \
     && curl -fsSL "https://s3.amazonaws.com/rstudio-ide-build/monitor/jammy/rsp-monitor-workbench-azureml-amd64-${RSW_VERSION//+/-}.tar.gz" \
     | tar xzvf - --strip 2 -C /opt/rstudio-license/ \
     && chmod 0755 /opt/rstudio-license/license-manager \
     && mv /opt/rstudio-license/license-manager /opt/rstudio-license/license-manager-orig \
-    && rm -f /usr/lib/rstudio-server/bin/license-manager \
-    && apt-get autoremove -y \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-
-# Workaround to ensure no initialization files are included in image distributions.
-# This happens in the step immediately following Workbench installation in case any were created.
-RUN rm -f /etc/rstudio/launcher.pem \
-      /etc/rstudio/launcher.pub \
-      /var/lib/rstudio-server/secure-cookie-key \
-      /var/lib/rstudio-server/session-rpc-key \
-    && rm -rf /var/lib/rstudio-launcher/Local/jobs/*
+    && rm -f /usr/lib/rstudio-server/bin/license-manager
 
 # Workaround to ensure no pre-generated certificates are included in image distributions.
 # This happens in the step immediately following Workbench installation in case the certificates are generated.

@@ -24,7 +24,13 @@ file:
     exists: false
   /var/lib/rstudio-server/session-rpc-key:
     exists: false
+  /etc/rstudio/secure-cookie-key:
+    exists: false
+  /etc/rstudio/session-rpc-key:
+    exists: false
   /var/lib/rstudio-launcher/Local/jobs/buildkitsystem:
     exists: false
   /var/lib/rstudio-launcher/Local/jobs/buildkitsandbox:
+    exists: false
+  /var/lib/rstudio-server/rstudio.sqlite:
     exists: false
