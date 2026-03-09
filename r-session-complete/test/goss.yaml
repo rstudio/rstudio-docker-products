@@ -4,6 +4,9 @@ package:
     installed: true
 
 file:
+  /var/lib/dpkg/info/rstudio-server.postinst:
+    exists: true
+    mode: "0755"
   /usr/lib/rstudio-server:
     exists: true
   /usr/lib/rstudio-server/bin/rsession:

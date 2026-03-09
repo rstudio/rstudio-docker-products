@@ -17,7 +17,14 @@ gpg --keyserver hkps://keys.openpgp.org:443 --recv-keys 51C0B5BB19F92D60
 dpkg-sig --verify "$deb_file"
 
 # Install dependencies
-apt-get install -yq $(dpkg -I $deb_file | grep '^ Depends:' | sed 's/^ Depends: //' | tr ',' '\n' | awk '{print $1}' | tr -d '(')
+dep_spec="$(dpkg-deb -f "$deb_file" Pre-Depends)"
+depends="$(dpkg-deb -f "$deb_file" Depends)"
+if [ -n "$dep_spec" ] && [ -n "$depends" ]; then
+  dep_spec="${dep_spec}, ${depends}"
+elif [ -z "$dep_spec" ]; then
+  dep_spec="${depends}"
+fi
+apt-get satisfy -yq "$dep_spec"
 
 # Patch the installer to not activate the service
 echo "$d Patching ${deb_file} $d"
@@ -28,7 +35,9 @@ sed -i 's/systemctl enable rstudio-launcher.service/# systemctl enable rstudio-l
 awk '/if test "\$RSTUDIO_INSTALL_NO_LICENSE_INITIALIZATION" != "1"/ { skip=1 }
     skip { if (/fi/) { skip=0 } next }
     { print }
-' "/var/lib/dpkg/info/rstudio-server.postinst" > "/var/lib/dpkg/info/rstudio-server.postinst.tmp" && mv "/var/lib/dpkg/info/rstudio-server.postinst.tmp" "/var/lib/dpkg/info/rstudio-server.postinst"
+' "/var/lib/dpkg/info/rstudio-server.postinst" > "/var/lib/dpkg/info/rstudio-server.postinst.tmp"
+install -m 755 "/var/lib/dpkg/info/rstudio-server.postinst.tmp" "/var/lib/dpkg/info/rstudio-server.postinst"
+rm -f "/var/lib/dpkg/info/rstudio-server.postinst.tmp"
 
 # Install Workbench
 echo "$d Install Posit Workbench ${RSW_VERSION} $d"

@@ -15,6 +15,9 @@ process:
     running: false
 
 file:
+  /var/lib/dpkg/info/rstudio-server.postinst:
+    exists: true
+    mode: "0755"
   # Check that startup files were not accidentally included in build
   /etc/rstudio/launcher.pem:
     exists: false
