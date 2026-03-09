@@ -23,6 +23,10 @@ variable WORKBENCH_PREVIEW_VERSION {
     default = ""
 }
 
+variable POSITRON_DAILY_VERSION {
+    default = ""
+}
+
 variable DRIVERS_VERSION {
     default = "2025.07.0"
 }
@@ -162,6 +166,14 @@ variable WORKBENCH_SESSION_INIT_BUILD_MATRIX {
     }
 }
 
+variable WORKBENCH_POSITRON_INIT_BUILD_MATRIX {
+    default = {
+        builds = [
+            {os = "ubuntu2204"},
+        ]
+    }
+}
+
 ### Group definitions ###
 group "default" {
     targets = [
@@ -175,6 +187,7 @@ group "default" {
         "workbench-preview",
         "workbench-daily",
         "workbench-session-init-daily",
+        "workbench-positron-init-daily",
     ]
 }
 
@@ -463,5 +476,23 @@ target "workbench-session-init-daily" {
 
     args = {
         RSW_VERSION = WORKBENCH_DAILY_VERSION
+    }
+}
+
+target "workbench-positron-init-daily" {
+    inherits = ["base"]
+    target = "build"
+
+    name = "workbench-positron-init-daily-${builds.os}-${replace(POSITRON_DAILY_VERSION, ".", "-")}"
+    tags = get_tags(builds.os, "workbench-positron-init-preview", POSITRON_DAILY_VERSION, "daily")
+
+    dockerfile = "Dockerfile.${builds.os}"
+    context = "workbench-positron-init"
+
+    matrix = WORKBENCH_POSITRON_INIT_BUILD_MATRIX
+
+    args = {
+        RSW_VERSION = WORKBENCH_DAILY_VERSION
+        POSITRON_VERSION = POSITRON_DAILY_VERSION
     }
 }

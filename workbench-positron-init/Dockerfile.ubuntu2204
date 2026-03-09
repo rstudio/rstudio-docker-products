@@ -1,0 +1,52 @@
+FROM ubuntu:22.04 AS builder
+
+# Install required tools:
+# - ca-certificates installs necessary certificates to use cURL with HTTPS websites
+# - curl is used to download tarballs
+# - jq is used to parse releases.json
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates curl jq && \
+    rm -rf /var/lib/apt/lists/*
+
+ARG RSW_VERSION
+ARG POSITRON_VERSION
+
+# Download the RStudio Workbench session components to get the positron-session-init binary
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN mkdir -p /pwb-staging && \
+    RSW_VERSION_URL=$(echo -n "${RSW_VERSION}" | sed 's/+/-/g') && \
+    curl -fsSL -o /pwb-staging/rsp-session-multi-linux.tar.gz "https://s3.amazonaws.com/rstudio-ide-build/session/multi/x86_64/rsp-session-multi-linux-${RSW_VERSION_URL}-x86_64.tar.gz" && \
+    mkdir -p /opt/session-components && \
+    tar -C /opt/session-components -xpf /pwb-staging/rsp-session-multi-linux.tar.gz && \
+    chmod 755 /opt/session-components && \
+    rm -rf /pwb-staging
+
+# Extract the positron-session-init binary
+RUN test -f /opt/session-components/bin/positron-session-init || \
+    { echo "ERROR: positron-session-init binary not found in session components tarball"; exit 1; }
+
+# Download the Positron tarball from CDN
+RUN mkdir -p /positron-staging && \
+    DOWNLOAD_URL="https://cdn.posit.co/positron/dailies/pwb/x86_64/positron-workbench-linux-x64-${POSITRON_VERSION}.tar.gz" && \
+    echo "Downloading Positron from ${DOWNLOAD_URL}" && \
+    curl -fsSL -o /positron-staging/positron.tar.gz "${DOWNLOAD_URL}" && \
+    mkdir -p /opt/positron/bin/positron-server/bundled && \
+    tar -C /opt/positron/bin/positron-server/bundled --strip-components=1 -xpf /positron-staging/positron.tar.gz && \
+    chmod -R 755 /opt/positron && \
+    rm -rf /positron-staging
+
+# Create the final image
+FROM ubuntu:22.04 AS build
+LABEL maintainer="Posit Docker <docker@posit.co>"
+
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy the pre-built positron-session-init binary and positron content from the builder stage
+COPY --from=builder --chmod=755 /opt/session-components/bin/positron-session-init /usr/local/bin/positron-session-init
+COPY --from=builder --chmod=755 /opt/positron /opt/positron
+
+ENTRYPOINT ["/usr/local/bin/positron-session-init"]

@@ -1,0 +1,17 @@
+package:
+  ca-certificates:
+    installed: true
+
+file:
+  /opt/positron/:
+    exists: true
+    mode: "0755"
+    filetype: directory
+  /opt/positron/bin/positron-server/:
+    exists: true
+    filetype: directory
+    mode: "0755"
+  /usr/local/bin/positron-session-init:
+    exists: true
+    filetype: file
+    mode: "0755"

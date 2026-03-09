@@ -11,6 +11,10 @@ variable WORKBENCH_VERSION {
     default = "2026.01.1+403.pro11"
 }
 
+variable POSITRON_VERSION {
+    default = "2026.04.0-61"
+}
+
 variable DRIVERS_VERSION {
     default = "2025.07.0"
 }
@@ -181,6 +185,14 @@ variable WORKBENCH_SESSION_INIT_BUILD_MATRIX {
     }
 }
 
+variable WORKBENCH_POSITRON_INIT_BUILD_MATRIX {
+    default = {
+        builds = [
+            {os = "ubuntu2204"},
+        ]
+    }
+}
+
 variable WORKBENCH_GOOGLE_CLOUD_WORKSTATION_BUILD_MATRIX {
     default = {
         builds = [
@@ -211,6 +223,7 @@ group "default" {
         "workbench",
         "workbench-session",
         "workbench-session-init",
+        "workbench-positron-init",
     ]
 }
 
@@ -492,6 +505,24 @@ target "workbench-session-init" {
 
     args = {
         RSW_VERSION = WORKBENCH_VERSION
+    }
+}
+
+target "workbench-positron-init" {
+    inherits = ["base"]
+    target = "build"
+
+    name = "workbench-positron-init-${builds.os}-${replace(POSITRON_VERSION, ".", "-")}"
+    tags = get_tags(builds.os, "workbench-positron-init", POSITRON_VERSION)
+
+    dockerfile = "Dockerfile.${builds.os}"
+    context = "workbench-positron-init"
+
+    matrix = WORKBENCH_POSITRON_INIT_BUILD_MATRIX
+
+    args = {
+        RSW_VERSION = WORKBENCH_VERSION
+        POSITRON_VERSION = POSITRON_VERSION
     }
 }
 

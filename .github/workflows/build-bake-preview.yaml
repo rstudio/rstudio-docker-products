@@ -20,6 +20,7 @@ jobs:
       WORKBENCH_DAILY_VERSION: ${{ steps.get-version.outputs.WORKBENCH_DAILY_VERSION }}
       WORKBENCH_PREVIEW_VERSION: ${{ steps.get-version.outputs.WORKBENCH_PREVIEW_VERSION }}
       WORKBENCH_SESSION_INIT_DAILY_VERSION: ${{ steps.get-version.outputs.WORKBENCH_SESSION_INIT_DAILY_VERSION }}
+      POSITRON_DAILY_VERSION: ${{ steps.get-version.outputs.POSITRON_DAILY_VERSION }}
       PACKAGE_MANAGER_DAILY_VERSION: ${{ steps.get-version.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
       PACKAGE_MANAGER_PREVIEW_VERSION: ${{ steps.get-version.outputs.PACKAGE_MANAGER_PREVIEW_VERSION }}
       CONNECT_DAILY_VERSION: ${{ steps.get-version.outputs.CONNECT_DAILY_VERSION }}
@@ -50,6 +51,8 @@ jobs:
           echo "WORKBENCH_PREVIEW_VERSION=$WORKBENCH_PREVIEW_VERSION" >> $GITHUB_OUTPUT
           WORKBENCH_SESSION_INIT_DAILY_VERSION=$(just get-version workbench-session-init --type=daily --local)
           echo "WORKBENCH_SESSION_INIT_DAILY_VERSION=$WORKBENCH_SESSION_INIT_DAILY_VERSION" >> $GITHUB_OUTPUT
+          POSITRON_DAILY_VERSION=$(just get-version positron --type=daily --local)
+          echo "POSITRON_DAILY_VERSION=$POSITRON_DAILY_VERSION" >> $GITHUB_OUTPUT
           PACKAGE_MANAGER_DAILY_VERSION=$(just get-version package-manager --type=daily --local)
           echo "PACKAGE_MANAGER_DAILY_VERSION=$PACKAGE_MANAGER_DAILY_VERSION" >> $GITHUB_OUTPUT
           PACKAGE_MANAGER_PREVIEW_VERSION=$(just get-version package-manager --type=preview --local)
@@ -439,6 +442,47 @@ jobs:
 
     concurrency:
       group: bake-workbench-session-init-daily-${{ github.ref }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          bakefile: docker-bake.preview.hcl
+          push-image: ${{ github.ref == 'refs/heads/main' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          snyk-org: ${{ secrets.SNYK_ORG }}
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
+
+  workbench-positron-init-daily:
+    needs: [versions]
+    name: Workbench Positron Init - Daily
+    runs-on: ubuntu-latest-4x
+
+    env:
+      target: "workbench-positron-init-daily"
+      WORKBENCH_DAILY_VERSION: ${{ needs.versions.outputs.WORKBENCH_DAILY_VERSION }}
+      WORKBENCH_PREVIEW_VERSION: ${{ needs.versions.outputs.WORKBENCH_PREVIEW_VERSION }}
+      POSITRON_DAILY_VERSION: ${{ needs.versions.outputs.POSITRON_DAILY_VERSION }}
+      PACKAGE_MANAGER_DAILY_VERSION: ${{ needs.versions.outputs.PACKAGE_MANAGER_DAILY_VERSION }}
+      PACKAGE_MANAGER_PREVIEW_VERSION: ${{ needs.versions.outputs.PACKAGE_MANAGER_PREVIEW_VERSION }}
+      CONNECT_DAILY_VERSION: ${{ needs.versions.outputs.CONNECT_DAILY_VERSION }}
+      BRANCH: ${{ github.head_ref || github.ref_name }}
+
+    concurrency:
+      group: bake-workbench-positron-init-daily-${{ github.ref }}
       cancel-in-progress: true
 
     steps:

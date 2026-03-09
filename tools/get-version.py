@@ -84,9 +84,12 @@ def clean_product_selection(product: str) -> str:
         product = 'workbench'
 
     workbench_pref = re.compile('^workbench')
-    if workbench_pref.match(product) and product != 'workbench-session-init':
+    if workbench_pref.match(product) and product not in ('workbench-session-init', 'workbench-positron-init'):
         print(f"Swapping product '{product}' for 'workbench'", file=sys.stderr)
         product = 'workbench'
+
+    if product == 'workbench-positron-init':
+        product = 'positron'
 
     connect_pref = re.compile('^connect-')
     if connect_pref.match(product):
@@ -103,6 +106,10 @@ def rstudio_workbench_daily():
 def workbench_session_init_daily():
     version_json = workbench_daily_version_json()
     return version_json['products']['session']['platforms']['multi-x86_64']['version']
+
+def positron_daily():
+    releases_json = download_json("https://cdn.posit.co/positron/dailies/pwb/x86_64/releases.json")
+    return releases_json['version']
 
 def workbench_daily_version_json():
     return download_json("https://dailies.rstudio.com/rstudio/latest/index.json")
@@ -129,6 +136,11 @@ def get_release_version(product, local=False):
         return get_actual_release_version(product)
 
 
+def positron_release(local=False):
+    if local:
+        return get_local_release_version('positron')
+    raise ValueError("Positron does not have a non-local release version")
+
 def get_local_release_version(product):
     if product == 'workbench':
         prefix = 'RSW'
@@ -136,6 +148,8 @@ def get_local_release_version(product):
         prefix = 'RSC'
     elif product == 'package-manager':
         prefix = 'RSPM'
+    elif product == 'positron':
+        prefix = 'POSITRON'
     else:
         raise ValueError(f'Invalid product {product}')
 
@@ -191,7 +205,7 @@ if __name__ == "__main__":
         "product",
         type=str,
         nargs=1,
-        help="The product to search. One of 'connect', 'workbench', 'workbench-session-init', or 'package-manager'"
+        help="The product to search. One of 'connect', 'workbench', 'workbench-session-init', 'positron', or 'package-manager'"
     )
     parser.add_argument(
         "--type",
@@ -229,9 +243,9 @@ if __name__ == "__main__":
     # Argument checking
     # (version checking is per-product)
     # ------------------------------------------
-    if selected_product not in ['workbench', 'workbench-session-init', 'package-manager', 'connect']:
+    if selected_product not in ['workbench', 'workbench-session-init', 'positron', 'package-manager', 'connect']:
         print(
-            f"ERROR: Please choose a product from 'connect', 'workbench', 'workbench-session-init', or 'package-manager'. "
+            f"ERROR: Please choose a product from 'connect', 'workbench', 'workbench-session-init', 'positron', or 'package-manager'. "
             f"You provided '{selected_product}'",
             file=sys.stderr
         )
@@ -267,6 +281,17 @@ if __name__ == "__main__":
         else:
             print(
                 f"ERROR: RStudio Workbench does not have the notion of a '{version_type}' version",
+                file=sys.stderr
+            )
+            exit(1)
+    elif selected_product == 'positron':
+        if version_type == 'daily':
+            version = positron_daily()
+        elif version_type == 'release':
+            version = get_release_version(selected_product, local)
+        else:
+            print(
+                f"ERROR: Positron does not have the notion of a '{version_type}' version",
                 file=sys.stderr
             )
             exit(1)

@@ -11,6 +11,7 @@ REGISTRY_NAMESPACE := "rstudio"
 RSC_VERSION := "2026.02.0"
 RSPM_VERSION := "2025.12.0-14"
 RSW_VERSION := "2026.01.1+403.pro11"
+POSITRON_VERSION := "2026.04.0-61"
 
 DRIVERS_VERSION := "2025.07.0"
 DRIVERS_VERSION_RHEL := DRIVERS_VERSION + "-1"
@@ -53,6 +54,7 @@ preview-bake target branch="$(git branch --show-current)":
   PACKAGE_MANAGER_DAILY_VERSION=$(just get-version package-manager --type=daily --local) \
   PACKAGE_MANAGER_PREVIEW_VERSION=$(just get-version package-manager --type=preview --local) \
   CONNECT_DAILY_VERSION=$(just get-version connect --type=daily --local) \
+  POSITRON_DAILY_VERSION=$(just get-version positron --type=daily --local) \
   BRANCH="{{branch}}" \
     docker buildx bake --builder=posit-builder -f docker-bake.preview.hcl {{target}}
 
@@ -72,6 +74,7 @@ preview-plan branch="$(git branch --show-current)":
   WORKBENCH_PREVIEW_VERSION=$(just get-version workbench --type=preview --local) \
   PACKAGE_MANAGER_DAILY_VERSION=$(just get-version package-manager --type=daily --local) \
   CONNECT_DAILY_VERSION=$(just get-version connect --type=daily --local) \
+  POSITRON_DAILY_VERSION=$(just get-version positron --type=daily --local) \
   BRANCH="{{branch}}" \
     docker buildx bake -f docker-bake.preview.hcl --print
 
@@ -97,6 +100,9 @@ preview-test target="default" branch="$(git branch --show-current)":
   if [ -z "$CONNECT_DAILY_VERSION" ]; then
     CONNECT_DAILY_VERSION=$(just get-version connect --type=daily --local)
   fi
+  if [ -z "$POSITRON_DAILY_VERSION" ]; then
+    POSITRON_DAILY_VERSION=$(just get-version positron --type=daily --local)
+  fi
   if [ -z "$BRANCH" ]; then
     BRANCH="{{branch}}"
   fi
@@ -104,6 +110,7 @@ preview-test target="default" branch="$(git branch --show-current)":
   WORKBENCH_PREVIEW_VERSION="${WORKBENCH_PREVIEW_VERSION}" \
   PACKAGE_MANAGER_DAILY_VERSION="${PACKAGE_MANAGER_DAILY_VERSION}" \
   CONNECT_DAILY_VERSION="${CONNECT_DAILY_VERSION}" \
+  POSITRON_DAILY_VERSION="${POSITRON_DAILY_VERSION}" \
   BRANCH="${BRANCH}" \
   python3 {{justfile_directory()}}/tools/test_bake_artifacts.py --file docker-bake.preview.hcl --target "{{target}}"
 
@@ -139,6 +146,7 @@ preview-snyk-test target="default" branch="$(git branch --show-current)" *opts="
   WORKBENCH_PREVIEW_VERSION=$(just get-version workbench --type=preview --local) \
   PACKAGE_MANAGER_DAILY_VERSION=$(just get-version package-manager --type=daily --local) \
   CONNECT_DAILY_VERSION=$(just get-version connect --type=daily --local) \
+  POSITRON_DAILY_VERSION=$(just get-version positron --type=daily --local) \
   BRANCH="{{branch}}" \
   SNYK_ORG="{{SNYK_ORG}}" \
   GIT_SHA=$(git rev-parse --short HEAD) \
@@ -150,6 +158,7 @@ preview-snyk-monitor target="default" branch="$(git branch --show-current)" *opt
   WORKBENCH_PREVIEW_VERSION=$(just get-version workbench --type=preview --local) \
   PACKAGE_MANAGER_DAILY_VERSION=$(just get-version package-manager --type=daily --local) \
   CONNECT_DAILY_VERSION=$(just get-version connect --type=daily --local) \
+  POSITRON_DAILY_VERSION=$(just get-version positron --type=daily --local) \
   BRANCH="{{branch}}" \
   SNYK_ORG="{{SNYK_ORG}}" \
   GIT_SHA=$(git rev-parse --short HEAD) \
@@ -161,6 +170,7 @@ preview-snyk-sbom target="default" branch="$(git branch --show-current)" *opts="
   WORKBENCH_PREVIEW_VERSION=$(just get-version workbench --type=preview --local) \
   PACKAGE_MANAGER_DAILY_VERSION=$(just get-version package-manager --type=daily --local) \
   CONNECT_DAILY_VERSION=$(just get-version connect --type=daily --local) \
+  POSITRON_DAILY_VERSION=$(just get-version positron --type=daily --local) \
   BRANCH="{{branch}}" \
   SNYK_ORG="{{SNYK_ORG}}" \
   GIT_SHA=$(git rev-parse --short HEAD) \
@@ -227,7 +237,8 @@ update-versions:
     RSC_VERSION={{RSC_VERSION}} \
     RSPM_VERSION={{RSPM_VERSION}} \
     DRIVERS_VERSION={{DRIVERS_VERSION}} \
-    update-rsw-versions update-rspm-versions update-rsc-versions update-drivers-versions
+    POSITRON_VERSION={{POSITRON_VERSION}} \
+    update-rsw-versions update-rspm-versions update-rsc-versions update-drivers-versions update-positron-versions
 
 # just RSW_VERSION=1.2.3 update-rsw-versions
 update-rsw-versions:
@@ -277,3 +288,16 @@ update-drivers-versions:
   sed {{ sed_vars }} "s/^DRIVERS_VERSION := .*/DRIVERS_VERSION := \"{{ DRIVERS_VERSION }}\"/g" \
     Justfile
   sed -i '/variable DRIVERS_VERSION/!b;n;c\ \ \ \ default = "{{ DRIVERS_VERSION }}"' docker-bake.hcl
+
+# just POSITRON_VERSION=2026.04.0-61 update-positron-versions
+update-positron-versions:
+  #!/usr/bin/env bash
+  set -euxo pipefail
+  sed {{ sed_vars }} "s/^POSITRON_VERSION := .*/POSITRON_VERSION := \"{{ POSITRON_VERSION }}\"/g" \
+    Justfile
+  sed {{ sed_vars }} -E "s/[0-9]{4}\.[0-9]{1,2}\.[0-9]{1,2}/`just _get-clean-version {{ POSITRON_VERSION }}`/g" \
+    workbench-positron-init/README.md
+  awk -v new_version="{{ POSITRON_VERSION }}" '
+  /variable POSITRON_VERSION/ { print; getline; print "    default = \"" new_version "\""; next }
+  { print }
+  ' docker-bake.hcl > file.tmp && mv file.tmp docker-bake.hcl
