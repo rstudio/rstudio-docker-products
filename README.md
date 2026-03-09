@@ -94,6 +94,8 @@ work fine in your browser. In your `/etc/hosts` add one line:
 127.0.0.1 rstudio-workbench rstudio-connect rstudio-pm
 ```
 
+*Note:* Posit recommends using license file activation rather than license key activation. See individual product README files for license file usage examples. The example below uses license keys for simplicity.
+
 ```bash
 # Replace this with valid licenses
 export RSW_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
@@ -163,6 +165,8 @@ you have built:
 ```
 just RSW_LICENSE="<license key>" run workbench
 ```
+
+*Note:* Posit recommends using license file activation rather than license key activation for production use. See individual product README files for license file usage examples.
 
 You can also run validation tests on the image using [Goss](https://github.com/goss-org/goss). To run the tests, use 
 the `test` target. For example, to test Connect you can run:
