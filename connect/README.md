@@ -50,15 +50,21 @@ https://posit.co/products/enterprise/connect/.
 
 # How to use this image
 
-Below is a very simple example for running Connect locally in Docker using a product license key.
+Below is a simple example for running Connect locally in Docker using a license file.
+
+*Note:* Posit recommends license file activation rather than license key activation. You can read more on the [Licensing FAQ](https://docs.posit.co/licensing/licensing-faq.html) page.
+
+These steps follow the [license file activation](https://docs.posit.co/connect/admin/licensing/#license-file-activation) commands for Connect.
+
 ```bash
-# Replace with valid license
-export RSC_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
+# Replace `<path to license file>` with the path to your license file locally.
+sudo chown root:root <path to license file>
+sudo chmod 0600 <path to license file>
 
 # Run without persistent data and using default configuration
 docker run -it --privileged \
     -p 3939:3939 \
-    -e RSC_LICENSE=$RSC_LICENSE \
+    --mount type=bind,ro,src=<path to license file>,dst=/var/lib/rstudio-connect/rstudio-connect.lic \
     rstudio/rstudio-connect:ubuntu2204
 ```
 Once running, open [http://localhost:3939](http://localhost:3939) to access Posit Connect.
@@ -116,26 +122,39 @@ Below is an example of running the Posit Connect container with a bind mount att
 ```bash
 docker run -it --privileged \
     -p 3939:3939 \
-    -e RSC_LICENSE=$RSC_LICENSE \
+    --mount type=bind,ro,src=<path to license file>,dst=/var/lib/rstudio-connect/rstudio-connect.lic \
     --mount type=bind,src=/path/to/local/directory,dst=/data \
     rstudio/rstudio-connect:ubuntu2204
 ```
 
 ### Product Licensing
 
-Using the Posit Connect docker image requires to have a valid License. You can set the license three different ways:
+Using the Posit Connect docker image requires you to have a valid License. Posit recommends using [license file activation](#example-usage-with-a-license-file) rather than license key activation. License files work well in all environments including ephemeral, container-based, or air-gapped environments. See the [Licensing FAQ](https://docs.posit.co/licensing/licensing-faq.html) for more details. For full details and information about license key activation, see the [Licensing](https://docs.posit.co/connect/admin/licensing/) page. You can set the license three different ways: 
 
-1. Setting the `RSC_LICENSE` environment variable to a valid license key inside the container
-2. Setting the `RSC_LICENSE_SERVER` environment variable to a valid license server / port inside the container
-3. Mounting a `/var/lib/rstudio-connect/*.lic` single file that contains a valid license for Posit Connect
+1. Mounting a `/var/lib/rstudio-connect/*.lic` single file that contains a valid license for Posit Connect
+2. Setting the `RSC_LICENSE` environment variable to a valid license key inside the container
+3. Setting the `RSC_LICENSE_SERVER` environment variable to a valid license server / port inside the container
 
-**NOTE:** Offline installations will need to use a floating license server, license file, or custom image with manual 
-intervention to successfully activate the instance.
+**NOTE:** Use a license file, floating license server, or custom image with manual intervention for offline installations to successfully activate the instance.
 
 #### Example usage with a license file
 
 The container will automatically look for a license file at `/var/lib/rstudio-connect/*.lic` and will attempt to use it
-for activation if present. This example uses a bind mount to provide the license file from the host machine.
+for activation if present. 
+
+To ensure that the license file is set to the correct permissions in the container, you can set them before you start the container with:
+```bash
+sudo chown root:root <path to license file>
+sudo chmod 0600 <path to license file>
+```
+
+*Note:* If you run Connect as an unprivileged user such as `rstudio-connect`, the license file needs to be owned by that user. This can be done by setting the user id matching that user in the container. For example:
+```bash
+sudo chown 999:999 <path to license file>
+sudo chmod 0600 <path to license file>
+```
+
+This example uses a bind mount to provide the license file from the host machine.
 
 ```bash
 docker run -it --privileged \
@@ -201,7 +220,8 @@ License server not in use.
 
 #### Example usage with a license key
 
-The container can also be activated using a license key by setting the `RSC_LICENSE` environment variable. 
+The container can also be activated using a license key by setting the `RSC_LICENSE` environment variable. However, Posit recommends using [license file activation](#example-usage-with-a-license-file) rather than license key activation. License key activation should be avoided in production environments in favor of using a license file due to the risk of leaking license activations when the container is not gracefully stopped. See the 
+[caveats of product licensing in containers](#caveats-of-product-licensing-in-containers) section below for more details.
 
 ```bash
 # Replace with valid license
@@ -214,9 +234,6 @@ docker run -it --privileged \
     rstudio/rstudio-connect:ubuntu2204
 ```
 
-If possible, license key activation should be avoided in production environments in favor of using a license file due to 
-the risk of leaking license activations when the container is not gracefully stopped. See the 
-[caveats of product licensing in containers](#caveats-of-product-licensing-in-containers) section below for more 
 details on license key issues.
 
 ### Environment variables

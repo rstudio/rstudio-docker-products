@@ -45,16 +45,17 @@ consistent package management, optimized for teams who use R.
 
 # How to use this image
 
-Below is a very simple example for running Package Manager locally in Docker using a product license key.
+Below is a simple example for running Package Manager locally in Docker using a license file.
+
+*Note:* Posit recommends license file activation rather than license key activation. You can read more on the [Licensing FAQ](https://docs.posit.co/licensing/licensing-faq.html) page.
+
+These steps follow the [license file activation](https://docs.posit.co/rspm/admin/licensing.html#licensing-with-file-activation) commands for Package Manager.
 
 ```bash
-# Replace with valid license
-export RSPM_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
-
 # Run without persistent data and using default configuration
 docker run -it \
     -p 4242:4242 \
-    -e RSPM_LICENSE=$RSPM_LICENSE \
+    --mount type=bind,ro,src=<path to license file>,dst=/var/lib/rstudio-pm/rstudio-pm.lic \
     rstudio/rstudio-package-manager:ubuntu2204
 ```
 
@@ -94,24 +95,23 @@ DataDir = /mnt/rspm/data
 
 ### Product Licensing
 
-Using the container requires a valid license for Posit Package Manager. You can set the license three different ways:
+Using the Posit Package Manager docker image requires you to have a valid License. Posit recommends using [license file activation](#example-usage-with-a-license-file) rather than license key activation. License files work well in all environments including ephemeral, container-based, or air-gapped environments. See the [Licensing FAQ](https://docs.posit.co/licensing/licensing-faq.html) for more details. For full details and information about license key activation, see the [Licensing](https://docs.posit.co/rspm/admin/licensing/) page. You can set the license three different ways:
 
-1. Setting the `RSPM_LICENSE` environment variable to a valid license key inside the container
-2. Setting the `RSPM_LICENSE_SERVER` environment variable to a valid license server / port inside the container
-3. Mounting a license file at `/var/lib/rstudio-pm/*.lic` or a different path specified using `RSPM_LICENSE_FILE_PATH`
-   that contains a valid license for Posit Package Manager
+1. Mounting a license file at `/var/lib/rstudio-pm/*.lic` or `/home/rstudio-pm/.rstudio-pm/*.lic` or a different path specified using `RSPM_LICENSE_FILE_PATH` that contains a valid license for Posit Package Manager
+2. Setting the `RSPM_LICENSE` environment variable to a valid license key inside the container
+3. Setting the `RSPM_LICENSE_SERVER` environment variable to a valid license server / port inside the container
 
-**NOTE:** Offline installations will need to use a floating license server, license file, or custom image with manual 
-intervention to successfully activate the instance.
+**NOTE:** Use a license file, floating license server, or custom image with manual intervention for offline installations to successfully activate the instance.
 
 #### Example usage with a license file
 
-The container will automatically look for a license file at `/var/lib/rstudio-pm/*.lic` or 
-`/home/rstudio-pm/.rstudio-pm/*.lic` and will attempt to use it for activation if present. This example uses a bind 
-mount to provide the license file from the host machine.
+The container will automatically look for a license file at `/var/lib/rstudio-pm/*.lic` or
+`/home/rstudio-pm/.rstudio-pm/*.lic` and will attempt to use it for activation if present. 
+
+This example uses a bind mount to provide the license file from the host machine.
 
 ```bash
-docker run -it --privileged \
+docker run -it \
     -p 4242:4242 \
     --mount type=bind,ro,src=<path to license file>,dst=/var/lib/rstudio-pm/rstudio-pm.lic \
     rstudio/rstudio-package-manager:ubuntu2204
@@ -121,7 +121,7 @@ Alternatively, the license file's path in the container can be provided using th
 variable. If provided, the container will attempt to find and activate from the file at the given path.
 
 ```bash
-docker run -it --privileged \
+docker run -it \
     -p 4242:4242 \
     -e RSPM_LICENSE_FILE_PATH=/opt/license.lic \
     --mount type=bind,ro,src=<path to license file>,dst=/opt/license.lic \
@@ -177,7 +177,7 @@ License server not in use.
 
 #### Example usage with a license key
 
-The container can also be activated using a license key by setting the `RSPM_LICENSE` environment variable. 
+The container can also be activated using a license key by setting the `RSPM_LICENSE` environment variable. However, Posit recommends using [license file activation](#example-usage-with-a-license-file) rather than license key activation. License key activation should be avoided in production environments in favor of using a license file due to the risk of leaking license activations when the container is not gracefully stopped. See the [caveats of product licensing in containers](#caveats-of-product-licensing-in-containers) section below for more details.
 
 ```bash
 # Replace with valid license
@@ -189,11 +189,6 @@ docker run -it --privileged \
     -e RSPM_LICENSE=$RSPM_LICENSE \
     rstudio/rstudio-package-manager:ubuntu2204
 ```
-
-If possible, license key activation should be avoided in production environments in favor of using a license file due to 
-the risk of leaking license activations when the container is not gracefully stopped. See the 
-[caveats of product licensing in containers](#caveats-of-product-licensing-in-containers) section below for more 
-details on license key issues.
 
 ### Environment variables
 

@@ -59,19 +59,25 @@ https://posit.co/products/enterprise/workbench/.
 
 # How to use this image
 
-Below is a very simple example for running Workbench locally in Docker using a product license key.
+Below is a simple example for running Workbench locally in Docker using a license file.
 
-```
-# Replace with valid license
-export RSW_LICENSE=XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX
+*Note:* Posit recommends license file activation rather than license key activation. You can read more on the [Licensing FAQ](https://docs.posit.co/licensing/licensing-faq.html) page.
 
-# Run without persistent data using default configuration
+These steps follow the [license file activation](https://docs.posit.co/ide/server-pro/admin/license_management/license_management.html#activation) commands for Workbench.
+
+```bash
+# Replace `<path to license file>` with the path to your license file locally.
+sudo chown 999:999 <path to license file>                                                                                 
+sudo chmod 0600 <path to license file>
+
+# Run without persistent data and using default configuration
 docker run -it \
     -p 8787:8787 \
-    -e RSW_LICENSE=$RSW_LICENSE \
-    rstudio/rstudio-workbench:ubuntu2204
+    --mount type=bind,ro,src=<path to license file>,dst=/var/lib/rstudio-server/rstudio-server.lic \
+    rstudio/rstudio-workbench:ubuntu2204   
 ```
 
+*Note:* Workbench starts as `root` and this is passed to be run as an unprivileged user (UID 999 is `rstudio-server` in the container), so the license file needs to be owned by that user.
 
 Open [http://localhost:8787](http://localhost:8787) to access Posit Workbench. The default username and password are
 `rstudio`.
@@ -104,20 +110,28 @@ machine or your docker orchestration system.
 
 ### Product Licensing
 
-The Posit Workbench Docker image requires a valid license, which can be set in three ways:
+Using the Posit Workbench docker image requires you to have a valid License. Posit recommends using [license file activation](#example-usage-with-a-license-file) rather than license key activation. License files work well in all environments including ephemeral, container-based, or air-gapped environments. See the [Licensing FAQ](https://docs.posit.co/licensing/licensing-faq.html) for more details. For full details and information about license key activation, see the [Licensing](https://docs.posit.co/ide/server-pro/admin/license_management/license_management.html) page. You can set the license three different ways:
 
-1. Setting the `RSW_LICENSE` environment variable to a valid license key inside the container
-2. Setting the `RSW_LICENSE_SERVER` environment variable to a valid license server / port inside the container
-3. Mounting a license file at `/var/lib/rstudio-server/*.lic` or a different path specified using 
-   `RSW_LICENSE_FILE_PATH` that contains a valid license for Posit Workbench
+1. Mounting a license file at `/var/lib/rstudio-server/*.lic` or a different path specified using `RSW_LICENSE_FILE_PATH` that contains a valid license for Posit Workbench
+2. Setting the `RSW_LICENSE` environment variable to a valid license key inside the container
+3. Setting the `RSW_LICENSE_SERVER` environment variable to a valid license server / port inside the container
 
-**NOTE:** Offline installations will need to use a floating license server, license file, or custom image with manual 
-intervention to successfully activate the instance.
+**NOTE:** Use a license file, floating license server, or custom image with manual intervention for offline installations to successfully activate the instance.
 
 #### Example usage with a license file
 
 The container will automatically look for a license file at `/var/lib/rstudio-server/*.lic` and will attempt to use it
-for activation if present. This example uses a bind mount to provide the license file from the host machine.
+for activation if present.
+
+To ensure that the license file is set to the correct permissions in the container, you can set them before you start the container with:
+```bash
+sudo chown 999:999 <path to license file>
+sudo chmod 0600 <path to license file>
+```
+
+*Note:* Workbench starts as `root` and this is passed to be run as an unprivileged user (UID 999 is `rstudio-server` in the container), so the license file needs to be owned by that user.
+
+This example uses a bind mount to provide the license file from the host machine.
 
 ```bash
 docker run -it --privileged \
@@ -183,7 +197,7 @@ License server not in use.
 
 #### Example usage with a license key
 
-The container can also be activated using a license key by setting the `RSW_LICENSE` environment variable. 
+The container can also be activated using a license key by setting the `RSW_LICENSE` environment variable. However, Posit recommends using [license file activation](#example-usage-with-a-license-file) rather than license key activation. License key activation should be avoided in production environments in favor of using a license file due to the risk of leaking license activations when the container is not gracefully stopped. See the [caveats of product licensing in containers](#caveats-of-product-licensing-in-containers) section below for more details.
 
 ```bash
 # Replace with valid license
@@ -195,11 +209,6 @@ docker run -it --privileged \
     -e RSW_LICENSE=$RSW_LICENSE \
     rstudio/rstudio-workbench:ubuntu2204
 ```
-
-If possible, license key activation should be avoided in production environments in favor of using a license file due to 
-the risk of leaking license activations when the container is not gracefully stopped. See the 
-[caveats of product licensing in containers](#caveats-of-product-licensing-in-containers) section below for more 
-details on license key issues.
 
 ### User Provisioning
 
@@ -237,7 +246,7 @@ docker run -it \
     -v $PWD/data/rsp:/home \
     -v $PWD/server-pro/conf/:/etc/rstudio \
     -v $PWD/sssd.conf:/etc/sssd/conf.d/sssd.conf \
-    -e RSW_LICENSE=$RSW_LICENSE \
+    --mount type=bind,ro,src=<path to license file>,dst=/var/lib/rstudio-server/rstudio-server.lic \
     rstudio/rstudio-workbench:ubuntu2204
 ```
 
