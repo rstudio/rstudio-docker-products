@@ -16,7 +16,7 @@ from pathlib import Path
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 LOGGER = logging.getLogger(__name__)
 SNYK_ORG = os.getenv("SNYK_ORG")
-SERVICE_IMAGES = ["workbench-for-microsoft-azure=ml"]
+SERVICE_IMAGES = ["workbench-for-microsoft-azure-ml"]
 SARIF_PATH_FILTERS = {
     "connect": ["/opt/rstudio-connect/examples"],
 }
