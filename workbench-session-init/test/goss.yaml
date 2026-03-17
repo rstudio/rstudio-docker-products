@@ -1,17 +1,12 @@
-package:
-  curl:
-    installed: true
-
 file:
   /opt/session-components/:
     exists: true
     mode: "0755"
     filetype: directory
-  /usr/local/bin/entrypoint:
+  /opt/session-components/bin/session-init:
     exists: true
     filetype: file
     mode: "0755"
-  # Should encompass commonDeps and sessionDeps listed in main.go
   /opt/session-components/bin/git-credential-pwb:
     exists: true
     filetype: file

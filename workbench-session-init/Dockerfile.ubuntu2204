@@ -9,9 +9,8 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 ARG RSW_VERSION
-ARG GO_VERSION=1.22.2
 
-# Download the RStudio Workbench session components and install Go
+# Download the RStudio Workbench session components
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN mkdir -p /pwb-staging && \
     RSW_VERSION_URL=$(echo -n "${RSW_VERSION}" | sed 's/+/-/g') && \
@@ -20,31 +19,6 @@ RUN mkdir -p /pwb-staging && \
     tar -C /opt/session-components -xpf /pwb-staging/rsp-session-multi-linux.tar.gz && \
     chmod 755 /opt/session-components && \
     rm -rf /pwb-staging
-
-# Check if session-init binary exists in the tarball, if not build it from source
-RUN if [ -f "/opt/session-components/bin/session-init" ]; then \
-        echo "Using packaged session-init binary"; \
-        mkdir -p /workspace && \
-        cp /opt/session-components/bin/session-init /workspace/entrypoint; \
-    else \
-        echo "Building session-init from source for backwards compatibility"; \
-    fi
-
-# Install Go
-RUN if [ ! -f "/workspace/entrypoint" ]; then \
-        echo "Installing Go ${GO_VERSION}"; \
-        curl -fsSL -o /tmp/go.tar.gz "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" && \
-        tar -C /usr/local -xf /tmp/go.tar.gz; \
-    fi
-
-COPY entrypoint/ /workspace/
-WORKDIR /workspace
-RUN if [ ! -f "/workspace/entrypoint" ]; then \
-        echo "Building entrypoint"; \
-        export PATH=$PATH:/usr/local/go/bin && \
-        go mod download && \
-        CGO_ENABLED=0 GOOS=linux go build -ldflags '-s -w' -o /workspace/entrypoint main.go; \
-    fi
 
 # Create the final image
 FROM ubuntu:22.04 AS build
@@ -55,8 +29,6 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends ca-certificates curl && \
     rm -rf /var/lib/apt/lists/*
 
-# Copy the compiled Go binary and session components from the builder stage
-COPY --from=builder --chmod=755 /workspace/entrypoint /usr/local/bin/entrypoint
-COPY --from=builder --chmod=755 /opt/session-components /opt/session-components
+COPY --from=builder /opt/session-components /opt/session-components
 
-ENTRYPOINT ["/usr/local/bin/entrypoint"]
+CMD ["/opt/session-components/bin/session-init"]
