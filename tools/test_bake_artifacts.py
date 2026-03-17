@@ -43,12 +43,6 @@ def get_bake_plan(bake_file="docker-bake.hcl", target="default"):
 
 def custom_options(target_name, context_path):
     opts = []
-    if "workbench-for-google-cloud-workstation" in target_name:
-        deps_path = context_path / "deps"
-        opts.extend([
-            "--mount=type=bind,source=/var/run/docker.sock,destination=/var/run/docker.sock",
-            f"--mount=type=bind,source={deps_path},destination=/tmp/deps",
-        ])
     return opts
 
 
