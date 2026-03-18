@@ -4,6 +4,9 @@ FROM ubuntu:22.04 AS builder
 # - ca-certificates installs necessary certificates to use cURL with HTTPS websites
 # - curl is used to download the runtime tar.gz
 ARG DEBIAN_FRONTEND=noninteractive
+
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ca-certificates curl && \
     rm -rf /var/lib/apt/lists/*
@@ -25,6 +28,9 @@ FROM ubuntu:22.04 AS build
 LABEL maintainer="Posit Docker <docker@posit.co>"
 
 ARG DEBIAN_FRONTEND=noninteractive
+
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ca-certificates curl && \
     rm -rf /var/lib/apt/lists/*

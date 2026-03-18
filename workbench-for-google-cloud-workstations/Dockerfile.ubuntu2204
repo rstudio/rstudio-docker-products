@@ -29,7 +29,7 @@ ENV DIAGNOSTIC_ONLY false
 ENV LICENSE_MANAGER_PATH /opt/rstudio-license
 ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
 
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
 ### Copy scripts from Posit Base ###
 COPY --from=posit_base /opt/positscripts /opt/positscripts
