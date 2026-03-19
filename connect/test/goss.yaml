@@ -30,6 +30,14 @@ file:
     exists: false
   /opt/rstudio-connect/:
     exists: true
+  /opt/rstudio-connect/ui/out/:
+    exists: true
+    filetype: directory
+    mode: "0755"
+  /opt/rstudio-connect/ui/images/:
+    exists: true
+    filetype: directory
+    mode: "0755"
   /opt/rstudio-connect/bin/connect:
     exists: true
   /usr/local/bin/tini:
