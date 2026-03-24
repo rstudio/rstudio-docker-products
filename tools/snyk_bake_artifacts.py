@@ -16,15 +16,9 @@ from pathlib import Path
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 LOGGER = logging.getLogger(__name__)
 SNYK_ORG = os.getenv("SNYK_ORG")
-SERVICE_IMAGES = ["workbench-for-microsoft-azure=ml", "workbench-for-google-cloud-workstations"]
+SERVICE_IMAGES = ["workbench-for-microsoft-azure-ml"]
 SARIF_PATH_FILTERS = {
     "connect": ["/opt/rstudio-connect/examples"],
-    "workbench-for-google-cloud-workstations": [
-        "/usr/lib/google-cloud-sdk",
-        "/usr/share",
-        "/usr/bin",
-        "/usr/local/go",
-    ],
 }
 
 PROJECT_DIR = Path(__file__).resolve().parents[1]

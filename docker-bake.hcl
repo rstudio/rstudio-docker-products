@@ -181,14 +181,6 @@ variable WORKBENCH_SESSION_INIT_BUILD_MATRIX {
     }
 }
 
-variable WORKBENCH_GOOGLE_CLOUD_WORKSTATION_BUILD_MATRIX {
-    default = {
-        builds = [
-            {os = "ubuntu2204", r_primary = "4.4.3", r_alternate = "4.3.3", py_primary = "3.12.11", py_alternate = "3.11.13"},
-        ]
-    }
-}
-
 variable WORKBENCH_MICROSOFT_AZURE_ML_BUILD_MATRIX {
     default = {
         builds = [
@@ -492,43 +484,6 @@ target "workbench-session-init" {
 
     args = {
         RSW_VERSION = WORKBENCH_VERSION
-    }
-}
-
-### Workbench for Google Cloud Workstations targets ###
-target "workbench-for-google-cloud-workstations" {
-    inherits = ["base"]
-
-    name = "workbench-for-google-cloud-workstation-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"
-    tags = [
-        "us-central1-docker.pkg.dev/posit-images/cloud-workstations/workbench:${tag_safe_version(WORKBENCH_VERSION)}",
-        "us-central1-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
-        "europe-docker.pkg.dev/posit-images/cloud-workstations/workbench:${tag_safe_version(WORKBENCH_VERSION)}",
-        "europe-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
-        "asia-docker.pkg.dev/posit-images/cloud-workstations/workbench:${tag_safe_version(WORKBENCH_VERSION)}",
-        "asia-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
-        "us-docker.pkg.dev/posit-images/cloud-workstations/workbench:${tag_safe_version(WORKBENCH_VERSION)}",
-        "us-docker.pkg.dev/posit-images/cloud-workstations/workbench:latest",
-    ]
-
-    dockerfile = "Dockerfile.${builds.os}"
-    context = "workbench-for-google-cloud-workstations"
-    contexts = {
-        product-base-pro = "target:product-base-pro-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
-    }
-
-    matrix = WORKBENCH_GOOGLE_CLOUD_WORKSTATION_BUILD_MATRIX
-    args = {
-        R_VERSION = builds.r_primary
-        R_VERSION_ALT = builds.r_alternate
-        PYTHON_VERSION = builds.py_primary
-        PYTHON_VERSION_ALT = builds.py_alternate
-        PYTHON_VERSION_JUPYTER = builds.py_alternate
-        QUARTO_VERSION = "1.8.25"
-        DRIVERS_VERSION = DRIVERS_VERSION
-        RSW_VERSION = WORKBENCH_VERSION
-        RSW_NAME = "rstudio-workbench"
-        RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/jammy/amd64"
     }
 }
 
