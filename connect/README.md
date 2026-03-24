@@ -1,5 +1,12 @@
 # Quick reference
 
+> [!NOTE]
+> A new [posit/connect](https://github.com/posit-dev/images-connect/blob/main/connect/README.md) image is in preview and will eventually replace this image.
+>
+> - This image continues to be maintained. No deprecation date will be set until the new image is generally available.
+>
+> New image: [Docker Hub](https://hub.docker.com/r/posit/connect) | [GHCR](https://github.com/posit-dev/images-connect/pkgs/container/connect) | [GitHub](https://github.com/posit-dev/images-connect) | [Discussions](https://github.com/posit-dev/images/discussions)
+
 * Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
 * Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues), 
   [the Posit Connect Documentation](https://docs.posit.co/connect/),

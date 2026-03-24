@@ -1,5 +1,12 @@
 ## content/base
 
+> [!NOTE]
+> A new [posit/connect-content](https://github.com/posit-dev/images-connect/blob/main/connect-content/README.md) image is in preview and will eventually replace these images.
+>
+> - These images continue to be maintained. No deprecation date will be set until the new image is generally available.
+>
+> New image: [Docker Hub](https://hub.docker.com/r/posit/connect-content) | [GHCR](https://github.com/posit-dev/images-connect/pkgs/container/connect-content) | [GitHub](https://github.com/posit-dev/images-connect) | [Discussions](https://github.com/posit-dev/images/discussions)
+
 This is a basic image with:
 
 - "most" system dependencies for basic examples

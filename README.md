@@ -2,6 +2,14 @@
 
 Docker images for RStudio Professional Products
 
+> [!NOTE]
+> New Posit container images are in preview at [posit-dev/images](https://github.com/posit-dev/images) and will eventually replace this repository.
+>
+> - These images continue to be maintained.
+> - No deprecation date will be set until the new images are generally available.
+>
+> See [Image Migration](#image-migration) for the mapping between current and new images. Questions and feedback are welcome on [GitHub Discussions](https://github.com/posit-dev/images/discussions).
+
 **IMPORTANT:** There are a few things you need to know before using these images:
 
 1. This image may introduce **BREAKING** changes; as such we recommend:
@@ -178,6 +186,22 @@ Note you must have a license in place, and all other instructions in separate se
 
 If you have created an image you want to use yourself, you can push to your own image repository system. The images are
 named `rstudio-workbench`, `rstudio-connect`, and `rstudio-package-manager`.
+
+# Image Migration
+
+The table below maps current images to their replacements.
+
+| Current Image | Docker Hub | GHCR |
+|---|---|---|
+| `rstudio/rstudio-connect` | [`docker.io/posit/connect`](https://hub.docker.com/r/posit/connect) | [`ghcr.io/posit-dev/connect`](https://github.com/posit-dev/images-connect/pkgs/container/connect) |
+| `rstudio/rstudio-connect-content-init` | [`docker.io/posit/connect-content-init`](https://hub.docker.com/r/posit/connect-content-init) | [`ghcr.io/posit-dev/connect-content-init`](https://github.com/posit-dev/images-connect/pkgs/container/connect-content-init) |
+| `rstudio/content-base` | [`docker.io/posit/connect-content`](https://hub.docker.com/r/posit/connect-content) | [`ghcr.io/posit-dev/connect-content`](https://github.com/posit-dev/images-connect/pkgs/container/connect-content) |
+| `rstudio/content-pro` | [`docker.io/posit/connect-content`](https://hub.docker.com/r/posit/connect-content) | [`ghcr.io/posit-dev/connect-content`](https://github.com/posit-dev/images-connect/pkgs/container/connect-content) |
+| `rstudio/rstudio-package-manager` | [`docker.io/posit/package-manager`](https://hub.docker.com/r/posit/package-manager) | [`ghcr.io/posit-dev/package-manager`](https://github.com/posit-dev/images-package-manager/pkgs/container/package-manager) |
+| `rstudio/rstudio-workbench` | [`docker.io/posit/workbench`](https://hub.docker.com/r/posit/workbench) | [`ghcr.io/posit-dev/workbench`](https://github.com/posit-dev/images-workbench/pkgs/container/workbench) |
+| `rstudio/r-session-complete` | [`docker.io/posit/workbench-session`](https://hub.docker.com/r/posit/workbench-session) | [`ghcr.io/posit-dev/workbench-session`](https://github.com/posit-dev/images-workbench/pkgs/container/workbench-session) |
+| `rstudio/workbench-session` | [`docker.io/posit/workbench-session`](https://hub.docker.com/r/posit/workbench-session) | [`ghcr.io/posit-dev/workbench-session`](https://github.com/posit-dev/images-workbench/pkgs/container/workbench-session) |
+| `rstudio/workbench-session-init` | [`docker.io/posit/workbench-session-init`](https://hub.docker.com/r/posit/workbench-session-init) | [`ghcr.io/posit-dev/workbench-session-init`](https://github.com/posit-dev/images-workbench/pkgs/container/workbench-session-init) |
 
 # License
 

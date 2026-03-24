@@ -1,5 +1,12 @@
 # Quick reference
 
+> [!NOTE]
+> A new [posit/package-manager](https://github.com/posit-dev/images-package-manager/blob/main/package-manager/README.md) image is in preview and will eventually replace this image.
+>
+> - This image continues to be maintained. No deprecation date will be set until the new image is generally available.
+>
+> New image: [Docker Hub](https://hub.docker.com/r/posit/package-manager) | [GHCR](https://github.com/posit-dev/images-package-manager/pkgs/container/package-manager) | [GitHub](https://github.com/posit-dev/images-package-manager) | [Discussions](https://github.com/posit-dev/images/discussions)
+
 * Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
 * Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues), 
   [the Posit Package Manager Documentation](https://docs.posit.co/rspm/), 
