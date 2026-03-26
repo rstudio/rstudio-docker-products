@@ -17,7 +17,6 @@ on:
           - package-manager
           - r-session-complete
           - workbench
-          - workbench-for-microsoft-azure-ml
           - workbench-session-init
       type:
         description: "The type of image being built."
