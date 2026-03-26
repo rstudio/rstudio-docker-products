@@ -454,7 +454,12 @@ target "workbench-session-init-daily" {
     target = "build"
 
     name = "workbench-session-init-daily-${builds.os}-${replace(tag_safe_version(WORKBENCH_DAILY_VERSION), ".", "-")}"
-    tags = get_tags(builds.os, "workbench-session-init-preview", WORKBENCH_DAILY_VERSION, "daily")
+    tags = concat(get_tags(builds.os, "workbench-session-init-preview", WORKBENCH_DAILY_VERSION, "daily"), [
+        "ghcr.io/rstudio/workbench-session-init-preview:${get_tag_prefix()}${tag_safe_version(WORKBENCH_DAILY_VERSION)}",
+        "ghcr.io/rstudio/workbench-session-init-preview:${get_tag_prefix()}${clean_version(WORKBENCH_DAILY_VERSION)}",
+        "docker.io/rstudio/workbench-session-init-preview:${get_tag_prefix()}${tag_safe_version(WORKBENCH_DAILY_VERSION)}",
+        "docker.io/rstudio/workbench-session-init-preview:${get_tag_prefix()}${clean_version(WORKBENCH_DAILY_VERSION)}",
+    ])
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "workbench-session-init"

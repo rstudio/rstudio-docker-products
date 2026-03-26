@@ -475,7 +475,12 @@ target "workbench-session-init" {
     target = "build"
 
     name = "workbench-session-init-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"
-    tags = get_tags(builds.os, "workbench-session-init", WORKBENCH_VERSION)
+    tags = concat(get_tags(builds.os, "workbench-session-init", WORKBENCH_VERSION), [
+        "ghcr.io/rstudio/workbench-session-init:${tag_safe_version(WORKBENCH_VERSION)}",
+        "ghcr.io/rstudio/workbench-session-init:${clean_version(WORKBENCH_VERSION)}",
+        "docker.io/rstudio/workbench-session-init:${tag_safe_version(WORKBENCH_VERSION)}",
+        "docker.io/rstudio/workbench-session-init:${clean_version(WORKBENCH_VERSION)}",
+    ])
 
     dockerfile = "Dockerfile.${builds.os}"
     context = "workbench-session-init"
