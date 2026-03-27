@@ -23,15 +23,13 @@
 
 # What is Posit Connect?
 
-Posit Connect connects you and the work you do with others as never before. Only Posit Connect provides:
+Posit Connect is a platform for fast, secure, and sharable data products.
 
-* "One button" deployment into a single environment for Shiny applications, R Markdown documents, Plumber APIs, 
-  Python Jupyter notebooks, Quarto documents and projects, or any static R plot or graph.
-* Extended deployment capabilities supporting Python APIs and applications using Shiny, Flask, Dash, FastAPI, Bokeh, 
-  and Streamlit, as well as automated deployments for any content type via Git or command-line scripts.
-* The ability to manage and limit access to the work you've shared with others - and easily see the work they've shared 
-  with you.
-* "Hands free" scheduling of updates to your documents and automatic email distribution.
+* Deploy Shiny, Streamlit, Dash, Gradio, and other app frameworks
+* Serve APIs and MCP servers to power apps and agents
+* Host reports, notebooks, and scripts and run them on a schedule
+* Seamlessly integrate with data sources and manage authorization
+* Monitor performance, track usage, and maintain an audit trail
 
 For more information on running Posit Connect in your organization please visit 
 https://posit.co/products/enterprise/connect/.
