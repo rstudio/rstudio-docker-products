@@ -181,6 +181,15 @@ variable WORKBENCH_SESSION_INIT_BUILD_MATRIX {
     }
 }
 
+variable WORKBENCH_POSITRON_INIT_BUILD_MATRIX {
+    default = {
+        builds = [
+            {os = "ubuntu2204", positron_version = "2026.03.0-212"},
+            {os = "ubuntu2204", positron_version = "2026.02.1-5"},
+        ]
+    }
+}
+
 variable WORKBENCH_MICROSOFT_AZURE_ML_BUILD_MATRIX {
     default = {
         builds = [
@@ -203,6 +212,7 @@ group "default" {
         "workbench",
         "workbench-session",
         "workbench-session-init",
+        "workbench-positron-init",
     ]
 }
 
@@ -489,6 +499,26 @@ target "workbench-session-init" {
 
     args = {
         RSW_VERSION = WORKBENCH_VERSION
+    }
+}
+
+target "workbench-positron-init" {
+    inherits = ["base"]
+    target = "build"
+
+    name = "workbench-positron-init-${builds.os}-${replace(builds.positron_version, ".", "-")}"
+    tags = concat(get_tags(builds.os, "workbench-positron-init", builds.positron_version), [
+        "ghcr.io/rstudio/workbench-positron-init:${builds.positron_version}",
+        "docker.io/rstudio/workbench-positron-init:${builds.positron_version}",
+    ])
+
+    dockerfile = "Dockerfile.${builds.os}"
+    context = "workbench-positron-init"
+
+    matrix = WORKBENCH_POSITRON_INIT_BUILD_MATRIX
+
+    args = {
+        POSITRON_VERSION = builds.positron_version
     }
 }
 

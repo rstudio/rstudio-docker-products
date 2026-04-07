@@ -1,0 +1,52 @@
+FROM ubuntu:22.04 AS builder
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates curl jq unzip && \
+    rm -rf /var/lib/apt/lists/*
+
+ARG POSITRON_VERSION
+
+# Download Positron server tarball
+RUN mkdir -p /opt/positron/bin/positron-server && \
+    curl -fsSL -o /tmp/positron-server.tar.gz \
+      "https://cdn.posit.co/positron/releases/pwb/x86_64/positron-workbench-linux-x64-${POSITRON_VERSION}.tar.gz" && \
+    tar -xzf /tmp/positron-server.tar.gz -C /tmp && \
+    mv /tmp/vscode-reh-web-linux-x64 /opt/positron/bin/positron-server/bundled && \
+    rm /tmp/positron-server.tar.gz
+
+# Download Positron docs
+RUN mkdir -p /opt/positron/docs/positron && \
+    curl -fsSL -o /tmp/positron-docs.zip \
+      "https://cdn.posit.co/positron/releases/docs/positron-workbench-docs-${POSITRON_VERSION}.zip" && \
+    unzip -qo /tmp/positron-docs.zip -d /opt/positron/docs/positron && \
+    rm /tmp/positron-docs.zip
+
+# Download positron-session-init binary
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+RUN BINARY_URL=$(curl -fsSL "https://cdn.posit.co/pwb-components/positron-session-init/latest.json" \
+      | jq -r '.artifacts["linux-x86_64"].url') && \
+    curl -fsSL -o /tmp/positron-session-init.tar.gz "$BINARY_URL" && \
+    tar -xzf /tmp/positron-session-init.tar.gz -C /usr/local/bin && \
+    chmod 755 /usr/local/bin/positron-session-init && \
+    rm /tmp/positron-session-init.tar.gz
+
+# Final image
+FROM ubuntu:22.04 AS build
+LABEL maintainer="Posit Docker <docker@posit.co>"
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates curl && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /usr/local/bin/positron-session-init /usr/local/bin/positron-session-init
+COPY --from=builder /opt/positron /opt/positron
+
+CMD ["/usr/local/bin/positron-session-init"]

@@ -374,6 +374,48 @@ jobs:
           snyk-token: '${{ secrets.SNYK_TOKEN }}'
           soci-index: true
 
+  workbench-positron-init:
+    needs: [setup]
+    name: Workbench Positron Init
+    runs-on: ubuntu-latest-4x
+
+    concurrency:
+      group: bake-workbench-positron-init-${{ github.ref }}
+      cancel-in-progress: true
+
+    env:
+      target: workbench-positron-init
+      GIT_SHA: ${{ needs.setup.outputs.GIT_SHA }}
+
+    steps:
+      - name: Checkout
+        if: github.event_name == 'schedule'
+        uses: actions/checkout@v4
+        with:
+          ref: 'main'
+
+      - name: Checkout
+        if: github.event_name != 'schedule'
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        id: setup-buildx
+        with:
+          buildkitd-config: ./share/buildkitd.toml
+
+      - name: Build, Test, and Push
+        uses: ./.github/actions/bake-test-push
+        with:
+          target: ${{ env.target }}
+          push-image: ${{ github.ref == 'refs/heads/main' || github.event_name == 'schedule' }}
+          ghcr-token: ${{ secrets.GITHUB_TOKEN }}
+          dockerhub-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          dockerhub-token: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          gcp-json: '${{ secrets.GCP_ARTIFACT_REGISTRY_JSON }}'
+          snyk-org: ${{ secrets.SNYK_ORG }}
+          snyk-token: '${{ secrets.SNYK_TOKEN }}'
+
   workbench:
     needs: [setup]
     name: Workbench

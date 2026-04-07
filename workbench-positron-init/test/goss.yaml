@@ -1,0 +1,15 @@
+file:
+  /opt/positron/:
+    exists: true
+    mode: "0755"
+    filetype: directory
+  /opt/positron/bin/positron-server/bundled:
+    exists: true
+    filetype: directory
+  /opt/positron/docs/positron:
+    exists: true
+    filetype: directory
+  /usr/local/bin/positron-session-init:
+    exists: true
+    filetype: file
+    mode: "0755"
