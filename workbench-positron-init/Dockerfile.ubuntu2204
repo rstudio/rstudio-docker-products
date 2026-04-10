@@ -15,7 +15,7 @@ RUN mkdir -p /opt/positron/bin/positron-server && \
     curl -fsSL -o /tmp/positron-server.tar.gz \
       "https://cdn.posit.co/positron/releases/pwb/x86_64/positron-workbench-linux-x64-${POSITRON_VERSION}.tar.gz" && \
     tar -xzf /tmp/positron-server.tar.gz -C /tmp && \
-    mv /tmp/vscode-reh-web-linux-x64 /opt/positron/bin/positron-server/bundled && \
+    mv /tmp/vscode-reh-web-*linux-x64 /opt/positron/bin/positron-server/bundled && \
     rm /tmp/positron-server.tar.gz
 
 # Download Positron docs
