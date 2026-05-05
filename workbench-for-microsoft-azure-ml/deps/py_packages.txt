@@ -1,7 +1,0 @@
-pyarrow
-azure-ai-ml
-azure-identity
-numpy
-scipy
-pandas
-matplotlib

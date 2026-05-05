@@ -16,7 +16,6 @@ from pathlib import Path
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 LOGGER = logging.getLogger(__name__)
 SNYK_ORG = os.getenv("SNYK_ORG")
-SERVICE_IMAGES = ["workbench-for-microsoft-azure-ml"]
 SARIF_PATH_FILTERS = {
     "connect": ["/opt/rstudio-connect/examples"],
 }
@@ -55,12 +54,6 @@ def render_options(opts):
 def get_version(target_spec):
     version = target_spec["args"].get("RSW_VERSION") or target_spec["args"].get("RSC_VERSION") or target_spec["args"].get("RSPM_VERSION")
     return version
-
-
-def get_image_type(target_spec):
-    if target_spec["context"] in SERVICE_IMAGES:
-        return "service"
-    return "generic"
 
 
 def build_snyk_command(target_name, target_spec, snyk_command, opts):
@@ -105,8 +98,6 @@ def build_snyk_command(target_name, target_spec, snyk_command, opts):
             version = get_version(target_spec)
             if version:
                 tags += f",version={version}"
-            image_type = get_image_type(target_spec)
-            tags += f",image_type={image_type}"
             cmd.append(tags)
         elif snyk_command == "sbom":
             cmd.append("--format=cyclonedx1.4+json")

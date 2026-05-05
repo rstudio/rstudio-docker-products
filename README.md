@@ -158,7 +158,6 @@ Here are the available targets and groups in bake. To build one, use `just bake 
 - `workbench` - Builds `workbench`
 - `connect-content-init` - Builds `connect-content-init`
 - `r-session-complete` - Builds `r-session-complete`
-- `waml-images` - Builds `workbench-for-microsoft-azure-ml` stack (build, scan, and final)
 
 Preview images and content images are also available to build through the `docker-bake.preview.hcl` and 
 `content/docker-bake.hcl` files respectively or use `just preview-bake` and `just content-bake`. 

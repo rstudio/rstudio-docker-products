@@ -19,8 +19,7 @@ LOGGER = logging.getLogger(__name__)
 
 PROJECT_DIR = Path(__file__).resolve().parents[1]
 SKIP = [
-    "^content.*",                              # Content images don't have tests right now!
-    "(build|scan)-workbench-for-microsoft.*",  # Intermediary WAML layers aren't exported or tested
+    "^content.*",  # Content images don't have tests right now!
 ]
 
 

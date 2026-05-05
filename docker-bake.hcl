@@ -191,14 +191,6 @@ variable WORKBENCH_POSITRON_INIT_BUILD_MATRIX {
     }
 }
 
-variable WORKBENCH_MICROSOFT_AZURE_ML_BUILD_MATRIX {
-    default = {
-        builds = [
-            {os = "ubuntu2204", r_primary = "4.5.2", r_alternate = "4.4.3", py_primary = "3.13.9", py_alternate = "3.12.11"},
-        ]
-    }
-}
-
 ### Group definitions ###
 group "default" {
     targets = [
@@ -521,58 +513,4 @@ target "workbench-positron-init" {
     args = {
         POSITRON_VERSION = builds.positron_version
     }
-}
-
-### Workbench for Microsoft Azure ML targets ###
-target "build-workbench-for-microsoft-azure-ml" {
-    inherits = ["base"]
-    target = "build"
-
-    name = "build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"
-
-    dockerfile = "Dockerfile.${builds.os}"
-    context = "workbench-for-microsoft-azure-ml"
-    contexts = {
-        product-base-pro = "target:product-base-pro-${builds.os}-r${replace(builds.r_primary, ".", "-")}_${replace(builds.r_alternate, ".", "-")}-py${replace(builds.py_primary, ".", "-")}_${replace(builds.py_alternate, ".", "-")}"
-    }
-
-    matrix = WORKBENCH_MICROSOFT_AZURE_ML_BUILD_MATRIX
-    args = {
-        R_VERSION = builds.r_primary
-        R_VERSION_ALT = builds.r_alternate
-        PYTHON_VERSION = builds.py_primary
-        PYTHON_VERSION_ALT = builds.py_alternate
-        PYTHON_VERSION_JUPYTER = builds.py_alternate
-        RSW_VERSION = WORKBENCH_VERSION
-        RSW_NAME = "rstudio-workbench"
-        RSW_DOWNLOAD_URL = "https://download2.rstudio.org/server/jammy/amd64"
-    }
-}
-
-target "scan-workbench-for-microsoft-azure-ml" {
-    inherits = ["build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"]
-    target = "clamav"
-
-    name = "scan-workbench-for-microsoft-azure-ml-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"
-
-    contexts = {
-        build = "target:build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"
-    }
-
-    matrix = WORKBENCH_MICROSOFT_AZURE_ML_BUILD_MATRIX
-}
-
-target "workbench-for-microsoft-azure-ml" {
-    inherits = ["build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"]
-    target = "final"
-
-    name = "workbench-for-microsoft-azure-ml-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"
-    tags = get_tags(builds.os, "rstudio-workbench-for-microsoft-azure-ml", WORKBENCH_VERSION)
-
-    contexts = {
-        build = "target:build-workbench-for-microsoft-azure-ml-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"
-        clamav = "target:scan-workbench-for-microsoft-azure-ml-${builds.os}-${replace(tag_safe_version(WORKBENCH_VERSION), ".", "-")}"
-    }
-
-    matrix = WORKBENCH_MICROSOFT_AZURE_ML_BUILD_MATRIX
 }
