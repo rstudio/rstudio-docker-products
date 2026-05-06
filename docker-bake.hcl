@@ -184,6 +184,7 @@ variable WORKBENCH_SESSION_INIT_BUILD_MATRIX {
 variable WORKBENCH_POSITRON_INIT_BUILD_MATRIX {
     default = {
         builds = [
+            {os = "ubuntu2204", positron_version = "2026.05.0-179"},
             {os = "ubuntu2204", positron_version = "2026.04.0-269"},
             {os = "ubuntu2204", positron_version = "2026.03.0-212"},
             {os = "ubuntu2204", positron_version = "2026.02.1-5"},
