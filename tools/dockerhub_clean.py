@@ -21,7 +21,6 @@ REPOSITORIES = [
     "rstudio-package-manager",
     "rstudio-package-manager-preview",
     "rstudio-workbench",
-    "rstudio-workbench-for-microsoft-azure-ml",
     "rstudio-workbench-preview",
     "workbench-session-init-preview",
 ]

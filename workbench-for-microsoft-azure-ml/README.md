@@ -1,5 +1,5 @@
-# RStudio Workbench for Microsoft Azure ML
+# Workbench for Microsoft Azure ML
 
-This image is built specifically for use with Azure ML. Please contact Posit support in order to use.
+This image has moved to [posit-dev/images-specialized](https://github.com/posit-dev/images-specialized) ([GHCR Registry](https://github.com/posit-dev/images-specialized/pkgs/container/workbench-for-microsoft-azure-ml)).
 
-If you're looking for the standard Workbench image, please go [here](https://hub.docker.com/r/rstudio/rstudio-workbench).
+If you're looking for the standard Workbench image, see [posit-dev/images-workbench](https://github.com/posit-dev/images-workbench).
