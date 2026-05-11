@@ -47,6 +47,13 @@ file:
     exists: true
   /opt/python/{{.Env.PYTHON_VERSION_ALT}}/bin/python:
     exists: true
+  /opt/nodejs/{{.Env.NODEJS_VERSION}}/bin/node:
+    exists: true
+  /opt/nodejs/{{.Env.NODEJS_VERSION_ALT}}/bin/node:
+    exists: true
+  /opt/nodejs/default:
+    exists: true
+    filetype: symlink
   /opt/quarto/{{.Env.QUARTO_VERSION}}/bin/quarto:
     exists: true
   /usr/local/bin/quarto:
@@ -126,6 +133,20 @@ command:
     exit-status: 0
     stdout: [
       "{{ .Env.PYTHON_VERSION_ALT }}"
+    ]
+
+# Ensure correct Node.js version
+  "/opt/nodejs/{{ .Env.NODEJS_VERSION }}/bin/node --version":
+    title: nodejs_version_matches
+    exit-status: 0
+    stdout: [
+      "{{ .Env.NODEJS_VERSION }}"
+    ]
+  "/opt/nodejs/{{ .Env.NODEJS_VERSION_ALT }}/bin/node --version":
+    title: nodejs_version_matches
+    exit-status: 0
+    stdout: [
+      "{{ .Env.NODEJS_VERSION_ALT }}"
     ]
 
 # Ensure correct Quarto version
