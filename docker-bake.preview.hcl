@@ -326,6 +326,8 @@ target "connect-daily" {
         R_VERSION_ALT = builds.r_alternate
         PYTHON_VERSION = builds.py_primary
         PYTHON_VERSION_ALT = builds.py_alternate
+        NODEJS_VERSION = builds.nodejs_primary
+        NODEJS_VERSION_ALT = builds.nodejs_alternate
         RSC_VERSION = CONNECT_DAILY_VERSION
         QUARTO_VERSION = builds.quarto
     }
