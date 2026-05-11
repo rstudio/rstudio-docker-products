@@ -5,7 +5,7 @@ Run Trivy container vulnerability scanning against bake artifacts by group/targe
 Reads `docker buildx bake --print <target>` to expand a group target into child
 image targets, runs `trivy image` on each with a per-image `trivy.yaml` config
 when present, and merges per-target SARIF outputs into one `container.sarif`
-written to the current working directory.
+written to the repository root.
 
 Always exits 0 — vulnerability findings do not fail the workflow.
 
@@ -131,7 +131,7 @@ def main():
             else:
                 failed_targets.append(target_name)
         merge_sarifs(sarif_paths, PROJECT_DIR / OUTPUT_SARIF)
-    LOGGER.info(f"Merged SARIF written to {OUTPUT_SARIF}")
+    LOGGER.info(f"Merged SARIF written to {PROJECT_DIR / OUTPUT_SARIF}")
     if failed_targets:
         LOGGER.warning(f"Failed targets (non-fatal): {failed_targets}")
     sys.exit(0)
