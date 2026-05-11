@@ -175,7 +175,6 @@ either way.
 - `r-session-complete/.snyk`
 - `workbench/.snyk`
 - `workbench-session/.snyk`
-- `workbench-for-microsoft-azure-ml/.snyk`
 
 ## Data flow
 
