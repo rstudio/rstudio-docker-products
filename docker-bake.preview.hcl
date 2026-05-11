@@ -125,7 +125,7 @@ variable PACKAGE_MANAGER_BUILD_MATRIX {
 variable CONNECT_BUILD_MATRIX {
     default = {
         builds = [
-            {os = "ubuntu2204", r_primary = "4.5.2", r_alternate = "4.4.3", py_primary = "3.13.9", py_alternate = "3.12.12", quarto = "1.8.25"},
+            {os = "ubuntu2204", r_primary = "4.5.2", r_alternate = "4.4.3", py_primary = "3.13.9", py_alternate = "3.12.12", nodejs_primary = "24.15.0", nodejs_alternate = "22.22.2", quarto = "1.8.25"},
         ]
     }
 }
