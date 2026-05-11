@@ -37,6 +37,17 @@ Executable = /opt/python/{{PYTHON_VERSION_ALT}}/bin/python
 Enabled = true
 Executable = /opt/quarto/{{QUARTO_VERSION}}/bin/quarto
 
+; To enable Node.js content support (Early Access, Connect 2026.04.0+),
+; uncomment the [NodeJs] and [EarlyAccess] sections below.
+;
+; [NodeJs]
+; Enabled = true
+; Executable = /opt/nodejs/{{NODEJS_VERSION}}/bin/node
+; Executable = /opt/nodejs/{{NODEJS_VERSION_ALT}}/bin/node
+;
+; [EarlyAccess]
+; NodeJs = true
+
 ; [TensorFlow]
 ; Enabled = true
 ; Executable = /usr/bin/tensorflow_model_server
