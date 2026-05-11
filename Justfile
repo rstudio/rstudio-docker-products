@@ -15,8 +15,6 @@ RSW_VERSION := "2026.04.0+526.pro2"
 DRIVERS_VERSION := "2025.07.0"
 DRIVERS_VERSION_RHEL := DRIVERS_VERSION + "-1"
 
-SNYK_ORG := env("SNYK_ORG", "")
-
 export RSC_LICENSE := ""
 export RSPM_LICENSE := ""
 export RSW_LICENSE := ""
@@ -107,64 +105,20 @@ preview-test target="default" branch="$(git branch --show-current)":
   BRANCH="${BRANCH}" \
   python3 {{justfile_directory()}}/tools/test_bake_artifacts.py --file docker-bake.preview.hcl --target "{{target}}"
 
-# just snyk-code-test
-snyk-code-test:
-  snyk code test --org="{{SNYK_ORG}}" --sarif-file-output=code.sarif {{justfile_directory()}}
-
-# just snyk-test workbench
-snyk-test target="default" file="docker-bake.hcl" *opts="":
-  SNYK_ORG="{{SNYK_ORG}}" \
+# just trivy-test workbench
+trivy-test target="default" file="docker-bake.hcl":
   GIT_SHA=$(git rev-parse --short HEAD) \
-    python3 {{justfile_directory()}}/tools/snyk_bake_artifacts.py --target "{{target}}" --file "{{file}}" test {{opts}}
+    python3 {{justfile_directory()}}/tools/trivy_bake_artifacts.py --target "{{target}}" --file "{{file}}"
 
-# just snyk-monitor workbench
-snyk-monitor target="default" file="docker-bake.hcl" *opts="":
-  SNYK_ORG="{{SNYK_ORG}}" \
-  GIT_SHA=$(git rev-parse --short HEAD) \
-    python3 {{justfile_directory()}}/tools/snyk_bake_artifacts.py --target "{{target}}" --file "{{file}}" monitor {{opts}}
-
-# just snyk-sbom workbench
-snyk-sbom target="default" file="docker-bake.hcl" *opts="":
-  SNYK_ORG="{{SNYK_ORG}}" \
-  GIT_SHA=$(git rev-parse --short HEAD) \
-    python3 {{justfile_directory()}}/tools/snyk_bake_artifacts.py --target "{{target}}" --file "{{file}}" sbom {{opts}}
-
-# just snyk-ignore workbench SNYK-XXXX-XXXX-XXXX "Reported upstream in <link>" 2024-08-31
-snyk-ignore context snyk_id reason expiry:
-  snyk ignore --id="{{snyk_id}}" --reason="{{reason}}" --expiry="{{expiry}}" --policy-path="{{context}}"
-
-# just preview-snyk-test workbench
-preview-snyk-test target="default" branch="$(git branch --show-current)" *opts="":
+# just preview-trivy-test workbench
+preview-trivy-test target="default" branch="$(git branch --show-current)":
   WORKBENCH_DAILY_VERSION=$(just get-version workbench --type=daily --local) \
   WORKBENCH_PREVIEW_VERSION=$(just get-version workbench --type=preview --local) \
   PACKAGE_MANAGER_DAILY_VERSION=$(just get-version package-manager --type=daily --local) \
   CONNECT_DAILY_VERSION=$(just get-version connect --type=daily --local) \
   BRANCH="{{branch}}" \
-  SNYK_ORG="{{SNYK_ORG}}" \
   GIT_SHA=$(git rev-parse --short HEAD) \
-    python3 {{justfile_directory()}}/tools/snyk_bake_artifacts.py --target "{{target}}" --file "docker-bake.preview.hcl" test {{opts}}
-
-# just snyk-monitor workbench
-preview-snyk-monitor target="default" branch="$(git branch --show-current)" *opts="":
-  WORKBENCH_DAILY_VERSION=$(just get-version workbench --type=daily --local) \
-  WORKBENCH_PREVIEW_VERSION=$(just get-version workbench --type=preview --local) \
-  PACKAGE_MANAGER_DAILY_VERSION=$(just get-version package-manager --type=daily --local) \
-  CONNECT_DAILY_VERSION=$(just get-version connect --type=daily --local) \
-  BRANCH="{{branch}}" \
-  SNYK_ORG="{{SNYK_ORG}}" \
-  GIT_SHA=$(git rev-parse --short HEAD) \
-    python3 {{justfile_directory()}}/tools/snyk_bake_artifacts.py --target "{{target}}" --file "docker-bake.preview.hcl" monitor {{opts}}
-
-# just snyk-sbom workbench
-preview-snyk-sbom target="default" branch="$(git branch --show-current)" *opts="":
-  WORKBENCH_DAILY_VERSION=$(just get-version workbench --type=daily --local) \
-  WORKBENCH_PREVIEW_VERSION=$(just get-version workbench --type=preview --local) \
-  PACKAGE_MANAGER_DAILY_VERSION=$(just get-version package-manager --type=daily --local) \
-  CONNECT_DAILY_VERSION=$(just get-version connect --type=daily --local) \
-  BRANCH="{{branch}}" \
-  SNYK_ORG="{{SNYK_ORG}}" \
-  GIT_SHA=$(git rev-parse --short HEAD) \
-    python3 {{justfile_directory()}}/tools/snyk_bake_artifacts.py --target "{{target}}" --file "docker-bake.preview.hcl" sbom {{opts}}
+    python3 {{justfile_directory()}}/tools/trivy_bake_artifacts.py --target "{{target}}" --file "docker-bake.preview.hcl"
 
 # just lint workbench ubuntu2204
 lint $PRODUCT $OS:
