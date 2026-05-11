@@ -46,7 +46,7 @@ def get_bake_plan(bake_file, target):
 
 
 def resolve_targets(plan, target):
-    """Expand a target into child targets, mirroring the existing Snyk wrapper."""
+    """Expand a group target into its child target specs from the bake plan."""
     targets = {}
     group = plan.get("group", {}).get(target)
     if group:
