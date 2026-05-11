@@ -1,0 +1,5 @@
+scan:
+  skip-dirs:
+    - /opt/positron
+  skip-files:
+    - /usr/local/bin/positron-session-init

@@ -1,0 +1,5 @@
+scan:
+  skip-dirs:
+    - /opt/rstudio-connect-runtime
+  skip-files:
+    - /opt/quarto/**/bin/tools/x86_64/esbuild
