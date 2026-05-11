@@ -1,0 +1,9 @@
+# Trivy scan configuration for the Connect image.
+# Paths listed here are skipped during vulnerability scanning. Each entry has
+# a corresponding row in the Posit security-ignores spreadsheet documenting
+# why the path is excluded (e.g. covered upstream, awaiting upstream patch).
+scan:
+  skip-dirs:
+    - /opt/connect
+  skip-files:
+    - /opt/quarto/**/bin/tools/x86_64/esbuild
