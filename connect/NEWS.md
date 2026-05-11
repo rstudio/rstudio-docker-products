@@ -1,3 +1,10 @@
+# 2026-05-11
+
+- Add Node.js 24.15.0 and 22.22.2 to the image. Node.js support in Connect is
+  an Early Access feature in 2026.04.0 and is disabled by default. See the
+  commented `[NodeJs]` and `[EarlyAccess]` blocks in `rstudio-connect.gcfg`
+  for an example of how to enable it.
+
 # 2026-02-25
 
 - Temporarily disable TensorFlow Serving due to issues with the bucket access permissions for install.
