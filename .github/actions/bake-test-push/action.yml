@@ -154,6 +154,7 @@ runs:
         fi
 
     - name: Upload results
+      if: ${{ inputs.scan-image == 'true' }}
       uses: github/codeql-action/upload-sarif@v3
       continue-on-error: true
       with:
