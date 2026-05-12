@@ -1,3 +1,7 @@
+# 2026-05-12
+
+- Upgrade Posit Pro Drivers to 2026.04.0.
+
 # 2025-11-05
 
 - Remove outdated default values for `ARG` instructions related to versions.

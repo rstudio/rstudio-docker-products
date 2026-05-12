@@ -1,3 +1,7 @@
+# 2026-05-12
+
+- Upgrade Posit Pro Drivers to 2026.04.0.
+
 # 2026-02-25
 
 - Temporarily disable TensorFlow Serving due to issues with the bucket access permissions for install.
