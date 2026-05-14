@@ -1,5 +1,12 @@
 # Quick reference
 
+> [!NOTE]
+> A new <a href="https://github.com/posit-dev/images-workbench/blob/main/workbench-positron-init/README.md">posit/workbench-positron-init</a> image is now generally available and replaces this image.
+>
+> - This image continues to be maintained. A deprecation date will be announced separately.
+>
+> New image: <a href="https://hub.docker.com/r/posit/workbench-positron-init">Docker Hub</a> | <a href="https://github.com/posit-dev/images-workbench/pkgs/container/workbench-positron-init">GHCR</a> | <a href="https://github.com/posit-dev/images-workbench">GitHub</a> | <a href="https://github.com/posit-dev/images/discussions">Discussions</a>
+
 * Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
 * Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues),
   [the Posit Workbench Documentation](https://docs.posit.co/ide/),
