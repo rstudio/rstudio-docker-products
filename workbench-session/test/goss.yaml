@@ -8,6 +8,9 @@ file:
     exists: true
   /etc/rstudio/positron.extensions.conf:
     exists: true
+  /opt:
+    exists: true
+    filetype: directory
 
 command:
   "echo '{ \"cells\": [], \"metadata\": {}, \"nbformat\": 4, \"nbformat_minor\": 2}' | /opt/python/jupyter/bin/jupyter nbconvert --to notebook --stdin --stdout":
@@ -47,10 +50,10 @@ command:
     title: pip_installed
     exit-status: 0
 
-  "find /usr/lib/rstudio-server -type f -not -perm -004 -print | head -c1 | (! grep -q .)":
-    title: rstudio-server-files-other-read
+  "find /opt -type f -not -perm -004 -print 2>&1 | head -c1 | (! grep -q .)":
+    title: opt-files-other-read
     exit-status: 0
 
-  "find /usr/lib/rstudio-server -type d -not -perm -005 -print | head -c1 | (! grep -q .)":
-    title: rstudio-server-dirs-other-rx
+  "find /opt -type d -not -perm -005 -print 2>&1 | head -c1 | (! grep -q .)":
+    title: opt-dirs-other-rx
     exit-status: 0

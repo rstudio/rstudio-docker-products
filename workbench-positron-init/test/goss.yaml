@@ -16,8 +16,8 @@ file:
 
 command:
   positron-files-other-read:
-    exec: 'find /opt/positron -type f -not -perm -004 -print | head -c1 | (! grep -q .)'
+    exec: 'find /opt/positron -type f -not -perm -004 -print 2>&1 | head -c1 | (! grep -q .)'
     exit-status: 0
   positron-dirs-other-rx:
-    exec: 'find /opt/positron -type d -not -perm -005 -print | head -c1 | (! grep -q .)'
+    exec: 'find /opt/positron -type d -not -perm -005 -print 2>&1 | head -c1 | (! grep -q .)'
     exit-status: 0
