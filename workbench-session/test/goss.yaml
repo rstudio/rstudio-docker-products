@@ -46,3 +46,11 @@ command:
   "pip --version":
     title: pip_installed
     exit-status: 0
+
+  "find /usr/lib/rstudio-server -type f -not -perm -004 -print | head -c1 | (! grep -q .)":
+    title: rstudio-server-files-other-read
+    exit-status: 0
+
+  "find /usr/lib/rstudio-server -type d -not -perm -005 -print | head -c1 | (! grep -q .)":
+    title: rstudio-server-dirs-other-rx
+    exit-status: 0

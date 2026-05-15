@@ -95,3 +95,11 @@ file:
     exists: true
     filetype: file
     mode: "0755"
+
+command:
+  session-components-files-other-read:
+    exec: 'find /opt/session-components -type f -not -perm -004 -print | head -c1 | (! grep -q .)'
+    exit-status: 0
+  session-components-dirs-other-rx:
+    exec: 'find /opt/session-components -type d -not -perm -005 -print | head -c1 | (! grep -q .)'
+    exit-status: 0
