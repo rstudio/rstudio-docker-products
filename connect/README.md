@@ -1,11 +1,11 @@
 # Quick reference
 
 > [!NOTE]
-> A new [posit/connect](https://github.com/posit-dev/images-connect/blob/main/connect/README.md) image is in preview and will eventually replace this image.
+> A new <a href="https://github.com/posit-dev/images-connect/blob/main/connect/README.md">posit/connect</a> image is now generally available and replaces this image.
 >
-> - This image continues to be maintained. No deprecation date will be set until the new image is generally available.
+> - This image continues to be maintained. A deprecation date will be announced separately.
 >
-> New image: [Docker Hub](https://hub.docker.com/r/posit/connect) | [GHCR](https://github.com/posit-dev/images-connect/pkgs/container/connect) | [GitHub](https://github.com/posit-dev/images-connect) | [Discussions](https://github.com/posit-dev/images/discussions)
+> New image: <a href="https://hub.docker.com/r/posit/connect">Docker Hub</a> | <a href="https://github.com/posit-dev/images-connect/pkgs/container/connect">GHCR</a> | <a href="https://github.com/posit-dev/images-connect">GitHub</a> | <a href="https://github.com/posit-dev/images/discussions">Discussions</a>
 
 * Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
 * Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues), 
@@ -19,7 +19,7 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`jammy`, `ubuntu2204`, `jammy-2026.04.0`, `ubuntu2204-2026.04.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.2204)
+* [`jammy`, `ubuntu2204`, `jammy-2026.04.1`, `ubuntu2204-2026.04.1`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.2204)
 
 # What is Posit Connect?
 
@@ -185,7 +185,7 @@ still verify the container's licensing status by running the `status` command ag
 ```bash
 $ docker exec -it <container name> /opt/rstudio-connect/bin/license-manager status
 TTY detected. Printing informational message about logging configuration. Logging configuration loaded from '/etc/rstudio/logging.conf'. Logging to '/var/log/rstudio/rstudio-server/license-manager.log'.
-RStudio License Manager 2026.04.0+764.pro1
+RStudio License Manager 2026.04.1+764.pro1
 
 -- License file status --
 

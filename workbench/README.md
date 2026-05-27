@@ -1,11 +1,11 @@
 # Quick reference
 
 > [!NOTE]
-> A new [posit/workbench](https://github.com/posit-dev/images-workbench/blob/main/workbench/README.md) image is in preview and will eventually replace this image.
+> A new <a href="https://github.com/posit-dev/images-workbench/blob/main/workbench/README.md">posit/workbench</a> image is now generally available and replaces this image.
 >
-> - This image continues to be maintained. No deprecation date will be set until the new image is generally available.
+> - This image continues to be maintained. A deprecation date will be announced separately.
 >
-> New image: [Docker Hub](https://hub.docker.com/r/posit/workbench) | [GHCR](https://github.com/posit-dev/images-workbench/pkgs/container/workbench) | [GitHub](https://github.com/posit-dev/images-workbench) | [Discussions](https://github.com/posit-dev/images/discussions)
+> New image: <a href="https://hub.docker.com/r/posit/workbench">Docker Hub</a> | <a href="https://github.com/posit-dev/images-workbench/pkgs/container/workbench">GHCR</a> | <a href="https://github.com/posit-dev/images-workbench">GitHub</a> | <a href="https://github.com/posit-dev/images/discussions">Discussions</a>
 
 * Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
 * Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues), 

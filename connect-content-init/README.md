@@ -1,11 +1,11 @@
 # Quick reference
 
 > [!NOTE]
-> A new [posit/connect-content-init](https://github.com/posit-dev/images-connect/blob/main/connect-content-init/README.md) image is in preview and will eventually replace this image.
+> A new <a href="https://github.com/posit-dev/images-connect/blob/main/connect-content-init/README.md">posit/connect-content-init</a> image is now generally available and replaces this image.
 >
-> - This image continues to be maintained. No deprecation date will be set until the new image is generally available.
+> - This image continues to be maintained. A deprecation date will be announced separately.
 >
-> New image: [Docker Hub](https://hub.docker.com/r/posit/connect-content-init) | [GHCR](https://github.com/posit-dev/images-connect/pkgs/container/connect-content-init) | [GitHub](https://github.com/posit-dev/images-connect) | [Discussions](https://github.com/posit-dev/images/discussions)
+> New image: <a href="https://hub.docker.com/r/posit/connect-content-init">Docker Hub</a> | <a href="https://github.com/posit-dev/images-connect/pkgs/container/connect-content-init">GHCR</a> | <a href="https://github.com/posit-dev/images-connect">GitHub</a> | <a href="https://github.com/posit-dev/images/discussions">Discussions</a>
 
 * Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
 * Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues), [the Posit Connect Documentation](https://docs.posit.co/connect/), 
@@ -15,7 +15,7 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`jammy`, `ubuntu2204`, `jammy-2026.04.0`, `ubuntu2204-2026.04.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.2204)
+* [`jammy`, `ubuntu2204`, `jammy-2026.04.1`, `ubuntu2204-2026.04.1`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.2204)
 
 # Posit Connect Content Init Container
 

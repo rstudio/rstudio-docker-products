@@ -3,10 +3,10 @@
 Docker images for RStudio Professional Products
 
 > [!NOTE]
-> New Posit container images are in preview at [posit-dev/images](https://github.com/posit-dev/images) and will eventually replace this repository.
+> The new Posit container images at [posit-dev/images](https://github.com/posit-dev/images) are now generally available and replace this repository.
 >
-> - These images continue to be maintained.
-> - No deprecation date will be set until the new images are generally available.
+> - These images continue to be maintained during the transition.
+> - A deprecation date will be announced separately.
 >
 > See [Image Migration](#image-migration) for the mapping between current and new images. Questions and feedback are welcome on [GitHub Discussions](https://github.com/posit-dev/images/discussions).
 
