@@ -53,6 +53,13 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
+# Pre-create user so deb postinst finds it and UID/GID stays 999 across image rebuilds.
+RUN groupadd --system --gid 999 rstudio-server \
+    && useradd --system --uid 999 --gid 999 \
+        --no-create-home --home-dir /var/lib/rstudio-server \
+        --shell /usr/sbin/nologin \
+        rstudio-server
+
 COPY install_workbench.sh /tmp/install_workbench.sh
 RUN /tmp/install_workbench.sh && \
     rm -f /tmp/install_workbench.sh
