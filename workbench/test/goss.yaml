@@ -93,14 +93,10 @@ file:
     mode: "2775"
   /var/run/rstudio-server:
     exists: true
-    owner: rstudio-server
-    group: rstudio-server
-    mode: "2775"
   /var/lib/rstudio-launcher:
     exists: true
     owner: rstudio-server
     group: rstudio-server
-    mode: "2775"
   /usr/lib/rstudio-server/bin/pwb-code-server/bin/code-server:
     exists: true
   # Old code-server location
@@ -162,7 +158,7 @@ file:
     mode: "0777"
 
 command:
-  "su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'":
+  "sudo -u rstudio-server touch /var/lib/rstudio-server/monitor/log/rstudio-server.log":
     title: workbench_monitor_log_file_creates
     exit-status: 0
   "touch /var/log/rstudio-server.log":

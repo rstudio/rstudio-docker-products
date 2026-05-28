@@ -102,14 +102,12 @@ RUN mkdir -p /var/lib/rstudio-server/monitor/log \
                /var/lib/rstudio-server/proxy \
                /var/lib/rstudio-launcher \
                /var/log/rstudio \
-               /var/run/rstudio-server \
     && chown -R rstudio-server:rstudio-server \
         /var/lib/rstudio-server \
         /var/lib/rstudio-launcher \
         /var/log/rstudio \
-        /var/run/rstudio-server \
-    && chmod -R g+w /var/lib/rstudio-server /var/lib/rstudio-launcher /var/log/rstudio /var/run/rstudio-server \
-    && find /var/lib/rstudio-server /var/lib/rstudio-launcher /var/log/rstudio /var/run/rstudio-server -type d -exec chmod g+s {} + \
+    && chmod -R g+w /var/lib/rstudio-server /var/lib/rstudio-launcher /var/log/rstudio \
+    && find /var/lib/rstudio-server /var/lib/rstudio-launcher /var/log/rstudio -type d -exec chmod g+s {} + \
     && mkdir -p /startup/custom/ \
     && printf '\n# allow home directory creation\nsession required pam_mkhomedir.so skel=/etc/skel umask=0077' >> /etc/pam.d/common-session
 
