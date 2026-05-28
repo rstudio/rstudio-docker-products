@@ -93,6 +93,11 @@ file:
     mode: "2775"
   /var/run/rstudio-server:
     exists: true
+  /var/run/supervisor:
+    exists: true
+    owner: rstudio-server
+    group: rstudio-server
+    mode: "2775"
   /var/lib/rstudio-launcher:
     exists: true
     owner: rstudio-server
