@@ -15,7 +15,7 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`jammy`, `ubuntu2204`, `jammy-2026.04.1`, `ubuntu2204-2026.04.1`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.2204)
+* [`jammy`, `ubuntu2204`, `jammy-2026.05.0`, `ubuntu2204-2026.05.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/connect/Dockerfile.2204)
 
 # Posit Connect Content Init Container
 
