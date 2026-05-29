@@ -76,7 +76,6 @@ RUN HOME="/opt" $SCRIPTS_DIR/install_quarto.sh --install-tinytex --add-path-tiny
 
 COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
 COPY startup-launcher/* /startup/launcher/
-COPY startup-user-provisioning/* /startup/user-provisioning/
 COPY startup/* /startup/base/
 COPY supervisord.conf /etc/supervisor/supervisord.conf
 
@@ -116,7 +115,7 @@ RUN mkdir -p /var/lib/rstudio-server/monitor/log \
     && find /var/lib/rstudio-server /var/lib/rstudio-launcher /var/log/rstudio /var/run/supervisor -type d -exec chmod g+s {} + \
     && mkdir -p /var/run/rstudio-server \
     && chmod 1777 /var/run/rstudio-server \
-    && mkdir -p /startup/custom/ \
+    && mkdir -p /startup/custom/ /startup/user-provisioning/ \
     && printf '\n# allow home directory creation\nsession required pam_mkhomedir.so skel=/etc/skel umask=0077' >> /etc/pam.d/common-session
 
 EXPOSE 8787/tcp

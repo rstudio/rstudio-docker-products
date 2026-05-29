@@ -1,3 +1,8 @@
+# 2026-05-29
+
+- Stop shipping the bundled `[program:sssd]` supervisord file at `/startup/user-provisioning/sssd.conf`. SSSD is a legacy, root-only provisioning daemon, and the Helm chart now renders its own SSSD program when enabled. The directory is retained (empty) so deployments can mount their own provisioning programs. The SSSD daemon config at `/etc/sssd/sssd.conf` is unchanged.
+- Pre-create `/var/run/rstudio-server` (mode 1777) so a non-root `rserver` can use it as its `server-data-dir` without chmod'ing a root-owned directory.
+
 # 2025-11-05
 
 - Remove outdated default values for `ARG` instructions related to versions.
