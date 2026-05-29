@@ -20,6 +20,7 @@ ENV RSW_TESTUSER_PASSWD rstudio
 ENV RSW_TESTUSER_UID 10000
 ENV RSW_LAUNCHER true
 ENV RSW_LAUNCHER_TIMEOUT 30
+ENV RSW_SSSD true
 ENV DIAGNOSTIC_DIR /var/log/rstudio
 ENV DIAGNOSTIC_ENABLE false
 ENV DIAGNOSTIC_ONLY false
@@ -75,9 +76,11 @@ RUN ln -s /lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto
 RUN HOME="/opt" $SCRIPTS_DIR/install_quarto.sh --install-tinytex --add-path-tinytex
 
 COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
+COPY --chmod=0755 entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY startup-launcher/* /startup/launcher/
 COPY startup/* /startup/base/
 COPY supervisord.conf /etc/supervisor/supervisord.conf
+COPY supervisord-sssd.conf /opt/startup-templates/sssd.conf
 
 RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyter \
     && /opt/python/jupyter/bin/python -m pip install --upgrade pip \
@@ -121,5 +124,5 @@ RUN mkdir -p /var/lib/rstudio-server/monitor/log \
 EXPOSE 8787/tcp
 EXPOSE 5559/tcp
 
-ENTRYPOINT []
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]

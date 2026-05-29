@@ -126,6 +126,17 @@ file:
     owner: root
     group: root
     mode: "0600"
+  # The sssd supervisord program is no longer baked into the include dir; the
+  # entrypoint installs it from the template only when running as root.
+  /opt/startup-templates/sssd.conf:
+    exists: true
+    contains:
+      - "/^\\[program:sssd\\]$/"
+  /startup/user-provisioning/sssd.conf:
+    exists: false
+  /usr/local/bin/entrypoint.sh:
+    exists: true
+    mode: "0755"
   /usr/local/bin/quarto:
     exists: true
     filetype: symlink

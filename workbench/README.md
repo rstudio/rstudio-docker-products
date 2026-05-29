@@ -225,9 +225,13 @@ variables: `RSW_TESTUSER`, `RSW_TESTUSER_PASSWD`, `RSW_TESTUSER_UID`.
 #### sssd / LDAP / Active Directory
 
 If you have a directory (LDAP server, Active Directory, etc.) available to
-provision users, `sssd` is installed in the container and enabled by default (
-see `Process Management` below). In order to make use of it, you will need to
-mount your own configuration file into `/etc/sssd/conf.d/`. For instance,
+provision users, `sssd` is installed in the container. It is a root-only
+daemon, so it is started automatically **only when the container runs as
+root** (the default), and can be turned off with `RSW_SSSD=false` (see
+`Process Management` below). When the container runs as a non-root user,
+`sssd` is never started; use SCIM/native provisioning instead. In order to
+make use of `sssd`, you will need to mount your own configuration file into
+`/etc/sssd/conf.d/`. For instance,
 
 _sssd.conf_
 ```ini
@@ -273,6 +277,7 @@ more information.
 | `RSW_LICENSE`          | License key for Posit Workbench, format should be: `XXXX-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX`                      | None      |
 | `RSW_LICENSE_SERVER`   | Floating license server, format should be: `my.url.com:port`                                                 | None      |
 | `RSW_LAUNCHER`         | Whether or not to use launcher locally / start the launcher process                                          | true      |
+| `RSW_SSSD`             | Whether to start the bundled `sssd` daemon (root only; ignored when running non-root)                         | true      |
 | `RSW_LAUNCHER_TIMEOUT` | The timeout, in seconds, to wait for launcher to start listening on the expected port before failing startup | 30        |
 
 ### Ports
@@ -333,13 +338,15 @@ Details on the various processes and their configuration is below:
 
 - **sssd**: often used for user provisioning when connected to an LDAP
   directory or other user store.
-  - Optional, and enabled by default, but with a "dummy" domain it does
-    nothing.
+  - Optional. Root-only, so it is started automatically only when the
+    container runs as root; with the bundled "dummy" domain it does nothing
+    until you mount real configuration.
   - To use this with your directory, mount required `.conf` files into
     `/etc/sssd/conf.d/` (more details in `User Provisioning`, above)
-  - Startup configuration is installed at `/startup/user-provisioning/`
-  - To disable entirely, mount an empty volume over
-    `/startup/user-provisioning/`
+  - The startup program is installed into `/startup/user-provisioning/` at
+    container start (as root) from `/opt/startup-templates/sssd.conf`
+  - To disable, set `RSW_SSSD=false`. When the container runs as a non-root
+    user, `sssd` is never started regardless of this setting.
 
 - **custom**: Do you have a service that you need to run inside the container
   for user provisioning or otherwise?  Mount other configuration files into
