@@ -12,7 +12,7 @@ variable WORKBENCH_VERSION {
 }
 
 variable DRIVERS_VERSION {
-    default = "2025.07.0"
+    default = "2026.04.0"
 }
 
 variable GIT_SHA {
@@ -125,30 +125,30 @@ variable CONTENT_BUILD_MATRIX {
     builds = [
 
       # R-4.1, Python-3.10, Quarto-1.3.
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.1.3", py = "3.10.11", drivers = "2025.07.0", quarto = "1.3.340"},
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.1.3", py = "3.10.14", drivers = "2025.07.0", quarto = "1.3.450"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.1.3", py = "3.10.11", drivers = "2026.04.0", quarto = "1.3.340"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.1.3", py = "3.10.14", drivers = "2026.04.0", quarto = "1.3.450"},
 
       # R-4.2, Python-3.11, Quarto-1.3.
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.2.2", py = "3.11.3", drivers = "2025.07.0", quarto = "1.3.340"},
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.2.3", py = "3.11.9", drivers = "2025.07.0", quarto = "1.3.450"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.2.2", py = "3.11.3", drivers = "2026.04.0", quarto = "1.3.340"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.2.3", py = "3.11.9", drivers = "2026.04.0", quarto = "1.3.450"},
 
       # R-4.3, Python-3.12, Quarto-1.4.
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.3.3", py = "3.12.3", drivers = "2025.07.0", quarto = "1.4.553"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.3.3", py = "3.12.3", drivers = "2026.04.0", quarto = "1.4.553"},
 
       # R-4.4, Python-3.12, Quarto-1.4.
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.4.0", py = "3.12.3", drivers = "2025.07.0", quarto = "1.4.553"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.4.0", py = "3.12.3", drivers = "2026.04.0", quarto = "1.4.553"},
 
       # R-4.4, Python-3.12.4, Quarto-1.4.557 (polyfill.js vulnerability patch)
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.4.1", py = "3.12.4", drivers = "2025.07.0", quarto = "1.4.557"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.4.1", py = "3.12.4", drivers = "2026.04.0", quarto = "1.4.557"},
 
       # R-4.4, Python-3.13.1, Quarto-1.6.42
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.4.2", py = "3.13.1", drivers = "2025.07.0", quarto = "1.6.42"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.4.2", py = "3.13.1", drivers = "2026.04.0", quarto = "1.6.42"},
 
       # R-4.5, Python-3.13, Quarto-1.7
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.5.1", py = "3.13.5", drivers = "2025.07.0", quarto = "1.7.32"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.5.1", py = "3.13.5", drivers = "2026.04.0", quarto = "1.7.32"},
 
       # R-4.5, Python-3.13, Quarto-1.8
-      {os = "ubuntu2204", os_alt = "jammy", r = "4.5.2", py = "3.13.9", drivers = "2025.07.0", quarto = "1.8.25"},
+      {os = "ubuntu2204", os_alt = "jammy", r = "4.5.2", py = "3.13.9", drivers = "2026.04.0", quarto = "1.8.25"},
     ]
   }
 }
