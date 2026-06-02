@@ -1,3 +1,9 @@
+# 2026-06-01
+
+- Stage the `nodejs/` runtime directory in the init container so the Node.js
+  runtime is copied to the shared volume alongside `ext`, `python`, `R`, and
+  `scripts`.
+
 # 2025-11-05
 
 - Remove outdated default values for `ARG` instructions related to versions.

@@ -15,7 +15,7 @@ fi
 
 echo "Copying RStudio Connect runtime ..."
 
-for d in ext python R scripts ; do
+for d in ext python R scripts nodejs ; do
     echo copying $S/$d to $T/$d
     cp -va $S/$d $T/$d
 done
