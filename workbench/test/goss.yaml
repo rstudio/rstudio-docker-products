@@ -65,7 +65,40 @@ file:
     exists: true
   /usr/lib/rstudio-server/bin/rstudio-launcher:
     exists: true
+  /var/lib/rstudio-server:
+    exists: true
+    owner: rstudio-server
+    group: rstudio-server
+    mode: "2775"
   /var/lib/rstudio-server/monitor/log:
+    exists: true
+    owner: rstudio-server
+    group: rstudio-server
+  /var/lib/rstudio-server/conf:
+    exists: true
+    owner: rstudio-server
+    group: rstudio-server
+  /var/lib/rstudio-server/body:
+    exists: true
+    owner: rstudio-server
+    group: rstudio-server
+  /var/lib/rstudio-server/proxy:
+    exists: true
+    owner: rstudio-server
+    group: rstudio-server
+  /var/log/rstudio:
+    exists: true
+    owner: rstudio-server
+    group: rstudio-server
+    mode: "2775"
+  /var/run/rstudio-server:
+    exists: true
+  /var/run/supervisor:
+    exists: true
+    owner: rstudio-server
+    group: rstudio-server
+    mode: "2775"
+  /var/lib/rstudio-launcher:
     exists: true
     owner: rstudio-server
     group: rstudio-server
@@ -93,6 +126,17 @@ file:
     owner: root
     group: root
     mode: "0600"
+  # The sssd supervisord program is no longer baked into the include dir; the
+  # entrypoint installs it from the template only when running as root.
+  /opt/startup-templates/sssd.conf:
+    exists: true
+    contains:
+      - "/^\\[program:sssd\\]$/"
+  /startup/user-provisioning/sssd.conf:
+    exists: false
+  /usr/local/bin/entrypoint.sh:
+    exists: true
+    mode: "0755"
   /usr/local/bin/quarto:
     exists: true
     filetype: symlink
@@ -130,7 +174,7 @@ file:
     mode: "0777"
 
 command:
-  "su rstudio-server -c 'touch /var/lib/rstudio-server/monitor/log/rstudio-server.log'":
+  "sudo -u rstudio-server touch /var/lib/rstudio-server/monitor/log/rstudio-server.log":
     title: workbench_monitor_log_file_creates
     exit-status: 0
   "touch /var/log/rstudio-server.log":

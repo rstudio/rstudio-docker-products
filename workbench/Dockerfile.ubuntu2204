@@ -20,6 +20,7 @@ ENV RSW_TESTUSER_PASSWD rstudio
 ENV RSW_TESTUSER_UID 10000
 ENV RSW_LAUNCHER true
 ENV RSW_LAUNCHER_TIMEOUT 30
+ENV RSW_SSSD true
 ENV DIAGNOSTIC_DIR /var/log/rstudio
 ENV DIAGNOSTIC_ENABLE false
 ENV DIAGNOSTIC_ONLY false
@@ -27,6 +28,17 @@ ENV DIAGNOSTIC_ONLY false
 ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
+# Pre-create rstudio-server before apt install so no other --system user
+# claims uid/gid 999 from the auto-allocation pool. The deb postinst (run
+# later by install_workbench.sh) then reuses this user instead of creating
+# one with a drifting uid.
+RUN groupadd --system --gid 999 rstudio-server \
+    && useradd --system --uid 999 --gid 999 \
+        --no-create-home --home-dir /var/lib/rstudio-server \
+        --shell /usr/sbin/nologin \
+        rstudio-server
+
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
       gdb \
@@ -64,10 +76,11 @@ RUN ln -s /lib/rstudio-server/bin/quarto/bin/quarto /usr/local/bin/quarto
 RUN HOME="/opt" $SCRIPTS_DIR/install_quarto.sh --install-tinytex --add-path-tinytex
 
 COPY --chmod=0775 startup.sh /usr/local/bin/startup.sh
+COPY --chmod=0755 entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY startup-launcher/* /startup/launcher/
-COPY startup-user-provisioning/* /startup/user-provisioning/
 COPY startup/* /startup/base/
 COPY supervisord.conf /etc/supervisor/supervisord.conf
+COPY supervisord-sssd.conf /opt/startup-templates/sssd.conf
 
 RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyter \
     && /opt/python/jupyter/bin/python -m pip install --upgrade pip \
@@ -89,13 +102,27 @@ RUN curl -fsSL -o /usr/local/bin/wait-for-it.sh https://raw.githubusercontent.co
 COPY --chmod=600 sssd.conf /etc/sssd/sssd.conf
 COPY conf/* /etc/rstudio/
 
-RUN mkdir -p /var/lib/rstudio-server/monitor/log && \
-    chown -R rstudio-server:rstudio-server /var/lib/rstudio-server/monitor && \
-    mkdir -p /startup/custom/ && \
-    printf '\n# allow home directory creation\nsession required pam_mkhomedir.so skel=/etc/skel umask=0077' >> /etc/pam.d/common-session
+RUN mkdir -p /var/lib/rstudio-server/monitor/log \
+               /var/lib/rstudio-server/conf \
+               /var/lib/rstudio-server/body \
+               /var/lib/rstudio-server/proxy \
+               /var/lib/rstudio-launcher \
+               /var/log/rstudio \
+               /var/run/supervisor \
+    && chown -R rstudio-server:rstudio-server \
+        /var/lib/rstudio-server \
+        /var/lib/rstudio-launcher \
+        /var/log/rstudio \
+        /var/run/supervisor \
+    && chmod -R g+w /var/lib/rstudio-server /var/lib/rstudio-launcher /var/log/rstudio /var/run/supervisor \
+    && find /var/lib/rstudio-server /var/lib/rstudio-launcher /var/log/rstudio /var/run/supervisor -type d -exec chmod g+s {} + \
+    && mkdir -p /var/run/rstudio-server \
+    && chmod 1777 /var/run/rstudio-server \
+    && mkdir -p /startup/custom/ /startup/user-provisioning/ \
+    && printf '\n# allow home directory creation\nsession required pam_mkhomedir.so skel=/etc/skel umask=0077' >> /etc/pam.d/common-session
 
 EXPOSE 8787/tcp
 EXPOSE 5559/tcp
 
-ENTRYPOINT []
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]

@@ -1,3 +1,8 @@
+# 2026-05-29
+
+- Make the bundled `[program:sssd]` supervisord program conditional instead of baking it unconditionally into `/startup/user-provisioning/`. SSSD is a root-only daemon, so the entrypoint now installs the program (from `/opt/startup-templates/sssd.conf`) only when the container runs as root and `RSW_SSSD` is `true` (the default); it is never started non-root, where it would FATAL and crash the container. Set `RSW_SSSD=false` to disable it. Root deployments keep the previous "enabled by default" behavior. The SSSD daemon config at `/etc/sssd/sssd.conf` is unchanged.
+- Pre-create `/var/run/rstudio-server` (mode 1777) so a non-root `rserver` can use it as its `server-data-dir` without chmod'ing a root-owned directory.
+
 # 2025-11-05
 
 - Remove outdated default values for `ARG` instructions related to versions.
