@@ -7,7 +7,7 @@ Docker images for RStudio Professional Products
 >
 > - Posit will deprecate these images at the end of 2026. Version updates will continue until then. Please migrate to the Posit images.
 >
-> See [Image Migration](#image-migration) for the mapping between current and new images. Questions and feedback are welcome on [GitHub Discussions](https://github.com/posit-dev/images/discussions).
+> See [Image Migration](#image-migration) for the mapping between legacy and Posit images. Questions and feedback are welcome on [GitHub Discussions](https://github.com/posit-dev/images/discussions).
 
 **IMPORTANT:** There are a few things you need to know before using these images:
 
