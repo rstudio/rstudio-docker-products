@@ -49,4 +49,7 @@ RUN apt-get update && \
 COPY --from=builder /usr/local/bin/positron-session-init /usr/local/bin/positron-session-init
 COPY --from=builder /opt/positron /opt/positron
 
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/usr/local/bin/positron-session-init"]
