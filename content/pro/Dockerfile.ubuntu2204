@@ -16,7 +16,3 @@ RUN curl -fsSL -O https://cdn.rstudio.com/drivers/7C152C12/installer/rstudio-dri
     && apt-get install -yq --no-install-recommends ./rstudio-drivers_${DRIVERS_VERSION}_amd64.deb \
     && rm -rf /var/lib/apt/lists/* \
     && cp /opt/rstudio-drivers/odbcinst.ini.sample /etc/odbcinst.ini
-
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
