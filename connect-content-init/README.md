@@ -3,7 +3,7 @@
 > [!IMPORTANT]
 > A new <a href="https://github.com/posit-dev/images-connect/blob/main/connect-content-init/README.md">posit/connect-content-init</a> image is now generally available and replaces this image.
 >
-> - Posit will deprecate this image at the end of 2026. Version updates will continue until then. Please migrate to the Posit image linked above.
+> - Posit will stop publishing this image at the end of 2026. Version updates will continue until then. Please switch to the Posit image linked above.
 >
 > New image: <a href="https://hub.docker.com/r/posit/connect-content-init">Docker Hub</a> | <a href="https://github.com/posit-dev/images-connect/pkgs/container/connect-content-init">GHCR</a> | <a href="https://github.com/posit-dev/images-connect">GitHub</a> | <a href="https://github.com/posit-dev/images/discussions">Discussions</a>
 

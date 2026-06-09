@@ -5,7 +5,7 @@ if [[ "${STARTUP_DEBUG_MODE:-0}" -eq 1 ]]; then
     set -x
 fi
 
-echo "WARNING: This image is deprecated and will reach end-of-life at the end of 2026." >&2
+echo "WARNING: Posit will stop publishing this image at the end of 2026." >&2
 echo "Migrate to the new image: https://github.com/posit-dev/images-connect/blob/main/connect/README.md" >&2
 
 # Deactivate license when it exists
