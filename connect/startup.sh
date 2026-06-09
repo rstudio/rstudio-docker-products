@@ -6,7 +6,7 @@ if [[ "${STARTUP_DEBUG_MODE:-0}" -eq 1 ]]; then
 fi
 
 echo "WARNING: Posit will stop publishing this image at the end of 2026." >&2
-echo "Migrate to the new image: https://github.com/posit-dev/images-connect/blob/main/connect/README.md" >&2
+echo "Switch to the new image: https://github.com/posit-dev/images-connect/blob/main/connect/README.md" >&2
 
 # Deactivate license when it exists
 deactivate() {
