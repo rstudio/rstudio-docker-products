@@ -1,8 +1,8 @@
 #!/bin/bash
 set -euo pipefail
 
-echo "WARNING: This image is deprecated and will reach end-of-life at the end of 2026."
-echo "Migrate to the new image: https://github.com/posit-dev/images-workbench/blob/main/workbench/README.md"
+echo "WARNING: This image is deprecated and will reach end-of-life at the end of 2026." >&2
+echo "Migrate to the new image: https://github.com/posit-dev/images-workbench/blob/main/workbench/README.md" >&2
 
 # Bundled SSSD is a root-only provisioning daemon. Install its supervisord
 # program only when running as root and not disabled. Skips cleanly when
