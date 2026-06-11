@@ -8,6 +8,7 @@ ARG PYTHON_VERSION
 ARG PYTHON_VERSION_ALT
 ARG JUPYTERLAB_VERSION
 ARG SCRIPTS_DIR=/opt/positscripts
+ARG TARGETARCH
 
 ENV WORKBENCH_JUPYTER_PATH=/usr/local/bin/jupyter
 
@@ -23,7 +24,29 @@ RUN apt-get update \
       subversion \
     && apt-get autoremove -y \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* 
+    && rm -rf /var/lib/apt/lists/*
+
+### Enable the pwb NSS module for rootless in-session identity resolution ###
+# libnss_pwb.so is delivered at runtime by the workbench-session-init container
+# into /usr/lib/rstudio-server/bin/jammy/. Create the (build-time dangling)
+# multiarch symlink + nsswitch entries so glibc loads it once that volume is
+# populated. Dormant-safe: with no workbench-nss.conf the module returns
+# Unavail and resolution falls through to `files`.
+RUN case "${TARGETARCH}" in \
+      amd64) TRIPLET=x86_64-linux-gnu ;; \
+      arm64) TRIPLET=aarch64-linux-gnu ;; \
+      *) echo "unsupported arch ${TARGETARCH}"; exit 1 ;; \
+    esac && \
+    ln -sf /usr/lib/rstudio-server/bin/jammy/libnss_pwb.so \
+           "/usr/lib/${TRIPLET}/libnss_pwb.so.2" && \
+    for db in passwd group shadow; do \
+      touch /etc/nsswitch.conf; \
+      if grep -qE "^${db}:" /etc/nsswitch.conf; then \
+        sed -i -E "/^${db}:/ {/\bpwb\b/! s/\$/ pwb/}" /etc/nsswitch.conf; \
+      else \
+        echo "${db}: files pwb" >> /etc/nsswitch.conf; \
+      fi; \
+    done
 
 # Add Jupyter, Python, and Quarto to the PATH
 ENV PATH="/opt/python/jupyter/bin:/opt/python/bin:/usr/lib/rstudio-server/bin/quarto/bin:${PATH}"
