@@ -57,3 +57,24 @@ command:
   "find /opt -type d -not -perm -005 -print 2>&1 | head -c1 | (! grep -q .)":
     title: opt-dirs-other-rx
     exit-status: 0
+
+# Ensure libnss_pwb multiarch symlink is present (dangling at build time; populated at runtime by workbench-session-init)
+  "readlink /usr/lib/$(dpkg-architecture -qDEB_HOST_MULTIARCH)/libnss_pwb.so.2":
+    title: nss_pwb_symlink_exists
+    exit-status: 0
+    stdout:
+      - "/usr/lib/rstudio-server/bin/jammy/libnss_pwb.so"
+
+# Ensure nsswitch.conf has pwb after files for passwd, group, and shadow
+  "grep -cE '^(passwd|group|shadow):.*\\bfiles\\b.*\\bpwb\\b' /etc/nsswitch.conf":
+    title: nsswitch_has_pwb_entries
+    exit-status: 0
+    stdout:
+      - "3"
+
+# Ensure user resolution falls through gracefully even with the dangling symlink
+  "getent passwd root":
+    title: nss_graceful_fallthrough
+    exit-status: 0
+    stdout:
+      - "root:"
