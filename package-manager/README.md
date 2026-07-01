@@ -17,7 +17,7 @@
 
 # Supported tags and respective Dockerfile links
 
-* [`jammy`, `ubuntu2204`, `jammy-2026.05.0`, `ubuntu2204-2026.05.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/package-manager/Dockerfile.ubuntu2204)
+* [`jammy`, `ubuntu2204`, `jammy-2026.06.0`, `ubuntu2204-2026.06.0`](https://github.com/rstudio/rstudio-docker-products/blob/main/package-manager/Dockerfile.ubuntu2204)
 
 # What is Posit Package Manager?
 
@@ -144,7 +144,7 @@ Depending on how the license file was provided, the `License-File` field may be 
 ```bash
 $ docker exec -it <container name> /opt/rstudio-pm/bin/license-manager status
 TTY detected. Printing informational message about logging configuration. Logging configuration loaded from '/etc/rstudio/logging.conf'. Logging to '/var/log/rstudio/rstudio-server/license-manager.log'.
-RStudio License Manager 2026.05.0+764.pro1
+RStudio License Manager 2026.06.0+764.pro1
 
 -- License file status --
 
@@ -257,7 +257,7 @@ Find the container id for the running package-manager container via `docker ps`:
 ```bash
 ❯ docker ps
 CONTAINER ID   IMAGE ...
-b8ae944b7f2d   rstudio/rstudio-package-manager:2026.05.0-3 ...
+b8ae944b7f2d   rstudio/rstudio-package-manager:2026.06.0-3 ...
 ```
 
 ```bash
