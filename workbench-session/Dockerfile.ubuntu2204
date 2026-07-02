@@ -69,3 +69,7 @@ COPY vscode.extensions.conf /etc/rstudio/vscode.extensions.conf
 COPY positron.extensions.conf /etc/rstudio/positron.extensions.conf
 
 EXPOSE 8788/tcp
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/tini", "--", "/entrypoint.sh"]

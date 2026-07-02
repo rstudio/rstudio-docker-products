@@ -1,9 +1,9 @@
 # Quick reference
 
-> [!NOTE]
+> [!IMPORTANT]
 > A new <a href="https://github.com/posit-dev/images-workbench/blob/main/workbench/README.md">posit/workbench</a> image is now generally available and replaces this image.
 >
-> - This image continues to be maintained. A deprecation date will be announced separately.
+> - Posit will stop publishing this image at the end of 2026. Version updates will continue until then. Please switch to the Posit image linked above.
 >
 > New image: <a href="https://hub.docker.com/r/posit/workbench">Docker Hub</a> | <a href="https://github.com/posit-dev/images-workbench/pkgs/container/workbench">GHCR</a> | <a href="https://github.com/posit-dev/images-workbench">GitHub</a> | <a href="https://github.com/posit-dev/images/discussions">Discussions</a>
 
