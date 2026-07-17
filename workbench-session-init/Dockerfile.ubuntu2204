@@ -37,4 +37,7 @@ RUN apt-get update && \
 
 COPY --from=builder /opt/session-components /opt/session-components
 
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/opt/session-components/bin/session-init"]

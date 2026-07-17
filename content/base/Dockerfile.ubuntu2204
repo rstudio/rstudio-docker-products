@@ -124,3 +124,7 @@ COPY maybe_install_quarto.sh /tmp/maybe_install_quarto.sh
 RUN /opt/R/${R_VERSION}/bin/R -e 'install.packages("odbc", repos="https://packagemanager.posit.co/cran/__linux__/jammy/latest")' \
     && /tmp/maybe_install_quarto.sh \
     && rm -f /tmp/maybe_install_quarto.sh
+
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]

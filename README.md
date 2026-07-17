@@ -2,13 +2,12 @@
 
 Docker images for RStudio Professional Products
 
-> [!NOTE]
+> [!IMPORTANT]
 > The new Posit container images at [posit-dev/images](https://github.com/posit-dev/images) are now generally available and replace this repository.
 >
-> - These images continue to be maintained during the transition.
-> - A deprecation date will be announced separately.
+> - Posit will stop publishing these images at the end of 2026. Version updates will continue until then. Please switch to the Posit images.
 >
-> See [Image Migration](#image-migration) for the mapping between current and new images. Questions and feedback are welcome on [GitHub Discussions](https://github.com/posit-dev/images/discussions).
+> See [Image Mapping](#image-mapping) for the mapping between legacy and Posit images. Questions and feedback are welcome on [GitHub Discussions](https://github.com/posit-dev/images/discussions).
 
 **IMPORTANT:** There are a few things you need to know before using these images:
 
@@ -185,7 +184,7 @@ Note you must have a license in place, and all other instructions in separate se
 If you have created an image you want to use yourself, you can push to your own image repository system. The images are
 named `rstudio-workbench`, `rstudio-connect`, and `rstudio-package-manager`.
 
-# Image Migration
+# Image Mapping
 
 The table below maps current images to their replacements.
 
