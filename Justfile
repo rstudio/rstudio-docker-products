@@ -8,7 +8,7 @@ sed_vars := if os() == "macos" { "-i ''" } else { "-i" }
 BUILDX_PATH := ""
 REGISTRY_NAMESPACE := "rstudio"
 
-RSC_VERSION := "2026.08.1"
+RSC_VERSION := "2026.09.0"
 RSPM_VERSION := "2026.09.0"
 RSW_VERSION := "2026.08.2+200.pro1"
 
