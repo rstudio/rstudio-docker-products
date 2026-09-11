@@ -134,7 +134,7 @@ docker run -it --privileged \
 
 ### Product Licensing
 
-Using the Posit Connect docker image requires you to have a valid License. Posit recommends using [license file activation](#example-usage-with-a-license-file) rather than license key activation. License files work well in all environments including ephemeral, container-based, or air-gapped environments. See the [Licensing FAQ](https://docs.posit.co/licensing/licensing-faq.html) for more details. For full details and information about license key activation, see the [Licensing](https://docs.posit.co/connect/admin/licensing/) page. You can set the license three different ways: 
+Using the Posit Connect docker image requires you to have a valid License. If you don't have a license yet, request a free 30-day trial at [posit.co/trial-license](https://posit.co/trial-license/). Posit recommends using [license file activation](#example-usage-with-a-license-file) rather than license key activation. License files work well in all environments including ephemeral, container-based, or air-gapped environments. See the [Licensing FAQ](https://docs.posit.co/licensing/licensing-faq.html) for more details. For full details and information about license key activation, see the [Licensing](https://docs.posit.co/connect/admin/licensing/) page. You can set the license three different ways: 
 
 1. Mounting a `/var/lib/rstudio-connect/*.lic` single file that contains a valid license for Posit Connect
 2. Setting the `RSC_LICENSE` environment variable to a valid license key inside the container
