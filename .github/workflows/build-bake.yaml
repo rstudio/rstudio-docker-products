@@ -40,7 +40,7 @@ jobs:
   base:
     needs: [setup]
     name: Base Images
-    runs-on: ubuntu-latest-8x
+    runs-on: ubuntu-latest-amd64-8-core
 
     concurrency:
       group: bake-base-${{ github.ref }}
@@ -80,7 +80,7 @@ jobs:
   connect:
     needs: [setup]
     name: Connect
-    runs-on: ubuntu-latest-4x
+    runs-on: ubuntu-latest-amd64-4-core
 
     concurrency:
       group: bake-connect-${{ github.ref }}
@@ -120,7 +120,7 @@ jobs:
   connect-content-init:
     needs: [setup]
     name: Connect Content Init
-    runs-on: ubuntu-latest-4x
+    runs-on: ubuntu-latest-amd64-4-core
 
     concurrency:
       group: bake-connect-content-init-${{ github.ref }}
@@ -160,7 +160,7 @@ jobs:
   content:
     needs: [setup]
     name: Content Images
-    runs-on: ubuntu-latest-8x
+    runs-on: ubuntu-latest-amd64-8-core
 
     concurrency:
       group: bake-content-${{ github.ref }}
@@ -200,7 +200,7 @@ jobs:
   package-manager:
     needs: [setup]
     name: Package Manager
-    runs-on: ubuntu-latest-4x
+    runs-on: ubuntu-latest-amd64-4-core
 
     concurrency:
       group: bake-package-manager-${{ github.ref }}
@@ -240,7 +240,7 @@ jobs:
   r-session-complete:
     needs: [setup]
     name: R Session Complete
-    runs-on: ubuntu-latest-8x
+    runs-on: ubuntu-latest-amd64-8-core
 
     concurrency:
       group: bake-r-session-complete-${{ github.ref }}
@@ -280,7 +280,7 @@ jobs:
   workbench-session:
     needs: [setup]
     name: Workbench Session
-    runs-on: ubuntu-latest-8x
+    runs-on: ubuntu-latest-amd64-8-core
 
     concurrency:
       group: bake-workbench-session-${{ github.ref }}
@@ -320,7 +320,7 @@ jobs:
   workbench-session-init:
     needs: [setup]
     name: Workbench Session Init
-    runs-on: ubuntu-latest-8x
+    runs-on: ubuntu-latest-amd64-8-core
 
     concurrency:
       group: bake-workbench-session-init-${{ github.ref }}
@@ -361,7 +361,7 @@ jobs:
   workbench-positron-init:
     needs: [setup]
     name: Workbench Positron Init
-    runs-on: ubuntu-latest-4x
+    runs-on: ubuntu-latest-amd64-4-core
 
     concurrency:
       group: bake-workbench-positron-init-${{ github.ref }}
@@ -401,7 +401,7 @@ jobs:
   workbench:
     needs: [setup]
     name: Workbench
-    runs-on: ubuntu-latest-4x
+    runs-on: ubuntu-latest-amd64-4-core
 
     concurrency:
       group: bake-workbench-${{ github.ref }}
