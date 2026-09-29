@@ -60,7 +60,7 @@ jobs:
   base:
     needs: [versions]
     name: Base Image Previews
-    runs-on: ubuntu-latest-4x
+    runs-on: ubuntu-latest-amd64-4-core
 
     env:
       target: "base-dev-images"
@@ -104,7 +104,7 @@ jobs:
   connect-daily:
     needs: [versions]
     name: Connect - Daily
-    runs-on: ubuntu-latest-4x
+    runs-on: ubuntu-latest-amd64-4-core
 
     env:
       target: "connect-daily"
@@ -142,7 +142,7 @@ jobs:
   connect-content-init-daily:
     needs: [versions]
     name: Connect Content Init - Daily
-    runs-on: ubuntu-latest-4x
+    runs-on: ubuntu-latest-amd64-4-core
 
     env:
       target: "connect-content-init-daily"
@@ -180,7 +180,7 @@ jobs:
   package-manager-preview:
     needs: [versions]
     name: Package Manager - Preview
-    runs-on: ubuntu-latest-4x
+    runs-on: ubuntu-latest-amd64-4-core
 
     env:
       target: "package-manager-preview"
@@ -218,7 +218,7 @@ jobs:
   package-manager-daily:
     needs: [versions]
     name: Package Manager - Daily
-    runs-on: ubuntu-latest-4x
+    runs-on: ubuntu-latest-amd64-4-core
 
     env:
       target: "package-manager-daily"
@@ -256,7 +256,7 @@ jobs:
   r-session-complete-preview:
     needs: [versions]
     name: R Session Complete - Preview
-    runs-on: ubuntu-latest-4x
+    runs-on: ubuntu-latest-amd64-4-core
 
     env:
       target: "r-session-complete-preview"
@@ -294,7 +294,7 @@ jobs:
   r-session-complete-daily:
     needs: [versions]
     name: R Session Complete - Daily
-    runs-on: ubuntu-latest-4x
+    runs-on: ubuntu-latest-amd64-4-core
 
     env:
       target: "r-session-complete-daily"
@@ -332,7 +332,7 @@ jobs:
   workbench-preview:
     needs: [versions]
     name: Workbench - Preview
-    runs-on: ubuntu-latest-4x
+    runs-on: ubuntu-latest-amd64-4-core
 
     env:
       target: "workbench-preview"
@@ -370,7 +370,7 @@ jobs:
   workbench-daily:
     needs: [versions]
     name: Workbench - Daily
-    runs-on: ubuntu-latest-4x
+    runs-on: ubuntu-latest-amd64-4-core
 
     env:
       target: "workbench-daily"
@@ -408,7 +408,7 @@ jobs:
   workbench-session-init-daily:
     needs: [versions]
     name: Workbench Session Init - Daily
-    runs-on: ubuntu-latest-4x
+    runs-on: ubuntu-latest-amd64-4-core
 
     env:
       target: "workbench-session-init-daily"
