@@ -88,7 +88,7 @@ RUN apt-get update \
 RUN apt-get update  \
     && apt-get install -y --no-install-recommends wget \
     && rm -rf /var/lib/apt/lists/* \
-    && curl -fsSL "https://yihui.org/tinytex/install-bin-unix.sh" | sh \
+    && curl -fsSL "https://tinytex.yihui.org/install-bin-unix.sh" | sh \
     && /root/.TinyTeX/bin/*/tlmgr path remove \
     && mv /root/.TinyTeX/ /opt/TinyTeX \
     && /opt/TinyTeX/bin/*/tlmgr option sys_bin /usr/local/bin \
