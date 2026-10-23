@@ -117,7 +117,7 @@ machine or your docker orchestration system.
 
 ### Product Licensing
 
-Using the Posit Workbench docker image requires you to have a valid License. Posit recommends using [license file activation](#example-usage-with-a-license-file) rather than license key activation. License files work well in all environments including ephemeral, container-based, or air-gapped environments. See the [Licensing FAQ](https://docs.posit.co/licensing/licensing-faq.html) for more details. For full details and information about license key activation, see the [Licensing](https://docs.posit.co/ide/server-pro/admin/license_management/license_management.html) page. You can set the license three different ways:
+Using the Posit Workbench docker image requires you to have a valid License. If you don't have a license yet, request a free 30-day trial at [posit.co/trial-license](https://posit.co/trial-license/). Posit recommends using [license file activation](#example-usage-with-a-license-file) rather than license key activation. License files work well in all environments including ephemeral, container-based, or air-gapped environments. See the [Licensing FAQ](https://docs.posit.co/licensing/licensing-faq.html) for more details. For full details and information about license key activation, see the [Licensing](https://docs.posit.co/ide/server-pro/admin/license_management/license_management.html) page. You can set the license three different ways:
 
 1. Mounting a license file at `/var/lib/rstudio-server/*.lic` or a different path specified using `RSW_LICENSE_FILE_PATH` that contains a valid license for Posit Workbench
 2. Setting the `RSW_LICENSE` environment variable to a valid license key inside the container
