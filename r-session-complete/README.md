@@ -1,11 +1,13 @@
 # Quick reference
 
 > [!IMPORTANT]
-> A new <a href="https://github.com/posit-dev/images-workbench/blob/main/workbench-session/README.md">posit/workbench-session</a> image is now generally available and replaces this image.
+> This image is being replaced by images published from the <a href="https://github.com/posit-dev/images-workbench">posit-dev/images-workbench</a> repository.
 >
-> - Posit will stop publishing this image at the end of 2026. Version updates will continue until then. Please switch to the Posit image linked above.
+> - Posit will stop publishing this image at the end of 2026. Version updates will continue until then.
+> - For Kubernetes deployments of Workbench, we recommend switching to <a href="https://github.com/posit-dev/images-workbench/blob/main/workbench-session/README.md">posit/workbench-session</a> (<a href="https://hub.docker.com/r/posit/workbench-session">Docker Hub</a> | <a href="https://github.com/posit-dev/images-workbench/pkgs/container/workbench-session">GHCR</a>).
+> - For specific use cases that need a direct stand-in for this image, <a href="https://github.com/posit-dev/images-workbench/blob/main/workbench-session-complete/README.md">posit/workbench-session-complete</a> (<a href="https://hub.docker.com/r/posit/workbench-session-complete">Docker Hub</a> | <a href="https://github.com/posit-dev/images-workbench/pkgs/container/workbench-session-complete">GHCR</a>) is available. It includes the session components, so it needs no init container.
 >
-> New image: <a href="https://hub.docker.com/r/posit/workbench-session">Docker Hub</a> | <a href="https://github.com/posit-dev/images-workbench/pkgs/container/workbench-session">GHCR</a> | <a href="https://github.com/posit-dev/images-workbench">GitHub</a> | <a href="https://github.com/posit-dev/images/discussions">Discussions</a>
+> Questions: <a href="https://github.com/posit-dev/images/discussions">Discussions</a>
 
 * Maintained by: [the Posit Docker team](https://github.com/rstudio/rstudio-docker-products)
 * Where to get help: [our Github Issues page](https://github.com/rstudio/rstudio-docker-products/issues), 
