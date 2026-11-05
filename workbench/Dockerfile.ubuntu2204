@@ -7,6 +7,7 @@ ARG R_VERSION_ALT
 ARG PYTHON_VERSION
 ARG PYTHON_VERSION_ALT
 ARG PYTHON_VERSION_JUPYTER
+ARG JUPYTERLAB_VERSION=4.6.5
 ARG RSW_VERSION
 ARG RSW_NAME=rstudio-workbench
 ARG RSW_DOWNLOAD_URL=https://download2.rstudio.org/server/jammy/amd64
@@ -86,8 +87,9 @@ RUN /opt/python/"${PYTHON_VERSION_JUPYTER}"/bin/python -m venv /opt/python/jupyt
     && /opt/python/jupyter/bin/python -m pip install --upgrade pip \
     && /opt/python/jupyter/bin/python -m pip install --upgrade setuptools \
     && /opt/python/jupyter/bin/python -m pip install \
-      jupyterlab~=4.2.4 \
-      notebook \
+      "jupyterlab~=${JUPYTERLAB_VERSION}" \
+      notebook~=7.6.4 \
+      "certifi>=2026.10.23" \
       pwb_jupyterlab~=1.0 \
     && ln -s /opt/python/jupyter/bin/jupyter /usr/local/bin/jupyter \
     && /opt/python/${PYTHON_VERSION}/bin/python -m pip install ipykernel \
