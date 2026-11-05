@@ -6,7 +6,7 @@ ARG R_VERSION
 ARG R_VERSION_ALT
 ARG PYTHON_VERSION
 ARG PYTHON_VERSION_ALT
-ARG JUPYTERLAB_VERSION
+ARG JUPYTERLAB_VERSION=4.6.5
 ARG SCRIPTS_DIR=/opt/positscripts
 ARG TARGETARCH
 
@@ -55,8 +55,9 @@ RUN /opt/python/"${PYTHON_VERSION}"/bin/python -m venv /opt/python/jupyter \
     && /opt/python/jupyter/bin/python -m pip install --upgrade pip \
     && /opt/python/jupyter/bin/python -m pip install --upgrade setuptools \
     && /opt/python/jupyter/bin/python -m pip install \
-      jupyterlab~=4.2.4 \
-      notebook \
+      "jupyterlab~=${JUPYTERLAB_VERSION}" \
+      notebook~=7.6.4 \
+      "certifi>=2026.10.23" \
       pwb_jupyterlab~=1.0 \
     && ln -s /opt/python/jupyter/bin/jupyter /usr/local/bin/jupyter \
     && /opt/python/${PYTHON_VERSION}/bin/python -m pip install ipykernel \
