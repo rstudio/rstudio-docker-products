@@ -17,7 +17,7 @@ gpg --keyserver hkps://keys.openpgp.org:443 --recv-keys 51C0B5BB19F92D60
 dpkg-sig --verify "$deb_file"
 
 # Install dependencies
-apt-get install -yq $(dpkg -I $deb_file | grep '^ Depends:' | sed 's/^ Depends: //' | tr ',' '\n' | awk '{print $1}' | tr -d '(')
+apt-get satisfy -yq "$(dpkg-deb -f "$deb_file" Depends)"
 
 # Patch the installer to not activate the service
 echo "$d Patching ${deb_file} $d"
